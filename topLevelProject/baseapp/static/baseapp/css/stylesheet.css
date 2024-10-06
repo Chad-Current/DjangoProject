@@ -17,7 +17,7 @@ Foreground colors
 
 body{
     /* background-color: rgba(249,202,78,1); */
-    background-image: url('/static/baseapp/images/hero.png');
+    background-image: url('/static/baseapp/images/hero.png'); 
     background-repeat: no-repeat;
     background-size:cover;
     background-position: top;
@@ -28,23 +28,23 @@ body{
     margin: 0 auto;
   }
   
-  body::-webkit-scrollbar{
+body::-webkit-scrollbar{
     width: 0.5em;
   }
-  body::-webkit-scrollbar-track{
+body::-webkit-scrollbar-track{
     background: #050505;
   }
-  body::-webkit-scrollbar-thumb{
+body::-webkit-scrollbar-thumb{
     background: var(--sub-color);
   }
   
-  *, 
-  *::before,
-  *::after {
+*, 
+*::before,
+*::after {
       box-sizing: border-box;
     }
   
-  :root{
+:root{
      font-size: 14px;
      --main-color: #f9ca4e;
      --callout: #C71450;
@@ -89,7 +89,7 @@ body{
     font-weight: 600;
   }
   
-  .login-bar{
+ .login-bar{
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;
@@ -137,7 +137,7 @@ body{
   }
   
   
-  .nav-bar {
+.nav-bar {
     display: flex;
     flex-direction: row;
     /* justify-content: flex-end; */
@@ -146,7 +146,7 @@ body{
     /* box-shadow: 0px 2px 3px 1px rgba(0,0,0,1); */
   }
   
-  .nav-bar a {
+ .nav-bar a {
     width:13em;
     text-align: center;
     text-decoration: none;
@@ -169,7 +169,7 @@ body{
     }
   }
   
-  .button-87 {
+.button-87 {
   position: relative;
   margin:0;
   cursor: pointer;
@@ -180,7 +180,7 @@ body{
    }
   }
   
-  .button-87:hover {
+.button-87:hover {
   outline-color: var(--xanthous);
   outline-offset: 5px;
   backdrop-filter: blur(1px);
@@ -195,8 +195,8 @@ body{
     /* font-weight: 600; */
    }
   }
-  
-  .img-logo {
+
+.img-logo {
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -204,12 +204,13 @@ body{
     margin:1.5em 0em 0em 5em;
   }
   
-  .main-container{
+.main-container{
   display: flex;
   flex-direction: column;
   }
-  
-  .header{
+
+
+.header{
     border-color: #050505;
     display:flex;
     flex-flow: row row-reverse;
@@ -224,14 +225,14 @@ body{
     height: clamp(100px, 100vw, 200px);
   } */
   
-  .left-container {
+.left-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 2em;
   }
   
-  .right-container {
+.right-container {
     display: grid;
     grid-template-columns: 80% 20%;
     grid-template-rows: auto;
@@ -242,7 +243,7 @@ body{
     align-items: flex-start; */
   }
   
-  .splash-container {
+.splash-container {
     display: grid;
     margin: 10em 0em 0em 0em;
     /* align-items: flex-start; */
@@ -250,7 +251,7 @@ body{
     column-gap: 2em;
   }
   
-  .col-1 {
+.col-1 {
     display: flex;
     flex-direction: column;
     /* margin: 0em 1.5em 0em 10em; */
@@ -277,7 +278,7 @@ body{
       color:var(--oxford-blue);
       }
   }
-  .col-2 {
+.col-2 {
     display: flex;
     flex-direction: column;
     color:#ffc145;
@@ -307,12 +308,12 @@ body{
     }
   }
   
-  .row-3 {
+.row-3 {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
   }
-  .glass-poly {
+.glass-poly {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -356,7 +357,7 @@ body{
   }
   
   
-   .glass-poly-2 {
+.glass-poly-2 {
     /* border: solid 1px red; */
     margin: 3em 0em 0em 0em;
     width: 80%;
@@ -365,14 +366,4 @@ body{
     box-shadow: 0.25em 0.25em 13em -1em rgba(255,255,255,0.1),0.25em 0.25em 1.5em -1em rgba(91, 201, 255,0.3);
   }
   
-  
-  
-  
-  
-  
-  
-  
-  
-  .card {
-    margin-top:50em;
-  }
+    

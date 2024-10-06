@@ -1,40 +1,23 @@
+{% include 'baseapp/header.html' %}
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Arimo|Comfortaa|Merriweather|SUSE|Mansalva|Italiana|Lancelot|&display=swap" type="text/css">
-  <link rel="stylesheet" href="{% static 'classes/css/stylesheet.css' %} ">
-  <link rel="stylesheet" href="stylesheet.js" type="text/js">
-  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-  <title>Test Page</title>
-
- </head>
-
-<body>
-  <div class="main-container">
-    <div class="header">
-      <div class="left-container">
-        <a href="/index.html"><img src="images/logo.png" class="img-logo"/></a>
-        </div>        
-        <div class="right-container">
-          <nav id="navbar" class="nav-bar">
-            <a href="#" class="button-87">About US</a>
-            <a href="{% url 'classes_main:classes_app' %}" class="button-87">Classes</a>
-            <a href="#" class="button-87">Contact Us</a>
-            <a href="#" class="button-87">FAQs</a>                      
-            <a href="/interaction.html" class="button-87">My Enrollment</a>
-            </nav>
-        </div>
-      </div>
-      </div>    
-    <!--Start Test Card-->
-            <!-- <div class="main">-->
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Arimo|Comfortaa|Merriweather|SUSE|Mansalva|Italiana|Lancelot|&display=swap" type="text/css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'classes/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="stylesheet.js" type="text/js">
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <title>Test Page</title>
+  </head>
+  
+  <body>
+          <div class="main-container">
             <div class="cards">
               <div class="card">
-                <img src="/images/dogs3.jpg"/>
+                <img src="static/classes/images/dogs3.jpg"/>
                 <div class="info" ><h1>Puppy Class</h1></div>
                 <div class="info"><h3>Why Early Obedience Training is Crucial for Your Puppy</h3></div>
                 <div class="info">
@@ -46,7 +29,7 @@
               </div>
             </div>
             <div class="card">
-              <img src="/images/dogs5.jpg"/>
+              <img src="static/classes//images/dogs5.jpg"/>
               <div class="info" ><h1>Beginner Group Class</h1></div>
               <div class="info banner"><h3>A Foundation for a Well-Behaved Dog</h3></div>
               <div class="info"><p>Enrolling your puppy or adult dog in beginner group obedience classes is a fantastic way to provide them with essential training and socialization skills. These classes are designed to cater to dogs of all ages, from 6-month-old puppies to adult dogs.
@@ -58,7 +41,7 @@
             </div>
           </div>
           <div class="card">
-            <img src="/images/dog2.jpg"/>
+            <img src="static/classes//images/dog2.jpg"/>
             <div class="info" ><h1>Advanced Group Class</h1></div>
             <div class="info banner"><h3>Building on a Strong Foundation</h3></div>
             <div class="info"><p>If your dog has already mastered the basics of obedience training, advanced group classes can take their skills to the next level. These classes are designed for dogs who have completed a beginner obedience course and are ready to learn more complex commands and behaviors.
@@ -70,10 +53,9 @@
         </div>    
     </div>  <!-- div End cards-->
 
-    <div class="place-holder">
-      <div class="cards">
+    <div class="cards">
         <div class="card-special">
-          <img src="/images/dogs3.jpg"/>
+          <img src="static/classes//images/dogs3.jpg"/>
           <div class="info-special" ><h1>Puppy Class</h1></div>
           <div class="info-special"><h3>Why Early Obedience Training is Crucial for Your Puppy</h3></div>
           <div class="info-special">
@@ -85,7 +67,7 @@
         </div>
       </div>
       <div class="card-special">
-        <img src="/images/dogs5.jpg"/>
+        <img src="static/classes//images/dogs5.jpg"/>
         <div class="info-special" ><h1>Beginner Group Class</h1></div>
         <div class="info-special banner-special"><h3>A Foundation for a Well-Behaved Dog</h3></div>
         <div class="info-special"><p>Enrolling your puppy or adult dog in beginner group obedience classes is a fantastic way to provide them with essential training and socialization skills. These classes are designed to cater to dogs of all ages, from 6-month-old puppies to adult dogs.
@@ -95,62 +77,28 @@
         </p>
         <!-- <div class="alignment-buttons"><button class="btn">6 Week</button><button class="btn">6 Months</button></div> -->
       </div>
+      </div>
+      <div class="card-special">
+        <img src="static/classes//images/dog2.jpg"/>
+        <div class="info-special" ><h1>Advanced Group Class</h1></div>
+        <div class="info-special banner-special"><h3>Building on a Strong Foundation</h3></div>
+        <div class="info-special"><p>If your dog has already mastered the basics of obedience training, advanced group classes can take their skills to the next level. These classes are designed for dogs who have completed a beginner obedience course and are ready to learn more complex commands and behaviors.
+          Advanced obedience classes often focus on refining existing skills and introducing new commands. Your dog may learn more challenging exercises such as heeling off-leash, staying in place for extended periods, and responding to commands from a distance. These skills are invaluable for building a well-trained and reliable companion.
+          Beyond the practical benefits, advanced obedience classes can also be a fun and rewarding experience for both you and your dog. The challenges and mental stimulation provided by these classes can help to keep your dog engaged and happy. Additionally, attending advanced classes can strengthen the bond between you and your dog as you work together to achieve new goals.
+          Whether you're looking to compete in obedience trials or simply want to continue training your dog for personal enjoyment, advanced group obedience classes are a great way to take your dog's training to the next level.
+        </p>
+      </div>
+      </div>  
+      </div>
     </div>
-    <div class="card-special">
-      <img src="/images/dog2.jpg"/>
-      <div class="info-special" ><h1>Advanced Group Class</h1></div>
-      <div class="info-special banner-special"><h3>Building on a Strong Foundation</h3></div>
-      <div class="info-special"><p>If your dog has already mastered the basics of obedience training, advanced group classes can take their skills to the next level. These classes are designed for dogs who have completed a beginner obedience course and are ready to learn more complex commands and behaviors.
-        Advanced obedience classes often focus on refining existing skills and introducing new commands. Your dog may learn more challenging exercises such as heeling off-leash, staying in place for extended periods, and responding to commands from a distance. These skills are invaluable for building a well-trained and reliable companion.
-        Beyond the practical benefits, advanced obedience classes can also be a fun and rewarding experience for both you and your dog. The challenges and mental stimulation provided by these classes can help to keep your dog engaged and happy. Additionally, attending advanced classes can strengthen the bond between you and your dog as you work together to achieve new goals.
-        Whether you're looking to compete in obedience trials or simply want to continue training your dog for personal enjoyment, advanced group obedience classes are a great way to take your dog's training to the next level.
-      </p>
-     </div>
-    </div>  
-   </div>      
-  </div>
-</div>
-    
-    
-  </body>
-  <script>
-    // window.onscroll = function() {myFunction()};
-    const elements = document.querySelectorAll('.fade-in');
-    const options = {
-      root:null,
-      roorMargin: '0px',
-      threshold: .4
-    }
 
-    const callbacks = (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          entry.target.classList.add('active');
-        }
-      });
-    }
+</body>
+<script>
 
-    let observer = new IntersectionObserver(cb, options);
-
-    elements.forEach(element => {
-      observer.observe(element);
-    });
-
-
-    // var navbar = document.getElementById("navbar");
-    // var sticky = navbar.offsetTop;
-    
-    // function myFunction() {
-    //   if (window.pageYOffset >= sticky) {
-    //     navbar.classList.add("sticky")
-    //   } else {
-    //     navbar.classList.remove("sticky");
-    //   }
-    // }
-    </script>
+</script>
     
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js" type="text/javascript"></script>
     
     
-    </html>
+</html>

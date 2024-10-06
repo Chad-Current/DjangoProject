@@ -1,37 +1,23 @@
+{% include 'baseapp/header.html' %}
 <!DOCTYPE html>
 <html="en">
  <head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Arimo|Comfortaa|Merriweather|SUSE|Mansalva|Italiana|Lancelot|&display=swap" type="text/css">
-  <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}">
-  <link rel="stylesheet" href="stylesheet.js" type="text/js">   
-  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-  <title>Test Page</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+   <meta name="viewport" content="width=device-width,initial-scale=1">
+   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Arimo|Comfortaa|Merriweather|SUSE|Mansalva|Italiana|Lancelot|&display=swap" type="text/css">
+   {% load static %}
+   <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+   <link rel="stylesheet" href="stylesheet.js" type="text/js">   
+   <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+   <title>Test Page</title>
  </head>
 
 <body>
   
-  <div class="main-container">
-    <div class="header">
-      <div class="left-container">
-        <a href="/index.html"><img src="images/logo.png" class="img-logo"/></a>
-        </div>        
-        <div class="right-container">
-          <nav id="navbar" class="nav-bar">
-            <a href="#" class="button-87">About US</a>
-            <a href="{% url 'classes_main:classes_app' %}"  class="button-87">Classes</a>
-            <a href="#" class="button-87">Contact Us</a>
-            <a href="#" class="button-87">FAQs</a>                      
-            <a href="/interaction.html" class="button-87">My Enrollment</a>
-            </nav>
-        </div>
-      </div>
-    </div>
-    
 
+
+    
       <div class="splash-container">
         <div class="col-1">
             <div class="row-1"><h1>All Breed</h1></div>
@@ -54,123 +40,7 @@
           <div class="row-3">
           </div>
          </div>
-       </div>
-
-       <div class="main-container">
-        <div class="card">
-        <div class="login-bar">
-          <form>
-            <img src="images/paw.png" class="form-logo">
-            <div>
-              <input type="email" placeholder="USERNAME" autocomplete="false"></input>
-            </div>
-            <div>
-              <input type="password" placeholder="PASSWORD"="false"></input>
-            </div>
-            <div><button>Log in</button>
-            </div>
-          </form>
         </div>
-         <h1>PolyMoprhic</h3>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>
-        <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-          ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-        </p>        
-        </div>
-        <div class="card">
-          <h3>PolyMoprhic</h3>
-          <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>        
-         </div>
-         <div class="card">
-          <h3>PolyMoprhic</h3>
-          <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>        
-         </div>
-         <div class="card">
-          <h3>PolyMoprhic</h3>
-          <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>
-         <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque, tempora. Voluptatum quaerat, 
-           ad soluta autem esse incidunt dolorem eveniet rem ab voluptates voluptate et commodi culpa quae corrupti natus dolores.
-         </p>        
-         </div>
-       </div>
-
-<!--End main container-->
-</div>
-
 <!-- End body-->
  </body>
 <script>
