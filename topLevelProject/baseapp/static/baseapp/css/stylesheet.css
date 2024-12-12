@@ -68,6 +68,7 @@ body::-webkit-scrollbar-thumb{
       background-color: var(--main-color);
     }
   }
+
   @media screen and (min-width: 600px){
     :root {
       background-color: var(--main-color);
@@ -124,3 +125,25 @@ body::-webkit-scrollbar-thumb{
   .div10 { grid-area: 3 / 2 / 4 / 3; }
   .div11 { grid-area: 3 / 3 / 4 / 4; }
   .div12 { grid-area: 3 / 4 / 4 / 5; }
+
+
+.card { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card:{
+  width: 100%;
+  height:100%;
+  box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6);
+  background:#5bc9ff;
+}
+
+.card p{
+  width: 100%;
+  height:100%;
+  margin:0;
+  box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6); 
+  background: #081b31;
+}
