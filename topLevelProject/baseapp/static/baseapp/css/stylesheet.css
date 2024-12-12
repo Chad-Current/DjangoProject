@@ -93,7 +93,9 @@ body::-webkit-scrollbar-thumb{
   p {
     font-size: 1.25rem;
     font-family: var(--sub-font);
-    font-weight: 400;
+    font-weight: 300;
+    line-height: 1.75rem;
+    letter-spacing:.15rem;
   }
 
 .root-container {
@@ -133,7 +135,7 @@ body::-webkit-scrollbar-thumb{
   justify-content: center;
 }
 
-.card:{
+.card:after{
   width: 100%;
   height:100%;
   box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6);
@@ -146,4 +148,14 @@ body::-webkit-scrollbar-thumb{
   margin:0;
   box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6); 
   background: #081b31;
+}
+
+.icon-img {
+  width: 75px;
+  height: 75px;
+  /* box-shadow: 2px 2px 5px rgba(0,0,0,.1); */
+}
+.icon-img:hover {
+  transition: all .3s;
+  cursor: pointer;
 }

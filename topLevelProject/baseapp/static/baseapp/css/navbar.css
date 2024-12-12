@@ -1,11 +1,12 @@
 /* Header block */
 :root{
-    --font-size: 1.25rem;
+    --font-size: 1.5rem;
     --font-h3: 1.5rem;
-    --font-a: 1rem;
+    --font-menu: 1rem;
+    --font-tag: 1rem;
     --font:"Questrial";
     --font-highlight:"Birthstone";
-    --font-accent:"Ovo";
+    --font-menuaccent:"Ovo";
     --font-comfort:"Comfortaa";
     --anchor-head-size:1.25rem;
     --background: #fff8ee;
@@ -29,8 +30,8 @@
 }
 
 .img-logo {
-    width: 100px;
-    height: 100px;
+    width: 5em;
+    height: 5em;
     border-radius: 50%;
     transition: 0.7s;
     margin: 1.5em auto 0 1em;
@@ -52,7 +53,7 @@
   /* Links inside the navbar */
 .navbar a {
     float: left;
-    /* font-size: var(--anchor-head-size); */
+    font-size: var(--font-size);
     text-align: left;
     text-decoration: none;
     color: var(--text);
@@ -111,12 +112,13 @@
   display: grid;
   grid-template-columns: 1.5fr repeat(3, 3fr) 1.5fr;
   grid-template-rows: 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  grid-row-gap: 0px;
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  /* grid-row-gap: 0px; */
   background-color: var(--background);
   margin-top: 2.75em;
 /* padding: 0em 2em; */
+height: 350px;
 }
 /* div2 for row section */
 .div1 { grid-area: 1 / 1 / 2 / 2; }
@@ -136,18 +138,19 @@
   /* border: solid 1px red; */
   display: flex;
   flex-direction: column;
-  /* float: left; */
+  float: left;
   width: 100%;
-  /* padding: 0em 0em 0em 4em; */
+  padding: 0em 3em;
   /* background-color: #C71450; */
   height: 20em;
   text-align: none;
-  padding: 0;
+  /* padding: 0; */
 }
+
 
 .column h3 {
   font-size: var(--font-h3);
-  font-family: var(--font-accent);
+  font-family: var(--font-menu);
   font-weight: 700;
   color: var(--oxford-blue);
   padding: 14px 0px;
@@ -161,15 +164,16 @@
   color: black;
   padding: 1em 0em 0em 0em;
   text-decoration: none;
-  /* display: block; */
-  display: inline-block;
-  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: .25em;
   padding: .75rem;
   border-radius: 10rem;
   color: var(--text);
   text-decoration: none;
   text-transform: uppercase;
-  font-size: var(--font-a);
+  font-size: var(--font-menu);
   font-family: var(--font);
   letter-spacing: .15rem;
   transition: all .3s;
@@ -201,11 +205,21 @@
   }
   &:hover {
     color: #fff;
+    /* .icon-nav {
+      display: block;
+      height: 15px;
+      width: 15px;
+      margin-right: 10px;
+    } */
     &::before {
-      width: 50%;
+      width: 100%;
     }
   }
 }
+
+/* .icon-nav {
+  display: none;
+} */
 
 /* Add a background color on hover */
 .column a:hover{
@@ -265,3 +279,4 @@
     }
   }
 }
+
