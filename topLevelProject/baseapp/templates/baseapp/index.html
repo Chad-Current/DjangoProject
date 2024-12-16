@@ -1,5 +1,4 @@
 {% load static %}
-{% include 'baseapp/navbar.html' %}
 <!DOCTYPE html>
 <html="en">
  <head>
@@ -15,41 +14,99 @@
 
 <body>    
             <!-- <div class="main-container overlay"><img src="/static/baseapp/images/Clients.png"/></div> -->
-             <div class="root-container">
-              <h1>Ready to Transform Your Dog's Behavior?</h1>
+    {% block header %}
+        <div class="header">
+              <div>
+                <a href="{% url 'home_main:home' %}"  class="div1"><img src="/static/baseapp/images/logo.png" class="img-logo"/></a>
+              </div>
+              <nav class="navbar">
+                <a href="#">About us</a>
+                <a href="#">Our Philosphy</a>
+                <div class="dropdown">
+                  <button class="dropbtn">Services
+                    <i class="fa fa-caret-down"></i>
+                  </button>
+                  <div class="dropdown-content">
+                    <div class="dd-row">
+                      <div class="dd-row-div1"></div><!-- placeholders -->
+                      <div class="dd-row-div2">
+                        <h3>Group</h3>
+                        <a href="#">Puppy</a>
+                        <a href="#">Beginner</a>
+                        <a href="#">Advanced</a>
+                      </div>
+                      <div class="dd-row-div3">
+                        <h3>Speciality</h3>
+                        <a href="#">Comformation</a>
+                        <a href="#">Rally</a>
+                        <a href="#">Service Dog</a>
+                        <a href="#">Scent Work</a>
+                        <a href="#">Therapy Dog</a>
+                      </div>
+                      <div class="dd-row-div4">
+                        <h3>Get Started</h3>
+                        <a href="#">Enrollment Form</a>
+                        <a href="#">FAQs</a>
+                        <a href="#">Conact Us</a>
+                      </div>
+                      <div class="dd-row-div5"></div><!-- placeholders -->
+                    </div>
+                  </div>
+                </div>
+              </nav>
+                  <div class="selections">
+                  <a href="{% url 'classes_app:classes' %}" class="login">Log in</a>
+                  </div>
+        </div>
+    {% endblock %}
+            <div class="root-container">
+               <h1>Ready to Transform Your Dog's Behavior?</h1>
               <div class="catch-area">
-                <div class="div1"></div> 
-                <div class="div2"><img src="/static/baseapp/images/LeashedDogicon.webp" class="icon-img"/><h3>Constant Lack of Control?</h3>
+                <div class="catch-area-div1"></div> 
+                <div class="catch-area-div2"><h3>Constant Lack of Control?</h3>
                   <p>An untrained dog can be unpredictable and difficult to manage in various situations. 
                     This can lead to frustration when trying to walk them, interact with other dogs or people, 
                     or simply keep them calm in a public setting.</p> </div>
-                    <div class="div3 card">
+                    <div class="catch-area-div3 card">
                       <h3>images</h3>
                       <p>Info</p>
                     </div>
-                    <div class="div4"> </div>
-                    <div class="div5"> </div>
-                    <div class="div6"><h3>Behavioral Issues Still Continuing!</h3>
+                    <div class="catch-area-div4"> </div>
+                    <div class="catch-area-div5"> </div>
+                    <div class="catch-area-div6"><h3>Behavioral Issues Still Continuing!</h3>
                     <p>Poorly trained dogs are more likely to develop behavioral problems such as jumping, 
                       barking excessively, pulling on the leash, or chewing on inappropriate items. 
                       These behaviors can strain relationships with family members and create tension 
                       in social situations.</p> </div>
-                    <div class="div7"> </div>
-                    <div class="div8"> </div>
-                    <div class="div9"> </div>
-                    <div class="div10"><img src="/static/baseapp/images/dangericon.webp" class="icon-img"/><h3>Stressed Out Over Safety Concerns</h3>
-                    <p>An untrained dog that doesn't respond to basic commands can pose a safety risk to itself and others. 
-                      It may dart into traffic, react aggressively to other animals or people, or cause damage to property.</p> 
+                    <div class="catch-area-div7"> </div>
+                    <div class="catch-area-div8"> </div>
+                    <div class="catch-area-div9"> </div>
+                    <div class="catch-area-div10">
+                      <div class="tagline"><img src="/static/baseapp/images/dangericon.webp" class="icon-img"/><h3>Stressed Out Over Safety Concerns</h3></div>
+                      <div><p>An untrained dog that doesn't respond to basic commands can pose a safety risk to itself and others. 
+                        It may dart into traffic, react aggressively to other animals or people, or cause damage to property.</p>
+                      </div> 
                     </div>
-                    <div class="div11"> </div>
-                    <div class="div12"> </div>
+                    <div class="catch-area-div11"> </div>
+                    <div class="catch-area-div12"> </div>
                   </div>
                   
                   <img src="/static/baseapp/images/Wordcloud.png" />
                   
-                  
                 </div>
-                
+{% block footer %}
+<div class="footer-area">
+  <div class="footer-div1"> </div>
+  <div class="footer-div2"> </div>
+  <div class="footer-div3"> </div>
+  <div class="footer-div4"> </div>
+  <div class="footer-div5"> </div>
+  <div class="footer-div6"> </div>
+  <div class="footer-div7"> </div>
+  <div class="footer-div8"> </div>
+  <div class="footer-div9"> </div>
+  </div>
+{% endblock %}
 <!-- End body-->
  </body>
 <script>

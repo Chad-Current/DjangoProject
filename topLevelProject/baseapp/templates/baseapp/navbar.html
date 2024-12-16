@@ -1,4 +1,5 @@
 {% load static %}
+{% extends "index.html" %}
 <!DOCTYPE html>
 <html="en">
  <head>
@@ -28,15 +29,15 @@
               <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content">
-              <div class="row">
-                <div class="column div1"></div><!-- placeholders -->
-                <div class="column div2">
+              <div class="dd-row">
+                <div class="dd-column div1"></div><!-- placeholders -->
+                <div class="dd-column div2">
                   <h3>Group</h3>
-                  <a href="#">Puppy Obedience</a>
-                  <a href="#">Beginner Obedience</a>
-                  <a href="#">Advanced Obedience</a>
+                  <a href="#">Puppy</a>
+                  <a href="#">Beginner</a>
+                  <a href="#">Advanced</a>
                 </div>
-                <div class="column div3">
+                <div class="dd-column div3">
                   <h3>Speciality</h3>
                   <a href="#">Comformation</a>
                   <a href="#">Rally</a>
@@ -44,19 +45,19 @@
                   <a href="#">Scent Work</a>
                   <a href="#">Therapy Dog</a>
                 </div>
-                <div class="column div4">
+                <div class="dd-column div4">
                   <h3>Get Started</h3>
                   <a href="#">Enrollment Form</a>
                   <a href="#">FAQs</a>
                   <a href="#">Conact Us</a>
                 </div>
-                <div class="column div5"></div><!-- placeholders -->
+                <div class="dd-column div5"></div><!-- placeholders -->
               </div>
             </div>
           </div>
         </nav>
             <div class="selections">
-            <a href="#" class="login">Log in</a>
+            <a href="{% url 'classes_app:classes' %}" class="login">Log in</a>
             </div>
      </div>
     {% endblock %}
