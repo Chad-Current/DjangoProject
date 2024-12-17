@@ -3,6 +3,7 @@ body{
     max-height: 100svh;
     margin: 0 auto;
     background-color: #fff8ee;
+    /* background-color: red; */
   }
   
 body::-webkit-scrollbar{
@@ -39,16 +40,30 @@ body::-webkit-scrollbar-thumb{
    }
 
  
-   @media screen and (min-width: 1000px){
-    :root {
-      background-color: var(--main-color);
+   @media screen and (max-width: 600px){
+    .root-container {
+      background-color: red;
+    }
+    .header * {
+      display: none;
+    }
+    .card p{
+      order: 1;
+     }
+     .card h3 {
+      order: 2;
+     }
+  }
+
+  @media screen and (min-width: 601px) and  (max-width: 900px){
+    .root-container {
+      background-color: blue;
     }
   }
 
-  @media screen and (min-width: 600px){
-    :root {
-      background-color: var(--main-color);
-      background-image: none;
+  @media screen and (min-width: 901px){
+    .root-container {
+      background-color: purple;
     }
   }
 
@@ -173,7 +188,7 @@ h3 {
   flex-direction: column;}
 .dd-row-div2 { grid-area: 1 / 2 / 2 / 3; 
 display: flex;
-flex-direction: column;
+flex-flow: column wrap;
 }
 .dd-row-div3 { grid-area: 1 / 3 / 2 / 4; 
   display: flex;
@@ -250,7 +265,9 @@ flex-direction: column;
   }
     
   .catch-area-div1 { grid-area: 1 / 1 / 2 / 2; }
-  .catch-area-div2 { grid-area: 1 / 2 / 2 / 3; }
+  .catch-area-div2 { grid-area: 1 / 2 / 2 / 3; 
+  display: flex;
+  flex-flow: column wrap;}
   .catch-area-div3 { grid-area: 1 / 3 / 2 / 4; }
   .catch-area-div4 { grid-area: 1 / 4 / 2 / 5; }
   .catch-area-div5 { grid-area: 2 / 1 / 3 / 2; }
@@ -304,46 +321,15 @@ border: solid 1px red; }
 .footer-div9 { grid-area: 3 / 3 / 4 / 6; 
   border: solid 1px red; }
 
-
-
-
-
-
 .card { 
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.card:after{
-  width: 100%;
-  height:100%;
-  box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6);
-  background:#5bc9ff;
-}
-
-.card p{
-  width: 100%;
-  height:100%;
-  margin:0;
-  box-shadow: 1px 1px 5px 0px rgba(250,250,250,0.6); 
-  background: #081b31;
-}
-
-.icon-img {
-  width: 3.5em;
-  height: 3.5em;
-  /* box-shadow: 2px 2px 5px rgba(0,0,0,.1); */
-}
-.icon-img:hover {
-  transition: all .3s;
-  cursor: pointer;
-}
-
-.shadowbox {
-  margin: 5em 0em 5em;
-  /* border: solid 5px black; */
-  border-radius: 10px;
-  box-shadow: 2em 2em 5em #a1b0a4;
+  flex-wrap: wrap;
+  /* justify-content: center;   */
+  /* width: 100px;
+  height: 100px; */
+  * {
+    border: solid 5px black;
+  }
 }
 
