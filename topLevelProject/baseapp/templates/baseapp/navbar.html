@@ -1,5 +1,4 @@
 {% load static %}
-{% extends "index.html" %}
 <!DOCTYPE html>
 <html="en">
  <head>
@@ -13,13 +12,11 @@
    <title>Test Page</title>
  </head>
 
-<body>
-  
-
-    {% block header %}
-    <div class="header">
+ <body>
+{% block header %}
+ <div class="header">
         <div>
-          <a href="{% url 'home_main:home' %}"  class="div1"><img src="/static/baseapp/images/logo.png" class="img-logo"/></a>
+          <a href="{% url 'home_main:home' %}"><img src="/static/baseapp/images/logo.png" class="img-logo"/></a>
           </div>
         <nav class="navbar">
           <a href="#">About us</a>
@@ -30,14 +27,13 @@
             </button>
             <div class="dropdown-content">
               <div class="dd-row">
-                <div class="dd-column div1"></div><!-- placeholders -->
-                <div class="dd-column div2">
+                <div class="dd-column div1">
                   <h3>Group</h3>
                   <a href="#">Puppy</a>
                   <a href="#">Beginner</a>
                   <a href="#">Advanced</a>
                 </div>
-                <div class="dd-column div3">
+                <div class="dd-column div2">
                   <h3>Speciality</h3>
                   <a href="#">Comformation</a>
                   <a href="#">Rally</a>
@@ -45,13 +41,12 @@
                   <a href="#">Scent Work</a>
                   <a href="#">Therapy Dog</a>
                 </div>
-                <div class="dd-column div4">
+                <div class="dd-column div3">
                   <h3>Get Started</h3>
                   <a href="#">Enrollment Form</a>
-                  <a href="#">FAQs</a>
+                  <a href="{% url 'faqs_page:faqs' %}" >FAQs</a>
                   <a href="#">Conact Us</a>
                 </div>
-                <div class="dd-column div5"></div><!-- placeholders -->
               </div>
             </div>
           </div>
@@ -60,15 +55,14 @@
             <a href="{% url 'classes_app:classes' %}" class="login">Log in</a>
             </div>
      </div>
-    {% endblock %}
+{% endblock %}
+     <!-- End body-->
+ </body>
 
-</body>
-<script>
-
-</script>
-
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js" type="text/javascript"></script>
-
-
-</html>
+ 
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js" type="text/javascript"></script>
+ 
+ 
+ </html>
+ 

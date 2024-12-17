@@ -14,51 +14,7 @@
 
 <body>    
             <!-- <div class="main-container overlay"><img src="/static/baseapp/images/Clients.png"/></div> -->
-    {% block header %}
-        <div class="header">
-              <div>
-                <a href="{% url 'home_main:home' %}"  class="div1"><img src="/static/baseapp/images/logo.png" class="img-logo"/></a>
-              </div>
-              <nav class="navbar">
-                <a href="#">About us</a>
-                <a href="#">Our Philosphy</a>
-                <div class="dropdown">
-                  <button class="dropbtn">Services
-                    <i class="fa fa-caret-down"></i>
-                  </button>
-                  <div class="dropdown-content">
-                    <div class="dd-row">
-                      <div class="dd-row-div1"></div><!-- placeholders -->
-                      <div class="dd-row-div2">
-                        <h3>Group</h3>
-                        <a href="#">Puppy</a>
-                        <a href="#">Beginner</a>
-                        <a href="#">Advanced</a>
-                      </div>
-                      <div class="dd-row-div3">
-                        <h3>Speciality</h3>
-                        <a href="#">Comformation</a>
-                        <a href="#">Rally</a>
-                        <a href="#">Service Dog</a>
-                        <a href="#">Scent Work</a>
-                        <a href="#">Therapy Dog</a>
-                      </div>
-                      <div class="dd-row-div4">
-                        <h3>Get Started</h3>
-                        <a href="#">Enrollment Form</a>
-                        <a href="#">FAQs</a>
-                        <a href="#">Conact Us</a>
-                      </div>
-                      <div class="dd-row-div5"></div><!-- placeholders -->
-                    </div>
-                  </div>
-                </div>
-              </nav>
-                  <div class="selections">
-                  <a href="{% url 'classes_app:classes' %}" class="login">Log in</a>
-                  </div>
-        </div>
-    {% endblock %}
+    {% block index %}
             <div class="root-container">
                <h1>Ready to Transform Your Dog's Behavior?</h1>
               <div class="catch-area">
@@ -98,24 +54,10 @@
                   <img src="/static/baseapp/images/Wordcloud.png" />
                   
                 </div>
-{% block footer %}
-<div class="footer-area">
-  <div class="footer-div1"> </div>
-  <div class="footer-div2"> </div>
-  <div class="footer-div3"> </div>
-  <div class="footer-div4"> </div>
-  <div class="footer-div5"> </div>
-  <div class="footer-div6"> </div>
-  <div class="footer-div7"> </div>
-  <div class="footer-div8"> </div>
-  <div class="footer-div9"> </div>
-  </div>
 {% endblock %}
+
 <!-- End body-->
  </body>
-<script>
-
-</script>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js" type="text/javascript"></script>

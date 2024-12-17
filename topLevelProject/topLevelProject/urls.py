@@ -14,7 +14,7 @@ urlpatterns = [
     path('contactus/', include('contactus.urls', namespace='contactus_main')),
     path('course/', include('courses.urls', namespace="mini-courses")),
     # path('', include('enrollment.urls', namespace='enrollment_main')),
-    # path('', include('faqs.urls', namespace='faqs_main')),
+    path('faqs/', include('faqs.urls', namespace='faqs_page')),
 ]
 
 # handler500 = base_views.error_500

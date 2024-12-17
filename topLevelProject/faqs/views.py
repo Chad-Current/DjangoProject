@@ -7,4 +7,4 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 
 
 class Home(TemplateView):
-   template_name = "baseapp/faqs.html"
+   template_name = "faqs/faqs.html"
