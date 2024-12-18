@@ -36,7 +36,9 @@ body::-webkit-scrollbar-thumb{
      --anchor-font: "Ovo";
      --color: #000;
      --oxford-color: #081b31;
-     --anchor-hightlight: #ffc145;
+     --deep-bluesky: #5bc9ff;
+     --dark-blue: #263542;
+     --anchor-hov: #ffc145;
    }
 
  
@@ -61,6 +63,16 @@ body::-webkit-scrollbar-thumb{
     }
   }
 
+a {
+  font-size: var(--font-md);
+  font-family: var(--main-font);
+  text-decoration: none;
+  color: var(--oxford-blue);
+  &:hover{
+    color: var(--anchor-hov);
+  }
+}
+
 h1 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
@@ -77,12 +89,33 @@ h3 {
   justify-content: center;
   align-items: center;
   margin: 3em 5em;
+  background-color: inherit;
 }
 
 .icon-img {
   width: 2em;
   height: auto;
 }
+
+.img-logo {
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  transition: 0.7s;
+  margin: 1.5em auto 0 1em;
+}
+
+.social-icon {
+  padding: 0em 2em 0em 0em;
+}
+
+.social {
+  font-size: var(--font-nm);
+  font-family: var(--sub-font);
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+}
+
 
 .catch-area{
   display: grid;
