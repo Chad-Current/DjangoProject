@@ -2,8 +2,11 @@
     display:flex;
     flex-direction: column;
     margin:auto;
+    padding: 2em;
     width:60%;
-
+    /* border: solid 1px #000; */
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
 }
 .accordion {
     background-color: #eee;
@@ -11,7 +14,7 @@
     cursor: pointer;
     padding: 18px;
     border: solid 1px #000;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     text-align: left;
     outline: none;
@@ -24,7 +27,7 @@
     margin: auto;
     /* From https://css.glass */
     background: rgba(255, 248, 238, 0.9);
-    border-radius: 16px;
+    /* border-radius: 16px; */
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -37,16 +40,16 @@
   
   .panel {
     padding: 0 18px;
-    background-color: white;
+    /* background-color: white; */
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
     width: 100%;
     margin: auto;
     background: rgba(255, 248, 238, 0.9);
-    border-radius: 16px;
+    /* border-radius: 16px; */
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 248, 238, 0.49);
+    /* border: 1px solid rgba(255, 248, 238, 0.49); */
   }
