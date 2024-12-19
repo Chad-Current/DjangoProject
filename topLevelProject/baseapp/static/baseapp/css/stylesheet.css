@@ -105,11 +105,25 @@ h3 {
   margin: 1.5em auto 0 1em;
 }
 
-.social-icon {
+.ratings-icon {
+  width: 10em;
+  height:10em;
+}
+
+.navi {
+  width: 20px;
+  height: 20px;
+}
+.nav-social-icon {
   padding: 0em 2em 0em 0em;
 }
 
-.social {
+.nav-icons { /* Adjustment to the actual icons to remove padding no other adjustments neccesary??? */
+  width: 35px;
+  height: 35px;
+}
+
+.nav-social {
   font-size: var(--font-nm);
   font-family: var(--sub-font);
   font-weight: 600;
