@@ -1,8 +1,9 @@
 body{
-    max-height: 100dvh;
     max-height: 100svh;
     margin: 0 auto;
+    padding: 0;
     background-color: #fff8ee;
+    scroll-behavior: smooth; /*For bookmark links*/
     /* background-color: red; */
   }
   
@@ -44,30 +45,6 @@ body::-webkit-scrollbar-thumb{
    }
 
  
-   @media screen and (max-width: 600px){
-    .root-container {
-      background-color: red;
-    }
-    .header * {
-      display: none;
-    }
-    .highlighting * {
-      display: none;
-    }
-
-  }
-
-  @media screen and (min-width: 601px) and  (max-width: 900px){
-    .root-container {
-      background-color: blue;
-    }
-  }
-
-  @media screen and (min-width: 901px){
-    .root-container {
-      background-color: rgb(250, 250, 232);
-    }
-  }
 
 a {
   font-size: var(--font-md);
@@ -89,11 +66,6 @@ h3 {
     font-weight: 500;
   }
 
-text {
-  font-size: var(--font-nm);
-  font-family: var(--sub-font);
-  margin-left: 0.5rem;
-}
 
 .root-container {
   display: flex;
@@ -104,83 +76,7 @@ text {
   background-color: inherit;
 }
 
-.icon-img {
-  width: 2em;
-  height: auto;
-}
 
-.img-logo {
-  width: 5em;
-  height: 5em;
-  border-radius: 50%;
-  transition: 0.7s;
-  margin: 1.5em auto 0 1em;
-}
-
-.ratings-icon {
-  width: 10em;
-  height:10em;
-}
-
-.navi {
-  width: 20px;
-  height: 20px;
-}
-.nav-social-icon {
-  padding: 0em 2em 0em 0em;
-}
-
-.nav-icons { /* Adjustment to the actual icons to remove padding no other adjustments neccesary??? */
-  width: 35px;
-  height: 35px;
-}
-
-.nav-social {
-  font-size: var(--font-nm);
-  font-family: var(--sub-font);
-  font-weight: 600;
-  letter-spacing: 0.1rem;
-}
-
-
-.catch-area{
-  display: grid;
-  grid-template-columns: 1.5fr repeat(2, 3fr) 1.5fr;
-  grid-template-rows: repeat(3, 1fr);
-  grid-column-gap: 10px;
-  grid-row-gap: 25em;
-  margin: 5em 0em;
-  }
-    
-  .catch-area-div1 { grid-area: 1 / 1 / 2 / 2; }
-  .catch-area-div2 { grid-area: 1 / 2 / 2 / 3; 
-  display: flex;
-  flex-flow: column wrap;}
-  .catch-area-div3 { grid-area: 1 / 3 / 2 / 4; }
-  .catch-area-div4 { grid-area: 1 / 4 / 2 / 5; }
-  .catch-area-div5 { grid-area: 2 / 1 / 3 / 2; }
-  .catch-area-div6 { grid-area: 2 / 2 / 3 / 3; }
-  .catch-area-div7 { grid-area: 2 / 3 / 3 / 4; }
-  .catch-area-div8 { grid-area: 2 / 4 / 3 / 5; }
-  .catch-area-div9 { grid-area: 3 / 1 / 4 / 2; }
-  .catch-area-div10 { grid-area: 3 / 2 / 4 / 3; 
-  /* display: flex;
-  flex-direction: column; */
-}       
-  .catch-area-div11 { grid-area: 3 / 3 / 4 / 4; }
-  .catch-area-div12 { grid-area: 3 / 4 / 4 / 5; }
-
-.tagline {
-    display:flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: flex-start;
-    align-items: center;
-    h3 {
-      margin: 0em 0em 0em 2em;
-      padding:0;
-    }
-}
 .card * {
     border: solid 5px black;
 }

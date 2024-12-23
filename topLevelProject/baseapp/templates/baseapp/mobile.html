@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Birthstone&family=Comfortaa:wght@300..700&family=Ovo&family=Questrial&display=swap" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/mobile.css' %}" type="text/css">
+    <title>Mobile</title>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <button id="open-sidebar-button" onclick="openSidebar()" aria-label="open sidebar" aria-expanded="false" aria-controls="navbar">
+        <img src="/static/baseapp/images/menu_icon.svg" class="menu"/>    
+    </button>
+  
+    <nav id="navbar">
+      <ul>
+        <li>
+          <button id="close-sidebar-button" onclick="closeSidebar()" aria-label="close sidebar">
+            <img src="/static/baseapp/images/close_icon.svg"/>
+        </button>
+        </li>
+        <li class="home-li"><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
+        <li><a href="#">About us</a></li>
+        <li><a href="#">Our Philosphy</a></li>
+        <li><a href="#">Classes</a></li>
+        <li><a href="{% url 'faqs_page:faqs' %}" >FAQs</a></li>
+        <li><a class="accent-link" href="#">Login</a></li>
+      </ul>
+    </nav>
+    
+    <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>    
+
+    <script src="{% static 'baseapp/js/mobile.js' %}"></script>   
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+
+</body>
+</html>

@@ -127,3 +127,16 @@ hr {
 .social-bar {
     display: inline-flex;
 }
+
+.m-footer {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.foot-2 {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
