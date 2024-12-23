@@ -33,6 +33,8 @@ body::-webkit-scrollbar-thumb{
      --font-xxl: 2.5em;
      --main-font: "Questrial";
      --sub-font: "Ovo";
+     --third-font: "Comfortaa";
+     --fourth-font: "Arimo";
      --anchor-font: "Ovo";
      --color: #000;
      --oxford-color: #081b31;
@@ -49,6 +51,10 @@ body::-webkit-scrollbar-thumb{
     .header * {
       display: none;
     }
+    .highlighting * {
+      display: none;
+    }
+
   }
 
   @media screen and (min-width: 601px) and  (max-width: 900px){
@@ -82,6 +88,12 @@ h3 {
     font-size: var(--font-md);
     font-weight: 500;
   }
+
+text {
+  font-size: var(--font-nm);
+  font-family: var(--sub-font);
+  margin-left: 0.5rem;
+}
 
 .root-container {
   display: flex;
@@ -171,4 +183,10 @@ h3 {
 }
 .card * {
     border: solid 5px black;
+}
+
+.highlighting {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
