@@ -50,7 +50,7 @@ a {
   font-size: var(--font-md);
   font-family: var(--main-font);
   text-decoration: none;
-  color: var(--oxford-blue);
+  color: var(--oxford-color);
   &:hover{
     color: var(--anchor-hov);
   }
@@ -76,6 +76,10 @@ h3 {
   background-color: inherit;
 }
 
+.row-wrapper {
+  display: flex;
+  flex-flow: column wrap;
+}
 
 .card * {
     border: solid 5px black;
