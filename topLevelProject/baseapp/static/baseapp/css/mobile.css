@@ -246,15 +246,16 @@ margin-right: 1em;
     /* background-color:red; */
     align-items: center;
   }
-
-
   
+  /*Remove this? */
   .centered {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
   }
-  
+  /*Here*/
+
+
   .login {
     display: inline-block;
     padding: .75rem 1.25rem;
@@ -303,6 +304,7 @@ margin-right: 1em;
   .tag {
     font-size: var(--font-sm);
     font-family: var(--sub-font);
-    margin-left: 0.15rem;
+    text-indent: 1em;
     letter-spacing: 0.1rem;
   }
+
