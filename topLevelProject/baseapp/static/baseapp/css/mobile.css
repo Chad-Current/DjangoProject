@@ -17,6 +17,7 @@ background-color: var(--background-color);
 nav ul{
 list-style: none;
 display: flex;
+align-items: center;
 }
 nav .home-li{
 margin-right: 0px;
@@ -53,8 +54,11 @@ margin-right: 1em;
 }
 
 .nav-icons {
-    width:3em;
+    width:2em;
     height:auto;
+    p {
+        margin-left: 1em;
+    }
 }
 
 
@@ -138,6 +142,7 @@ margin-right: 1em;
     border-radius: 20px;
     backdrop-filter: blur(1px);
     background-color: #fff8ee;
+    align-items: flex-start;
   }
   nav li:last-child {
     margin:0;
@@ -156,10 +161,8 @@ margin-right: 1em;
   nav .home-li{
     margin-right: unset;
   }
-
-
-  .dropdown * {
-    display: none;
+  nav .classes {
+    display: block;
   }
 }
 
@@ -168,6 +171,7 @@ margin-right: 1em;
     float: left;
     overflow: hidden;
     font-family: var(--main-font);
+    padding: 1em 2em;
   }
     
   /* Dropdown button */
@@ -195,7 +199,10 @@ margin-right: 1em;
   }
   
   .dropdown-content {
-    margin-top: 2em;  }
+    margin-top: 20px;
+    /* Adjustment for hover */
+    /* border:solid 1px red;  */
+ }
   
   /* Show the dropdown menu on hover */
   .dropdown:hover .dropdown-content {
@@ -215,7 +222,7 @@ margin-right: 1em;
     grid-template-columns: .5fr repeat(4, 1fr);
     grid-template-rows: auto;
     grid-column-gap: 10px;
-    grid-row-gap: 10px;
+    grid-row-gap: 0px;
     /* height: 350px; */
     /* width: 100%; */
   }
@@ -223,10 +230,7 @@ margin-right: 1em;
   .dd-row a {
     padding:0;
   }
-  /* .dd-row > div {
-    border: solid 1px red;
-  } */
-  
+
   /* div2 for row section */
   .div1 { grid-area: 1 / 1 / 2 / 2; }
   .div2 { grid-area: 1 / 2 / 2 / 3; }
@@ -239,6 +243,7 @@ margin-right: 1em;
    justify-content: space-around;
    align-items: center; 
    padding: 1em 0em;
+   margin: 1em 0em 0em 0em;
    background-color: #fff;}
   
    
@@ -247,11 +252,17 @@ margin-right: 1em;
     align-items: center;
   }
   
+  .dd-row img {
+    margin-right: 1em;
+  }
   /*Remove this? */
-  .centered {
+.centered {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-around;
+    p {
+        text-indent: 1em;
+    }
   }
   /*Here*/
 
@@ -307,4 +318,6 @@ margin-right: 1em;
     text-indent: 1em;
     letter-spacing: 0.1rem;
   }
+
+
 
