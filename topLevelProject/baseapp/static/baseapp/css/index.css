@@ -1,0 +1,123 @@
+/* Media Queries */
+
+/* Mobile view  */
+@media (width <= 480px){
+    .center-img {
+        width:10em;
+    }    
+    .infograph-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0.25em 0em;
+        div {
+            font-size: var(--font-xl);
+        }
+    }
+}
+
+
+/* iPads and tablets */
+@media (481px <= width <= 768px){
+    .center-img {
+        width:15em;
+    }
+}
+/* Small screens and latops */
+@media (769px <= width <= 1024px){
+    .center-img {
+        width:20em;
+    }
+}
+/* Desktops and Large Screens */
+@media (1025px <= width <= 1200px){
+    .center-img {
+        width:20em;
+    }
+}
+/* Extra large sceens and TV */
+@media (width >= 1201px){
+    .center-img {
+        width:25em;
+    }
+}
+
+.headlines {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    text-align: center;
+    margin: 12em 0em;
+    padding: 0em 10em;
+     flex-grow: 1;
+    h1 {
+        font-size: var(--font-lg);
+        font-family: var(--main-font);
+    }
+    h3 {
+        font-size: var(--font-md);
+        font-family: var(--sub-font);
+    }
+    img {
+        width: 3.5em;
+        height:auto;
+    }
+    p {
+        font-size: var(--font-sm);
+        font-family: var(--fourth-font);
+
+    }
+}
+
+.infograph-header {
+    display: flex;
+    justify-content: space-around;
+    margin: 3em 0em;
+    div {
+        font-size: var(--font-xl);
+    }
+}
+
+.infographic-container {
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-rows: 1fr 1fr 1fr; 
+    gap: 10px 10px;
+    grid-template-areas: 
+      "TopLeftGrid CenterGrid TopRightGrid"
+      "CenterLeftGrid CenterGrid CenterRightGrid"
+      "BottomLeftGrid CenterGrid BottomRightGrid"; 
+    /* place-items: center; */
+      div {
+        border:solid 1px red;
+      }
+  }
+  .TopLeftGrid { grid-area: TopLeftGrid; 
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: flex-end;
+            }
+  .TopRightGrid { grid-area: TopRightGrid; 
+}
+  .CenterLeftGrid { grid-area: CenterLeftGrid;   
+                    background-color: orange;
+                }
+  .CenterRightGrid { grid-area: CenterRightGrid; 
+}
+  .BottomLeftGrid { grid-area: BottomLeftGrid; 
+}
+  .BottomRightGrid { grid-area: BottomRightGrid; 
+}
+  .CenterGrid { grid-area: CenterGrid;
+                display: flex;
+                /* flex-direction: column; */
+                align-items: center;
+                justify-content: center;
+                background-color: violet;
+                img{
+                    object-fit: cover;
+                    border:solid 1px blue;
+                }
+            }
+
