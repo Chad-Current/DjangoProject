@@ -31,17 +31,21 @@ body::-webkit-scrollbar-thumb{
      --font-md: 1.25rem;
      --font-lg: 1.75rem;
      --font-xl: 2rem;
-     --font-xxl: 2.5em;
+     --font-xxl: 2.5rem;
+     --font-title: 5rem;
+     --title-font: "Cormorant+SC";
      --main-font: "Questrial";
      --sub-font: "Ovo";
      --third-font: "Comfortaa";
      --fourth-font: "Arimo";
+     --fifth-font: "Birthstone";
      --anchor-font: "Ovo";
      --color: #000;
      --oxford-color: #081b31;
      --deep-bluesky: #5bc9ff;
      --dark-blue: #263542;
      --anchor-hov: #ffc145;
+     --page: #fff7d6;
    }
 
  

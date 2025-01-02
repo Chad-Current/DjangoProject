@@ -5,7 +5,7 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
    <meta name="viewport" content="width=device-width,initial-scale=1">
-   <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Birthstone&family=Comfortaa:wght@300..700&family=Ovo&family=Questrial&display=swap" type="text/css">
+   <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Asul:wght@400;700&family=Caprasimo&family=Kings&family=Comfortaa:wght@300..700&family=Ovo&family=Questria&Cormorant+SC&display=swap" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
 
    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
@@ -15,52 +15,53 @@
 <body>    
             <!-- <div class="main-container overlay"><img src="/static/baseapp/images/Clients.png"/></div> -->
     {% block index %}
+
+<div class="main-wrapper">
+
+
     <div class="headlines">
-      <div>
-        <h1>All breed dog obedience</h1>
-      </div>
-      <div><img src="/static/baseapp/images/logo.png" alt="dog icon"></div>
-      <div>
-      <div>
-        <h3>Experience the Joy of a Perfectly Behaved Dog - Championship Training for Everyday Life.</h3>
-      </div>
-        <p>With over 66 years of experience training all breeds of dogs, 
-          we possess the in-depth knowledge and proven expertise
-           to guide you and your canine companion to success.</p>
-      </div>
+      <h1>All breed dog obedience</h1>
+      <img src="/static/baseapp/images/logo.png" alt="dog icon">
+      <h3>Experience the Joy of a Perfectly Behaved Dog - Championship Training for Everyday Life.</h3>
+      <p>With over 66 years of experience training all breeds of dogs, 
+         we possess the in-depth knowledge and proven expertise
+         to guide you and your canine companion to success.
+      </p>      
     </div>
 
-    <div class="infograph-header">
+    <!-- <div class="infograph-header">
       <div>
         <div>Our comprehensive</div>
         <div>training programs include</div>
       </div>
       <div>We prioritize</div>
-    </div>
+    </div> -->
 
-    <div class="infographic-container">
+
+  <div class="infographic-container">
+    <div class="TopGrid"><h1>Our comprehensive training</h1><h1>What we prioritize</h1></div>
       <div class="TopLeftGrid">
-        <h3>Obedience Classes<img src="/static/baseapp/images/ball-circle.png"/></h3>
+        <div class="center-left-info"><h3>Obedience Classes</h3><img src="/static/baseapp/images/ball-circle.png"/></div>
         <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
       </div>
       <div class="TopRightGrid">
-        <h3>Small class sizes</h3>
+        <div class="center-right-info"><img src="/static/baseapp/images/ball-circle.png"/><h3>Small class sizes</h3></div>
         <p>Ensuring individualized attention and a supportive learning environment.</p>
       </div>
       <div class="CenterLeftGrid">
-        <h3>Specialized Training</h3>
+        <div class="center-left-info"><h3>Specialized Training</h3><img src="/static/baseapp/images/ball-circle.png"/></div>
         <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
       </div>
       <div class="CenterRightGrid">
-        <h3>Training for all dogs</h3>
+        <div class="center-right-info"><img src="/static/baseapp/images/ball-circle.png"/><h3>Training for all dogs</h3></div>
         <p>8 weeks and older, regardless of breed or background</p>
       </div>
       <div class="BottomLeftGrid">
-        <h3>Personalized Training Options</h3>
+        <div class="center-left-info"><h3>Personalized Training Options</h3><img src="/static/baseapp/images/ball-circle.png"/></div>
         <p>Private Lessons and Board & Train</p>
       </div>
       <div class="BottomRightGrid">
-        <h3>A commitment to excellence</h3>
+        <div class="center-right-info"><img src="/static/baseapp/images/ball-circle.png"/><h3>A commitment to excellence</h3></div>
         <p>In every aspect of dog training and behavior modification</p>
       </div>
       <div class="CenterGrid">
@@ -69,6 +70,15 @@
     </div>
 
 
+    <div class="comp-chart">
+      <img src="static/baseapp/images/CompChart.svg"/>
+    </div>
+
+    <div class="client-statsbar">
+        <div><p>area 1</p></div>
+        <div><p>area 2</p></div>
+        <div><p>area 3</p></div>
+    </div>
 
             <!-- <div class="root-container">
               <h1>Ready to Transform Your Dog's Behavior?</h1>
@@ -115,6 +125,9 @@
                   </div>
                   
                 </div> -->
+
+  <!-- End Main-Wrapper -->
+</div>
                 {% endblock %}
                 
   <script src="{% static 'baseapp/js/index.js' %}"></script>   
