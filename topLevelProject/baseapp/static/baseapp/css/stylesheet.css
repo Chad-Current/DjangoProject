@@ -32,16 +32,14 @@ body::-webkit-scrollbar-thumb{
      --font-lg: 1.75rem;
      --font-xl: 2rem;
      --font-xxl: 2.5rem;
-     --font-title: 5rem;
+     --font-title-size: 2.5rem;
      --title-font: "Cormorant+SC";
-     --main-font: "Questrial";
-     --sub-font: "Ovo";
-     --third-font: "Comfortaa";
-     --fourth-font: "Arimo";
-     --fifth-font: "Birthstone";
-     --anchor-font: "Ovo";
-     --color: #000;
-     --oxford-color: #081b31;
+     --main-font: "Aleo";
+     --anchor-font: "Caprasimo";
+     --accent-font: "Asul";
+     --paragraph-font: "Comfortaa";
+       --color: #000;
+     --blue: #464f62;
      --deep-bluesky: #5bc9ff;
      --dark-blue: #263542;
      --anchor-hov: #ffc145;
@@ -54,7 +52,7 @@ a {
   font-size: var(--font-md);
   font-family: var(--main-font);
   text-decoration: none;
-  color: var(--oxford-color);
+  color: var(--blue);
   &:hover{
     color: var(--anchor-hov);
   }
@@ -70,27 +68,7 @@ h3 {
     font-weight: 500;
   }
 
-
-.root-container {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  margin: 3em 5em;
-  background-color: inherit;
-}
-
-.row-wrapper {
-  display: flex;
-  flex-flow: column wrap;
-}
-
-.card * {
-    border: solid 5px black;
-}
-
-.highlighting {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+  .main-wrapper {
+    margin:0 2em;
+    padding: 0;
 }

@@ -1,5 +1,6 @@
 const infograph = document.querySelector('.infographic-container');
-const infoheader = document.querySelector(".infograph-header");
+const compchart = document.querySelector('.comp-chart');
+
 
 function removeInfograph(){
     if (window.innerWidth <= 780) {
@@ -9,6 +10,22 @@ function removeInfograph(){
     }
 }
 
-removeInfograph();
 
-window.addEventListener("resize", removeInfograph);
+function removeCompchart(){
+    if (window.innerWidth <= 780) {
+        compchart.style.display = "none";
+    } else {
+        compchart.style.display = "flex";
+    }
+}
+
+
+// removeInfograph();
+// removeCompchart();
+
+window.addEventListener("resize",function() { 
+    removeInfograph();
+    removeCompchart();
+});
+// window.addEventListener("resize", removeInfograph);
+// window.addEventListener("resize", removeCompchart);

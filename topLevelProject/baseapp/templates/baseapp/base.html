@@ -7,18 +7,17 @@
    <meta name="viewport" content="width=device-width,initial-scale=1">
    <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Asul:wght@400;700&family=Caprasimo&family=Kings&family=Comfortaa:wght@300..700&family=Ovo&family=Questria&Cormorant+SC&display=swap" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-   <link rel="stylesheet" href="stylesheet.js" type="text/js">   
-   <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
    <title>Test Page</title>
- </head>
-
-<body>    
-  {% include "baseapp/navbar.html" %}
-  {% include "baseapp/index.html" %}
-  {% include "baseapp/footer.html" %}
-
-
-
+  </head>
+  
+  <body>    
+    <div class="main-wrapper">
+    {% include "baseapp/navbar.html" %}
+    {% include "baseapp/index.html" %}
+    {% include "baseapp/footer.html" %}
+    </div>
+    
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 <!-- End body-->
  </body>
 

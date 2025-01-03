@@ -1,6 +1,6 @@
 const openButton = document.getElementById('open-sidebar-button');
 const navbar = document.getElementById('navbar');
-const media = window.matchMedia("(max-width: 700px)");
+const media = window.matchMedia("(max-width: 780px)");
 const dropdown = document.querySelector('.dropdown');
 const classes = document.querySelector('.classes');
 

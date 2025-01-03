@@ -45,7 +45,7 @@ body {
 hr {
     border: solid 2px #081b31;
     height:1px;
-    width:200px;
+    width:100px;
     display: inline-block;
 }
 
@@ -105,10 +105,10 @@ text {
 }
 
 .social-bar {
-    display: inline-flex;
+    display: flex;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 780px) {
     .footer-area{
         display: flex;
         flex-flow: column wrap;
@@ -116,7 +116,7 @@ text {
         font-family: var(--sub-font);
         background-color: #fff8ee;
         align-content: center;
-        margin:0em 3em;
+        /* margin:0em 3em; */
         .footer-div1, .footer-div10, .footer-div11 {
             display: none;
         }
@@ -126,8 +126,8 @@ text {
             align-items: center;
         }
         .logo-footer {
-            width: 3em;
-            height:3em;
+            width: 2em;
+            height:2em;
             margin: .25em 0em;
         }
         * {
