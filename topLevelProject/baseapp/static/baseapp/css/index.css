@@ -20,7 +20,7 @@
         width:10em;
     }
     .comp-img {
-        width: 40em;
+        width: 45em;
     }
 }
 /* Desktops and Large Screens */
@@ -29,16 +29,25 @@
         width:15em;
     }
     .comp-img {
-        width: 40em;
+        width: 60em;
     }
 }
 /* Extra large sceens and TV */
-@media (1201 <= width <= 1500px){
+@media (1201px <= width <= 1500px){
     .center-img {
         width: 20em;
     }
     .comp-img {
-        width: 60em;
+        width: 75em;
+    }
+}
+
+@media (width >= 1501px) {
+    .center-img {
+        width: 25em;
+    }
+    .comp-img {
+        width: 100em;
     }
 }
 
@@ -98,8 +107,8 @@
       "TopLeftGrid CenterGrid TopRightGrid"
       "CenterLeftGrid CenterGrid CenterRightGrid"
       "BottomLeftGrid CenterGrid BottomRightGrid"; 
-        margin: 20em 0em;
-       place-content: center;
+        /* margin: 20em 0em; */
+       /* place-content: center; */
       h1 {
         font-size: var(--font-xl);
         font-family: var(--main-font);
@@ -178,11 +187,9 @@
                 /* flex-direction: column; */
                 place-content: center;
                 /* background-color: violet; */
-                img{
-                    object-fit: cover;
-                    
-                    /* border:solid 1px blue; */
-                }
+                 img{ 
+                     object-fit: contain;
+                 } 
             }
     .TopGrid { grid-area: TopGrid; 
                 display: flex;
@@ -201,7 +208,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 20em 0em;
+    margin: 20em 0em 0em 0em;
     /* margin: 10em 0em; */
 }
 
