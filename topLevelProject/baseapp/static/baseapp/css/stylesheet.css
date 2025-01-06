@@ -46,7 +46,36 @@ body::-webkit-scrollbar-thumb{
      --page: #fff7d6;
    }
 
- 
+/* Media Queries */
+@media and (481px <= width <= 768px){
+  body { 
+    font-size: 10px;
+  }
+}
+/* Small screens and latops */
+@media (769px <= width <= 1024px){
+  body { 
+    font-size: 11px;
+  }
+}
+/* Desktops and Large Screens */
+@media (1025px <= width <= 1200px){
+  body { 
+    font-size: 12px;
+  }
+}
+/* Extra large sceens and TV */
+@media (1201px <= width <= 1500px){
+  body { 
+    font-size: 13px;
+  }
+}
+
+@media (width >= 1501px) {
+  body { 
+    font-size: 14px;
+  }
+}
 
 a {
   font-size: var(--font-md);
