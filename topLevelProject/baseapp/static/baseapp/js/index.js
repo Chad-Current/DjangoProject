@@ -35,13 +35,16 @@ function removeCompchartMobile(){
     }
 }
 
-
+console.log(window.innerWidth)
+console.log(window.innerHeight)
 
 window.addEventListener("resize",function() { 
     removeInfograph();
     removeInfographMobile();
     removeCompchart();
     removeCompchartMobile();
+    console.log(window.innerWidth)
+    console.log(window.innerHeight)
 });
 // window.addEventListener("resize", removeInfograph);
 // window.addEventListener("resize", removeCompchart);
