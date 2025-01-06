@@ -1,50 +1,49 @@
 /* Container Queries */
-
 /* Mobile view  */
 
 /* iPads and tablets */
 
 
 /* Media Queries */
-@media (481px <= width <= 768px){
+/* @media screen and (width <= 768px){
     .center-img {
-        width: 7.5em;
+        width: 20em;
     }
     .comp-img  {
         width: 30em;
     }
-}
+} */
 /* Small screens and latops */
-@media (769px <= width <= 1024px){
+@media screen and  (769px <= width <= 1024px){
     .center-img {
-        width:10em;
+        width:20em;
     }
     .comp-img {
         width: 65em;
     }
 }
 /* Desktops and Large Screens */
-@media (1025px <= width <= 1200px){
+@media screen and  (1025px <= width <= 1200px){
     .center-img {
-        width:15em;
+        width:25em;
     }
     .comp-img {
         width: 60em;
     }
 }
 /* Extra large sceens and TV */
-@media (1201px <= width <= 1500px){
+@media screen and  (1201px <= width <= 1500px){
     .center-img {
-        width: 20em;
+        width: 30em;
     }
     .comp-img {
         width: 75em;
     }
 }
 
-@media (width >= 1501px) {
+@media screen and  (width >= 1501px) {
     .center-img {
-        width: 25em;
+        width: 35em;
     }
     .comp-img {
         width: 100em;
@@ -61,148 +60,96 @@
     margin: 10em 0em;
     h1 {
         font-size: var(--font-title-size);
-        font-family: var(--title-font);
-        color: var(--dark-blue);
         text-transform: uppercase;
         text-shadow: 0.01em 0.01em 1rem var(--page);
         margin:0;
     }
-    h3 {
-        font-size: var(--font-lg);
-        font-family: var(--sub-font);
-        color: var(--dark-blue);
-        /* text-shadow: 0.01em 0.01em 0rem var(--page); */
-    }
     img {
-        width: 4.5em;
+        width: 6.5em;
         height:auto;
-        padding: 0;
+        margin: 3em 0 0 0;
     }
     p {
-        font-size: var(--font-nm);
-        font-family: var(--main-font);
-        color: var(--dark-blue);
-        padding: 0 5em;
-        /* text-shadow: 0.01em 0.01em 0rem var(--page); */
-
+        padding: 0 2em;
     }
 }
 
-/* .infograph-header {
-    display: flex;
-    justify-content: space-around;
-    margin: 3em 0em;
-    div {
-        font-size: var(--font-xl);
-    }
-} */
 
 .infographic-container {
+    margin: auto;
     display: grid; 
-    grid-template-columns: 1fr 1fr 1fr; 
-    grid-template-rows: 1fr;
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-rows: repeat(auto-fit, minmax(min(10ch, 100%), 1fr));
+    /* grid-template-rows: 1fr 1fr 1fr 1fr; */
     gap: 0px 0px; 
     grid-template-areas: 
-      "TopGrid TopGrid TopGrid"
       "TopLeftGrid CenterGrid TopRightGrid"
       "CenterLeftGrid CenterGrid CenterRightGrid"
       "BottomLeftGrid CenterGrid BottomRightGrid"; 
-        /* margin: 20em 0em; */
-       /* place-content: center; */
       h1 {
-        font-size: var(--font-xl);
-        font-family: var(--main-font);
         font-weight: 900;
-        color: var(--dark-blue);
-        /* padding: 0 0 2em; */
       }
       h3 {
-        font-size: var(--font-lg);
-        font-family: var(--fourth-font);
-        color: var(--dark-blue);
+        font-weight: 600;
+           }
+       p {
+        font-size: var(--font-nm);
        }
-
-      .center-left-info {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        ~p {
-            font-size: var(--font-nm);
-            font-family: var(--sub-font);
-            color: var(--dark-blue);
-            text-align: end;
-            /* padding-right: 2.75em; */
-        }
-      }
-
-      .center-right-info {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        ~p {
-            font-size: var(--font-nm);
-            font-family: var(--sub-font);
-            color: var(--dark-blue);
-            text-align: start;
-            /* padding-left: 2.75em; */
-        }
-      }
   }
 
-  .TopLeftGrid { grid-area: TopLeftGrid; 
+.TopLeftGrid { grid-area: TopLeftGrid; 
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-end;
+                text-align: end;
             }
-  .TopRightGrid { grid-area: TopRightGrid; 
+.TopRightGrid { grid-area: TopRightGrid; 
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-start;
 
 }
-  .CenterLeftGrid { grid-area: CenterLeftGrid;   
+.CenterLeftGrid { grid-area: CenterLeftGrid;   
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-end; 
+                text-align: end;
+                padding-right: 30px;
                 }
-  .CenterRightGrid { grid-area: CenterRightGrid;
+.CenterRightGrid { grid-area: CenterRightGrid;
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-start; 
+                padding-left: 30px;
 }
-  .BottomLeftGrid { grid-area: BottomLeftGrid; 
+.BottomLeftGrid { grid-area: BottomLeftGrid; 
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-end;
+                text-align: end;
 
 }
-  .BottomRightGrid { grid-area: BottomRightGrid; 
+.BottomRightGrid { grid-area: BottomRightGrid; 
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: flex-start;
 
 }
-  .CenterGrid { grid-area: CenterGrid;
+.CenterGrid { grid-area: CenterGrid;
                 display: flex;
-                /* flex-direction: column; */
                 place-content: center;
-                /* background-color: violet; */
                  img{ 
-                     object-fit: contain;
+                     object-fit: cover;
                  } 
             }
-    .TopGrid { grid-area: TopGrid; 
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                justify-content: center;
-                column-gap: 10em;
-                text-align: center;
-            /* &:first-child {
-                margin-right: 6em;
-            } */
-}
 
+
+.infographic-container-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
 
 .comp-chart {
     display: flex;
@@ -212,3 +159,6 @@
     /* margin: 10em 0em; */
 }
 
+.comp-chart-mobile {
+    display: flex;
+}

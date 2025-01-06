@@ -32,12 +32,12 @@ body::-webkit-scrollbar-thumb{
      --font-lg: 1.75rem;
      --font-xl: 2rem;
      --font-xxl: 2.5rem;
-     --font-title-size: 2.5rem;
+     --font-title-size: 4.5rem;
      --title-font: "Cormorant+SC";
      --main-font: "Aleo";
      --anchor-font: "Caprasimo";
      --accent-font: "Asul";
-     --paragraph-font: "Comfortaa";
+     --paragraph-font: "Asul";
        --color: #000;
      --blue: #464f62;
      --deep-bluesky: #5bc9ff;
@@ -47,15 +47,15 @@ body::-webkit-scrollbar-thumb{
    }
 
 /* Media Queries */
-@media and (481px <= width <= 768px){
+@media (481px <= width <= 768px){
   body { 
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 /* Small screens and latops */
 @media (769px <= width <= 1024px){
   body { 
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 /* Desktops and Large Screens */
@@ -88,13 +88,22 @@ a {
 }
 
 h1 {
-  font-family: var(--main-font);
-  font-size: var(--font-lg);
+  font-family: var(--title-font);
+  font-size: var(--font-xxl);
+  color: var(--dark-blue);
 }
 h3 {
-    font-family: var(--sub-font);
+    font-family: var(--main-font);
+    font-size: var(--font-lg);
+    font-weight: 300;
+    color: var(--dark-blue);
+  }
+
+  p {
+    font-family: var(--paragraph-font);
     font-size: var(--font-md);
     font-weight: 500;
+    color: var(--dark-blue);
   }
 
   .main-wrapper {
