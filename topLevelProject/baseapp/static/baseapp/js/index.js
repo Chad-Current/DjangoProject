@@ -12,10 +12,10 @@ function removeInfograph(){
 }
 
 function removeInfographMobile() {
-    if (window.innerWidth <= 768) {
-        infograph_mobile.style.display = "flex";
-    } else {
+    if (window.innerWidth >= 769) {
         infograph_mobile.style.display = "none";
+    } else {
+        infograph_mobile.style.display = "flex";
     }
 }
 
@@ -28,10 +28,10 @@ function removeCompchart(){
 }
 
 function removeCompchartMobile(){
-    if (window.innerWidth <= 768) {
-        compchart_mobile.style.display = "flex";
-    } else {
+    if (window.innerWidth >= 769) {
         compchart_mobile.style.display = "none";
+    } else {
+        compchart_mobile.style.display = "flex";
     }
 }
 
