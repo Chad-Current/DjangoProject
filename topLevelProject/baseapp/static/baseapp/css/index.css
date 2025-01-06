@@ -5,14 +5,14 @@
 
 
 /* Media Queries */
-/* @media screen and (width <= 768px){
+@media screen and (width <= 768px){
     .center-img {
         width: 20em;
     }
     .comp-img  {
         width: 30em;
     }
-} */
+}
 /* Small screens and latops */
 @media screen and  (769px <= width <= 1024px){
     .center-img {
@@ -139,7 +139,7 @@
                 display: flex;
                 place-content: center;
                  img{ 
-                     object-fit: cover;
+                     object-fit: contain;
                  } 
             }
 
