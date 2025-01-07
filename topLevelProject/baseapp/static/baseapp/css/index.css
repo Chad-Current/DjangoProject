@@ -7,10 +7,10 @@
 /* Media Queries */
 @media screen and (width <= 768px){
     .center-img {
-        width: 15em;
+        width: 30em;
     }
     .comp-img  {
-        width: 30em;
+        width: 50em;
     }
     .headlines  {
         h1{
@@ -48,7 +48,7 @@
         width:25em;
     }
     .comp-img {
-        width: 60em;
+        width: 75em;
     }
     .headlines  {
         h1{
@@ -67,7 +67,7 @@
         width: 30em;
     }
     .comp-img {
-        width: 75em;
+        width: 80em;
     }
     .headlines {
         h1 {
@@ -192,6 +192,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    letter-spacing: 0.15rem;
     h1 {
         background: rgba(250, 247, 242, 0.13);
         border-radius: 16px;
@@ -202,17 +203,18 @@
         padding: 5px;
     }
     img { 
-        width: 15em;
+        width: 30em;
     }
 
 }
 
 .comp-chart {
     display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .comp-chart-mobile {
     display: flex;
+    img {
+        width: 38em;
+    }
 }
