@@ -1,3 +1,9 @@
+button {
+  h3 {
+      margin: 1rem;
+      }
+}
+
 .accordion {
   display: flex;
   align-items: flex-start;
@@ -52,6 +58,7 @@
     backdrop-filter: blur(5.2px);
     -webkit-backdrop-filter: blur(5.2px);
     border: 1px solid rgba(202, 196, 187, 0.01);
+
   }
   
   .active, .accordion:hover {
