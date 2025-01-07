@@ -47,31 +47,31 @@ body::-webkit-scrollbar-thumb{
    }
 
 /* Media Queries */
-@media (481px <= width <= 768px){
+@media screen and  (width <= 768px){
   body { 
-    font-size: 12px;
+    font-size: 8px;
   }
 }
 /* Small screens and latops */
-@media (769px <= width <= 1024px){
+@media screen and  (769px <= width <= 1024px){
   body { 
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 /* Desktops and Large Screens */
-@media (1025px <= width <= 1200px){
+@media screen and  (1025px <= width <= 1200px){
   body { 
     font-size: 12px;
   }
 }
 /* Extra large sceens and TV */
-@media (1201px <= width <= 1500px){
+@media screen and  (1201px <= width <= 1500px){
   body { 
     font-size: 13px;
   }
 }
 
-@media (width >= 1501px) {
+@media screen and  (width >= 1501px) {
   body { 
     font-size: 14px;
   }
