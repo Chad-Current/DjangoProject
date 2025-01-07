@@ -1,40 +1,19 @@
-button  p {
-  font-size: var(--font-nm);
-  font-family: var(--main-font);
-  font-weight: 600;
-  letter-spacing: 0.125rem;
-  color: var(--dark-blue);
-  padding-left: 0.75em;
-}
-
-h1, p {
-    color: var(--dark-blue);
-  }
-h1 {
-  font-size: var(--font-xxl);
-  font-family: var(--main-font);
-}
-p{
-  font-size: var(--font-nm);
-  font-family: var(--sub-font);
-}
-
-a ~ img {
-  padding-right: 5em;
-}
-
-
-.top-container {
+.accordion {
   display: flex;
-  flex-grow: 1;
-  flex-flow: column nowrap;
-  margin:auto;
-  padding: 1em;
-  width:72%;
+  align-items: flex-start;
+  column-gap: 2em;
+  h3 {
+    font-size: clamp(0.5rem, -0.875rem + 8.333vw, 1.75rem);
+  }
+}
+
+.board {
+  width: 80%;
+  margin: auto;
 }
 
 .headline {
-  margin: 2em 0;
+    margin: 1em 0 5em 0;
 }
 
 .icon-img {
@@ -61,13 +40,12 @@ a ~ img {
     box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     text-align: left;
     outline: none;
-    font-size: 15px;
+    /* font-size: 15px; */
     transition: 0.4s;
     display: flex;
-    flex-direction: row;
     align-items: center;
     width: 100%;
-    margin: auto;
+    /* margin: auto; */
     background: rgba(218, 211, 201, 0.15);
     border-radius: 16px;
     box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
@@ -81,7 +59,7 @@ a ~ img {
   }
   
   .panel {
-    padding: 0 18px;
+    padding: 0 2px;
     color: var(--oxford-blue);
     /* background-color: white; */
     max-height: 0;
@@ -96,10 +74,9 @@ a ~ img {
     -webkit-backdrop-filter: blur(5px); */
     /* border: 1px solid rgba(255, 248, 238, 0.49); */
     p {
-      font-size: var(--font-nm);
-      font-family: var(--sub-font);
-      color: var(--oxford-blue);
-      letter-spacing: 0.05rem;
+        font-size: clamp(0.5rem, -0.875rem + 8.333vw, 1rem);
+        font-weight: 300;
+        line-height: 1.5rem;
       /* padding-left: 2em; */
     }
   }
