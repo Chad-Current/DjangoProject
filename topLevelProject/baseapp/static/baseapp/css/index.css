@@ -117,7 +117,10 @@
 
 .comp-chart {
     display: flex;
-    margin: auto;
+    img {
+        margin: 0 auto;
+        width: clamp(70em, 1vw, 100em);
+    }
 }
 
 .comp-chart-mobile {

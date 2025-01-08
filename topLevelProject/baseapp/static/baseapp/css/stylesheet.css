@@ -38,12 +38,16 @@ body::-webkit-scrollbar-thumb{
      --anchor-font: "Caprasimo";
      --accent-font: "Asul";
      --paragraph-font: "Asul";
-       --color: #000;
+      --color: #000;
      --blue: #464f62;
      --deep-bluesky: #5bc9ff;
      --dark-blue: #263542;
      --anchor-hov: #ffc145;
      --page: #fff7d6;
+     --pastel-green: #c9ffc7;
+     --pastel-blue: #c6e4ff;
+     --pastel-orange: #ffe1c7;
+     --pastel-pink: #fdc7ff;
    }
 
 /* Media Queries */
@@ -81,7 +85,7 @@ a {
   font-size: var(--font-md);
   font-family: var(--main-font);
   text-decoration: none;
-  color: var(--blue);
+  color: var(--dark-blue);
   &:hover{
     color: var(--anchor-hov);
   }
@@ -109,4 +113,8 @@ h3 {
  main {
     margin:0 1em;
     padding: 0;
+}
+
+.icon {
+  width: 5.5em;
 }

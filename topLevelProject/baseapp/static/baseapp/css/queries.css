@@ -4,9 +4,9 @@
     .center-img {
       width: 20em;
     }
-  .comp-img  {
+  /* .comp-img  {
       width: 50em;
-   }
+   } */
   }
   
   /* iPads and tablets */
@@ -14,9 +14,9 @@
     .center-img {
       width: 20em;
     }
-  .comp-img  {
+  /* .comp-img  {
       width: 50em;
-    }
+    } */
   }
   
   /* Small screens and laptops */
@@ -24,9 +24,9 @@
     .center-img {
       width:25em;
     }  
-    .comp-img {
+    /* .comp-img {
         width: 75em;
-    }
+    } */
   }
   
   /* Desktops and large screens */
@@ -34,9 +34,9 @@
     .center-img {
       width: 30em;
     }
-    .comp-img {
+    /* .comp-img {
         width: 80em;
-    }
+    } */
   }
   
   /* Extra large screens and TVs */
@@ -44,9 +44,9 @@
     .center-img {
        width: 35em;
     }
-    .comp-img {
+    /* .comp-img {
         width: 100em;
-    }
+    } */
   }
 
   
