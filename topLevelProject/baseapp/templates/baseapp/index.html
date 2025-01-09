@@ -5,19 +5,14 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
    <meta name="viewport" content="width=device-width,initial-scale=1">
-   <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css">
-   <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
-   <link rel="stylesheet" href="{% static 'baseapp/css/footer.css' %}" type="text/css">
-   <title>Test Page</title>
+
+   <title>Index Page</title>
   </head>
   
   <body>    
-    <!-- <div class="main-container overlay"><img src="/static/baseapp/images/Clients.png"/></div> -->
-    {% include "baseapp/navbar.html" %}
-    {% block index %}   
-    <main>
+    {% block main %}   
       <div class="headlines">
         <h1>All breed dog obedience</h1>
         <img src="/static/baseapp/images/logo.png" alt="logo">
@@ -26,26 +21,24 @@
           we possess the in-depth knowledge and proven expertise
           to guide you and your canine companion to success.
         </p>      
-      </div>     
-    
-      
+      </div>          
       <div class="infographic-container">
         <div class="TopLeftGrid">
-          <h1>Our comprehensive training</h1>
+          <h1>Our training</h1>
           <div class="centered"><h3>Obedience Classes</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
           <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
         </div>
         <div class="TopRightGrid">
-          <h1>What we prioritize</h1>
+          <h1>We prioritize</h1>
           <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>Small class sizes</h3></div>
           <p>Ensuring individualized attention and a supportive learning environment.</p>
         </div>
         <div class="CenterLeftGrid">
-          <div class="centered"><h3>Specialized Training</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
+          <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>Specialized Training</h3></div>
           <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
         </div>
         <div class="CenterRightGrid">
-          <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>Training for all dogs</h3></div>
+          <div class="centered"><h3>Training for all dogs</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
           <p>8 weeks and older, regardless of breed or background</p>
         </div>
       <div class="BottomLeftGrid">
@@ -63,15 +56,15 @@
     
     <div class="infographic-container-mobile">
 
+      <h1>Our training</h1>
+      <h3>Obedience Classes</h3>
+      <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
+      <h3>Specialized Training</h3>
+      <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
+      <h3>Personalized Training Options</h3>
+      <p>Private Lessons and Board & Train</p>
       <img src="static/baseapp/images/happydog.svg" class="center-img"/>
-      <h1>Our comprehensive training</h1>
-        <h3>Obedience Classes</h3>
-         <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
-        <h3>Specialized Training</h3>
-         <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
-        <h3>Personalized Training Options</h3>
-         <p>Private Lessons and Board & Train</p>
-      <h1>What we prioritize</h1>
+      <h1>We prioritize</h1>
         <h3>Small class sizes</h3>
          <p>Ensuring individualized attention and a supportive learning environment.</p>         
         <h3>Training for all dogs</h3>
@@ -89,9 +82,8 @@
       <h1>Test 2</h1>
     </div>
     
-  </main>
   {% endblock %}
-  {% include 'baseapp/footer.html' %}
+
         <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
         <script src="{% static 'baseapp/js/index.js' %}"></script>   
         <!-- End body-->

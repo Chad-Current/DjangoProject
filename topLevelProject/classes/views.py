@@ -8,3 +8,27 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 
 class Classes(TemplateView):
    template_name = "classes/classes.html"
+
+class Puppy(TemplateView):
+   template_name = "classes/puppy.html"
+
+class Beginner(TemplateView):
+   template_name = "classes/beginner.html"
+
+class Advanced(TemplateView):
+   template_name = "classes/advanced.html"
+
+class Conformation(TemplateView):
+   template_name = "classes/conformation.html"
+
+class Service(TemplateView):
+   template_name = "classes/service_class.html"
+
+class Rally(TemplateView):
+   template_name = "classes/rally.html"
+
+class Scent(TemplateView):
+   template_name = "classes/scent.html"
+
+class Therapy(TemplateView):
+   template_name = "classes/therapy.html"
