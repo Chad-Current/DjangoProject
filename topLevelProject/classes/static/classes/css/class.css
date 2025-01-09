@@ -24,7 +24,11 @@
   width: 200px;
   height: 400px;
   border: solid 1px black;
-  box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
-  background-image: linear-gradient(to left, #dfdee4, rgb(74, 74, 214));
+  box-shadow: 5px 5px 10px rgba(201, 255, 199, 0.7);
+  background: #24435D;
   border-radius: 0px 10px 0px 10px;
+  p {
+    padding: 1em;
+    color: #c9ffc7;
+  }
 }
