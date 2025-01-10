@@ -14,7 +14,7 @@ urlpatterns = [
     # path('classes/puppy', include('classes.urls', namespace='classes_puppy')),
     path('contactus/', include('contactus.urls', namespace='contactus_main')),
     path('course/', include('courses.urls', namespace="mini-courses")),
-    # path('', include('enrollment.urls', namespace='enrollment_main')),
+    path('enrollment/', include('enrollment.urls', namespace='enrollment_main')),
     path('faqs/', include('faqs.urls', namespace='faqs_page')),
 ]
 
