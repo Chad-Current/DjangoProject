@@ -14,12 +14,16 @@
 
 <body>  
 {% include "baseapp/navbar.html" %}
+<main>
 {% block enroll_form %}
-    <!-- <h1>Enrollment page</h1> -->
-
-<div class="form">
-    <form action="" class="content-form">
-    <div class="form-grid">
+    <h1>Enrollment page</h1>
+    <main>
+        <div class="form">
+            <div class="img-container">
+            <img src="/static/enrollment/images/happydogpawsoverform.webp" class="form-img"/>
+            </div>
+            <form action="" class="content-form">
+            <div class="form-grid">
 
 
     <div class="form-div1">          
@@ -107,13 +111,14 @@
     <div class="form-div25">
                 <button>Submit</button>
     </div>
+        </div>
+    </form>
     </div>
- </form>
-</div>
+    </main>
 {% endblock %}
 
 {% include "baseapp/footer.html" %}
-
+</main>
 </body>
 <script>
     

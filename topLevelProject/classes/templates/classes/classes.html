@@ -14,15 +14,15 @@
   
   <body>    
     {% include "baseapp/navbar.html" %}
-    <main>
     {% block main %}   
     <div class="class-header">
       <h1>Class Main Page</h1>
       {% endblock %}
+    <div class="grid-main">
     {% block class_type %}
     <h1>Information</h1>
     {% endblock %}
-  </main>
+    </div>
       {% include "baseapp/footer.html" %}
       <!-- End body-->
       <link rel="stylesheet" href="classes.js" type="text/js">   

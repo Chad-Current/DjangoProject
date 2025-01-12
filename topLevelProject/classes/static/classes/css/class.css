@@ -10,12 +10,21 @@
 
 
 .grid-main {
+  width: 100svw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  h1{
-     color:blue;
+  border: solid 1px red;
+  img {
+    width: 80svw;
+    object-fit: cover;
+    margin: auto;
   }
 }
 
+.card {
+  width: 10em;
+  height: 15em;
+  background-color: aqua;
+}

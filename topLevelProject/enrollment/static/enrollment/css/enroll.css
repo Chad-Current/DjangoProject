@@ -1,13 +1,14 @@
+
+form {
+/* Ensure the form has enough height for scrolling */
+display: flex;
+/* flex-direction: column; */
+min-height: 100vh;
+}
+
 .form {
-    display: flex;
-    justify-content: center;
-    border: solid 1px black;
-    box-shadow: 5px 5px 10px rgba(201, 255, 199, 0.7);
-    background: #24435d;
-    border-radius: 2em;
     width: min-content;
-    margin: auto;
-    padding: 2em;
+    padding: 8em 2em 0em;
 
     button {
         width: 10em;
@@ -45,12 +46,24 @@
 
 }
 
+.img-container {
+    flex-shrink: 0;
+}
+
+.form-img {
+    max-width: 100%;
+    height: auto;
+    z-index: 9;
+    width: clamp(45em, 50em, 50em);
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(13, 100px);
     grid-column-gap: 50px;
     grid-row-gap: 0px;
+    
 }
 
 .form-grid * { 
@@ -89,6 +102,24 @@
 
 /* Media query for screens <= 768px */
 @media (max-width: 768px) {
+    .form { 
+        display: flex;
+        justify-content: center;
+        width: min-content;
+        min-height: 100vh;
+        padding: 8em 1.5em 0em;
+    }
+    .form-img {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: auto;
+        z-index: 9;
+        width: clamp(30em, 40em, 40em);
+    }
+
     .form-grid {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(25, auto);
@@ -133,23 +164,14 @@
 }
 
 
-
-
-
-/* .content-form {
+.content-form {
     display: flex;
-    flex-direction: column;
-    row-gap: 14px;
-    border: solid 1px black;
-    box-shadow: 5px 5px 10px rgba(201, 255, 199, 0.7);
-    background: #24435D;
-    border-radius: 0px 10px 0px 10px;
-
+    align-items: flex-start;
+    background: rgba(36, 67, 93, 1);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(36, 67, 93, 0.85);
+    padding: 8em 1em 4em;
 }
 
-.content-inputs {
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-} */
 

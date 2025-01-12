@@ -10,27 +10,14 @@
  </head>
 
 <body>      
+    {% block main %}
+    <div class="class-header">
+    <h1>Beginner Page</h1>
+    </div>
+    {% endblock %}
     {% block class_type %}
-    <main>
-        <div class="header">
-            <div>
-                <h3>Beginner Page</h3>
-            </div>
-            <div>
-                <h3></h3>
-            </div>
-            <div>
-                <h3></h3>
-            </div>
-            <div>
-                <h3></h3>
-            </div>
-            <div>
-                <h3></h3>
-            </div>
-        </div>
-    </main>
-{% endblock %}
+    <img src="/static/baseapp/images/happyclients.svg" alt="logo">
+    {% endblock %}
     <!-- End body-->
      </body>
 <script>
