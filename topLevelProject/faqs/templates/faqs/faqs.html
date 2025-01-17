@@ -18,13 +18,19 @@
   
   <body>
   {% include "baseapp/navbar.html" %}
-  <main>
-    <div class="board">
     <div class="headline">
+      <div class="headline-tag">
         <h1>Frequently Asked Questions:</h1>
-        <p>Have questions about our programs? We’ve compiled answers to help you make informed decisions.</p>
-    </div>
+        <p>Have questions about our programs?</p>
+        <p>We’ve compiled answers to help you make informed decisions.</p>
+      </div>
+      <div class="img-container">
+        <img src="/static/faqs/images/DogQuestions.svg" />
+      </div>
 
+    </div>
+    
+<div class="board">
   <div class="faq-container">
     <div class="block">
     <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What training methods do you use?</h3></button>
@@ -98,9 +104,8 @@
                             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                           </div>  
                           </div>
-      </div>
-      </div>
-  </main>
+   </div>
+  </div>
 
   {% include "baseapp/footer.html" %}
 </body>
