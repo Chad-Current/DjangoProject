@@ -21,6 +21,19 @@
         font-size: clamp(0.5rem, -0.875rem + 8.333vw, 1.25rem);
     }
 }
+.img-large {
+    min-width: 80em;
+    max-width: 100em;
+}
+
+
+.center-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: auto;
+    align-items: center;
+}
 
 
 .infographic-container {
@@ -134,4 +147,8 @@
     img {
         width: 38em;
     }
+}
+
+.img-large {
+    max-width: 40em;
 }
