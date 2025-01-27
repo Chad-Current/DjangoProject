@@ -1,20 +1,24 @@
 .wrapper {
 display: flex;
-flex-direction: column;
-align-items: center;
+flex-direction: row;
+align-items: flex-start;
+justify-content: space-evenly;
 width:100svw;
+margin-top: 10em;
 }
 
 .form-parent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20em 0em 0em;
-    background: rgba(36, 67, 93, 1);
+    margin: 0em;
     border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(36, 67, 93, 0.85);    
-    width: clamp(800px, 100%, 1000px);
+    box-shadow: 4px 4px 15px rgba(36, 67, 93, 0.3);
+    width: clamp(600px, 80%, 800px);
+    ~ .img-photo {
+        width: 40em;
+        margin-top: 5em;
+    }
 }
 
 
@@ -24,7 +28,7 @@ width:100svw;
     justify-content: center;
     align-items: flex-start;
     position: relative;
-    padding: 6em 1em 4em;
+    padding: 1em;
 
     button {
         width: 10em;
@@ -34,13 +38,11 @@ width:100svw;
     input {
         /* min-width: 30px; */
         margin-bottom: 0.5em;
-        padding-bottom: 0.5em;
         font-size: var(--font-md);
         font-family: var(--paragraph-font);
         font-weight: 700;
         letter-spacing: 0.08rem;
         border-radius: 5px;
-        background-color: #fdfdee;
         text-transform: capitalize;
         /* width: clamp(5em, 15em, 15em); */
     }
@@ -49,33 +51,17 @@ width:100svw;
         font-family: var(--main-font);
         font-weight: 500;
         letter-spacing: 0.08rem;
-        color: var(--page);
+        color: var(--dark-blue);
     }
     h5 {
         margin: 0 0 0.5em 0;
         font-size: var(--font-md);
         font-family: var(--accent-font);
         letter-spacing: 0.15rem; 
-        color: var(--pastel-green);
+        color: var(--dark-blue);
     }
 }
 
-
-.form-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    object-fit: cover;
-    z-index: 1;
-    transform: translateX(5%) translateY(-82%);
-    max-width: 500px;
-}
-
-form {
-    position: relative;
-    z-index: 2;
-    /* Add padding and other styles as needed */
-}
 
 .form-grid {
     display: grid;
@@ -130,13 +116,7 @@ form {
         min-height: 100vh;
         padding: 8em 1.5em 0em;
     }
-    .form-img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        object-fit: cover;
-        z-index: 1;
-        transform: translateX(12%) translateY(-82%);
+    .img-photo {
         width: clamp(25em, 25em, 25em);
     }
 
