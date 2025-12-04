@@ -6,86 +6,58 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
    <meta name="viewport" content="width=device-width,initial-scale=1">
    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-   <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css">
-
-   <title>Index Page</title>
+   <!-- <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css"> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
   </head>
   
   <body>    
     {% block main %}   
-      <div class="headlines">
-        <h1>All breed dog obedience</h1>
-        <img src="/static/baseapp/images/logo.png" alt="logo"/>
-        <h3>Experience the Joy of a Perfectly Behaved Dog - Championship Training for Everyday Life.</h3>
-        <p>With over 66 years of experience training all breeds of dogs, 
-          we possess the in-depth knowledge and proven expertise
-          to guide you and your canine companion to success.
-        </p>      
-      </div>
-      <div class="center-wrapper">
-        <img src="/static/baseapp/images/happyclients.svg" class="img-large" alt="logo">
-      </div>         
-      <div class="infographic-container">
-        <div class="TopLeftGrid">
-          <h1>Our training</h1>
-          <div class="centered"><h3>Obedience Classes</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
-          <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
+      <div class="main">
+        <div class="section_one">
+          <h1>
+            Digital Estate Prep for Seniors & Families
+          </h1>
+          <h5>
+            Helping seniors and their families organize digital accounts, passwords, online access and digitize documents so everything is clear, secure, and ready when it matters most.
+          </h5>
         </div>
-        <div class="TopRightGrid">
-          <h1>We prioritize</h1>
-          <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>Small class sizes</h3></div>
-          <p>Ensuring individualized attention and a supportive learning environment.</p>
+        <div class="section_two">
+          <img src="/static/baseapp/images/1.svg"/>
+          <img src="/static/baseapp/images/4.svg"/>
+          <img src="/static/baseapp/images/7.svg"/>
+          <div class="packages">
+            <img src="/static/baseapp/images/BasicPack.svg"/>
+            <img src="/static/baseapp/images/StandardPack.svg"/>
+            <img src="/static/baseapp/images/PremiumPack.svg"/>
+          </div>
         </div>
-        <div class="CenterLeftGrid">
-          <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>Specialized Training</h3></div>
-          <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
+
+<!-- Mobile Fields -->
+        <div class="section_one_mobile">
+          <img src="/static/baseapp/images/Monogram.png"class="logo top-corner"/>   
+          <h1>
+            Digital Estate Prep for Seniors & Families
+          </h1>
+          <h5>
+            Helping seniors and their families organize digital accounts, passwords, online access and digitize documents so everything is clear, secure, and ready when it matters most.
+          </h5>
         </div>
-        <div class="CenterRightGrid">
-          <div class="centered"><h3>Training for all dogs</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
-          <p>8 weeks and older, regardless of breed or background</p>
-        </div>
-      <div class="BottomLeftGrid">
-        <div class="centered"><h3>Personalized Training Options</h3><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/></div>
-        <p>Private Lessons and Board & Train</p>
+         <div class="section_two_mobile">
+          <img src="/static/baseapp/images/2.svg"/>
+          <img src="/static/baseapp/images/5.svg"/>
+          <img src="/static/baseapp/images/8.svg"/>
+          <div class="packages">
+            <img src="/static/baseapp/images/BasicPack.svg"/>
+            <img src="/static/baseapp/images/StandardPack.svg"/>
+            <img src="/static/baseapp/images/PremiumPack.svg"/>
+          </div>
+        </div>    
+<!-- End Mobile Feild  -->
       </div>
-      <div class="BottomRightGrid">
-        <div class="centered"><img src="/static/baseapp/images/pawicon.svg" class="icon" alt="icon"/><h3>A commitment to excellence</h3></div>
-        <p>In every aspect of dog training and behavior modification</p>
-      </div>
-      <div class="CenterGrid">
-        <img src="static/baseapp/images/happydog.svg" class="center-img"/>
-      </div>
-    </div>
     
-    <div class="infographic-container-mobile">
-
-      <h1>Our training</h1>
-      <h3>Obedience Classes</h3>
-      <p>Beginner, Advanced, Puppy, and Flex-schedule classes </p>
-      <h3>Specialized Training</h3>
-      <p>Scent Work, Service Dog, Therapy Dog, Conformation, and Competition</p>
-      <h3>Personalized Training Options</h3>
-      <p>Private Lessons and Board & Train</p>
-      <img src="static/baseapp/images/happydog.svg" class="center-img"/>
-      <h1>We prioritize</h1>
-        <h3>Small class sizes</h3>
-         <p>Ensuring individualized attention and a supportive learning environment.</p>         
-        <h3>Training for all dogs</h3>
-          <p>8 weeks and older, regardless of breed or background</p>
-        <h3>A commitment to excellence</h3>
-         <p>In every aspect of dog training and behavior modification</p>
-    </div>
-
- 
-    <div class="comp-chart">
-      <img src="static/baseapp/images/CompChart.svg" class="comp-img"/>
-    </div>
-
-    <div class="comp-chart-mobile">
-      <h1>Test 2</h1>
-    </div>
-    
-  {% endblock %}
+    {% endblock %}
 
         <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
         <script src="{% static 'baseapp/js/index.js' %}"></script>   

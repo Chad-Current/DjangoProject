@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'aboutus.apps.AboutusConfig',
     'classes.apps.ClassesConfig',
     'contactus.apps.ContactusConfig',
-    'courses.apps.CoursesConfig',
+    'services.apps.ServicesConfig',
     'enrollment.apps.EnrollmentConfig',
     'faqs.apps.FaqsConfig',
     'django.contrib.admin',

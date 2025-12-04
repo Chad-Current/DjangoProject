@@ -1,0 +1,119 @@
+.service-main{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    padding: 0 20%;
+}
+
+ul {
+    list-style: none;
+}
+li{
+    font-size: var(--font-lg);
+    font-family: var(--main-font);
+    color: var(--ten-percent);
+    margin: 4rem 0;
+    text-align: left;
+}
+
+.carousel-wrapper {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Main carousel box */
+.carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+    border-radius: 8px;
+}
+
+.carousel-track-wrapper {
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 1s ease;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.carousel-slide {
+    min-width: 100%;
+}
+
+.carousel-slide img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Prev/Next buttons */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    border-radius: 999px;
+    font-size: 1.5rem;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-btn.prev {
+    left: 10px;
+}
+
+.carousel-btn.next {
+    right: 10px;
+}
+
+/* Dots OUTSIDE the carousel */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 4rem;
+    /* no absolute positioning now */
+}
+
+.carousel-dot {
+width: 10rem;
+    height: 6rem;
+    background: var(--thirty-percent);
+    border-radius: 20px;
+    box-shadow: 0 0 1px var(--sixty-percent);
+    backdrop-filter: blur(5px);
+    border: none;
+    cursor: pointer;
+    span {
+        font-size: var(--font-md);
+        font-family: var(--font-main);
+        color: var(--sixty-percent);
+    }
+}
+
+.carousel-dot.current-dot {
+    background: var(--ten-percent);
+}
+
+/* Optional: responsive tweak */
+@media (max-width: 600px) {
+    .carousel-btn {
+        font-size: 1.2rem;
+        padding: 0.3rem 0.6rem;
+  }
+}

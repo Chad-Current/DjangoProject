@@ -3,7 +3,10 @@ const navbar = document.getElementById('navbar');
 const media = window.matchMedia("(max-width: 780px)");
 const dropdown = document.querySelector('.dropdown');
 const classes = document.querySelector('.classes');
-
+const margin_left = document.querySelector('.marginLeft');
+const siteTitle = document.getElementById('site-title');
+const sectionTwo = document.querySelector('.section_two');
+const sectionTwoMobile = document.querySelector('.section_two_mobile');
 media.addEventListener('change', (e) => updateNavbar(e));
 
 function updateNavbar(e) {
@@ -11,10 +14,18 @@ function updateNavbar(e) {
   console.log(isMobile);
   if (isMobile) {
     navbar.setAttribute('inert', '');
+    siteTitle.style.display = 'none'; 
+    margin_left.classList.remove('marginLeft');
+    sectionTwo.style.display = 'none';
+    sectionTwoMobile.style.display = 'block';
     hideDropdown();
   } else {
     // desktop device
     navbar.removeAttribute('inert');
+    siteTitle.style.display = 'block'; 
+    margin_left.classList.add('marginLeft');
+    sectionTwo.style.display = 'block';
+    sectionTwoMobile.style.display = 'none';
     showDropdown();
   }
 }

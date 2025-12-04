@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+   <meta name="viewport" content="width=device-width,initial-scale=1">
+   <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+   <link rel="stylesheet" href="{% static 'services/css/stylesheet.css' %}" type="text/css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  </head>
+  <body>    
+    {% include "baseapp/navbar.html" %}
+    <div class="service-main">
+            <ul>
+  <li>Organizing your digital assets protects your family’s peace of mind through secure, user-controlled vaults and strict privacy protocols for a smooth and protected hand-off.</li>
+  <li>Our holistic approach identifies all active accounts, including utilities, medical portals, and less-used social media, creating a complete Master Account Inventory of your digital presence.</li>
+  <li>A secure vault system helps manage login details safely. We guide you through importing passwords, setting a master password, and granting controlled access to trusted individuals without compromising daily security.</li>
+  <li>We help you organize vital files and documents—legal, financial, and sentimental—into a structured Family Legacy folder for easy access when needed.</li>
+  <li>Documenting your wishes is a key part of the process. We provide tools to complete a digital will template, record access details, and prepare instructions in both digital and printed formats.</li>
+  <li>Maintain ongoing security through software updates, two-factor authentication, and secure sign-outs. An Annual Digital Review ensures your legacy plan remains current and protected.</li>
+</ul>
+</div>
+
+
+  <div class="carousel-wrapper">
+    <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Homepage highlights">
+      <button class="carousel-btn prev" aria-label="Previous slide">&#10094;</button>
+
+      <div class="carousel-track-wrapper">
+        <ul class="carousel-track">
+          <li class="carousel-slide current-slide" aria-hidden="false">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 1" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 2" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 3" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 4" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 5" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 6" />
+          </li>
+          <li class="carousel-slide" aria-hidden="true">
+            <img src="/static/baseapp/images/1.svg" alt="Slide 7" />
+          </li>
+        </ul>
+      </div>
+
+      <button class="carousel-btn next" aria-label="Next slide">&#10095;</button>
+    </div>
+
+    <!-- Dots now outside .carousel but still directly below it -->
+    <div class="carousel-dots" role="tablist" aria-label="Select slide">
+      <button class="carousel-dot current-dot" role="tab" aria-selected="true" aria-label="Go to slide 1"><span>Legacy</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 2"><span>Continuity</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 3"><span>Discovery</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 4"><span>Vault</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 5"><span>Organizing</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 6"><span>Digital Will</span></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 7"><span>Security</span></button>
+    </div>
+  </div>
+
+  <script src="{% static 'services/js/index.js' %}"></script>   
+
+
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+        <!-- <script src="{% static 'baseapp/js/index.js' %}"></script>    -->
+        <!-- End body-->
+  </body>
+ 
+  
+  </html>
