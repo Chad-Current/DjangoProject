@@ -31,6 +31,8 @@
     } */
 }
 
+
+
 .section_one {
     background-color: var(--ten-percent);
     margin: 0em 0em 0em;
@@ -46,8 +48,36 @@
     }
 }
 
+.section_two{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    img {
+        margin: 0 0 4em;
+        border-radius: 20px;
+        max-width: 800px;
+        max-height: auto;
+        object-fit: cover;
+    }
+}
+
+/* .section_two {
+    img {
+        border-radius: 20px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        margin: 2em;
+        max-width: 600px;
+        max-height: auto;
+        object-fit: cover;
+    }
+} */
+
 .section_two .packages {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     img {
@@ -55,7 +85,7 @@
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         /* backdrop-filter: blur(3.6px); */
         margin: 10em 5em;
-        max-width: 100%;
+        /* max-width: 400px; */
         max-height: auto;
         object-fit: cover;
     }
@@ -69,6 +99,9 @@
         transition: 300ms ease-in-out;
     }
 }
+
+
+
 
 .section_one_mobile {
     background-color: var(--ten-percent);
@@ -86,24 +119,6 @@
         font-size: var(--font-nm);
     }
 }
-
-
-.section_two{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    img {
-        margin: 10em 0em 0em;
-        border-radius: 20px;
-        max-width: 90%;
-        max-height: auto;
-        object-fit: cover;
-    }
-}
-
 
 .section_two_mobile{
     display: flex;
@@ -161,42 +176,4 @@
 }
 
 
-/* .glass {
-    border-radius: 20px;
-    box-shadow: 0 4px 55px rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(2.4px);
-} */
-/* 
-.pillars {
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-    list-style: none;
-    text-align: center;
-    margin-top: 10rem;
-    img {
-        width: 60px;
-        height: 60px;
-    }
-    li {
-        color: var(--thirty-percent);
-    }
-    li:nth-of-type(odd) {
-        font-size: 4.2rem;
-        font-family: 'Oswald';
-        letter-spacing: 0.4rem;
-        margin-top: 2rem;
-    }
-    li:nth-of-type(even) {
-        font-size: 1.2rem;
-        font-family: 'Oswald';
-        letter-spacing: 0.2rem;
-        margin-bottom: 2rem;
-    }
-}
-.values {
-    font-size: 1rem;
-    font-family: 'Aleo';
-    letter-spacing: 0rem;
-} */
+
