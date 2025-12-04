@@ -1,7 +1,5 @@
-
 .main {
     /* background-color: var(--ten-percent); */
-
     width: 100%;
     /* height: 750px; */
     display: flex;
@@ -9,26 +7,19 @@
     align-items: center;
     justify-content: center;
     margin-top: 0;
-    h1, h5, p {
-        color: var(--sixty-percent);
-        margin: 0 0 3rem;
-    }
     h1 {
         font-family: var(--title-font);
         font-size: var(--font-title-size);
+        color: var(--sixty-percent);
         /* letter-spacing: 0.3rem; */
     }
     h5 {
         font-family: var(--main-font);
         font-weight: 300;
         font-size: var(--font-xl);
+        color: var(--sixty-percent);
         /* letter-spacing: 0.2rem; */
     }
-    /* p {
-        font-family: var(--main-font);
-        font-size: var(--font-lg);
-        letter-spacing: 0rem;
-    } */
 }
 
 
@@ -99,10 +90,6 @@
         transition: 300ms ease-in-out;
     }
 }
-
-
-
-
 .section_one_mobile {
     background-color: var(--ten-percent);
     margin: 0em 0em 0em;
@@ -152,6 +139,59 @@
         object-fit: cover;
     }
 }
+
+
+.container {  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+  gap: 2px 10em;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "SideArea Body1"
+    "SideArea Body2"
+    "SideArea Body3"
+    "SideArea Body4"
+    "SideArea Body5"
+    "SideArea Body6";
+    margin: 10em 0 0;
+    h1 {
+        font-family: var(--main-font);
+        font-size: var(--font-xxl);
+        color: var(--ten-percent);
+        /* letter-spacing: 0.3rem; */
+    }
+    h5 {
+        font-family: var(--main-font);
+        font-weight: 500;
+        font-size: var(--font-xl);
+        color: var(--thirty-percent);
+        /* letter-spacing: 0.2rem; */
+    }
+    p {
+        font-family: var(--main-font);
+        font-size: var(--font-md);
+        letter-spacing: 0rem;
+        color: var(--thirty-percent);
+    }
+}
+
+.Body1 { grid-area: Body1; }
+
+.Body2 { grid-area: Body2;}
+
+.Body3 { grid-area: Body3;}
+
+.Body4 { grid-area: Body4; }
+
+.Body5 { grid-area: Body5; }
+
+.Body6 { grid-area: Body6; }
+
+.SideArea { grid-area: SideArea; }
+
+
 
 /* Mobile Media */
 @media (max-width: 780px) {
