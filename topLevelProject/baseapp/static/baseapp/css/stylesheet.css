@@ -2,7 +2,7 @@ body{
     max-height: 100svh;
     margin: 0 auto;
     padding: 0;
-    background-color: #e5dada;
+    background-color: #f5f5f5;
     scroll-behavior: smooth; /*For bookmark links*/
     /* background-color: red; */
   }
@@ -38,6 +38,7 @@ body::-webkit-scrollbar-thumb{
      --anchor-font: "Caprasimo";
      --accent-font: "Comfortaa";
      --paragraph-font: "Asul";
+     --background-color: #f5f5f5;
      --sixty-percent: #e5dada;
      --thirty-percent: #3c7a89;
      --ten-percent: #16262e;
