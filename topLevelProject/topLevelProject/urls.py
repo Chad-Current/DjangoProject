@@ -10,7 +10,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('baseapp.urls', namespace='home_main')),
-    path('classes/', include('classes.urls', namespace='classes_main')),
+    path('aboutus/', include('aboutus.urls', namespace='aboutus_page')),
     # path('classes/puppy', include('classes.urls', namespace='classes_puppy')),
     path('contactus/', include('contactus.urls', namespace='contactus_main')),
     path('services/', include('services.urls', namespace="service_page")),

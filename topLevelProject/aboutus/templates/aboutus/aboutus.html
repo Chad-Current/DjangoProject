@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+   <meta name="viewport" content="width=device-width,initial-scale=1">
+   <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+   <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
+   <link rel="stylesheet" href="{% static 'aboutus/css/stylesheet.css' %}" type="text/css">
+   <!-- <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css"> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  </head>
+  
+  <body>    
+{% include "baseapp/navbar.html" %}
+<div class="circle-wrapper" id="circle">
+  <div class="image-orbit"><img src="/static/baseapp/images/Archive-Books--Streamline-Ultimate.svg" alt="1"></div>
+  <div class="image-orbit"><img src="/static/baseapp/images/Book-Search--Streamline-Ultimate.svg" alt="2"></div>
+  <div class="image-orbit"><img src="/static/baseapp/images/Shield-Check--Streamline-Ultimate.svg" alt="3"></div>
+  <div class="image-orbit"><img src="/static/baseapp/images/Folder-Share--Streamline-Ultimate.svg" alt="4"></div>
+  <div class="image-orbit"><img src="/static/baseapp/images/Bookmarks-Document--Streamline-Ultimate.svg" alt="5"></div>
+  <div class="image-orbit"><img src="/static/baseapp/images/Lock-Hierarchy--Streamline-Ultimate.svg" alt="6"></div>
+</div>
+
+
+
+
+
+
+
+
+        <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+        <script src="{% static 'aboutus/js/index.js' %}"></script>   
+        <!-- End body-->
+      </body>
+ 
+  
+  </html>

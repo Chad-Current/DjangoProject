@@ -1,0 +1,85 @@
+  body {
+    margin: 0;
+    background: radial-gradient(circle at center, #111, #000);
+    overflow-x: hidden;
+    color: #fff;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #section_one {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  }
+
+  #section_two {
+    background: radial-gradient(circle at center, #1b2735, #090a0f);
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #section_two h5 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+    margin: 10px 0;
+  }
+
+  #section_two.visible h5 {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .circle-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 0;
+    transition: opacity 1s ease, transform 1s ease;
+    pointer-events: none;
+  }
+
+  .circle-wrapper.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+
+  .image-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform-origin: center;
+  }
+
+  .image-orbit img {
+    position: absolute;
+    left: 130px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    padding: 10px;
+    object-fit: contain;
+    background: #ffffff08;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.6));
+    transform: scale(0) rotate(-180deg);
+    transition: transform 1s ease-out, opacity 1s ease-out;
+    opacity: 0;
+  }
+
+  /* active state when section_two is visible */
+  .circle-wrapper.visible .image-orbit img {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
