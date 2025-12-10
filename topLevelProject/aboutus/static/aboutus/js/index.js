@@ -1,25 +1,22 @@
-  const orbits = document.querySelectorAll('.image-orbit');
-  const totalImages = orbits.length;
-  const circle = document.getElementById('circle');
-  const sectionTwo = document.getElementById('section_two');
+document.querySelectorAll('.toggle-img').forEach(img => {
+  const targetId = img.dataset.target;  // e.g. "p1"
+  const targetP = document.getElementById(targetId);
 
-  // Position icons around the circle
-  orbits.forEach((orbit, i) => {
-    const angle = (360 / totalImages) * i;
-    orbit.style.transform = `rotate(${angle}deg)`;
+  if (!targetP) return;
+
+  // Show paragraph on hover enter
+  img.addEventListener('mouseenter', () => {
+    // Hide all paragraphs first
+    document.querySelectorAll('.info').forEach(p => {
+      p.classList.remove('active');
+    });
+    
+    // Show only the targeted one
+    targetP.classList.add('active');
   });
 
-  // Observe section_two visibility
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        circle.classList.add('visible');
-        sectionTwo.classList.add('visible');
-      } else {
-        circle.classList.remove('visible');
-        sectionTwo.classList.remove('visible');
-      }
-    });
-  }, { threshold: 0.4 });
-
-  observer.observe(sectionTwo);
+  // Hide when mouse leaves image
+  img.addEventListener('mouseleave', () => {
+    targetP.classList.remove('active');
+  });
+});

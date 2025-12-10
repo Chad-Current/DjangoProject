@@ -42,6 +42,7 @@ body::-webkit-scrollbar-thumb{
      --sixty-percent: #e5dada;
      --thirty-percent: #3c7a89;
      --ten-percent: #16262e;
+     --accent-color:#f5bf00;
    }
 
 /* Media Queries */
@@ -85,7 +86,7 @@ a {
   }
 }
 
-/* h1 {
+h1 {
   font-family: var(--title-font);
   font-size: var(--font-xxl);
   color: var(--dark-blue);
@@ -102,7 +103,7 @@ h3 {
     font-size: var(--font-md);
     font-weight: 500;
     color: var(--dark-blue);
-  } */
+  }
 
  main {
     margin: 0em 1em;

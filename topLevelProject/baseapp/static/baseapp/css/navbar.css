@@ -9,18 +9,17 @@ background-color: #fff8ee;
     --sixty-percent: #e5dada;
     --thirty-percent: #3c7a89;
     --ten-percent: #003b59;
-}
-main{
-padding: min(1em, 7%);
-}
-main p{
-margin-top: .35em;
-}
-
-h3 {
+  }
+  main{
+  padding: min(1em, 7%);
+     p{
+      margin-top: .35em;
+      }
+    h3 {
   color: var(--sixty-percent);
   /* letter-spacing: 0.5ch; */
-}
+      }
+  }
 
 .logo {
   width: 15em;
@@ -31,20 +30,19 @@ h3 {
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   border-radius: 50%; */
 }
-
 .top-corner {
   margin: -20em 0 0 0;
 }
 
-/* nav{
+nav{
 background-color: var(--sixty-percent);
-} */
+}
 
 nav ul{
 list-style: none;
 display: flex;
 align-items: center;
-margin-top: 0;
+margin: 0;
 justify-content: flex-end;
 }
 

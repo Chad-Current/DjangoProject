@@ -1,22 +1,3 @@
-.service-main{
-    display: flex;
-    align-items: center;
-    justify-items: center;
-    text-align: center;
-    padding: 0 20%;
-}
-
-ul {
-    list-style: none;
-}
-li{
-    font-size: var(--font-lg);
-    font-family: var(--main-font);
-    color: var(--ten-percent);
-    margin: 4rem 0;
-    text-align: left;
-}
-
 .carousel-wrapper {
     width: 80%;
     max-width: 1200px;
