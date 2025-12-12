@@ -92,8 +92,7 @@
     align-items: center;
     justify-content: space-between;
     width:inherit;
-    margin:0;
-    padding: 4em 10em;
+    padding: 0 10em;
     background-color: var(--sixty-percent);
     img {
         border-radius: 20px;
