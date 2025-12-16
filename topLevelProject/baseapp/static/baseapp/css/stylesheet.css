@@ -1,87 +1,84 @@
-body{
-    max-height: 100svh;
-    margin: 0 auto;
-    padding: 0;
-    background-color: #f5f5f5;
-    scroll-behavior: smooth; /*For bookmark links*/
-    /* background-color: red; */
-  }
-  
-body::-webkit-scrollbar{
-    width: 0.5em;
-  }
-body::-webkit-scrollbar-track{
-    background: #050505;
-  }
-body::-webkit-scrollbar-thumb{
-    background: var(--sub-color);
-  }
-  
-*, 
+body {
+  max-height: 100svh;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #f5f5f5;
+  scroll-behavior: smooth; /*For bookmark links*/
+  /* background-color: red; */
+}
+
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+body::-webkit-scrollbar-track {
+  background: #050505;
+}
+body::-webkit-scrollbar-thumb {
+  background: var(--sub-color);
+}
+
+*,
 *::before,
 *::after {
-      box-sizing: border-box;
-    }
-  
-:root{
-     font-size: 16px;
-     --font-xm: 0.5rem;
-     --font-sm: 0.75rem;
-     --font-nm: 1rem;
-     --font-md: 1.25rem;
-     --font-lg: 1.75rem;
-     --font-xl: 2rem;
-     --font-xxl: 2.5rem;
-     --font-title-size: 6rem;
-     --title-font: "Crimson";
-     --main-font: "Nunito";
-     --anchor-font: "Caprasimo";
-     --accent-font: "Comfortaa";
-     --paragraph-font: "Inter";
-     --background-color: #f5f5f5;
-     --sixty-percent: #e5dada;
-     --thirty-percent: #3c7a89;
-     --ten-percent: #16262e;
-     --accent-color:#f5bf00;
-   }
-
-/* Media Queries */
-@media screen and  (width <= 768px){
-  body { 
-    font-size: 8px;
-  }
-}
-/* Small screens and latops */
-@media screen and  (769px <= width <= 1024px){
-  body { 
-    font-size: 10px;
-  }
-}
-/* Desktops and Large Screens */
-@media screen and  (1025px <= width <= 1200px){
-  body { 
-    font-size: 12px;
-  }
-}
-/* Extra large sceens and TV */
-@media screen and  (1201px <= width <= 1500px){
-  body { 
-    font-size: 14px;
-  }
+  box-sizing: border-box;
 }
 
-@media screen and  (width >= 1501px) {
-  body { 
-    font-size: 16px;
-  }
+:root {
+  --font-nm: clamp(
+    0.95rem,
+    0.8rem + 0.3vw,
+    1.05rem
+  ); /* ~15–17px [web:5][web:10] */
+  --font-sm: clamp(
+    0.75rem,
+    0.7rem + 0.2vw,
+    0.875rem
+  ); /* ~12–14px [web:5][web:10] */
+  --font-md: clamp(
+    1.05rem,
+    0.9rem + 0.4vw,
+    1.25rem
+  ); /* ~17–20px [web:5][web:10] */
+  --font-lg: clamp(
+    1.25rem,
+    1.05rem + 0.6vw,
+    1.6rem
+  ); /* ~20–26px [web:5][web:8] */
+  --font-xl: clamp(
+    1.6rem,
+    1.3rem + 0.9vw,
+    2.1rem
+  ); /* ~26–34px [web:5][web:8] */
+  --font-xxl: clamp(
+    2.1rem,
+    1.6rem + 1.3vw,
+    2.8rem
+  ); /* ~34–45px [web:5][web:8] */
+  --font-title-size: clamp(
+    2.8rem,
+    2rem + 2vw,
+    3.75rem
+  ); /* ~45–60px [web:5][web:10] */
+
+  --title-font: "Crimson";
+  --main-font: "Nunito";
+  --anchor-font: "Caprasimo";
+  --accent-font: "Comfortaa";
+  --paragraph-font: "Inter";
+  --background-color: #f5f5f5;
+  --sixty-percent: #e5dada;
+  --thirty-percent: #3c7a89;
+  --ten-percent: #16262e;
+  --accent-color: #f5bf00;
 }
+
 
 a {
   font-size: var(--font-md);
   font-family: var(--main-font);
   text-decoration: none;
   color: var(--dark-blue);
-  &:hover{
+  &:hover {
     color: var(--anchor-hov);
   }
 }
@@ -92,25 +89,24 @@ h1 {
   color: var(--dark-blue);
 }
 h3 {
-    font-family: var(--main-font);
-    font-size: var(--font-lg);
-    font-weight: 300;
-    color: var(--dark-blue);
-  }
+  font-family: var(--main-font);
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--dark-blue);
+}
 
-  p {
-    font-family: var(--paragraph-font);
-    font-size: var(--font-md);
-    font-weight: 500;
-    color: var(--dark-blue);
-  }
+p {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-md);
+  font-weight: 500;
+  color: var(--dark-blue);
+}
 
- main {
-    margin: 0em 1em;
-    padding: 0;
+main {
+  margin: 0em 1em;
+  padding: 0;
 }
 
 .icon {
   width: 5.5em;
 }
-
