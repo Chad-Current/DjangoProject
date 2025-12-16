@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
     <title>Mobile</title>
 </head>
@@ -21,7 +22,8 @@
             <img src="/static/baseapp/images/Close.svg" class="nav-icons"/>
         </button>
         <li class="classes"><img src="/static/baseapp/images/Monogram.png"class="logo" id="site-title"/></li>
-        <li class="classes marginLeft "><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
+        <!-- <li class="classes marginLeft "><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li> -->
+        <li class="classes marginLeft "><a aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
         <li class="classes"><a href="{% url 'service_page:services' %}">Services</a></li>
         <li class="classes"><a href="{% url 'aboutus_page:aboutus' %}">About</a></li>
         <li class="classes"><a href="{% url 'faqs_page:faqs' %}" >FAQs</a></li>
