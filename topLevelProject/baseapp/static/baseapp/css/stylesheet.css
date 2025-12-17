@@ -1,8 +1,8 @@
 body {
   max-height: 100svh;
   margin: 0 auto;
-  padding: 0;
-  background-color: #ede7e3;
+  /* padding: 0; */
+  background-color: #d8d5db14;
   scroll-behavior: smooth; /*For bookmark links*/
   /* background-color: red; */
 }
@@ -32,7 +32,7 @@ body::-webkit-scrollbar-thumb {
   --font-sm: clamp(
     0.75rem,
     0.7rem + 0.2vw,
-    0.875rem
+    1rem
   ); /* ~12–14px [web:5][web:10] */
   --font-md: clamp(
     1.05rem,
@@ -65,7 +65,8 @@ body::-webkit-scrollbar-thumb {
   --anchor-font: "Caprasimo";
   --accent-font: "Comfortaa";
   --paragraph-font: "Inter";
-  --background-color: #F9F6EE;
+  --purewhite-color: #fff;
+  --background-color: #d8d5db14;
   --text-color: #ede7e3;
   --sixty-percent: #82c0cc;
   --thirty-percent: #489fb5;
@@ -88,12 +89,14 @@ h1 {
   font-family: var(--title-font);
   font-size: var(--font-xxl);
   color: var(--thirty-percent);
+  margin:1em 0 0.68em;
 }
 h5 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
   font-weight: 300;
   color: var(--ten-percent);
+  margin:0 0 1em;
 }
 
 p {

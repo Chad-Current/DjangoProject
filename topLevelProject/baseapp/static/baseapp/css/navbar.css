@@ -1,7 +1,7 @@
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background-color: #fff8ee;
+  /* background-color: var(--purewhite-color); */
 }
 
 main {
@@ -31,7 +31,7 @@ main {
 }
 
 nav {
-  background-color: var(--background-color);
+  background-color: var(--purewhite-color);
 }
 
 nav ul {
@@ -174,7 +174,7 @@ margin-right: 1em;
     border-radius: 20px 0px 0px 20px;
     /* bordeR: 1px solid var(--accent-color); */
     backdrop-filter: blur(0px);
-    background-color: var(--background-color);
+    background-color: var(--ten-percent);
     align-items: flex-start;
   }
 
@@ -186,7 +186,7 @@ margin-right: 1em;
   nav a {
     width: 100%;
     padding-left: 2.5em;
-    color: var(--ten-percent);
+    color: var(--purewhite-color);
     font-size: var(--font-lg);
   }
 
