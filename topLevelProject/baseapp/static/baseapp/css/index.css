@@ -254,7 +254,7 @@
 tag {
   display: flex;
   align-items: center;
-  /* background-color: #ffa62b2e; */
+  background-color: #ffa62b2e;
   font-family: var(--main-font);
   font-size: var(--font-nm);
   border: solid 1px var(--ten-percent);
@@ -347,9 +347,9 @@ tag {
 .card-1 {
   grid-area: 2 / 2 / 3 / 3;
   border-radius: 20px;
-  /* box-shadow: -1px 5px 20px 0px #489fb530; */
+  box-shadow: 2px 1px 20px 0px #59e9d045;
   padding: 1em;
-  background: #489fb530;
+  /* background: #59e9d01c; */
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -360,9 +360,9 @@ tag {
 .card-2 {
   grid-area: 2 / 4 / 3 / 5;
   border-radius: 20px;
-  /* box-shadow: -1px 5px 20px 0px #489fb530; */
+  box-shadow: 2px 1px 20px 0px #59e9d045;
   padding: 1em;
-  background: #489fb530;
+  /* background: #59e9d01c; */
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -373,9 +373,9 @@ tag {
 .card-3 {
   grid-area: 4/ 2 / 5 / 3;
   border-radius: 20px;
-  /* box-shadow: -1px 5px 20px 0px #489fb530; */
+  box-shadow: 2px 1px 20px 0px #59e9d045;
   padding: 1em;
-  background: #489fb530;
+  /* background: #59e9d01c; */
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -386,9 +386,9 @@ tag {
 .card-4 {
   grid-area: 4 / 4 / 5 / 5;
   border-radius: 20px;
-  /* box-shadow: -1px 5px 20px 0px #489fb530; */
+  box-shadow: 2px 1px 20px 0px #59e9d045;
   padding: 1em;
-  background: #489fb530;
+  /* background: #59e9d01c; */
   background-size: cover;
   display: flex;
   flex-direction: column;
