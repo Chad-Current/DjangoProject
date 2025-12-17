@@ -18,13 +18,12 @@ main {
 }
 
 .logo {
-  width: 5em;
-  height: auto;
-  position: absolute;
-  /* margin-top: -20px;
+  width: clamp(6rem, 3vw + 0.2rem, 8rem);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10%;
+  /* height: auto;
+  margin-top: -20px;
   filter: drop-shadow(-2px 0px 4px #1a1818); */
-  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 50%; */
 }
 
 .top-corner {

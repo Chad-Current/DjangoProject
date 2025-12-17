@@ -87,20 +87,20 @@ a {
 h1 {
   font-family: var(--title-font);
   font-size: var(--font-xxl);
-  color: var(--dark-blue);
+  color: var(--thirty-percent);
 }
-h3 {
+h5 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
   font-weight: 300;
-  color: var(--dark-blue);
+  color: var(--ten-percent);
 }
 
 p {
   font-family: var(--paragraph-font);
   font-size: var(--font-md);
   font-weight: 500;
-  color: var(--dark-blue);
+  color: var(--ten-percent);
 }
 
 main {
