@@ -26,7 +26,7 @@ body::-webkit-scrollbar-thumb {
 :root {
   --font-nm: clamp(
     0.95rem,
-    0.8rem + 0.3vw,
+    0.8rem + 0.2vw,
     1.05rem
   ); /* ~15–17px [web:5][web:10] */
   --font-sm: clamp(
@@ -36,27 +36,27 @@ body::-webkit-scrollbar-thumb {
   ); /* ~12–14px [web:5][web:10] */
   --font-md: clamp(
     1.05rem,
-    0.9rem + 0.4vw,
+    0.9rem + 0.3vw,
     1.25rem
   ); /* ~17–20px [web:5][web:10] */
   --font-lg: clamp(
     1.25rem,
-    1.05rem + 0.6vw,
+    1.05rem + 0.3vw,
     1.6rem
   ); /* ~20–26px [web:5][web:8] */
   --font-xl: clamp(
-    0.5rem,
-    1rem + 0.9vw,
+    1.6rem,
+    1.6rem + 0.3vw,
     2.5rem
   ); /* ~26–34px [web:5][web:8] */
   --font-xxl: clamp(
-    2.1rem,
-    1.6rem + 1.3vw,
-    2.8rem
+    2.5rem,
+    1.6rem + 0.4vw,
+    3.2rem
   ); /* ~34–45px [web:5][web:8] */
   --font-title-size: clamp(
-    2.8rem,
-    2rem + 2vw,
+    3.2rem,
+    2rem + 0.4vw,
     6.75rem
   ); /* ~45–60px [web:5][web:10] */
 
@@ -88,14 +88,29 @@ a {
 h1 {
   font-family: var(--title-font);
   font-size: var(--font-xxl);
-  color: var(--thirty-percent);
+  color: var(--ten-percent);
   margin:1em 0 0.68em;
 }
+
+h2 {
+  font-family: var(--title-font);
+  font-size: var(--font-xl);
+  color: var(--ten-percent);
+  margin:1em 0 0.68em;
+}
+
+h3 {
+  font-family: var(--main-font);
+  font-size: var(--font-xl);
+  color: var(--ten-percent);
+  margin:1em 0 0.68em;
+}
+
 h5 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
   font-weight: 300;
-  color: var(--ten-percent);
+  color: var(--thirty-percent);
   margin:0 0 1em;
 }
 
@@ -103,7 +118,7 @@ p {
   font-family: var(--paragraph-font);
   font-size: var(--font-md);
   font-weight: 500;
-  color: var(--ten-percent);
+  color: var(--sixty-percent);
 }
 
 main {
