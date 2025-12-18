@@ -347,7 +347,7 @@ tag {
 .card-1 {
   grid-area: 2 / 2 / 3 / 3;
   border-radius: 20px;
-  box-shadow: 2px 1px 20px 0px #59e9d045;
+  box-shadow: 2px 1px 20px 0px #02020212;;
   padding: 1em;
   /* background: #59e9d01c; */
   background-size: cover;
@@ -360,7 +360,7 @@ tag {
 .card-2 {
   grid-area: 2 / 4 / 3 / 5;
   border-radius: 20px;
-  box-shadow: 2px 1px 20px 0px #59e9d045;
+  box-shadow: 2px 1px 20px 0px #02020212;;
   padding: 1em;
   /* background: #59e9d01c; */
   background-size: cover;
@@ -373,7 +373,7 @@ tag {
 .card-3 {
   grid-area: 4/ 2 / 5 / 3;
   border-radius: 20px;
-  box-shadow: 2px 1px 20px 0px #59e9d045;
+  box-shadow: 2px 1px 20px 0px #02020212;;
   padding: 1em;
   /* background: #59e9d01c; */
   background-size: cover;
@@ -386,7 +386,7 @@ tag {
 .card-4 {
   grid-area: 4 / 4 / 5 / 5;
   border-radius: 20px;
-  box-shadow: 2px 1px 20px 0px #59e9d045;
+  box-shadow: 2px 1px 20px 0px #02020212;
   padding: 1em;
   /* background: #59e9d01c; */
   background-size: cover;
@@ -414,7 +414,7 @@ button.button-1 {
   cursor: pointer;
   border: 1px solid #e8e8e8;
   transition: all 0.3s;
-  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  box-shadow: 6px 6px 12px #02020212, -6px -6px 12px #ffffff;
   font-size: var(--font-nm);
   font-family: var(--main-font);
   font-weight: 700;
@@ -442,19 +442,19 @@ button.button-2 {
   cursor: pointer;
   border: 1px solid #e8e8e8;
   transition: all 0.3s;
-  box-shadow: 6px 6px 12px #c5c5c5, 0px -1px 12px #ffffff;
+  box-shadow: 6px 6px 12px #02020212, 0px -1px 12px #ffffff;
   font-size: var(--font-nm);
   font-family: var(--main-font);
-  font-weight: 400;
+  font-weight: 500;
   margin: 0 0 0 4rem;
 }
 
 button.button-1:hover {
-  background-color: #e48501;
+  background-color: #ff9e2b;;
 }
 
 button.button-2:hover {
-  background-color: #489fb55e;
+  background-color: #caf3fd5e;
   /* color: var(--purewhite-color); */
 }
 

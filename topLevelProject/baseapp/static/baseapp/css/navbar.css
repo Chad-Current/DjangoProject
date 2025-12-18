@@ -174,7 +174,7 @@ margin-right: 1em;
     border-radius: 20px 0px 0px 20px;
     /* bordeR: 1px solid var(--accent-color); */
     backdrop-filter: blur(0px);
-    background-color: var(--ten-percent);
+    background-color: var(--thirty-percent);
     align-items: flex-start;
   }
 
