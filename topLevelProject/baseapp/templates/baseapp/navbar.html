@@ -9,7 +9,7 @@
     <title>Mobile</title>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!-- <a href="#main-content" class="skip-link">Skip to main content</a> -->
 
     <button id="open-sidebar-button" onclick="openSidebar()" aria-label="open sidebar" aria-expanded="false" aria-controls="navbar">
         <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons"/>
@@ -24,11 +24,11 @@
         <li class="classes"><img src="/static/baseapp/images/Monogram.png"class="logo" id="site-title"/></li>
         <!-- <li class="classes marginLeft "><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li> -->
         <li class="classes marginLeft "><a aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
-        <li class="classes"><a href="{% url 'service_page:services' %}">Services</a></li>
-        <li class="classes"><a href="{% url 'aboutus_page:aboutus' %}">About</a></li>
         <li class="classes"><a href="{% url 'faqs_page:faqs' %}" >FAQs</a></li>
-        <li class="classes"><a href="#">Contact</a></li>
-        <li class="classes"><a href="#">Login</a></li>
+        <li class="classes"><a href="{% url 'service_page:services' %}">Service Account</a></li>
+        <!-- <li class="classes"><a href="{% url 'aboutus_page:aboutus' %}">About</a></li> -->
+        <!-- <li class="classes"><a href="#">Contact</a></li> -->
+        <li class="classes login-button"><a href="#" class="login-anchor">Login</a></li>
       </ul>
     </nav>
     

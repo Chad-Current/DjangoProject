@@ -1,115 +1,61 @@
 {% load static %}
 <!DOCTYPE html>
 <html="en">
+
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/footer.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <!-- <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/footer.css' %}" type="text/css"> -->
     <link rel="stylesheet" href="{% static 'faqs/css/faqs.css' %}" type="text/css">
 
     <!-- <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css"> -->
- 
-    
-  <title>Test Page</title>
+
+
+    <title>Test Page</title>
   </head>
-  
+
   <body>
-  {% include "baseapp/navbar.html" %}
-    <div class="headline">
-      <div class="headline-tag">
-        <h1>Frequently Asked Questions:</h1>
-        <p>Have questions about our programs?</p>
-        <p>We’ve compiled answers to help you make informed decisions.</p>
-      </div>
-      <div class="img-container">
-        <img src="/static/faqs/images/DogQuestions.svg" />
-      </div>
-
-    </div>
-    
-<div class="board">
-  <div class="faq-container">
-    <div class="block">
-    <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What training methods do you use?</h3></button>
-    <div class="panel">
-      <p>We believe in the balanced dog training. This is combination of reward-based techniques with fair corrections to teach desired behaviors.</p>
-    </div>  
-    </div>
-    <div class="block">
-      <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>Can I observe a class before enrolling?</h3></button>
-      <div class="panel">
-        <p>There is a small fee to observe a class.  We encourage everyone to sign up for our one time trial.</p>
-      </div>  
-      </div>
-      <div class="block">
-        <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What is your policy on missed classes or rescheduling?</h3></button>
-        <div class="panel">
-          <p>A missed class does not count against your credit, however our 6 week obedience classes have a set time frame and are not transferable.</p>
-        </div>  
-        </div>
-        <div class="block">
-          <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What equipment do you use during training?</h3></button>
-          <div class="panel">
-            <p>A non flexible leash of 6' with a smooth chain and/or pinch collar</p>
-          </div>  
+    {% include "baseapp/navbar.html" %}
+    <div class="main">
+      <div class="parent-col">
+        <h1>Your Questions, Answered</h1>
+        <h5>Everything you need to know about protecting your digital legacy</h5>
+        <div class="faqs">
+          <div class="header">
+            <img src="/static/baseapp/images/Padlock-Key--Streamline-Plump.svg">
+            <h3>Security & Privacy</h3>
           </div>
-          <div class="block">
-            <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>How do you handle behavioral issues?</h3></button>
-            <div class="panel">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </div>  
-            </div>
-            <div class="block">
-              <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>Do you offer group classes or private sessions?</h3></button>
-              <div class="panel">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </div>  
-              </div>
-              <div class="block">
-                <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What should I expect during training sessions?</h3></button>
-                <div class="panel">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>  
-                </div>
-                <div class="block">
-                  <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>How can I reinforce training at home?</h3></button>
-                  <div class="panel">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                  </div>  
-                  </div>
-                  <div class="block">
-                    <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>Do you have a payment plan for your classes?</h3></button>
-                    <div class="panel">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    </div>  
-                    </div>
-                    <div class="block">
-                      <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>Do you provide follow-up support after classes end?</h3></button>
-                      <div class="panel">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                      </div>  
-                      </div>
-                      <div class="block">
-                        <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>What should I bring to class?</h3></button>
-                        <div class="panel">
-                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        </div>  
-                        </div>
-                        <div class="block">
-                          <button class="accordion"><img src="/static/baseapp/images/dot.svg" class="icon-img"/><h3>How do you handle aggressive or fearful dogs?</h3></button>
-                          <div class="panel">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                          </div>  
-                          </div>
-   </div>
-  </div>
+          <div class="questions">
+            <h5>How do I know my information is safe with your service?</h5>
+          </div>
+          <div class="answer">
+            <ul>
+              <li><h5>Your privacy and security are taken seriously at every step.</h5></li>
+              <li><h5>Mail-only intake:</h5></li>
+              <li><p>All documents are sent using a prepaid USPS Priority Mail envelope with tracking. No email. No
+                uploads. No online portals.</p></li>
+              <li><h5>Single-handler process:</h5></li>
+              <li><p>Your documents are handled by one person only — me. There are no assistants, contractors, or
+                third-party scanning services involved.</p></li>
+              <li><h5>Private handling:</h5></li>
+              <li><p>Documents are opened and processed in a private, controlled workspace. Nothing is handled in public or
+                shared environments.</p></li>
+              <li><h5>No originals kept:</h5></li>
+              <li><p>Clients are instructed to send copies only. If an original is accidentally included, it is not scanned
+                and is returned immediately.</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  {% include "baseapp/footer.html" %}
-</body>
+    {% include "baseapp/footer.html" %}
+  </body>
 
-<script src="{% static 'faqs/js/faqs.js' %}"></script>
+  <script src="{% static 'faqs/js/faqs.js' %}"></script>
 
-</html>
+  </html>

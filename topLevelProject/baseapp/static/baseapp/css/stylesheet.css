@@ -1,20 +1,17 @@
 body {
   max-height: 100svh;
   margin: 0 auto;
-  /* padding: 0; */
-  background-color: #d8d5db14;
-  scroll-behavior: smooth; /*For bookmark links*/
-  /* background-color: red; */
+  scroll-behavior: smooth;
 }
 
 body::-webkit-scrollbar {
   width: 0.5em;
 }
 body::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--purewhite-color);
 }
 body::-webkit-scrollbar-thumb {
-  background: var(--sub-color);
+  background: var(--text-color-dark);
 }
 
 *,
@@ -25,7 +22,7 @@ body::-webkit-scrollbar-thumb {
 
 :root {
   --font-nm: clamp(
-    0.95rem,
+    0.75rem,
     0.8rem + 0.2vw,
     1.05rem
   ); /* ~15–17px [web:5][web:10] */
@@ -50,14 +47,14 @@ body::-webkit-scrollbar-thumb {
     2.5rem
   ); /* ~26–34px [web:5][web:8] */
   --font-xxl: clamp(
-    2.5rem,
-    1.6rem + 0.4vw,
+    2rem,
+    1.6rem + 0.3vw,
     3.2rem
   ); /* ~34–45px [web:5][web:8] */
   --font-title-size: clamp(
-    5rem,
+    3rem,
     1rem + 0.4vw,
-    8.75rem
+    5.75rem
   ); /* ~45–60px [web:5][web:10] */
 
   --title-font: "Crimson";
@@ -65,15 +62,15 @@ body::-webkit-scrollbar-thumb {
   --anchor-font: "Caprasimo";
   --accent-font: "Comfortaa";
   --paragraph-font: "Inter";
-  --purewhite-color: #fff;
-  --background-color: #d8d5db14;
+  --purewhite-color: #e7eff7;
+  --background-color: #f3f7fc;
   --text-color: #ede7e3;
-  --sixty-percent: #82c0cc;
-  --thirty-percent: #489fb5;
-  --ten-percent: #16697a;
+  --text-color-dark: #16283b;
+  --sixty-percent: #62a2ce; /* Thirty + Sixty for Icon colors */
+  --thirty-percent: #2d6a9c;
+  --ten-percent: #254e70;
   --accent-color: #ffa62b;
 }
-
 
 a {
   font-size: var(--font-md);
@@ -87,53 +84,83 @@ a {
 
 h1 {
   font-family: var(--title-font);
-  font-size: var(--font-xxl);
+  font-size: var(--font-title-size);
+  font-weight: 900;
   color: var(--ten-percent);
-  margin:1em 0 0.68em;
+  margin: 1em 0 0.68em;
 }
 
 h2 {
   font-family: var(--title-font);
-  font-size: var(--font-xl);
+  font-size: var(--font-xxl);
   color: var(--ten-percent);
-  margin:1em 0 0.68em;
+  margin: 1em 0 0.68em;
 }
 
 h3 {
   font-family: var(--main-font);
   font-size: var(--font-xl);
   color: var(--ten-percent);
-  margin:1em 0 0.68em;
+  margin: 1em 0 0.68em;
 }
 
 h4 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
   color: var(--ten-percent);
-  margin:1em 0 0.68em;
+  margin: 1em 0 0.68em;
 }
-
 
 h5 {
   font-family: var(--main-font);
   font-size: var(--font-lg);
   font-weight: 300;
   color: var(--thirty-percent);
-  margin:0 0 1em;
+  margin: 0 0 1em;
 }
 
 p {
   font-family: var(--paragraph-font);
   font-size: var(--font-md);
-  font-weight: 500;
-  color: var(--sixty-percent);
+  font-weight: 300;
+  color: var(--text-color-dark);
 }
 
-main {
-  margin: 0em 1em;
-  padding: 0;
+ul {
+  list-style-type: none;
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  /* padding: 0.6rem; */
+  color: var(--thirty-percent);
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0.5rem;
+}
+
+strong {
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--ten-percent);
+}
+
+.main {
+  background-color: var(--background-color);
+  /* width: 80%; */
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon {
   width: 5.5em;
 }
+

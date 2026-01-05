@@ -1,137 +1,69 @@
-/*  Copyright Notice
-    ~Privacy Policy Link
-    ~Sitemap
-    Logo
-    Contact Information
-    Social Media Icons
-    Email Sign-up Form
-    Footer Links
-    ~Terms of use
-    ~About Us
-    ~Location
-    ~Customer reviews
-     
-*/
-
-body {
-    background-color: #fff8ee;
+.footer-grid {
+  display: grid;
+  gap: 0px 0px;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  margin: clamp(2em, 8em, 10em);
 }
 
-.logo-footer {
-    width: 5em;
-    height:5em;
-    margin: 1em 1em 0em;
-}
-.icon-footer{
-    width: 3em;
-    height: 3em;
+.grid-ft-1 { grid-area: 1 / 1 / 6 / 2; }
+.grid-ft-2 { grid-area: 1 / 2 / 6 / 3; }
+.grid-ft-3 { grid-area: 1 / 3 / 3 / 4; }
+.grid-ft-4 { grid-area: 1 / 4 / 3 / 5; }
+.grid-ft-5 { grid-area: 1 / 5 / 3 / 6; }
+.grid-ft-6 { grid-area: 3 / 3 / 6 / 6; }
+
+.grid-ft-1,
+.grid-ft-2,
+.grid-ft-3,
+.grid-ft-4,
+.grid-ft-5 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0em;
+  h1,
+  h3,
+  p {
+    padding: 0.4rem 0rem;
+    margin: 0;
+  }
 }
 
-.social-icon {
-    padding: 0em 0.25em;
-    width: 50px;
-    height: 50px;
+.grid-ft-6 {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  img {
+    width: 40px;
+    height: auto;
+    padding: 0;
+  }
 }
 
-.social {
-    font-size: var(--font-nm);
-    font-family: var(--sub-font);
-    font-weight: 600;
-    letter-spacing: 0.1rem;
-    /* text-align: center; */
-    /* padding-left: 2.5em; */
-}
-
-hr {
-    border: solid 2px #081b31;
-    height:1px;
-    width:100px;
-    display: inline-block;
-}
-
-text {
-    padding-left: 1em;
-}
-
-.footer-area{
-    display: grid;
-    grid-template-columns: .5fr 2fr repeat(3, 0.75fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    padding-top: 3em;
-    font-size: var(--font-nm);
-    font-family: var(--sub-font);
-    background-color: #fff8ee;
-}
-
-/* .footer-area > div {
+@media (max-width: 780px) {
+  .footer-grid {
     display: flex;
-} */
-
-.footer-div1 { grid-area: 1 / 1 / 2 / 2; }
-.footer-div2 { grid-area: 2 / 1 / 3 / 2; }
-.footer-div3 { grid-area: 3 / 1 / 4 / 2; }
-.footer-div4 { grid-area: 4 / 1 / 5 / 2; }
-.footer-div5 { grid-area: 5 / 1 / 6 / 2; }
-.footer-div6 { grid-area: 1 / 2 / 2 / 3; display: inline-flex; align-items: center;}
-.footer-div7 { grid-area: 2 / 2 / 3 / 3; display: inline-flex; align-items: center;}
-.footer-div8 { grid-area: 3 / 2 / 4 / 3; display: inline-flex; align-items: center;}
-.footer-div9 { grid-area: 4 / 2 / 5 / 3; }
-.footer-div10 { grid-area: 1 / 3 / 5 / 4; display: inline-flex; flex-direction: column;}
-.footer-div11 { grid-area: 1 / 4 / 5 / 5; display: inline-flex; flex-direction: column;}
-.footer-div12 { grid-area: 1 / 5 / 3 / 6; display: flex; flex-direction: column; align-items: center;}
-.footer-div13 { grid-area: 3 / 5 / 5 / 6; }
-.footer-div14 { grid-area: 5 / 2 / 6 / 4; }
-.footer-div15 { grid-area: 5 / 4 / 6 / 6; }
-
-.footer-div7 a, .footer-div10 a, .footer-div11 a {
-    font-size: var(--font-nm);
-    font-family: var(--sub-font);
-    margin: 0.25em 0em;
-    letter-spacing: 0.05rem;
+    flex-flow: column wrap;
+    margin: 1em;
 }
-
-.emp {
-    font-weight: 700;
-    margin: 1em 0em 0.5em 0em;
-    letter-spacing: 0.1rem;
-}
-
-.info {
-    font-size: var(--font-nm);
-    font-family: var(--sub-font);
-    margin: 0em 1em;
-}
-
-.social-bar {
+.grid-ft-1,
+.grid-ft-2,
+.grid-ft-3,
+.grid-ft-4,
+.grid-ft-5,
+.grid-ft-6 {
     display: flex;
-}
-
-@media screen and (max-width: 780px) {
-    .footer-area{
-        display: flex;
-        flex-flow: column wrap;
-        font-size: var(--font-nm);
-        font-family: var(--sub-font);
-        background-color: #fff8ee;
-        align-content: center;
-        /* margin:0em 3em; */
-        .footer-div1, .footer-div10, .footer-div11 {
-            display: none;
-        }
-        .footer-div14 {
-            display: flex;
-            flex-flow: column wrap;
-            align-items: center;
-        }
-        .logo-footer {
-            width: 2em;
-            height:2em;
-            margin: .25em 0em;
-        }
-        * {
-            margin-top: 1em;
-        }
-    }
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0em;
+    text-align: center;
+  }
+  h3, p {
+    padding: 0.4rem 0rem;
+    margin: 0;
+  }
 }

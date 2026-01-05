@@ -1,82 +1,198 @@
 {% load static %}
 <!DOCTYPE html>
 <html="en">
- <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-   <meta name="viewport" content="width=device-width,initial-scale=1">
-   <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-   <link rel="stylesheet" href="{% static 'services/css/stylesheet.css' %}" type="text/css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'services/css/stylesheet.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
-  <body>    
+
+  <body>
     {% include "baseapp/navbar.html" %}
-    <div class="main">
-            <ul>
-  <li>Organizing your digital assets protects your family’s peace of mind through secure, user-controlled vaults and strict privacy protocols for a smooth and protected hand-off.</li>
-  <li>Our holistic approach identifies all active accounts, including utilities, medical portals, and less-used social media, creating a complete Master Account Inventory of your digital presence.</li>
-  <li>A secure vault system helps manage login details safely. We guide you through importing passwords, setting a master password, and granting controlled access to trusted individuals without compromising daily security.</li>
-  <li>We help you organize vital files and documents—legal, financial, and sentimental—into a structured Family Legacy folder for easy access when needed.</li>
-  <li>Documenting your wishes is a key part of the process. We provide tools to complete a digital will template, record access details, and prepare instructions in both digital and printed formats.</li>
-  <li>Maintain ongoing security through software updates, two-factor authentication, and secure sign-outs. An Annual Digital Review ensures your legacy plan remains current and protected.</li>
-</ul>
-</div>
-
-
-  <div class="carousel-wrapper">
-    <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Homepage highlights">
-      <button class="carousel-btn prev" aria-label="Previous slide">&#10094;</button>
-
-      <div class="carousel-track-wrapper">
-        <ul class="carousel-track">
-          <li class="carousel-slide current-slide" aria-hidden="false">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 1" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 2" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 3" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 4" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 5" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 6" />
-          </li>
-          <li class="carousel-slide" aria-hidden="true">
-            <img src="/static/baseapp/images/1.svg" alt="Slide 7" />
-          </li>
-        </ul>
+    <div class="parent-row-x">
+      <div class="section-header">
+        <h1>Welcome back, John</h1>
+        <h3>Your digital estate is 85% complete. Let's finish up!</h3>
       </div>
-
-      <button class="carousel-btn next" aria-label="Next slide">&#10095;</button>
+      <div class="card-grid">
+        <div class="card-1">
+          <div class="row">
+              <img src="/static/services/images/Progress--Streamline-Plump.svg" />
+              <h5>85%</h5>
+          </div>
+          <h5>Overall Progress</h5>
+          <p> [|||||||||||||||||\\\\\\\\\\\\\\]</p>
+        </div>
+        <div class="card-2"><img src="/static/services/images/Task-List-Edit--Streamline-Plump.svg" />
+          <h5>Task Completed</h5>
+          <p>Two Task Remaining</p>
+        </div>
+        <div class="card-3">
+          <img src="/static/services/images/Reset-Clock--Streamline-Plump.svg" />
+          <h5>Days Until Review</h5>
+          <p>53</p>
+        </div>
+        <div class="card-4"><img src="/static/services/images/User-Protection-Check--Streamline-Plump.svg" />
+          <h5>Accounts Secured</h5>
+          <p>All Organized</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Dots now outside .carousel but still directly below it -->
-    <div class="carousel-dots" role="tablist" aria-label="Select slide">
-      <button class="carousel-dot current-dot" role="tab" aria-selected="true" aria-label="Go to slide 1"><span>Legacy</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 2"><span>Continuity</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 3"><span>Discovery</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 4"><span>Vault</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 5"><span>Organizing</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 6"><span>Digital Will</span></button>
-      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Go to slide 7"><span>Security</span></button>
+    <div class="section-header">
+      <h1>Key Items</h1>
     </div>
-  </div>
+    <div class="section-mt-5">
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/baseapp/images/Multiple-File-1--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Digital Estate Document</h5>
+          <p>Your comprehensive digital will and estate plan</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Nov 15, 2024</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View - -></p>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/File-Check--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Needs Review</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Master list of all 127 accounts with access details</h5>
+          <p>127 accounts tracked</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Jan 31, 2025</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View - -> </p>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Family--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>What My Family Needs to Know</h5>
+          <p>Personal instructions and wishes for your loved ones</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: June 6, 2024</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View -> </p>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Phone--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Emergency Contact + Delegation</h5>
+          <p>Designate who can access your estate in emergencies</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Feb 21, 2025</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View -> </p>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Computer--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Device Access Review</h5>
+          <p>Document all devices and their access credentials</p>
+        </div>
+        <div class="cl-card-4">
+          <p>5 devices documented</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View -> </p>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Insert-Side--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Needs Review</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>What Matters vs What to Ignore</h5>
+          <p>Priority matrix for critical vs non-essential accounts</p>
+        </div>
+        <div class="cl-card-4">
+          <p>45 critical accounts</p>
+        </div>
+        <div class="cl-card-5">
+          <p>View -> </p>
+        </div>
+      </div>
+    </div>
 
-  <script src="{% static 'services/js/index.js' %}"></script>   
+    <div class="section-header">
+      <h1>Scheduled Reviews & Checkups</h1>
+    </div>
+    <div class="section-mt-6">
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Task-List-Edit--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Quarterly Digital Checkup</h5>
+          <p>Quick review of recent account changes and updates</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Data | Time Place Holder</p>
+        </div>
+        <div class="cl-card-5">
+          <button class="button">Update Now</button>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/services/images/Calendar-Check--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Upcoming</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Annual Update + Re-certification</h5>
+          <p>Comprehensive review and re-certify your digital estate</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Nov 15, 2024</p>
+        </div>
+        <div class="cl-card-5">
+          <button class="button">Update Now</button>
+        </div>
+      </div>
+    </div>
+
+    {% include "baseapp/footer.html" %}
 
 
+    <!-- <script src="{% static 'services/js/index.js' %}"></script> -->
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-        <!-- <script src="{% static 'baseapp/js/index.js' %}"></script>    -->
-        <!-- End body-->
+    <!-- <script src="{% static 'baseapp/services/index.js' %}"></script>    -->
+    <!-- End body-->
   </body>
- 
-  
+
+
   </html>
