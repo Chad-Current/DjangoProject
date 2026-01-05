@@ -2,7 +2,7 @@ const elements = {
     infograph: document.querySelector('.infographic-container'),
     infograph_mobile: document.querySelector('.infographic-container-mobile'),
     compchart: document.querySelector('.comp-chart'),
-    compchart_mobile: document.querySelector('.comp-chart-mobile')
+    compchart_mobile: document.querySelector('.comp-chart-mobile'),
   };
   
   const MOBILE_BREAKPOINT = 768;

@@ -1,41 +1,47 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
-    <title>Mobile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
+  <title>Mobile</title>
 </head>
+
 <body>
-    <!-- <a href="#main-content" class="skip-link">Skip to main content</a> -->
+  <!-- <a href="#main-content" class="skip-link">Skip to main content</a> -->
 
-    <button id="open-sidebar-button" onclick="openSidebar()" aria-label="open sidebar" aria-expanded="false" aria-controls="navbar">
-        <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons"/>
- 
-    </button>
-  
-    <nav id="navbar">
-      <ul>
-          <button id="close-sidebar-button" onclick="closeSidebar()" aria-label="close sidebar">
-            <img src="/static/baseapp/images/Close.svg" class="nav-icons"/>
-        </button>
-        <li class="classes"><img src="/static/baseapp/images/Monogram.png"class="logo" id="site-title"/></li>
-        <!-- <li class="classes marginLeft "><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li> -->
-        <li class="classes marginLeft "><a aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
-        <li class="classes"><a href="{% url 'faqs_page:faqs' %}" >FAQs</a></li>
-        <li class="classes"><a href="{% url 'service_page:services' %}">Service Account</a></li>
-        <!-- <li class="classes"><a href="{% url 'aboutus_page:aboutus' %}">About</a></li> -->
-        <!-- <li class="classes"><a href="#">Contact</a></li> -->
-        <li class="classes login-button"><a href="#" class="login-anchor">Login</a></li>
-      </ul>
-    </nav>
-    
-    <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>    
+  <button id="open-sidebar-button" onclick="openSidebar()" aria-label="open sidebar" aria-expanded="false"
+    aria-controls="navbar">
+    <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons" />
 
-    <script src="{% static 'baseapp/js/mobile.js' %}"></script>   
-    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+  </button>
+
+  <nav id="navbar">
+    <ul>
+      <button id="close-sidebar-button" onclick="closeSidebar()" aria-label="close sidebar">
+        <img src="/static/baseapp/images/Close.svg" class="nav-icons" />
+      </button>
+      <li class="classes"><img src="/static/baseapp/images/Monogram.png" class="logo" id="site-title" /></li>
+      <!-- <li class="classes marginLeft "><a class="active-link" aria-current="page" href="{% url 'home_main:home' %}">Home</a></li> -->
+      <li class="classes marginLeft "><a aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
+      <li class="classes"><a href="{% url 'faqs_page:faqs' %}">FAQs</a></li>
+      <li class="classes"><a href="{% url 'service_page:services' %}">Service Account</a></li>
+      <!-- <li class="classes"><a href="{% url 'aboutus_page:aboutus' %}">About</a></li> -->
+      <!-- <li class="classes"><a href="#">Contact</a></li> -->
+      <li class="classes login-button"><a>Login</a></li>
+    </ul>
+  </nav>
+
+
+  <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
+  <script src="{% static 'baseapp/js/mobile.js' %}"></script>
+  <script src="{% static 'baseapp/js/login.js' %}"></script>
+  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 
 </body>
+
 </html>

@@ -218,6 +218,7 @@ nav li:last-child {
   }
 }
 
+
 @media (769px <=width <=1024px) {
   nav a {
     display: flex;
