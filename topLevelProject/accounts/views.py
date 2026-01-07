@@ -30,7 +30,7 @@ class RegisterView(View):
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('dashboard')
+            return redirect('accounts:dashboard')
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):
@@ -46,7 +46,7 @@ class RegisterView(View):
             
             logger.info(f'New user registered: {user.email}')
             messages.success(request, 'Registration successful! Please log in.')
-            return redirect('login')
+            return redirect('accounts:login')
         
         return render(request, self.template_name, {'form': form})
 
@@ -57,7 +57,7 @@ class LoginView(View):
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('dashboard')
+            return redirect('accounts:dashboard')
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):
@@ -74,9 +74,9 @@ class LoginView(View):
                 user = User.objects.get(email=email)
                 
                 # Check if account is locked
-                if user.is_account_locked():
-                    messages.error(request, 'Account is temporarily locked due to multiple failed login attempts.')
-                    return render(request, self.template_name, {'form': form})
+                # if user.is_account_locked():
+                #     messages.error(request, 'Account is temporarily locked due to multiple failed login attempts.')
+                #     return render(request, self.template_name, {'form': form})
                 
                 # Authenticate user
                 auth_user = authenticate(request, username=user.username, password=password)
@@ -94,7 +94,7 @@ class LoginView(View):
                     # Set session expiry
                     request.session.set_expiry(3600)  # 1 hour
                     
-                    return redirect('dashboard')
+                    return redirect('accounts:dashboard')
                 else:
                     # Increment failed attempts
                     user.failed_login_attempts += 1
@@ -123,7 +123,7 @@ class LogoutView(LoginRequiredMixin, View):
         logout(request)
         logger.info(f'User logged out: {user_email}')
         messages.success(request, 'You have been logged out.')
-        return redirect('login')
+        return redirect('accounts:login')
     
     def post(self, request):
         return self.get(request)
@@ -142,7 +142,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if not self.request.session.get_expiry_age():
             logout(self.request)
             messages.warning(self.request, 'Your session has expired. Please log in again.')
-            return redirect('login')
+            return redirect('accounts:login')
         
         context['user'] = self.request.user
         context['session_expires'] = self.request.session.get_expiry_date()

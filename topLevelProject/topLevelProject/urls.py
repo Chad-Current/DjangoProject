@@ -5,14 +5,14 @@ from baseapp import views as base
 from django.conf import settings
 from django.conf.urls import handler404, handler500
 from django.conf.urls.static import static
-
+from accounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('baseapp.urls', namespace='home_main')),
     path('accounts/', include('accounts.urls')),
+    path('', include('accounts.urls', namespace='dashboard_page')),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('dashboard/', include('dashboard.urls', namespace='dashboard_page')),
     path('faqs/', include('faqs.urls', namespace='faqs_page')),
 ]
 
