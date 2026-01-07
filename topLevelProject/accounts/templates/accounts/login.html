@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
         <!-- <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css"> -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,48 +18,51 @@
     </head>
 
     <body>
-    {% include "baseapp/navbar.html" %}
+        {% include "baseapp/navbar.html" %}
         <div class="main">
-        <h2>Login</h2>
-        {% if messages %}
-        {% for message in messages %}
-        <div class="messages {% if message.tags == 'error' %}error-msg{% else %}success{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
+            <div class="parent">
+                <div class="login-form">
+                    <h1>Login</h1>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="messages {% if message.tags == 'error' %}error-msg{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
 
-        <form method="post">
-            {% csrf_token %}
+                    <form method="post">
+                        {% csrf_token %}
 
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email:</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                <div class="error">{{ form.email.errors }}</div>
-                {% endif %}
+                            <label for="{{ form.username_or_email.id_for_label }}">Username:</label>
+                            {{ form.username_or_email }}
+                            {% if form.form.username_or_email.errors %}
+                            <div class="error">{{ form.form.username_or_email.errors }}</div>
+                            {% endif %}
+
+                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                            <div class="error">{{ form.password.errors }}</div>
+                            {% endif %}
+
+                        <button class="login-btn" type="submit">Sign in</button>
+                    </form>
+
+                    <div class="text-center">
+                        <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">Password:</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                <div class="error">{{ form.password.errors }}</div>
-                {% endif %}
-            </div>
 
-            <button type="submit">Login</button>
-        </form>
+        </div> <!-- END MAIN -->
+        {% include "baseapp/footer.html" %}
 
-        <div class="text-center">
-            <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
-        </div>
-    
-    </div> <!-- END MAIN -->
-    {% include "baseapp/footer.html" %}
-    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-    <script src="{% static 'baseapp/js/index.js' %}"></script>
-    <!-- End body-->
+
+        <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+        <script src="{% static 'baseapp/js/index.js' %}"></script>
+        <!-- End body-->
     </body>
 
 

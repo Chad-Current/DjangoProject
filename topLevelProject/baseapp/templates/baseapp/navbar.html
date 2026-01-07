@@ -34,7 +34,7 @@
         {% if user.is_authenticated %}
       <a href="{% url 'accounts:dashboard' %}">My Dashboard</a>
       {% endif %}
-      <li class="classes login-button">
+      <li class="classes">
         {% if user.is_authenticated %}
         <a href="{% url 'accounts:logout' %}">Logout</a>
         {% else %}

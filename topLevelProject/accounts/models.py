@@ -27,8 +27,8 @@ class CustomUser(AbstractUser):
         related_query_name='customuser',
     )
     
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
     
     def is_account_locked(self):
         if self.account_locked_until:

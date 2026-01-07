@@ -71,10 +71,6 @@ nav a.accent-link {
   right: 0;
 }
 
-nav li:last-child {
-  margin: 0 2em;
-}
-
 .nav-icons {
   width: 2em;
   height: auto;
@@ -82,27 +78,6 @@ nav li:last-child {
   p {
     margin-left: 1em;
   }
-}
-
-.login-button {
-  color: var(--thirty-percent);
-  background: var(--background-color);
-  cursor: pointer;
-  border: 1px solid var(--background-color);
-  border-radius: 20px;
-  transition: all 0.3s;
-  box-shadow: 6px 6px 12px #02020214, 0px -1px 12px var(--purewhite-color);
-}
-
-.login-button:hover {
-  /* background-color: #82c0cc57; */
-  font-weight: 700;
-  /* color: var(--text-color-dark); */
-  box-shadow: 6px 6px 12px var(--purewhite-color), 0px -1px 12px #0202024d;
-}
-
-.login-button:hover {
-  border: 1px solid var(--purewhite-color);
 }
 
 .marginLeft {
