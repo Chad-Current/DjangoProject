@@ -19,7 +19,7 @@
     <div class="parent-row-x">
       <div class="section-header">
         <h1>Welcome back, {{user.username}}</h1>
-        <h3>Your digital estate is 85% complete. Let's finish up!</h3>
+        <h3>Your prepardness level is 85% complete. Let's finish up!</h3>
       </div>
       <div class="card-grid">
         <div class="card-1">
@@ -30,7 +30,7 @@
           <h5>Overall Progress</h5>
           <p> [|||||||||||||||||\\\\\\\\\\\\\\]</p>
         </div>
-        <div class="card-2"><img src="/static/accounts/images/Task-List-Edit--Streamline-Plump.svg" />
+        <div class="card-2"><img src="/static/accounts/images/Task--Streamline-Plump.svg" />
           <h5>Task Completed</h5>
           <p>Two Task Remaining</p>
         </div>
@@ -47,59 +47,43 @@
     </div>
 
     <div class="section-header">
-      <h1>Key Items</h1>
+      <h1>Digital Estate</h1>
     </div>
     <div class="section-mt-5">
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          <tag class="needs-attention">Needs Review</tag>
         </div>
         <div class="cl-card-3">
-          <h5>Digital Estate Document</h5>
-          <p>Your comprehensive digital will and estate plan</p>
-        </div>
-        <div class="cl-card-4">
-          <p>Last updated: Nov 15, 2024</p>
-        </div>
-        <div class="cl-card-5">
-          <p>View - -></p>
-        </div>
-      </div>
-      <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
-        <div class="cl-card-2">
-          <tag>Needs Review</tag>
-        </div>
-        <div class="cl-card-3">
-          <h5>Master list of all 127 accounts with access details</h5>
+          <h5>Accounts with access details</h5>
           <p>127 accounts tracked</p>
         </div>
         <div class="cl-card-4">
           <p>Last updated: Jan 31, 2025</p>
         </div>
         <div class="cl-card-5">
-          <p>View - -> </p>
+          <button class="button"><a href="{% url 'account_directory:accountdirectory' %}">View</a></button>
         </div>
       </div>
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Computer--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          <tag class="completed">Complete</tag>
         </div>
         <div class="cl-card-3">
-          <h5>What My Family Needs to Know</h5>
-          <p>Personal instructions and wishes for your loved ones</p>
+          <h5>Device Access Review</h5>
+          <p>Document all devices and their access credentials</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: June 6, 2024</p>
+          <p>5 devices documented</p>
         </div>
         <div class="cl-card-5">
-          <p>View -> </p>
+          <button class="button"><a href="{% url 'device_page:devices' %}">View</a></button>
         </div>
       </div>
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           <tag>Complete</tag>
         </div>
@@ -111,27 +95,43 @@
           <p>Last updated: Feb 21, 2025</p>
         </div>
         <div class="cl-card-5">
-          <p>View -> </p>
+          <button class="button"><a href="{% url 'contact_delegation:contactdelegation' %}">View</a></button>
         </div>
       </div>
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           <tag>Complete</tag>
         </div>
         <div class="cl-card-3">
-          <h5>Device Access Review</h5>
-          <p>Document all devices and their access credentials</p>
+          <h5>Digital Estate Document</h5>
+          <p>Your comprehensive digital will and estate plan</p>
         </div>
         <div class="cl-card-4">
-          <p>5 devices documented</p>
+          <p>Last updated: Nov 15, 2024</p>
         </div>
         <div class="cl-card-5">
-          <p>View -> </p>
+         <button class="button"><a href="{% url 'digital_estate:digitalestate' %}">View</a></button>
         </div>
       </div>
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Family--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Complete</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>What My Family Needs to Know</h5>
+          <p>Personal instructions and wishes for your loved ones</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: June 6, 2024</p>
+        </div>
+        <div class="cl-card-5">
+          <button class="button"><a href="{% url 'family_awareness:familyawareness' %}">View</a></button>
+        </div>
+      </div>
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           <tag>Needs Review</tag>
         </div>
@@ -143,7 +143,7 @@
           <p>45 critical accounts</p>
         </div>
         <div class="cl-card-5">
-          <p>View -> </p>
+          <button class="button"><a href="{% url 'profile_page:profile' %}">View</a></button>
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@
     </div>
     <div class="section-mt-6">
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           <tag>Complete</tag>
         </div>
@@ -165,11 +165,11 @@
           <p>Data | Time Place Holder</p>
         </div>
         <div class="cl-card-5">
-          <button class="button">Update Now</button>
+          <button class="button"><a href="{% url 'annual_review:annualreview' %}">Update Now</a></button>
         </div>
       </div>
       <div class="client-cards border-light">
-        <div class="cl-card-1"><img src="/static/accounts/images/Gallery-2--Streamline-Plump.svg"></div>
+        <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           <tag>Upcoming</tag>
         </div>
@@ -181,7 +181,7 @@
           <p>Last updated: Nov 15, 2024</p>
         </div>
         <div class="cl-card-5">
-          <button class="button">Update Now</button>
+          <button class="button"><a href="{% url 'quarterly_review:quarterlyreview' %}">Update Now</a></button>
         </div>
       </div>
     </div>

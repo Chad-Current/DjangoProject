@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'accounts.apps.AccountsConfig',
     'baseapp.apps.BaseappConfig',
+    'dashboard.apps.DashboardConfig',
     'faqs.apps.FaqsConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

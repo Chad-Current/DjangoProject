@@ -207,7 +207,10 @@ input {
   flex-flow: column nowrap;
 }
 
-
+button a {
+  text-decoration: none;
+  color:var(--thirty-percent);
+}
 
 @media (max-width: 780px) {
   .section-mt-5 {
@@ -233,6 +236,15 @@ input {
       width: clamp(20em, 30vw, 30em);
     }
   }
+}
+
+
+.needs-attention {
+  background-color:  rgba(248, 78, 78, 0.651)
+}
+
+.completed {
+  background-color: rgba(172, 255, 47, 0.377);
 }
 
 @media screen and (781px <=width <=1024px) {
