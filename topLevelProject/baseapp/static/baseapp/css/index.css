@@ -235,9 +235,9 @@ tiny {
 .card-info-price {
   border-radius: 40px;
   background: var(--purewhite-color);
-  width: clamp(18rem, 24vw, 24rem);
+  width: clamp(18rem, 32vw, 28rem);
   margin: 2em 0em;
-  padding: 1em;
+  padding: 2em;
   ul {
     display: flex;
     flex-flow: column nowrap;
