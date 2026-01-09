@@ -18,8 +18,8 @@ main {
 
 .logo {
   width: clamp(6rem, 3vw + 0.2rem, 8rem);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 10%;
+  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10%; */
 }
 
 .top-corner {
@@ -35,7 +35,7 @@ nav ul {
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 0.6rem;
+  padding: 0em;
   justify-content: flex-end;
 }
 

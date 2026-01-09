@@ -8,9 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-    <!-- <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/footer.css' %}" type="text/css"> -->
-    <link rel="stylesheet" href="{% static 'faqs/css/faqs.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'faqs/css/stylesheet.css' %}" type="text/css">
 
     <!-- <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css"> -->
 
@@ -21,41 +19,130 @@
   <body>
     {% include "baseapp/navbar.html" %}
     <div class="main">
-      <div class="parent-col">
-        <h1>Your Questions, Answered</h1>
-        <h5>Everything you need to know about protecting your digital legacy</h5>
-        <div class="faqs">
-          <div class="header">
-            <img src="/static/baseapp/images/Padlock-Key--Streamline-Plump.svg">
-            <h3>Security & Privacy</h3>
-          </div>
-          <div class="questions">
-            <h5>How do I know my information is safe with your service?</h5>
-          </div>
-          <div class="answer">
-            <ul>
-              <li><h5>Your privacy and security are taken seriously at every step.</h5></li>
-              <li><h5>Mail-only intake:</h5></li>
-              <li><p>All documents are sent using a prepaid USPS Priority Mail envelope with tracking. No email. No
-                uploads. No online portals.</p></li>
-              <li><h5>Single-handler process:</h5></li>
-              <li><p>Your documents are handled by one person only — me. There are no assistants, contractors, or
-                third-party scanning services involved.</p></li>
-              <li><h5>Private handling:</h5></li>
-              <li><p>Documents are opened and processed in a private, controlled workspace. Nothing is handled in public or
-                shared environments.</p></li>
-              <li><h5>No originals kept:</h5></li>
-              <li><p>Clients are instructed to send copies only. If an original is accidentally included, it is not scanned
-                and is returned immediately.</p></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+<section class="accordion">
+  <h2 class="accordion-header"><img src="/static/baseapp/images/Padlock-Key--Streamline-Plump.svg" />Security & Privacy</h2>
+  <details>
+    <summary>How do I know my information is safe with your service?</summary>
+    <div class="accordion-content">
+      <p>Your privacy and security are taken seriously at every step.</p>
+      <ul>
+        <li><strong>Mail-only intake:</strong> All documents are sent using a prepaid USPS Priority Mail envelope with tracking. No email. No uploads. No online portals.</li>
+        <li><strong>Single-handler process:</strong> Your documents are handled by one person only — me. There are no assistants, contractors, or third-party scanning services involved.</li>
+        <li><strong>Private handling:</strong> Documents are opened and processed in a private, controlled workspace. Nothing is handled in public or shared environments.</li>
+        <li><strong>No originals kept:</strong> Clients are instructed to send copies only. If an original is accidentally included, it is not scanned and is returned immediately.</li>
+      </ul>
     </div>
+  </details>
 
+  <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>Who will have access to my passwords and accounts?</summary>
+    <div class="accordion-content">
+      <p>The Account Owner</p>
+      <ul>
+        <li>Only the account owner will be given access to information. We cannot see any passwords or sensitive information related to your account.</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What happens to my information when I pass away?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+  <h2 class="accordion-header"><img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" />Process & Timeline</h2>
+      <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+  <h2 class="accordion-header"><img src="/static/baseapp/images/Hierarchy-1--Streamline-Plump.svg" />Technical Questions</h2>
+      <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+    <details>
+    <summary>What if I forget my master password?</summary>
+    <div class="accordion-content">
+      <p>Self-Service Password Reset</p>
+      <ul>
+        <li>We use a self-service password reset system, just click on forgot password on the login page and an e-mail will be sent with reset instructions</li>
+      </ul>
+    </div>
+  </details>
+
+
+</section>
+</div>
     {% include "baseapp/footer.html" %}
   </body>
 
   <script src="{% static 'faqs/js/faqs.js' %}"></script>
 
   </html>
+

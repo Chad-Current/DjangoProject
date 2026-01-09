@@ -12,32 +12,32 @@ from datetime import timedelta
 # from .forms import UserRegistrationForm, UserLoginForm
 import logging
 
-class AccountDirectoryView(TemplateView, LoginRequiredMixin):
+class AccountDirectoryView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/accountdirectory.html"
 
-class ContactDelegationView(TemplateView, LoginRequiredMixin):
+class ContactDelegationView(LoginRequiredMixin,TemplateView):
    template_name = "dashboard/contactdelegation.html"
    
-class DecisionView(TemplateView, LoginRequiredMixin):
+class DecisionView(LoginRequiredMixin,TemplateView):
    template_name = "dashboard/decisions.html"
    
-class DevicesView(TemplateView, LoginRequiredMixin):
+class DevicesView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/devices.html"
    
-class DigitalEstateView(TemplateView, LoginRequiredMixin):
+class DigitalEstateView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/digitalestate.html"
    
-class EmergencyNotesView(TemplateView, LoginRequiredMixin):
+class EmergencyNotesView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/emergencynotes.html"
    
-class FamilyAwarenessView(TemplateView, LoginRequiredMixin):
+class FamilyAwarenessView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/familyawareness.html"
    
-class ProfileView(TemplateView, LoginRequiredMixin):
+class ProfileView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/profile.html"
    
-class AnnualReviewView(TemplateView, LoginRequiredMixin):
+class AnnualReviewView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/annualreview.html"
 
-class QuarterlyReviewView(TemplateView, LoginRequiredMixin):
+class QuarterlyReviewView(LoginRequiredMixin, TemplateView):
    template_name = "dashboard/quarterlyreview.html"
