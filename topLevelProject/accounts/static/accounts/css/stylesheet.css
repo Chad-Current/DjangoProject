@@ -37,8 +37,10 @@ input {
   text-indent: 1rem;
   font-size: var(--font-nm);
   border: solid 2px var(--sixty-percent);
-  &:focus, &:active {
-     box-shadow: var(--ten-percent) 0px 30px 30px -20px;
+
+  &:focus,
+  &:active {
+    box-shadow: var(--ten-percent) 0px 30px 30px -20px;
   }
 }
 
@@ -196,9 +198,15 @@ input {
   padding: 1em;
   width: clamp(20em, 20vw, 30em);
   height: clamp(20em, 80vh, 50em);
+
   /* border: solid 1px var(--thirty-percent); */
   :first-child {
     align-self: center;
+
+    a {
+      text-decoration: none;
+      color: var(--sixty-percent);
+    }
   }
 }
 
@@ -209,7 +217,15 @@ input {
 
 button a {
   text-decoration: none;
-  color:var(--thirty-percent);
+  color: var(--thirty-percent);
+}
+
+.fgp {
+  :first-child {
+    font-size: var(--font-md);
+    text-decoration: none;
+    color: var(--sixty-percent);
+  }
 }
 
 @media (max-width: 780px) {
@@ -240,7 +256,7 @@ button a {
 
 
 .needs-attention {
-  background-color:  rgba(248, 78, 78, 0.651)
+  background-color: rgba(248, 78, 78, 0.651)
 }
 
 .completed {

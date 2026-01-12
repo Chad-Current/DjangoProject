@@ -1,5 +1,6 @@
+#V49
+ 
 from django import forms
-
 from .models import (
     Profile,
     AccountCategory,
@@ -26,7 +27,6 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = [
-            "user",
             "full_name",
             "date_of_birth",
             "primary_email",
@@ -36,19 +36,25 @@ class ProfileForm(forms.ModelForm):
             "digital_executor_name",
             "digital_executor_contact",
         ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'notes': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class AccountCategoryForm(forms.ModelForm):
     class Meta:
         model = AccountCategory
         fields = ["name", "description", "sort_order"]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class DigitalAccountForm(forms.ModelForm):
     class Meta:
         model = DigitalAccount
         fields = [
-            "profile",
             "category",
             "name",
             "provider",
@@ -59,6 +65,16 @@ class DigitalAccountForm(forms.ModelForm):
             "keep_or_close_instruction",
             "notes_for_family",
         ]
+        widgets = {
+            'notes_for_family': forms.Textarea(attrs={'rows': 4}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            self.fields['category'].queryset = AccountCategory.objects.filter(user=self.user)
 
 
 class AccountRelevanceReviewForm(forms.ModelForm):
@@ -66,18 +82,31 @@ class AccountRelevanceReviewForm(forms.ModelForm):
         model = AccountRelevanceReview
         fields = [
             "account",
-            "reviewer",
             "matters",
             "reasoning",
             "next_review_due",
         ]
+        widgets = {
+            'reasoning': forms.Textarea(attrs={'rows': 3}),
+            'next_review_due': forms.DateInput(attrs={'type': 'date'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['account'].queryset = DigitalAccount.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['account'].queryset = DigitalAccount.objects.none()
 
 
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = [
-            "profile",
             "full_name",
             "relationship",
             "email",
@@ -88,19 +117,25 @@ class ContactForm(forms.ModelForm):
             "is_caregiver",
             "notes",
         ]
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class DelegationScopeForm(forms.ModelForm):
     class Meta:
         model = DelegationScope
         fields = ["name", "description"]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class DelegationGrantForm(forms.ModelForm):
     class Meta:
         model = DelegationGrant
         fields = [
-            "profile",
             "contact",
             "scope",
             "applies_on_death",
@@ -108,13 +143,28 @@ class DelegationGrantForm(forms.ModelForm):
             "applies_immediately",
             "notes_for_contact",
         ]
+        widgets = {
+            'notes_for_contact': forms.Textarea(attrs={'rows': 3}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+                if hasattr(DelegationScope, 'user'):
+                    self.fields['scope'].queryset = DelegationScope.objects.filter(user=self.user)
+            except Profile.DoesNotExist:
+                self.fields['contact'].queryset = Contact.objects.none()
 
 
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = [
-            "profile",
             "device_type",
             "name",
             "operating_system",
@@ -125,13 +175,16 @@ class DeviceForm(forms.ModelForm):
             "used_for_2fa",
             "decommission_instruction",
         ]
+        widgets = {
+            'unlock_method_description': forms.Textarea(attrs={'rows': 2}),
+            'decommission_instruction': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
         fields = [
-            "profile",
             "title",
             "version",
             "is_active",
@@ -142,24 +195,31 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             "wishes_for_photos_and_files",
             "data_retention_preferences",
         ]
+        widgets = {
+            'overall_instructions': forms.Textarea(attrs={'rows': 4}),
+            'wishes_for_social_media': forms.Textarea(attrs={'rows': 3}),
+            'wishes_for_photos_and_files': forms.Textarea(attrs={'rows': 3}),
+            'data_retention_preferences': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class FamilyNeedsToKnowSectionForm(forms.ModelForm):
     class Meta:
         model = FamilyNeedsToKnowSection
         fields = [
-            "document",
             "heading",
             "sort_order",
             "content",
         ]
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 5}),
+        }
 
 
 class AccountDirectoryEntryForm(forms.ModelForm):
     class Meta:
         model = AccountDirectoryEntry
         fields = [
-            "profile",
             "label",
             "category_label",
             "website_url",
@@ -168,17 +228,33 @@ class AccountDirectoryEntryForm(forms.ModelForm):
             "action_after_death",
             "notes",
         ]
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class EmergencyNoteForm(forms.ModelForm):
     class Meta:
         model = EmergencyNote
         fields = [
-            "profile",
             "contact",
             "title",
             "body",
         ]
+        widgets = {
+            'body': forms.Textarea(attrs={'rows': 5}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['contact'].queryset = Contact.objects.none()
 
 
 class CheckupTypeForm(forms.ModelForm):
@@ -189,44 +265,61 @@ class CheckupTypeForm(forms.ModelForm):
             "frequency",
             "description",
         ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class CheckupForm(forms.ModelForm):
     class Meta:
         model = Checkup
         fields = [
-            "profile",
             "checkup_type",
             "due_date",
             "completed_at",
-            "completed_by",
             "summary",
             "all_accounts_reviewed",
             "all_devices_reviewed",
             "contacts_up_to_date",
             "documents_up_to_date",
         ]
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'completed_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'summary': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class CareRelationshipForm(forms.ModelForm):
     class Meta:
         model = CareRelationship
         fields = [
-            "profile",
             "contact",
             "relationship_type",
             "has_portal_access",
             "portal_role",
             "notes",
         ]
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['contact'].queryset = Contact.objects.none()
 
 
 class RecoveryRequestForm(forms.ModelForm):
     class Meta:
         model = RecoveryRequest
         fields = [
-            "profile",
-            "requested_by",
             "target_account",
             "target_description",
             "status",
@@ -234,6 +327,22 @@ class RecoveryRequestForm(forms.ModelForm):
             "steps_taken",
             "outcome_notes",
         ]
+        widgets = {
+            'target_description': forms.Textarea(attrs={'rows': 2}),
+            'steps_taken': forms.Textarea(attrs={'rows': 4}),
+            'outcome_notes': forms.Textarea(attrs={'rows': 3}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['target_account'].queryset = DigitalAccount.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['target_account'].queryset = DigitalAccount.objects.none()
 
 
 class DocumentCategoryForm(forms.ModelForm):
@@ -244,13 +353,15 @@ class DocumentCategoryForm(forms.ModelForm):
             "description",
             "sort_order",
         ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
-            "profile",
             "category",
             "title",
             "description",
@@ -259,3 +370,14 @@ class ImportantDocumentForm(forms.ModelForm):
             "file",
             "requires_legal_review",
         ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'physical_location': forms.Textarea(attrs={'rows': 2}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user and hasattr(DocumentCategory, 'user'):
+            self.fields['category'].queryset = DocumentCategory.objects.filter(user=self.user)

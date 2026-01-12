@@ -1,397 +1,1146 @@
+# ============================================================================
+# PART 9: DASHBOARD MODELS - COMPLETE
+# ============================================================================
+
+# ============================================================================
+# dashboard/models.py
+# ============================================================================
 from django.db import models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-
-class TimeStampedModel(models.Model):
-    """Abstract base model with created/updated timestamps."""
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from django.conf import settings
+from django.core.validators import URLValidator
+from django.utils import timezone
 
 
-class Profile(TimeStampedModel):
+class Profile(models.Model):
     """
-    The primary person whose digital estate is being organized.
+    User profile containing personal information for digital estate planning.
+    One profile per user.
     """
     user = models.OneToOneField(
-        User,
-        related_name="estate_profile",
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        related_name='profile',
+        editable=False
     )
     full_name = models.CharField(max_length=200)
     date_of_birth = models.DateField(null=True, blank=True)
     primary_email = models.EmailField()
-    phone_number = models.CharField(max_length=40, blank=True)
-    notes = models.TextField(blank=True)
-
-    has_digital_executor = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=20, blank=True)
+    notes = models.TextField(blank=True, help_text="Personal notes")
+    
+    # Digital Executor Information
+    has_digital_executor = models.BooleanField(
+        default=False,
+        help_text="Have you designated a digital executor?"
+    )
     digital_executor_name = models.CharField(max_length=200, blank=True)
-    digital_executor_contact = models.CharField(max_length=255, blank=True)
-
+    digital_executor_contact = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Email or phone number"
+    )
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)  Change back once migrations are completed
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        verbose_name = "Estate Profile"
-        verbose_name_plural = "Estate Profiles"
-
+        db_table = 'profiles'
+        ordering = ['user']
+    
     def __str__(self):
-        return self.full_name
+        return f"{self.full_name} ({self.user.username})"
 
 
 class AccountCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    """
+    Categories for organizing digital accounts (e.g., Social Media, Banking, Email)
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='account_categories',
+        editable=False
+    )
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    sort_order = models.PositiveIntegerField(default=0)
-
+    sort_order = models.IntegerField(default=0, help_text="Display order")
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["sort_order", "name"]
-
+        db_table = 'account_categories'
+        ordering = ['user', 'sort_order', 'name']
+        verbose_name_plural = 'Account categories'
+        unique_together = ['user', 'name']
+    
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.user.username})"
 
 
-class DigitalAccount(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="accounts")
+class DigitalAccount(models.Model):
+    """
+    Individual digital accounts (social media, email, banking, etc.)
+    """
+    INSTRUCTION_CHOICES = [
+        ('keep', 'Keep Active'),
+        ('close', 'Close Account'),
+        ('memorialize', 'Memorialize'),
+        ('other', 'Other (See Notes)'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='digital_accounts',
+        editable=False
+    )
     category = models.ForeignKey(
         AccountCategory,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="accounts",
+        related_name='accounts'
     )
-
-    name = models.CharField(max_length=200)
-    provider = models.CharField(max_length=200, blank=True)
-    website_url = models.URLField(blank=True)
-    username_or_email = models.CharField(max_length=255, blank=True)
-
+    name = models.CharField(max_length=200, help_text="Account name or service")
+    provider = models.CharField(max_length=200, help_text="Company/service provider")
+    website_url = models.URLField(blank=True, validators=[URLValidator()])
+    username_or_email = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Username or email used for login"
+    )
     credential_storage_location = models.CharField(
-        max_length=255,
+        max_length=500,
         blank=True,
-        help_text="Where to find login credentials (password manager, safe, etc.).",
+        help_text="Where password is stored (e.g., 1Password, LastPass)"
     )
-
-    is_critical = models.BooleanField(default=True)
+    is_critical = models.BooleanField(
+        default=False,
+        help_text="Mark as critical/important account"
+    )
     keep_or_close_instruction = models.CharField(
-        max_length=50,
-        choices=(
-            ("KEEP", "Keep active"),
-            ("CLOSE", "Close after estate settlement"),
-            ("MEMORIALIZE", "Memorialize"),
-            ("UNSURE", "Unsure / needs review"),
-        ),
-        default="KEEP",
+        max_length=20,
+        choices=INSTRUCTION_CHOICES,
+        default='other'
     )
-    notes_for_family = models.TextField(blank=True)
-
-    class Meta:
-        ordering = ["-is_critical", "name"]
-
-    def __str__(self):
-        return f"{self.name} ({self.profile})"
-
-
-class AccountRelevanceReview(TimeStampedModel):
-    account = models.ForeignKey(DigitalAccount, on_delete=models.CASCADE, related_name="relevance_reviews")
-    reviewer = models.ForeignKey(
-        User,
-        null=True,
+    notes_for_family = models.TextField(
         blank=True,
-        on_delete=models.SET_NULL,
-        related_name="account_relevance_reviews",
+        help_text="Instructions or notes for family members"
     )
-    matters = models.BooleanField()
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'digital_accounts'
+        ordering = ['-is_critical', 'name']
+        indexes = [
+            models.Index(fields=['profile', '-created_at']),
+            models.Index(fields=['category']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} - {self.provider}"
+
+
+class AccountRelevanceReview(models.Model):
+    """
+    Periodic reviews to determine if accounts still matter
+    """
+    account = models.ForeignKey(
+        DigitalAccount,
+        on_delete=models.CASCADE,
+        related_name='relevance_reviews'
+    )
+    reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='account_reviews',
+        editable=False
+    )
+    review_date = models.DateTimeField(auto_now_add=True)
+    matters = models.BooleanField(
+        default=True,
+        help_text="Does this account still matter?"
+    )
     reasoning = models.TextField(blank=True)
     next_review_due = models.DateField(null=True, blank=True)
 
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
-        ordering = ["-created_at"]
+        db_table = 'account_relevance_reviews'
+        ordering = ['-review_date']
+    
+    def __str__(self):
+        return f"Review of {self.account.name} on {self.review_date.date()}"
 
 
-class Contact(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="contacts")
+class Contact(models.Model):
+    """
+    Important contacts (family, friends, digital executor, etc.)
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='contacts',
+        editable=False
+    )
     full_name = models.CharField(max_length=200)
-    relationship = models.CharField(max_length=100, blank=True)
+    relationship = models.CharField(
+        max_length=100,
+        help_text="e.g., Spouse, Child, Friend, Attorney"
+    )
     email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=40, blank=True)
-    address = models.CharField(max_length=255, blank=True)
-
+    phone = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
+    
     is_emergency_contact = models.BooleanField(default=False)
     is_digital_executor = models.BooleanField(default=False)
     is_caregiver = models.BooleanField(default=False)
-
+    
     notes = models.TextField(blank=True)
-
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["full_name"]
-
+        db_table = 'contacts'
+        ordering = ['full_name']
+        indexes = [
+            models.Index(fields=['profile', 'full_name']),
+        ]
+    
     def __str__(self):
         return f"{self.full_name} ({self.relationship})"
 
 
 class DelegationScope(models.Model):
-    name = models.CharField(max_length=150, unique=True)
+    """
+    Types of authority that can be delegated (e.g., medical decisions, financial)
+    """
+    name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-
+    
+    class Meta:
+        db_table = 'delegation_scopes'
+        ordering = ['name']
+    
     def __str__(self):
         return self.name
 
 
-class DelegationGrant(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="delegations")
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="delegations")
-    scope = models.ForeignKey(DelegationScope, on_delete=models.CASCADE, related_name="grants")
-
-    applies_on_death = models.BooleanField(default=True)
-    applies_on_incapacity = models.BooleanField(default=True)
-    applies_immediately = models.BooleanField(default=False)
-
-    notes_for_contact = models.TextField(blank=True)
-
-    class Meta:
-        unique_together = ("profile", "contact", "scope")
-
-
-class Device(TimeStampedModel):
-    DEVICE_TYPE_CHOICES = (
-        ("PHONE", "Phone"),
-        ("TABLET", "Tablet"),
-        ("LAPTOP", "Laptop"),
-        ("DESKTOP", "Desktop"),
-        ("SERVER", "Server/NAS"),
-        ("OTHER", "Other"),
+class DelegationGrant(models.Model):
+    """
+    Grants of authority to contacts for specific scopes
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='delegation_grants',
+        editable=False
     )
-
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="devices")
-    device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
-    name = models.CharField(max_length=200)
-    operating_system = models.CharField(max_length=100, blank=True)
-    owner_label = models.CharField(max_length=100, blank=True)
-    location_description = models.CharField(max_length=255, blank=True)
-
-    unlock_method_description = models.CharField(max_length=255, blank=True)
-    has_full_disk_encryption = models.BooleanField(default=True)
-    used_for_2fa = models.BooleanField(default=False)
-
-    decommission_instruction = models.CharField(max_length=255, blank=True)
-
+    contact = models.ForeignKey(
+        Contact,
+        on_delete=models.CASCADE,
+        related_name='delegations_received'
+    )
+    scope = models.ForeignKey(
+        DelegationScope,
+        on_delete=models.CASCADE,
+        related_name='grants'
+    )
+    
+    applies_on_death = models.BooleanField(default=False)
+    applies_on_incapacity = models.BooleanField(default=False)
+    applies_immediately = models.BooleanField(default=False)
+    
+    notes_for_contact = models.TextField(
+        blank=True,
+        help_text="Instructions for the contact"
+    )
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'delegation_grants'
+        ordering = ['contact', 'scope']
+    
     def __str__(self):
-        return f"{self.name} ({self.profile})"
+        return f"{self.scope.name} → {self.contact.full_name}"
 
 
-class DigitalEstateDocument(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="digital_estate_documents")
-    title = models.CharField(max_length=200, default="Digital Estate Instructions")
-    version = models.PositiveIntegerField(default=1)
-    is_active = models.BooleanField(default=True)
+class Device(models.Model):
+    """
+    Physical devices (phones, computers, tablets, etc.)
+    """
+    DEVICE_TYPE_CHOICES = [
+        ('phone', 'Phone'),
+        ('tablet', 'Tablet'),
+        ('laptop', 'Laptop'),
+        ('desktop', 'Desktop'),
+        ('smartwatch', 'Smart Watch'),
+        ('other', 'Other'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='devices',
+        editable=False
+    )
+    device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
+    name = models.CharField(max_length=200, help_text="Device name or model")
+    operating_system = models.CharField(max_length=100, blank=True)
+    owner_label = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="e.g., 'Mom's iPhone', 'Work Laptop'"
+    )
+    location_description = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Where device is typically kept"
+    )
+    unlock_method_description = models.TextField(
+        blank=True,
+        help_text="How to unlock (without revealing actual password)"
+    )
+    has_full_disk_encryption = models.BooleanField(default=False)
+    used_for_2fa = models.BooleanField(
+        default=False,
+        help_text="Used for two-factor authentication"
+    )
+    decommission_instruction = models.TextField(
+        blank=True,
+        help_text="What to do with this device after death"
+    )
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'devices'
+        ordering = ['device_type', 'name']
+    
+    def __str__(self):
+        return f"{self.name} ({self.device_type})"
 
-    overall_instructions = models.TextField()
-    location_of_legal_will = models.CharField(max_length=255, blank=True)
-    location_of_password_manager_instructions = models.CharField(max_length=255, blank=True)
+
+class DigitalEstateDocument(models.Model):
+    """
+    The main digital estate planning document
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='estate_documents',
+        editable=False
+    )
+    title = models.CharField(max_length=200)
+    version = models.CharField(max_length=20, default="1.0")
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Is this the current active document?"
+    )
+    
+    overall_instructions = models.TextField(
+        blank=True,
+        help_text="General instructions for family"
+    )
+    location_of_legal_will = models.TextField(blank=True)
+    location_of_password_manager_instructions = models.TextField(blank=True)
     wishes_for_social_media = models.TextField(blank=True)
     wishes_for_photos_and_files = models.TextField(blank=True)
     data_retention_preferences = models.TextField(blank=True)
-
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["-version"]
-        unique_together = ("profile", "version")
-
+        db_table = 'digital_estate_documents'
+        ordering = ['-is_active', '-created_at']
+    
     def __str__(self):
-        return f"{self.title} v{self.version} for {self.profile}"
+        return f"{self.title} v{self.version}"
 
 
 class FamilyNeedsToKnowSection(models.Model):
+    """
+    Sections within the estate document that family needs to know
+    """
     document = models.ForeignKey(
         DigitalEstateDocument,
         on_delete=models.CASCADE,
-        related_name="family_sections",
+        related_name='family_sections'
     )
     heading = models.CharField(max_length=200)
-    sort_order = models.PositiveIntegerField(default=0)
-    content = models.TextField()
-
+    sort_order = models.IntegerField(default=0)
+    content = models.TextField(help_text="What family needs to know")
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["sort_order"]
-
+        db_table = 'family_needs_to_know_sections'
+        ordering = ['document', 'sort_order', 'heading']
+    
     def __str__(self):
-        return f"{self.heading} ({self.document})"
+        return f"{self.document.title} - {self.heading}"
 
 
-class AccountDirectoryEntry(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="directory_entries")
-
+class AccountDirectoryEntry(models.Model):
+    """
+    Quick reference directory of accounts
+    """
+    CRITICALITY_CHOICES = [
+        ('critical', 'Critical'),
+        ('important', 'Important'),
+        ('nice-to-have', 'Nice to Have'),
+    ]
+    
+    ACTION_CHOICES = [
+        ('keep', 'Keep'),
+        ('close', 'Close'),
+        ('memorialize', 'Memorialize'),
+        ('transfer', 'Transfer to Family'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='account_directory_entries',
+        editable=False
+    )
     label = models.CharField(max_length=200)
     category_label = models.CharField(max_length=100, blank=True)
     website_url = models.URLField(blank=True)
-    username_hint = models.CharField(max_length=255, blank=True)
+    username_hint = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Hint about username (not the actual username)"
+    )
     criticality = models.CharField(
         max_length=20,
-        choices=(("HIGH", "High"), ("MEDIUM", "Medium"), ("LOW", "Low")),
-        default="HIGH",
+        choices=CRITICALITY_CHOICES,
+        default='nice-to-have'
     )
     action_after_death = models.CharField(
-        max_length=50,
-        choices=(
-            ("KEEP", "Keep"),
-            ("CLOSE", "Close"),
-            ("MEMORIALIZE", "Memorialize"),
-            ("ARCHIVE", "Archive data only"),
-        ),
-        default="KEEP",
+        max_length=20,
+        choices=ACTION_CHOICES,
+        default='close'
     )
     notes = models.TextField(blank=True)
-
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["-criticality", "label"]
+        db_table = 'account_directory_entries'
+        ordering = ['criticality', 'label']
+        verbose_name_plural = 'Account directory entries'
+    
+    def __str__(self):
+        return self.label
 
 
-class EmergencyNote(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="emergency_notes")
+class EmergencyNote(models.Model):
+    """
+    Emergency notes for specific contacts
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='emergency_notes',
+        editable=False
+    )
     contact = models.ForeignKey(
         Contact,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
+        related_name='emergency_notes',
         null=True,
-        blank=True,
-        related_name="emergency_notes",
+        blank=True
     )
     title = models.CharField(max_length=200)
-    body = models.TextField()
-
+    body = models.TextField(help_text="Emergency message content")
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'emergency_notes'
+        ordering = ['-created_at']
+    
     def __str__(self):
         return self.title
 
 
 class CheckupType(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    frequency = models.CharField(
-        max_length=20,
-        choices=(
-            ("QUARTERLY", "Quarterly"),
-            ("ANNUAL", "Annual"),
-            ("ONE_OFF", "One-off"),
-        ),
-    )
+    """
+    Types of periodic checkups (quarterly, annual, etc.)
+    """
+    FREQUENCY_CHOICES = [
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('semi-annual', 'Semi-Annual'),
+        ('annual', 'Annual'),
+    ]
+    
+    name = models.CharField(max_length=100)
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
     description = models.TextField(blank=True)
-
+    
+    class Meta:
+        db_table = 'checkup_types'
+        ordering = ['name']
+    
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.frequency})"
 
 
-class Checkup(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="checkups")
-    checkup_type = models.ForeignKey(CheckupType, on_delete=models.CASCADE, related_name="checkups")
+class Checkup(models.Model):
+    """
+    Scheduled checkups of digital estate information
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='checkups',
+        editable=False
+    )
+    checkup_type = models.ForeignKey(
+        CheckupType,
+        on_delete=models.CASCADE,
+        related_name='checkups'
+    )
     due_date = models.DateField()
     completed_at = models.DateTimeField(null=True, blank=True)
     completed_by = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
-        related_name="completed_checkups",
+        related_name='completed_checkups',
+        editable=False
     )
     summary = models.TextField(blank=True)
-
+    
     all_accounts_reviewed = models.BooleanField(default=False)
     all_devices_reviewed = models.BooleanField(default=False)
     contacts_up_to_date = models.BooleanField(default=False)
     documents_up_to_date = models.BooleanField(default=False)
-
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["-due_date"]
+        db_table = 'checkups'
+        ordering = ['-due_date']
+    
+    def __str__(self):
+        status = "Completed" if self.completed_at else "Pending"
+        return f"{self.checkup_type.name} - {self.due_date} ({status})"
+    
+    def is_overdue(self):
+        if self.completed_at:
+            return False
+        return timezone.now().date() > self.due_date
 
 
-class CareRelationship(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="care_relationships")
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="care_relationships")
-
-    relationship_type = models.CharField(
-        max_length=50,
-        choices=(
-            ("SPOUSE", "Spouse/Partner"),
-            ("CAREGIVER", "Caregiver"),
-            ("POA", "Power of Attorney"),
-            ("TRUSTEE", "Trustee"),
-            ("OTHER", "Other"),
-        ),
+class CareRelationship(models.Model):
+    """
+    Relationships with caregivers or those providing care
+    """
+    RELATIONSHIP_CHOICES = [
+        ('caregiver', 'Caregiver'),
+        ('healthcare-proxy', 'Healthcare Proxy'),
+        ('power-of-attorney', 'Power of Attorney'),
+        ('trustee', 'Trustee'),
+        ('other', 'Other'),
+    ]
+    
+    ROLE_CHOICES = [
+        ('view-only', 'View Only'),
+        ('editor', 'Editor'),
+        ('admin', 'Administrator'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='care_relationships',
+        editable=False
     )
-    has_portal_access = models.BooleanField(default=False)
-    portal_role = models.CharField(max_length=50, blank=True)
-    notes = models.TextField(blank=True)
-
-    class Meta:
-        unique_together = ("profile", "contact", "relationship_type")
-
-
-class RecoveryRequest(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="recovery_requests")
-    requested_by = models.ForeignKey(
+    contact = models.ForeignKey(
         Contact,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="recovery_requests",
+        on_delete=models.CASCADE,
+        related_name='care_relationships'
+    )
+    relationship_type = models.CharField(
+        max_length=30,
+        choices=RELATIONSHIP_CHOICES
+    )
+    has_portal_access = models.BooleanField(
+        default=False,
+        help_text="Has access to digital estate portal"
+    )
+    portal_role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='view-only',
+        blank=True
+    )
+    notes = models.TextField(blank=True)
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'care_relationships'
+        ordering = ['contact']
+    
+    def __str__(self):
+        return f"{self.contact.full_name} - {self.relationship_type}"
+
+
+class RecoveryRequest(models.Model):
+    """
+    Requests to recover accounts (for deceased or incapacitated users)
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in-progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('denied', 'Denied'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='recovery_requests',
+        editable=False
+    )
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='recovery_requests_made',
+        editable=False
     )
     target_account = models.ForeignKey(
         DigitalAccount,
+        on_delete=models.CASCADE,
+        related_name='recovery_requests',
         null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="recovery_requests",
+        blank=True
     )
-    target_description = models.CharField(max_length=255, blank=True)
-
-    STATUS_CHOICES = (
-        ("OPEN", "Open"),
-        ("IN_PROGRESS", "In progress"),
-        ("RESOLVED", "Resolved"),
-        ("FAILED", "Failed / not possible"),
+    target_description = models.CharField(
+        max_length=500,
+        help_text="Description of account to recover"
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="OPEN")
-
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
     provider_ticket_number = models.CharField(max_length=100, blank=True)
     steps_taken = models.TextField(blank=True)
     outcome_notes = models.TextField(blank=True)
-
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'recovery_requests'
+        ordering = ['-created_at']
+    
     def __str__(self):
-        return f"Recovery #{self.id} for {self.profile}"
+        return f"Recovery: {self.target_description} ({self.status})"
 
 
 class DocumentCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    """
+    Categories for important documents
+    """
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    sort_order = models.PositiveIntegerField(default=0)
+    sort_order = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["sort_order", "name"]
-
+        db_table = 'document_categories'
+        ordering = ['sort_order', 'name']
+        verbose_name_plural = 'Document categories'
+    
     def __str__(self):
         return self.name
 
 
-class ImportantDocument(TimeStampedModel):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="important_documents")
+class ImportantDocument(models.Model):
+    """
+    Important documents (wills, deeds, insurance, etc.)
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='important_documents',
+        editable=False
+    )
     category = models.ForeignKey(
         DocumentCategory,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="documents",
+        related_name='documents'
     )
-
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    physical_location = models.CharField(max_length=255, blank=True)
-    digital_location = models.CharField(max_length=255, blank=True)
-    file = models.FileField(upload_to="estate_documents/", blank=True, null=True)
-
-    requires_legal_review = models.BooleanField(default=False)
-
+    physical_location = models.TextField(
+        blank=True,
+        help_text="Where physical document is stored"
+    )
+    digital_location = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Where digital copy is stored"
+    )
+    file = models.FileField(
+        upload_to='documents/%Y/%m/',
+        blank=True,
+        null=True,
+        help_text="Upload digital copy"
+    )
+    requires_legal_review = models.BooleanField(
+        default=False,
+        help_text="Needs legal professional review"
+    )
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
-        ordering = ["title"]
-
+        db_table = 'important_documents'
+        ordering = ['category', 'title']
+    
     def __str__(self):
         return self.title
+
+# Previous semi-working model
+
+# # from django.db import models
+# from django.contrib.auth import get_user_model
+
+# User = get_user_model()
+
+
+# class TimeStampedModel(models.Model):
+#     """Abstract base model with created/updated timestamps."""
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         abstract = True
+
+
+# class Profile(TimeStampedModel):
+#     """
+#     The primary person whose digital estate is being organized.
+#     """
+#     user = models.OneToOneField(
+#         User,
+#         related_name="estate_profile",
+#         on_delete=models.CASCADE,
+#         null=True,
+#         blank=True,
+#     )
+#     full_name = models.CharField(max_length=200)
+#     date_of_birth = models.DateField(null=True, blank=True)
+#     primary_email = models.EmailField()
+#     phone_number = models.CharField(max_length=40, blank=True)
+#     notes = models.TextField(blank=True)
+
+#     has_digital_executor = models.BooleanField(default=False)
+#     digital_executor_name = models.CharField(max_length=200, blank=True)
+#     digital_executor_contact = models.CharField(max_length=255, blank=True)
+
+#     class Meta:
+#         verbose_name = "Estate Profile"
+#         verbose_name_plural = "Estate Profiles"
+
+#     def __str__(self):
+#         return self.full_name
+
+
+# class AccountCategory(models.Model):
+#     name = models.CharField(max_length=100, unique=True)
+#     description = models.TextField(blank=True)
+#     sort_order = models.PositiveIntegerField(default=0)
+
+#     class Meta:
+#         ordering = ["sort_order", "name"]
+
+#     def __str__(self):
+#         return self.name
+
+
+# class DigitalAccount(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="accounts")
+#     category = models.ForeignKey(
+#         AccountCategory,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name="accounts",
+#     )
+
+#     name = models.CharField(max_length=200)
+#     provider = models.CharField(max_length=200, blank=True)
+#     website_url = models.URLField(blank=True)
+#     username_or_email = models.CharField(max_length=255, blank=True)
+
+#     credential_storage_location = models.CharField(
+#         max_length=255,
+#         blank=True,
+#         help_text="Where to find login credentials (password manager, safe, etc.).",
+#     )
+
+#     is_critical = models.BooleanField(default=True)
+#     keep_or_close_instruction = models.CharField(
+#         max_length=50,
+#         choices=(
+#             ("KEEP", "Keep active"),
+#             ("CLOSE", "Close after estate settlement"),
+#             ("MEMORIALIZE", "Memorialize"),
+#             ("UNSURE", "Unsure / needs review"),
+#         ),
+#         default="KEEP",
+#     )
+#     notes_for_family = models.TextField(blank=True)
+
+#     class Meta:
+#         ordering = ["-is_critical", "name"]
+
+#     def __str__(self):
+#         return f"{self.name} ({self.profile})"
+
+
+# class AccountRelevanceReview(TimeStampedModel):
+#     account = models.ForeignKey(DigitalAccount, on_delete=models.CASCADE, related_name="relevance_reviews")
+#     reviewer = models.ForeignKey(
+#         User,
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="account_relevance_reviews",
+#     )
+#     matters = models.BooleanField()
+#     reasoning = models.TextField(blank=True)
+#     next_review_due = models.DateField(null=True, blank=True)
+
+#     class Meta:
+#         ordering = ["-created_at"]
+
+
+# class Contact(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="contacts")
+#     full_name = models.CharField(max_length=200)
+#     relationship = models.CharField(max_length=100, blank=True)
+#     email = models.EmailField(blank=True)
+#     phone = models.CharField(max_length=40, blank=True)
+#     address = models.CharField(max_length=255, blank=True)
+
+#     is_emergency_contact = models.BooleanField(default=False)
+#     is_digital_executor = models.BooleanField(default=False)
+#     is_caregiver = models.BooleanField(default=False)
+
+#     notes = models.TextField(blank=True)
+
+#     class Meta:
+#         ordering = ["full_name"]
+
+#     def __str__(self):
+#         return f"{self.full_name} ({self.relationship})"
+
+
+# class DelegationScope(models.Model):
+#     name = models.CharField(max_length=150, unique=True)
+#     description = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+
+# class DelegationGrant(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="delegations")
+#     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="delegations")
+#     scope = models.ForeignKey(DelegationScope, on_delete=models.CASCADE, related_name="grants")
+
+#     applies_on_death = models.BooleanField(default=True)
+#     applies_on_incapacity = models.BooleanField(default=True)
+#     applies_immediately = models.BooleanField(default=False)
+
+#     notes_for_contact = models.TextField(blank=True)
+
+#     class Meta:
+#         unique_together = ("profile", "contact", "scope")
+
+
+# class Device(TimeStampedModel):
+#     DEVICE_TYPE_CHOICES = (
+#         ("PHONE", "Phone"),
+#         ("TABLET", "Tablet"),
+#         ("LAPTOP", "Laptop"),
+#         ("DESKTOP", "Desktop"),
+#         ("SERVER", "Server/NAS"),
+#         ("OTHER", "Other"),
+#     )
+
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="devices")
+#     device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
+#     name = models.CharField(max_length=200)
+#     operating_system = models.CharField(max_length=100, blank=True)
+#     owner_label = models.CharField(max_length=100, blank=True)
+#     location_description = models.CharField(max_length=255, blank=True)
+
+#     unlock_method_description = models.CharField(max_length=255, blank=True)
+#     has_full_disk_encryption = models.BooleanField(default=True)
+#     used_for_2fa = models.BooleanField(default=False)
+
+#     decommission_instruction = models.CharField(max_length=255, blank=True)
+
+#     def __str__(self):
+#         return f"{self.name} ({self.profile})"
+
+
+# class DigitalEstateDocument(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="digital_estate_documents")
+#     title = models.CharField(max_length=200, default="Digital Estate Instructions")
+#     version = models.PositiveIntegerField(default=1)
+#     is_active = models.BooleanField(default=True)
+
+#     overall_instructions = models.TextField()
+#     location_of_legal_will = models.CharField(max_length=255, blank=True)
+#     location_of_password_manager_instructions = models.CharField(max_length=255, blank=True)
+#     wishes_for_social_media = models.TextField(blank=True)
+#     wishes_for_photos_and_files = models.TextField(blank=True)
+#     data_retention_preferences = models.TextField(blank=True)
+
+#     class Meta:
+#         ordering = ["-version"]
+#         unique_together = ("profile", "version")
+
+#     def __str__(self):
+#         return f"{self.title} v{self.version} for {self.profile}"
+
+
+# class FamilyNeedsToKnowSection(models.Model):
+#     document = models.ForeignKey(
+#         DigitalEstateDocument,
+#         on_delete=models.CASCADE,
+#         related_name="family_sections",
+#     )
+#     heading = models.CharField(max_length=200)
+#     sort_order = models.PositiveIntegerField(default=0)
+#     content = models.TextField()
+
+#     class Meta:
+#         ordering = ["sort_order"]
+
+#     def __str__(self):
+#         return f"{self.heading} ({self.document})"
+
+
+# class AccountDirectoryEntry(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="directory_entries")
+
+#     label = models.CharField(max_length=200)
+#     category_label = models.CharField(max_length=100, blank=True)
+#     website_url = models.URLField(blank=True)
+#     username_hint = models.CharField(max_length=255, blank=True)
+#     criticality = models.CharField(
+#         max_length=20,
+#         choices=(("HIGH", "High"), ("MEDIUM", "Medium"), ("LOW", "Low")),
+#         default="HIGH",
+#     )
+#     action_after_death = models.CharField(
+#         max_length=50,
+#         choices=(
+#             ("KEEP", "Keep"),
+#             ("CLOSE", "Close"),
+#             ("MEMORIALIZE", "Memorialize"),
+#             ("ARCHIVE", "Archive data only"),
+#         ),
+#         default="KEEP",
+#     )
+#     notes = models.TextField(blank=True)
+
+#     class Meta:
+#         ordering = ["-criticality", "label"]
+
+
+# class EmergencyNote(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="emergency_notes")
+#     contact = models.ForeignKey(
+#         Contact,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name="emergency_notes",
+#     )
+#     title = models.CharField(max_length=200)
+#     body = models.TextField()
+
+#     def __str__(self):
+#         return self.title
+
+
+# class CheckupType(models.Model):
+#     name = models.CharField(max_length=100, unique=True)
+#     frequency = models.CharField(
+#         max_length=20,
+#         choices=(
+#             ("QUARTERLY", "Quarterly"),
+#             ("ANNUAL", "Annual"),
+#             ("ONE_OFF", "One-off"),
+#         ),
+#     )
+#     description = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+
+# class Checkup(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="checkups")
+#     checkup_type = models.ForeignKey(CheckupType, on_delete=models.CASCADE, related_name="checkups")
+#     due_date = models.DateField()
+#     completed_at = models.DateTimeField(null=True, blank=True)
+#     completed_by = models.ForeignKey(
+#         User,
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="completed_checkups",
+#     )
+#     summary = models.TextField(blank=True)
+
+#     all_accounts_reviewed = models.BooleanField(default=False)
+#     all_devices_reviewed = models.BooleanField(default=False)
+#     contacts_up_to_date = models.BooleanField(default=False)
+#     documents_up_to_date = models.BooleanField(default=False)
+
+#     class Meta:
+#         ordering = ["-due_date"]
+
+
+# class CareRelationship(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="care_relationships")
+#     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="care_relationships")
+
+#     relationship_type = models.CharField(
+#         max_length=50,
+#         choices=(
+#             ("SPOUSE", "Spouse/Partner"),
+#             ("CAREGIVER", "Caregiver"),
+#             ("POA", "Power of Attorney"),
+#             ("TRUSTEE", "Trustee"),
+#             ("OTHER", "Other"),
+#         ),
+#     )
+#     has_portal_access = models.BooleanField(default=False)
+#     portal_role = models.CharField(max_length=50, blank=True)
+#     notes = models.TextField(blank=True)
+
+#     class Meta:
+#         unique_together = ("profile", "contact", "relationship_type")
+
+
+# class RecoveryRequest(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="recovery_requests")
+#     requested_by = models.ForeignKey(
+#         Contact,
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="recovery_requests",
+#     )
+#     target_account = models.ForeignKey(
+#         DigitalAccount,
+#         null=True,
+#         blank=True,
+#         on_delete=models.SET_NULL,
+#         related_name="recovery_requests",
+#     )
+#     target_description = models.CharField(max_length=255, blank=True)
+
+#     STATUS_CHOICES = (
+#         ("OPEN", "Open"),
+#         ("IN_PROGRESS", "In progress"),
+#         ("RESOLVED", "Resolved"),
+#         ("FAILED", "Failed / not possible"),
+#     )
+#     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="OPEN")
+
+#     provider_ticket_number = models.CharField(max_length=100, blank=True)
+#     steps_taken = models.TextField(blank=True)
+#     outcome_notes = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return f"Recovery #{self.id} for {self.profile}"
+
+
+# class DocumentCategory(models.Model):
+#     name = models.CharField(max_length=100, unique=True)
+#     description = models.TextField(blank=True)
+#     sort_order = models.PositiveIntegerField(default=0)
+
+#     class Meta:
+#         ordering = ["sort_order", "name"]
+
+#     def __str__(self):
+#         return self.name
+
+
+# class ImportantDocument(TimeStampedModel):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="important_documents")
+#     category = models.ForeignKey(
+#         DocumentCategory,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name="documents",
+#     )
+
+#     title = models.CharField(max_length=200)
+#     description = models.TextField(blank=True)
+#     physical_location = models.CharField(max_length=255, blank=True)
+#     digital_location = models.CharField(max_length=255, blank=True)
+#     file = models.FileField(upload_to="estate_documents/", blank=True, null=True)
+
+#     requires_legal_review = models.BooleanField(default=False)
+
+#     class Meta:
+#         ordering = ["title"]
+
+#     def __str__(self):
+#         return self.title

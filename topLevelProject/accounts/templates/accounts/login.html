@@ -45,13 +45,14 @@
                             {% if form.password.errors %}
                             <div class="error">{{ form.password.errors }}</div>
                             {% endif %}
-
-                        <button class="login-btn" type="submit">Sign in</button>
-                    </form>
-
-                    <div class="text-center">
-                        <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
-                    </div>
+                            <div class="fgp">
+                                <a href="{% url 'accounts:password_reset' %}">Forgot Password</a>
+                            </div>                            
+                            <button class="login-btn" type="submit">Sign in</button>
+                        </form>
+                        <div class="text-center">
+                            <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+                        </div>
                 </div>
             </div>
 

@@ -32,7 +32,7 @@
       <li class="classes"><a href="{% url 'faqs_page:faqs' %}">FAQs</a></li>
       <!-- If the user is logged in, show the Logout button/link -->
         {% if user.is_authenticated %}
-      <a href="{% url 'accounts:dashboard' %}">My Dashboard</a>
+      <li><a href="{% url 'accounts:account_dashboard' %}">My Dashboard</a></li>
       {% endif %}
       <li class="classes">
         {% if user.is_authenticated %}

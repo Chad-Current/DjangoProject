@@ -1,10 +1,32 @@
 from django.urls import path
-from .views import *
+from . import views
 app_name = "accounts"
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    # Authentication
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    
+    # Dashboard and Payment
+    path('dashboard/', views.dashboard_view, name='account_dashboard'),
+    path('payment/', views.payment_view, name='payment'),
+    
+    # Password Reset
+    path('password-reset/', views.password_reset_view, name='password_reset'),
+    path('password-reset/done/', views.password_reset_done_view, name='password_reset_done'),
+    path('password-reset/confirm/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
+    path('password-reset/complete/', views.password_reset_complete_view, name='password_reset_complete'),
 ]
+#Orginal Working Copy
+# from django.urls import path
+# from .views import *
+# app_name = "accounts"
+
+# urlpatterns = [
+#     path('register/', RegisterView.as_view(), name='register'),
+#     path('login/', LoginView.as_view(), name='login'),
+#     path('logout/', LogoutView.as_view(), name='logout'),
+#     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+#     path('paymentview/',PaymentView.as_view(), name='payment_page')
+# ]
