@@ -1,0 +1,73 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+
+    {% include "baseapp/navbar.html" %}
+    <div class="main">
+        <div class="parent">
+            {% block content %}
+            <div class="list-view">
+                <h1>Account Categories</h1>
+                {% if categories %}
+                {{ form|crispy }}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.description }}</td>
+                            <td>
+                                {% if can_modify %}
+                                <a href="{% url 'dashboard:accountcategory_update' category.pk %}">Edit</a>
+                                <a href="{% url 'dashboard:accountcategory_delete' category.pk %}">Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No categories yet. Create your first category!</p>
+                {% endif %}
+                {% if can_modify %}
+                <a href="{% url 'dashboard:accountcategory_create' %}"><button class="button button-100">Add
+                        Category</button></a>
+                {% endif %}
+            </div>
+            {% endblock %}
+
+
+        </div>
+    </div>
+
+    {% include "baseapp/footer.html" %}
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

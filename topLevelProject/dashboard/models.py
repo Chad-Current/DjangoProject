@@ -39,8 +39,9 @@ class Profile(models.Model):
         blank=True,
         help_text="Email or phone number"
     )
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)  Change back once migrations are completed
+    # created_at = models.DateTimeField(default=timezone.now)
+    # Change back once migrations are completed
+    created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -64,7 +65,7 @@ class AccountCategory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     sort_order = models.IntegerField(default=0, help_text="Display order")
-    
+    # REMOVE SORT ORDER 
     created_at = models.DateTimeField(default=timezone.now)
     # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

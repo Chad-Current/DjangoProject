@@ -81,3 +81,34 @@ class ViewAccessMixin(ViewOnlyMixin, UserOwnsObjectMixin):
     Use this for List/Detail views.
     """
     pass
+
+class DeleteAccessMixin(LoginRequiredMixin):
+    """
+    Mixin specifically for DeleteView - doesn't use form_valid
+    """
+    owner_field = 'user'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.can_modify_data():
+            if request.user.subscription_tier == 'essentials' and not request.user.is_essentials_edit_active():
+                messages.warning(request, 'Your Essentials tier edit access has expired.')
+            else:
+                messages.warning(request, 'Payment required to delete items.')
+            return redirect('payment')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        """Filter queryset to only show objects owned by current user"""
+        queryset = super().get_queryset()
+        filter_kwargs = {self.owner_field: self.request.user}
+        return queryset.filter(**filter_kwargs)
+    
+    def get_object(self, queryset=None):
+        """Ensure user can only delete their own object"""
+        obj = super().get_object(queryset)
+        owner = obj
+        for field in self.owner_field.split('__'):
+            owner = getattr(owner, field)
+        if owner != self.request.user:
+            raise Http404("You don't have permission to delete this object")
+        return obj

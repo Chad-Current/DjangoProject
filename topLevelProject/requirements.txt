@@ -5,7 +5,8 @@ djangorestframework==3.14.0
 django-cors-headers==4.3.1
 python-decouple==3.8
 cryptography==41.0.7
-
+django-crispy-forms==2.5
+crispy-bootstrap5==2025.6
 # Database drivers (choose one):
 # For PostgreSQL (recommended for production):
 # psycopg2-binary==2.9.9

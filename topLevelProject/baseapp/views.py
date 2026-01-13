@@ -9,9 +9,9 @@ from django.contrib.auth.forms import AuthenticationForm
 class Home(TemplateView):
    template_name = "baseapp/base.html"
 
-def home_view(request):
-    login_form = AuthenticationForm()
-    context = {
-        'login_form': login_form,
-    }
-    return render(request, 'home.html', context)
+# def home_view(request):
+#     login_form = AuthenticationForm()
+#     context = {
+#         'login_form': login_form,
+#     }
+#     return render(request, 'home.html', context)

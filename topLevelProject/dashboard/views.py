@@ -12,7 +12,8 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy
 from django.contrib import messages
-from accounts.mixins import FullAccessMixin, ViewAccessMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
 from .models import (
     Profile,
     AccountCategory,
@@ -101,7 +102,7 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
     model = Profile
     form_class = ProfileForm
     template_name = 'dashboard/profile_form.html'
-    success_url = reverse_lazy('profile_detail')
+    success_url = reverse_lazy('dashboard:profile_detail')
     owner_field = 'user'
     
     def get_object(self, queryset=None):
@@ -133,7 +134,7 @@ class AccountCategoryCreateView(FullAccessMixin, CreateView):
     model = AccountCategory
     form_class = AccountCategoryForm
     template_name = 'dashboard/accountcategory_form.html'
-    success_url = reverse_lazy('accountcategory_list')
+    success_url = reverse_lazy('dashboard:accountcategory_list')
     owner_field = 'user'
     
     def form_valid(self, form):
@@ -146,7 +147,7 @@ class AccountCategoryUpdateView(FullAccessMixin, UpdateView):
     model = AccountCategory
     form_class = AccountCategoryForm
     template_name = 'dashboard/accountcategory_form.html'
-    success_url = reverse_lazy('accountcategory_list')
+    success_url = reverse_lazy('dashboard:accountcategory_list')
     owner_field = 'user'
     
     def form_valid(self, form):
@@ -154,10 +155,10 @@ class AccountCategoryUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class AccountCategoryDeleteView(FullAccessMixin, DeleteView):
+class AccountCategoryDeleteView(DeleteAccessMixin,  DeleteView):
     model = AccountCategory
     template_name = 'dashboard/accountcategory_confirm_delete.html'
-    success_url = reverse_lazy('accountcategory_list')
+    success_url = reverse_lazy('dashboard:accountcategory_list')
     owner_field = 'user'
     
     def delete(self, request, *args, **kwargs):
@@ -217,7 +218,7 @@ class DigitalAccountCreateView(FullAccessMixin, CreateView):
     model = DigitalAccount
     form_class = DigitalAccountForm
     template_name = 'dashboard/digitalaccount_form.html'
-    success_url = reverse_lazy('digitalaccount_list')
+    success_url = reverse_lazy('dashboard:digitalaccount_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -236,7 +237,7 @@ class DigitalAccountUpdateView(FullAccessMixin, UpdateView):
     model = DigitalAccount
     form_class = DigitalAccountForm
     template_name = 'dashboard/digitalaccount_form.html'
-    success_url = reverse_lazy('digitalaccount_list')
+    success_url = reverse_lazy('dashboard:digitalaccount_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -249,10 +250,10 @@ class DigitalAccountUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DigitalAccountDeleteView(FullAccessMixin, DeleteView):
+class DigitalAccountDeleteView(DeleteAccessMixin,  DeleteView):
     model = DigitalAccount
     template_name = 'dashboard/digitalaccount_confirm_delete.html'
-    success_url = reverse_lazy('digitalaccount_list')
+    success_url = reverse_lazy('dashboard:digitalaccount_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -299,7 +300,7 @@ class ContactCreateView(FullAccessMixin, CreateView):
     model = Contact
     form_class = ContactForm
     template_name = 'dashboard/contact_form.html'
-    success_url = reverse_lazy('contact_list')
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -313,7 +314,7 @@ class ContactUpdateView(FullAccessMixin, UpdateView):
     model = Contact
     form_class = ContactForm
     template_name = 'dashboard/contact_form.html'
-    success_url = reverse_lazy('contact_list')
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -321,10 +322,10 @@ class ContactUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ContactDeleteView(FullAccessMixin, DeleteView):
+class ContactDeleteView(DeleteAccessMixin, DeleteView):
     model = Contact
     template_name = 'dashboard/contact_confirm_delete.html'
-    success_url = reverse_lazy('contact_list')
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -371,7 +372,7 @@ class DeviceCreateView(FullAccessMixin, CreateView):
     model = Device
     form_class = DeviceForm
     template_name = 'dashboard/device_form.html'
-    success_url = reverse_lazy('device_list')
+    success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -385,7 +386,7 @@ class DeviceUpdateView(FullAccessMixin, UpdateView):
     model = Device
     form_class = DeviceForm
     template_name = 'dashboard/device_form.html'
-    success_url = reverse_lazy('device_list')
+    success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -393,10 +394,10 @@ class DeviceUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DeviceDeleteView(FullAccessMixin, DeleteView):
+class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     model = Device
     template_name = 'dashboard/device_confirm_delete.html'
-    success_url = reverse_lazy('device_list')
+    success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -443,7 +444,7 @@ class ImportantDocumentCreateView(FullAccessMixin, CreateView):
     model = ImportantDocument
     form_class = ImportantDocumentForm
     template_name = 'dashboard/importantdocument_form.html'
-    success_url = reverse_lazy('importantdocument_list')
+    success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -462,7 +463,7 @@ class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
     model = ImportantDocument
     form_class = ImportantDocumentForm
     template_name = 'dashboard/importantdocument_form.html'
-    success_url = reverse_lazy('importantdocument_list')
+    success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -475,10 +476,10 @@ class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ImportantDocumentDeleteView(FullAccessMixin, DeleteView):
+class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     model = ImportantDocument
     template_name = 'dashboard/importantdocument_confirm_delete.html'
-    success_url = reverse_lazy('importantdocument_list')
+    success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -513,7 +514,7 @@ class DelegationGrantCreateView(FullAccessMixin, CreateView):
     model = DelegationGrant
     form_class = DelegationGrantForm
     template_name = 'dashboard/delegationgrant_form.html'
-    success_url = reverse_lazy('delegationgrant_list')
+    success_url = reverse_lazy('dashboard:delegationgrant_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -532,7 +533,7 @@ class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
     model = DelegationGrant
     form_class = DelegationGrantForm
     template_name = 'dashboard/delegationgrant_form.html'
-    success_url = reverse_lazy('delegationgrant_list')
+    success_url = reverse_lazy('dashboard:delegationgrant_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -545,10 +546,10 @@ class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DelegationGrantDeleteView(FullAccessMixin, DeleteView):
+class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
     model = DelegationGrant
     template_name = 'dashboard/delegationgrant_confirm_delete.html'
-    success_url = reverse_lazy('delegationgrant_list')
+    success_url = reverse_lazy('dashboard:delegationgrant_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -583,7 +584,7 @@ class EmergencyNoteCreateView(FullAccessMixin, CreateView):
     model = EmergencyNote
     form_class = EmergencyNoteForm
     template_name = 'dashboard/emergencynote_form.html'
-    success_url = reverse_lazy('emergencynote_list')
+    success_url = reverse_lazy('dashboard:emergencynote_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -615,10 +616,10 @@ class EmergencyNoteUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class EmergencyNoteDeleteView(FullAccessMixin, DeleteView):
+class EmergencyNoteDeleteView(DeleteAccessMixin, DeleteView):
     model = EmergencyNote
     template_name = 'dashboard/emergencynote_confirm_delete.html'
-    success_url = reverse_lazy('emergencynote_list')
+    success_url = reverse_lazy('dashboard:emergencynote_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -653,7 +654,7 @@ class CheckupCreateView(FullAccessMixin, CreateView):
     model = Checkup
     form_class = CheckupForm
     template_name = 'dashboard/checkup_form.html'
-    success_url = reverse_lazy('checkup_list')
+    success_url = reverse_lazy('dashboard:checkup_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -668,7 +669,7 @@ class CheckupUpdateView(FullAccessMixin, UpdateView):
     model = Checkup
     form_class = CheckupForm
     template_name = 'dashboard/checkup_form.html'
-    success_url = reverse_lazy('checkup_list')
+    success_url = reverse_lazy('dashboard:checkup_list')
     owner_field = 'profile__user'
     
     def form_valid(self, form):
@@ -676,10 +677,10 @@ class CheckupUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class CheckupDeleteView(FullAccessMixin, DeleteView):
+class CheckupDeleteView(DeleteAccessMixin, DeleteView):
     model = Checkup
     template_name = 'dashboard/checkup_confirm_delete.html'
-    success_url = reverse_lazy('checkup_list')
+    success_url = reverse_lazy('dashboard:checkup_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -714,7 +715,7 @@ class RecoveryRequestCreateView(FullAccessMixin, CreateView):
     model = RecoveryRequest
     form_class = RecoveryRequestForm
     template_name = 'dashboard/recoveryrequest_form.html'
-    success_url = reverse_lazy('recoveryrequest_list')
+    success_url = reverse_lazy('dashboard:recoveryrequest_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -734,7 +735,7 @@ class RecoveryRequestUpdateView(FullAccessMixin, UpdateView):
     model = RecoveryRequest
     form_class = RecoveryRequestForm
     template_name = 'dashboard/recoveryrequest_form.html'
-    success_url = reverse_lazy('recoveryrequest_list')
+    success_url = reverse_lazy('dashboard:recoveryrequest_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -747,10 +748,10 @@ class RecoveryRequestUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class RecoveryRequestDeleteView(FullAccessMixin, DeleteView):
+class RecoveryRequestDeleteView(DeleteAccessMixin, DeleteView):
     model = RecoveryRequest
     template_name = 'dashboard/recoveryrequest_confirm_delete.html'
-    success_url = reverse_lazy('recoveryrequest_list')
+    success_url = reverse_lazy('dashboard:recoveryrequest_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
@@ -758,47 +759,5 @@ class RecoveryRequestDeleteView(FullAccessMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-#Working Copy
-# from django.shortcuts import render, redirect
-# from django.contrib.auth import login, logout, authenticate, get_user_model
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.views import View
-# from django.views.generic import TemplateView
-# from django.views.decorators.csrf import csrf_protect
-# from django.utils.decorators import method_decorator
-# from django.contrib import messages
-# from django.utils import timezone
-# from datetime import timedelta
-# # from .forms import UserRegistrationForm, UserLoginForm
-# import logging
-
-# class AccountDirectoryView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/accountdirectory.html"
-
-# class ContactDelegationView(LoginRequiredMixin,TemplateView):
-#    template_name = "dashboard/contactdelegation.html"
-   
-# class DecisionView(LoginRequiredMixin,TemplateView):
-#    template_name = "dashboard/decisions.html"
-   
-# class DevicesView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/devices.html"
-   
-# class DigitalEstateView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/digitalestate.html"
-   
-# class EmergencyNotesView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/emergencynotes.html"
-   
-# class FamilyAwarenessView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/familyawareness.html"
-   
-# class ProfileView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/profile.html"
-   
-# class AnnualReviewView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/annualreview.html"
-
-# class QuarterlyReviewView(LoginRequiredMixin, TemplateView):
-#    template_name = "dashboard/quarterlyreview.html"
+class MainTemplateView(TemplateView):
+    template_name = 'dashboard/main_template.html'

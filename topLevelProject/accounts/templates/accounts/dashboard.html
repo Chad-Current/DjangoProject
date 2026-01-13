@@ -143,6 +143,22 @@
           <p>45 critical accounts</p>
         </div>
         <div class="cl-card-5">
+          <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+            <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag>Needs Review</tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>My Profile</h5>
+          <p>Personal information area</p>
+        </div>
+        <div class="cl-card-4">
+          <p>{{username}}</p>
+        </div>
+        <div class="cl-card-5">
           <a href="{% url 'dashboard:profile_detail' %}"><button class="button">View</button></a>
         </div>
       </div>
