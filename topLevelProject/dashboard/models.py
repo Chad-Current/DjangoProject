@@ -64,7 +64,7 @@ class AccountCategory(models.Model):
     )
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    sort_order = models.IntegerField(default=0, help_text="Display order")
+    # sort_order = models.IntegerField(default=0, help_text="Display order")
     # REMOVE SORT ORDER 
     created_at = models.DateTimeField(default=timezone.now)
     # created_at = models.DateTimeField(auto_now_add=True)
@@ -72,7 +72,7 @@ class AccountCategory(models.Model):
     
     class Meta:
         db_table = 'account_categories'
-        ordering = ['user', 'sort_order', 'name']
+        ordering = ['user', 'name']
         verbose_name_plural = 'Account categories'
         unique_together = ['user', 'name']
     

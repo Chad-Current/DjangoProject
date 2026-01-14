@@ -65,11 +65,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(AccountCategory)
 class AccountCategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'user', 'sort_order', 'created_at']
+    list_display = ['name', 'user', 'created_at']
     list_filter = ['created_at']
     search_fields = ['name', 'description', 'user__username']
     readonly_fields = ['user', 'created_at', 'updated_at']
-    ordering = ['user', 'sort_order', 'name']
+    ordering = ['user',  'name']
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
@@ -18,7 +20,11 @@
     {% include "baseapp/navbar.html" %}
     <div class="parent-row-x">
       <div class="section-header">
-        <h1>Welcome back, {{user.username}}</h1>
+          {% if not user.profile.full_name %}
+          <th1>Welcome</h1>
+          {% else %}
+          <h1>Welcome back {{ user.username|capfirst }}</tag>
+          {% endif %}
         <h3>Your prepardness level is 85% complete. Let's finish up!</h3>
       </div>
       <div class="card-grid">
@@ -53,7 +59,11 @@
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
+          {% if not profile.full_name %}
           <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>Accounts with access details</h5>
@@ -111,7 +121,7 @@
           <p>Last updated: Nov 15, 2024</p>
         </div>
         <div class="cl-card-5">
-         <a href="{% url 'dashboard:digitalaccount_list' %}"><button class="button">View</button></a>
+          <a href="{% url 'dashboard:digitalaccount_list' %}"><button class="button">View</button></a>
         </div>
       </div>
       <div class="client-cards border-light">
@@ -146,17 +156,21 @@
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-            <div class="client-cards border-light">
+      <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Needs Review</tag>
+          {% if not user.profile.full_name %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>My Profile</h5>
           <p>Personal information area</p>
         </div>
         <div class="cl-card-4">
-          <p>{{username}}</p>
+          <p>{{ user.username }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:profile_detail' %}"><button class="button">View</button></a>
@@ -201,6 +215,9 @@
         </div>
       </div>
     </div>
+
+
+
 
     {% include "baseapp/footer.html" %}
 

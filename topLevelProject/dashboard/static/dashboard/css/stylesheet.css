@@ -1,8 +1,51 @@
-.form-layout {
+table a:last-child{
+    margin: 4em 0 0;
+}    
+th {
+    font-size: var(--font-lg);
+    font-family: var(--main-font);
+    color: var(--ten-percent);
+}
+
+td {
+    font-size: var(--font-md);
+    font-family: var(--main-font);
+    color: var(--thirty-percent);
+}
+
+.a-style {
+    font-size: var(--font-md);
+    font-family: var(--main-font);
+    text-decoration: none;
+    color: var(--thirty-percent);
+    &:hover {
+        color: var(--sixty-percent);
+    }
+}
+
+.form-row {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+
+    input {
+        width: 100%;
+
+    }
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-layout {
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
     justify-content: space-evenly;
+
     * {
         padding: 1em;
     }
@@ -26,20 +69,20 @@
 }
 
 .cancel {
-  color: red;
-  padding: 0.7em 1.7em;
-  border-radius: 1.5em;
-  background: var(--background-color);
-  cursor: pointer;
-  border: 1px solid var(--background-color);
-  transition: all 0.3s;
-  box-shadow: 6px 6px 12px #02020214, 0px -1px 12px var(--purewhite-color);
-  font-size: var(--font-nm);
-  font-family: var(--main-font);
-  font-weight: 600;
-  width: max-content;
-  /* margin-right: auto; */
-  text-decoration: none;
+    color: red;
+    padding: 0.7em 1.7em;
+    border-radius: 1.5em;
+    background: var(--background-color);
+    cursor: pointer;
+    border: 1px solid var(--background-color);
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #02020214, 0px -1px 12px var(--purewhite-color);
+    font-size: var(--font-nm);
+    font-family: var(--main-font);
+    font-weight: 600;
+    width: max-content;
+    /* margin-right: auto; */
+    text-decoration: none;
 }
 
 .form-label {
@@ -48,3 +91,4 @@
     font-weight: 700;
     color: var(--ten-percent);
 }
+

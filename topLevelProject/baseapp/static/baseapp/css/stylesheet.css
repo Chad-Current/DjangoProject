@@ -72,15 +72,6 @@ body::-webkit-scrollbar-thumb {
   --accent-color: #ffa62b;
 }
 
-/* a {
-  font-size: var(--font-md);
-  font-family: var(--main-font);
-  text-decoration: none;
-  color: var(--dark-blue);
-  &:hover {
-    color: var(--anchor-hov);
-  }
-} */
 
 h1 {
   font-family: var(--title-font);

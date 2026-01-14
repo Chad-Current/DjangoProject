@@ -72,15 +72,14 @@ class ProfileForm(forms.ModelForm):
 class AccountCategoryForm(forms.ModelForm):
     class Meta:
         model = AccountCategory
-        fields = ["name", "description", "sort_order"]
+        fields = ["name", "description"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('name', css_class='form-group col-md-8 mb-0 form-label'),
-                Column('sort_order', css_class='form-group col-md-4 mb-0'),
+                Column('name', css_class='form-group col-md-8 mb-0'),
             ),
             'description',
             Submit('submit', 'Save Category', css_class='btn btn-primary')
