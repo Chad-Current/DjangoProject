@@ -23,7 +23,7 @@
         {% if not user.profile.full_name %}
         <th1>Welcome</h1>
           {% else %}
-          <h1>Welcome back {{ profile.full_name|default:user.username }}</tag>
+          <h1>Welcome back {{ user.profile.full_name|default:user.username }}</tag>
             {% endif %}
             <h3>Your prepardness level is 85% complete. Let's finish up!</h3>
       </div>
