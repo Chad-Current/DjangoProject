@@ -136,11 +136,22 @@ class AccountCategoryCreateView(FullAccessMixin, CreateView):
     template_name = 'dashboard/accountcategory_form.html'
     success_url = reverse_lazy('dashboard:accountcategory_list')
     owner_field = 'user'
-    
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, 'Category created successfully.')
-        return super().form_valid(form)
+        obj, created = AccountCategory.objects.get_or_create(
+            user=self.request.user,
+            name=form.cleaned_data['name'],
+            defaults=form.cleaned_data
+        )
+        if created:
+            messages.success(self.request, 'Category created successfully.')
+        else:
+            messages.info(self.request, 'Category already exists.')
+        return redirect(self.success_url)
+    # def form_valid(self, form):
+    #     form.instance.user = self.request.user
+    #     messages.success(self.request, 'Category created successfully.')
+    #     return super().form_valid(form)
 
 
 class AccountCategoryUpdateView(FullAccessMixin, UpdateView):

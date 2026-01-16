@@ -25,7 +25,7 @@
 <div class="main">
     <div class="parent-row">
         <div class="list-view">
-            <h1>Emergency Notes</h1>
+            <h1>Emergency Contacts</h1>
             {% if notes %}
             <table class="table table-striped">
                 <thead>
@@ -34,14 +34,14 @@
                         <th>Relationship</th>
                         <th>Information</th>
                         <th>Update</th>
-                        <th>Remove Note</th>
+                        <th>Remove</th>
                 </thead>
                 <tbody>
                     {% for note in notes %}
                     <tr>
                         <td>{{ note.name }}</td>
                         <td>{{ note.contact }}</td>
-                        <td>{{ note.body}}</td>
+                        <td>{{ note.body|truncatechars:20}}</td>
                         <td>
                             {% if can_modify %}
                             <a href="{% url 'dashboard:emergencynote_update' note.pk %}" class="a-style">Edit</a>
@@ -61,7 +61,7 @@
             <p>No Emergency Notes have been added yet, let's get a note add!</p>
             {% endif %}
             {% if can_modify %}
-            <a href="{% url 'dashboard:emergencynote_create' %}"><button class="button button-100">Add Notes</button></a>
+            <a href="{% url 'dashboard:emergencynote_create' %}"><button class="button button-100">Add Contact</button></a>
             {% endif %}
         </div>
     </div>

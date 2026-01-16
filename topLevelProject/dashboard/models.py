@@ -62,48 +62,6 @@ class AccountCategory(models.Model):
         related_name='account_categories',
         editable=False
     )
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    # sort_order = models.IntegerField(default=0, help_text="Display order")
-    # REMOVE SORT ORDER 
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'account_categories'
-        ordering = ['user',  'name']
-        verbose_name_plural = 'Account categories'
-        unique_together = ['user', 'name']
-    
-    def __str__(self):
-        return f"{self.name} ({self.user.username})"
-
-
-class DigitalAccount(models.Model):
-    """
-    Individual digital accounts (social media, email, banking, etc.)
-    """
-    INSTRUCTION_CHOICES = [
-        ('keep', 'Keep Active'),
-        ('close', 'Close Account'),
-        ('memorialize', 'Memorialize'),
-        ('other', 'Other (See Notes)'),
-    ]
-    
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='digital_accounts',
-        editable=False
-    )
-    category = models.ForeignKey(
-        AccountCategory,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='accounts'
-    )
     DIGITAL_ACCOUNT_CATEGORIES = [
         ("email", "Email Account"),
         ("social_media", "Social Media Account"),
@@ -131,8 +89,50 @@ class DigitalAccount(models.Model):
         ("ride_hailing_delivery", "Ride-Hailing/Delivery Account"),
         ("password_manager", "Password Manager Account"),
     ]
+    name = models.CharField(max_length=100, choices=DIGITAL_ACCOUNT_CATEGORIES)
+    description = models.CharField(blank=True)
+    # sort_order = models.IntegerField(default=0, help_text="Display order")
+    # REMOVE SORT ORDER 
+    created_at = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'account_categories'
+        ordering = ['user',  'name']
+        verbose_name_plural = 'Account categories'
+        unique_together = ['user', 'name']
+    
+    def __str__(self):
+        return f"{self.name}"
+
+
+class DigitalAccount(models.Model):
+    """
+    Individual digital accounts (social media, email, banking, etc.)
+    """
+    INSTRUCTION_CHOICES = [
+        ('keep', 'Keep Active'),
+        ('close', 'Close Account'),
+        ('memorialize', 'Memorialize'),
+        ('other', 'Other (See Notes)'),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='digital_accounts',
+        editable=False
+    )
+    category = models.ForeignKey(
+        AccountCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='accounts'
+    )
+
     name = models.CharField(max_length=200, help_text="Account name or service")
-    digital_account_type = models.CharField(max_length=20, choices=DIGITAL_ACCOUNT_CATEGORIES)
     provider = models.CharField(max_length=200, help_text="Company/service provider")
     website_url = models.URLField(blank=True, validators=[URLValidator()])
     username_or_email = models.CharField(
@@ -339,7 +339,7 @@ class Device(models.Model):
         blank=True,
         help_text="Where device is typically kept"
     )
-    unlock_method_description = models.TextField(
+    unlock_method_description = models.CharField(
         blank=True,
         help_text="How to unlock (without revealing actual password)"
     )

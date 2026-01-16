@@ -30,26 +30,16 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Update</th>
+                        <th>Account Type</th>
+                        <!-- <th>Description</th> -->
                         <th>Remove Item</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for category in categories %}
                     <tr>
-                        {% if category.accounts.exists %}
-                        <td><a href="{% url 'dashboard:digitalaccount_detail' category.pk %}">{{ category.name }} </a></td>
-                        {% else %}
                         <td>{{ category.name }}</td>
-                        {% endif %}
-                        <td>{{ category.description }}</td>
-                        <td>
-                            {% if can_modify %}
-                            <a href="{% url 'dashboard:accountcategory_update' category.pk %}" class="a-style">Edit</a>
-                            {% endif %}
-                        </td>
+                        <!-- <td>{{ category.description }}</td> -->
                         <td>
                             {% if can_modify %}
                             <a href="{% url 'dashboard:accountcategory_delete' category.pk %}"
