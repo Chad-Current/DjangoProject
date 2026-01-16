@@ -20,12 +20,12 @@
     {% include "baseapp/navbar.html" %}
     <div class="parent-row-x">
       <div class="section-header">
-          {% if not user.profile.full_name %}
-          <th1>Welcome</h1>
+        {% if not user.profile.full_name %}
+        <th1>Welcome</h1>
           {% else %}
-          <h1>Welcome back {{ user.username|capfirst }}</tag>
-          {% endif %}
-        <h3>Your prepardness level is 85% complete. Let's finish up!</h3>
+          <h1>Welcome back {{ profile.full_name|default:user.username }}</tag>
+            {% endif %}
+            <h3>Your prepardness level is 85% complete. Let's finish up!</h3>
       </div>
       <div class="card-grid">
         <div class="card-1">
@@ -56,10 +56,11 @@
       <h1>Digital Estate</h1>
     </div>
     <div class="section-mt-5">
+<!-- ACCOUNTS AREA-->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          {% if not profile.full_name %}
+          {% if not request.user.account_categories.count %}
           <tag class="needs-attention">Needs Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>
@@ -67,51 +68,66 @@
         </div>
         <div class="cl-card-3">
           <h5>Accounts with access details</h5>
-          <p>127 accounts tracked</p>
+          <p>{{ request.user.account_categories.count }} accounts tracked</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: Jan 31, 2025</p>
+          <p>{{ request.user.account_categories.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:accountcategory_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+<!-- DEVICES AREA-->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Computer--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
           <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
-          <h5>Device Access Review</h5>
-          <p>Document all devices and their access credentials</p>
+          <h5>Devices details</h5>
+          <p>{{ user.profile.devices.all.count }} devices tracked</p>
         </div>
         <div class="cl-card-4">
-          <p>5 devices documented</p>
+          <p>{{ user.profile.devices.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:device_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+<!-- EMERGENCY AREA-->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          {% if not user.profile.emergency_notes.all.count %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>Emergency Contact + Delegation</h5>
           <p>Designate who can access your estate in emergencies</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: Feb 21, 2025</p>
+          <p>{{ user.profile.emergency_notes.last.updated_at  }}</p>
         </div>
         <div class="cl-card-5">
-          <a href="{% url 'dashboard:delegationgrant_list' %}"><button class="button">View</button></a>
+          <a href="{% url 'dashboard:emergencynote_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+  <!-- DIGITAL ESTATE DOCUMENTS AREA-->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>Digital Estate Document</h5>
@@ -124,10 +140,15 @@
           <a href="{% url 'dashboard:digitalaccount_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+<!-- FAMILY CARE AREA-->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Family--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>What My Family Needs to Know</h5>
@@ -140,10 +161,15 @@
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+<!-- IMPORTANT INFORMATION AREA -->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Needs Review</tag>
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention">Needs Review</tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>What Matters vs What to Ignore</h5>
@@ -156,6 +182,7 @@
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
+<!-- PROFILE AREA -->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
@@ -182,6 +209,7 @@
       <h1>Scheduled Reviews & Checkups</h1>
     </div>
     <div class="section-mt-6">
+<!-- QUARTERLY REVIEW AREA -->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
@@ -198,6 +226,7 @@
           <a href="{% url 'dashboard:checkup_list' %}"><button class="button">Update Now</button></a>
         </div>
       </div>
+<!-- ANNUAL REVIEW AREA -->
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">

@@ -74,9 +74,9 @@ input {
   .card-4 {
     align-items: flex-start;
     justify-content: flex-start;
-    width: clamp(10rem, 12vw, 12rem);
-    height: 100%;
 
+    /* width: clamp(10rem, 12vw, 12rem);
+    height: 100%; */
     h5 {
       font-size: var(--font-nm);
       color: var(--ten-percent);
@@ -228,6 +228,64 @@ button a {
   }
 }
 
+  .block-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 1em;
+    width: 80%;
+  }
+
+.blocking {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+  "block-1"
+  "block-2";
+  border-radius: 20px;
+  box-shadow: 6px 6px 12px #02020214, 0px -1px 12px var(--purewhite-color);
+  padding: .35em;
+  word-wrap: break-word;
+  width: clamp(8em, 10vw, 8em);
+  height: clamp(6em, 8vw, 8em);
+  a {
+    text-decoration: none;
+    font-size: var(--font-nm);
+    font-family: var(--main-font);
+    font-size: 700;
+    color: var(--thirty-percent);
+  }
+}
+
+.block-1 {
+  grid-area: block-1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding:0;
+}
+
+.block-2 {
+  grid-area: block-2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0;
+  text-align: center;
+}
+
+
+.needs-attention {
+  background-color: rgba(248, 78, 78, 0.651)
+}
+
+.completed {
+  background-color: rgba(172, 255, 47, 0.377);
+}
+
 @media (max-width: 780px) {
   .section-mt-5 {
     display: flex;
@@ -249,19 +307,29 @@ button a {
     margin: 2em 4em;
 
     .client-cards {
-      width: clamp(20em, 30vw, 30em);
+      width: clamp(20em, 20vw, 30em);
     }
+  }
+
+  .block-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: space-between;
+    margin: 1em 0; */
+  }
+
+  .blocking {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(10em, 30vw, 20em);
   }
 }
 
 
-.needs-attention {
-  background-color: rgba(248, 78, 78, 0.651)
-}
 
-.completed {
-  background-color: rgba(172, 255, 47, 0.377);
-}
+
 
 @media screen and (781px <=width <=1024px) {
   .section-mt-5 {

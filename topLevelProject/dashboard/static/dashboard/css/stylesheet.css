@@ -56,6 +56,16 @@ td {
     background-color: var(--purewhite-color);
     padding: 2em;
 }
+.delete-view {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-around;
+    /* width: 100%; */
+    background-color: var(--purewhite-color);
+    padding: 2em;
+    border-radius: 20px;
+}
 
 .list-view {
     display: flex;

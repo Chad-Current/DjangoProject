@@ -7,9 +7,11 @@ body {
 body::-webkit-scrollbar {
   width: 0.5em;
 }
+
 body::-webkit-scrollbar-track {
   background: var(--purewhite-color);
 }
+
 body::-webkit-scrollbar-thumb {
   background: var(--text-color-dark);
 }
@@ -21,41 +23,34 @@ body::-webkit-scrollbar-thumb {
 }
 
 :root {
-  --font-nm: clamp(
-    0.75rem,
-    0.8rem + 0.2vw,
-    1.05rem
-  ); /* ~15–17px [web:5][web:10] */
-  --font-sm: clamp(
-    0.75rem,
-    0.7rem + 0.2vw,
-    1rem
-  ); /* ~12–14px [web:5][web:10] */
-  --font-md: clamp(
-    1.05rem,
-    0.9rem + 0.3vw,
-    1.25rem
-  ); /* ~17–20px [web:5][web:10] */
-  --font-lg: clamp(
-    1.25rem,
-    1.05rem + 0.3vw,
-    1.6rem
-  ); /* ~20–26px [web:5][web:8] */
-  --font-xl: clamp(
-    1.6rem,
-    1.6rem + 0.3vw,
-    2.5rem
-  ); /* ~26–34px [web:5][web:8] */
-  --font-xxl: clamp(
-    2rem,
-    1.6rem + 0.3vw,
-    3.2rem
-  ); /* ~34–45px [web:5][web:8] */
-  --font-title-size: clamp(
-    3rem,
-    1rem + 0.4vw,
-    5.75rem
-  ); /* ~45–60px [web:5][web:10] */
+  --font-nm: clamp(0.75rem,
+      0.8rem + 0.2vw,
+      1.05rem);
+  /* ~15–17px [web:5][web:10] */
+  --font-sm: clamp(0.75rem,
+      0.7rem + 0.2vw,
+      1rem);
+  /* ~12–14px [web:5][web:10] */
+  --font-md: clamp(1.05rem,
+      0.9rem + 0.3vw,
+      1.25rem);
+  /* ~17–20px [web:5][web:10] */
+  --font-lg: clamp(1.25rem,
+      1.05rem + 0.3vw,
+      1.6rem);
+  /* ~20–26px [web:5][web:8] */
+  --font-xl: clamp(1.6rem,
+      1.6rem + 0.3vw,
+      2.5rem);
+  /* ~26–34px [web:5][web:8] */
+  --font-xxl: clamp(2rem,
+      1.6rem + 0.3vw,
+      3.2rem);
+  /* ~34–45px [web:5][web:8] */
+  --font-title-size: clamp(3rem,
+      1rem + 0.4vw,
+      5.75rem);
+  /* ~45–60px [web:5][web:10] */
 
   --title-font: "Crimson";
   --main-font: "Nunito";
@@ -66,12 +61,21 @@ body::-webkit-scrollbar-thumb {
   --background-color: #f3f7fc;
   --text-color: #ede7e3;
   --text-color-dark: #16283b;
-  --sixty-percent: #62a2ce; /* Thirty + Sixty for Icon colors */
+  --sixty-percent: #62a2ce;
+  /* Thirty + Sixty for Icon colors */
   --thirty-percent: #2d6a9c;
   --ten-percent: #254e70;
   --accent-color: #ffa62b;
 }
 
+a {
+  font-size: var(--font-lg);
+  font-family: var(--main-font);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--thirty-percent);
+  width: fit-content;
+}
 
 h1 {
   font-family: var(--title-font);
@@ -154,4 +158,3 @@ strong {
 .icon {
   width: 5.5em;
 }
-

@@ -418,7 +418,7 @@ class EmergencyNoteForm(forms.ModelForm):
         model = EmergencyNote
         fields = [
             "contact",
-            "title",
+            "name",
             "body",
         ]
     
@@ -429,14 +429,14 @@ class EmergencyNoteForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['name'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact'].queryset = Contact.objects.none()
+                self.fields['name'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'contact',
-            'title',
+            'name',
             'body',
             Submit('submit', 'Save Emergency Note', css_class='btn btn-primary')
         )

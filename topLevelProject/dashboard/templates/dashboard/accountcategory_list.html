@@ -21,6 +21,7 @@
 </head>
 
 {% include "baseapp/navbar.html" %}
+{% include "dashboard/navblocks.html" %}
 <div class="main">
     <div class="parent-row">
         <div class="list-view">
@@ -38,7 +39,11 @@
                 <tbody>
                     {% for category in categories %}
                     <tr>
+                        {% if category.accounts.exists %}
+                        <td><a href="{% url 'dashboard:digitalaccount_detail' category.pk %}">{{ category.name }} </a></td>
+                        {% else %}
                         <td>{{ category.name }}</td>
+                        {% endif %}
                         <td>{{ category.description }}</td>
                         <td>
                             {% if can_modify %}
@@ -65,7 +70,6 @@
         </div>
     </div>
 </div>
-
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 

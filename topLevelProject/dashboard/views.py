@@ -603,7 +603,7 @@ class EmergencyNoteUpdateView(FullAccessMixin, UpdateView):
     model = EmergencyNote
     form_class = EmergencyNoteForm
     template_name = 'dashboard/emergencynote_form.html'
-    success_url = reverse_lazy('emergencynote_list')
+    success_url = reverse_lazy('dashboard:emergencynote_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
