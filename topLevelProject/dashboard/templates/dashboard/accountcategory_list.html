@@ -41,7 +41,7 @@
                         <td>{{ category.name }}</td>
                         <!-- <td>{{ category.description }}</td> -->
                         <td>
-                            {% if can_modify %}
+                            {% if can_modify and profile.category_count > 1 %}
                             <a href="{% url 'dashboard:accountcategory_delete' category.pk %}"
                                 class="a-style">Delete</a>
                             {% endif %}

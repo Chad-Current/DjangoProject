@@ -144,6 +144,7 @@ tiny {
 
 .section-mt-1 {
   flex-direction: column;
+  margin: 0 0 4em;
   h2 {
     /* font-size: var(--font-xxl); */
     margin: 0;
@@ -369,6 +370,11 @@ button:active {
   align-items: flex-start;
 }
 
+/* .top-card img {
+    position: absolute;
+    transform: translateY(-80%);
+} */
+
 /*///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////*/
 /* Mobile Media */
@@ -473,6 +479,7 @@ button:active {
     display: flex;
     flex-flow: column;
     align-items: center;
+    justify-content: space-around;
   }
   button.button {
     margin: 1em 0;

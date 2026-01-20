@@ -39,14 +39,14 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Provider:</strong></div>
-                        <div class="col-md-9">{{ account.provider|default:"Not specified" }}</div>
+                        <div class="col-md-9"><h5>{{ account.provider|default:"Not specified" }}</h5></div>
                     </div>
                     
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Category:</strong></div>
                         <div class="col-md-9">
                             {% if account.category %}
-                            {{ account.category.name }}
+                            <h5>{{ account.category.name }}</h5>
                             {% else %}
                             <em>Uncategorized</em>
                             {% endif %}
@@ -58,7 +58,7 @@
                         <div class="col-md-3"><strong>Website:</strong></div>
                         <div class="col-md-9">
                             <a href="{{ account.website_url }}" target="_blank" rel="noopener noreferrer">
-                                {{ account.website_url }}
+                                <h5>{{ account.website_url }}</h5>
                             </a>
                         </div>
                     </div>
@@ -67,14 +67,14 @@
                     {% if account.username_or_email %}
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Username/Email:</strong></div>
-                        <div class="col-md-9">{{ account.username_or_email }}</div>
+                        <div class="col-md-9"><h5>{{ account.username_or_email }}</h5></div>
                     </div>
                     {% endif %}
                     
                     {% if account.credential_storage_location %}
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Password Location:</strong></div>
-                        <div class="col-md-9">{{ account.credential_storage_location }}</div>
+                        <div class="col-md-9"><h5>{{ account.credential_storage_location }}</h5></div>
                     </div>
                     {% endif %}
                 </div>
@@ -102,7 +102,7 @@
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Notes for Family:</strong></div>
                         <div class="col-md-9">
-                            <div class="notes-box">{{ account.notes_for_family|linebreaks }}</div>
+                            <div class="notes-box"><h5>{{ account.notes_for_family|linebreaks }}</h5></div>
                         </div>
                     </div>
                     {% endif %}
@@ -116,12 +116,12 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Created:</strong></div>
-                        <div class="col-md-9">{{ account.created_at|date:"F d, Y g:i A" }}</div>
+                        <div class="col-md-9"><h5>{{ account.created_at|date:"F d, Y g:i A" }}</h5></div>
                     </div>
                     
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Last Updated:</strong></div>
-                        <div class="col-md-9">{{ account.updated_at|date:"F d, Y g:i A" }}</div>
+                        <div class="col-md-9"><h5>{{ account.updated_at|date:"F d, Y g:i A" }}</h5></div>
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                         <tbody>
                             {% for review in account.relevance_reviews.all %}
                             <tr>
-                                <td>{{ review.review_date|date:"M d, Y" }}</td>
+                                <td><h5>{{ review.review_date|date:"M d, Y" }}</h5></td>
                                 <td>
                                     {% if review.matters %}
                                     <span class="badge bg-success">Yes</span>
@@ -152,8 +152,8 @@
                                     <span class="badge bg-warning">No</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ review.reasoning|truncatewords:15 }}</td>
-                                <td>{{ review.next_review_due|date:"M d, Y"|default:"Not set" }}</td>
+                                <td><h5>{{ review.reasoning|truncatewords:15 }}</h5></td>
+                                <td><h5>{{ review.next_review_due|date:"M d, Y"|default:"Not set" }}</h5></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -162,18 +162,20 @@
             </div>
             {% endif %}
 
-            <div class="action-buttons">
+            <div class="button-row">
+            <!-- <div class="action-buttons"> -->
                 {% if can_modify %}
-                <a href="{% url 'dashboard:digitalaccount_update' account.pk %}" class="button button-primary">
-                    Edit Account
+                <a href="{% url 'dashboard:digitalaccount_update' account.pk %}">
+                    <button class="button">Edit Account</button>
                 </a>
-                <a href="{% url 'dashboard:digitalaccount_delete' account.pk %}" class="button button-danger">
-                    Delete Account
+                <a href="{% url 'dashboard:digitalaccount_delete' account.pk %}">
+                    <button class="button">Delete Account</button>
                 </a>
                 {% endif %}
-                <a href="{% url 'dashboard:accountcategory_list' %}" class="button button-secondary">
-                    Back to Accounts
+                <a href="{% url 'dashboard:digitalaccount_list' %}">
+                    <button class="button">Back to Accounts</button>
                 </a>
+            <!-- </div> -->
             </div>
         </div>
     </div>

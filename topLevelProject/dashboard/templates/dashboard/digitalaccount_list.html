@@ -40,7 +40,7 @@
                 <tbody>
                     {% for digital in accounts %}
                     <tr>
-                        <td>{{ digital.name }}</td>
+                        <td><a href="{% url 'dashboard:digitalaccount_detail' digital.pk %}">{{ digital.name }}</a></td>
                         <td>{{ digital.website_url}}</td>
                         <td>{{ digital.is_critical|yesno:"Yes,No" }}</td>
                         <td>

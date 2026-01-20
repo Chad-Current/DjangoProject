@@ -90,7 +90,7 @@ class AccountCategory(models.Model):
         ("password_manager", "Password Manager Account"),
     ]
     name = models.CharField(max_length=100, choices=DIGITAL_ACCOUNT_CATEGORIES)
-    description = models.CharField(blank=True)
+    description = models.CharField(max_length=500, blank=True)
     # sort_order = models.IntegerField(default=0, help_text="Display order")
     # REMOVE SORT ORDER 
     created_at = models.DateTimeField(default=timezone.now)
@@ -340,6 +340,7 @@ class Device(models.Model):
         help_text="Where device is typically kept"
     )
     unlock_method_description = models.CharField(
+        max_length=200,
         blank=True,
         help_text="How to unlock (without revealing actual password)"
     )

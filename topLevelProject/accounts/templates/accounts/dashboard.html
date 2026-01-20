@@ -21,7 +21,7 @@
     <div class="parent-row-x">
       <div class="section-header">
         {% if not user.profile.full_name %}
-        <th1>Welcome</h1>
+        <h1>Welcome {{ user.username }}</h1>
           {% else %}
           <h1>Welcome back {{ user.profile.full_name|default:user.username }}</tag>
             {% endif %}
