@@ -140,47 +140,6 @@
                     </div>
                 </div>
 
-                {% if account.relevance_reviews.exists %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h3>Review History</h3>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Still Matters?</th>
-                                    <th>Reasoning</th>
-                                    <th>Next Review</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for review in account.relevance_reviews.all %}
-                                <tr>
-                                    <td>
-                                        <h5>{{ review.review_date|date:"M d, Y" }}</h5>
-                                    </td>
-                                    <td>
-                                        {% if review.matters %}
-                                        <span class="badge bg-success">Yes</span>
-                                        {% else %}
-                                        <span class="badge bg-warning">No</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <h5>{{ review.reasoning|truncatewords:15 }}</h5>
-                                    </td>
-                                    <td>
-                                        <h5>{{ review.next_review_due|date:"M d, Y"|default:"Not set" }}</h5>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
 
                 <div class="button-row">
                     <!-- <div class="action-buttons"> -->

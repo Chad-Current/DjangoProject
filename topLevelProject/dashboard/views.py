@@ -179,6 +179,9 @@ class AccountCategoryDeleteView(DeleteAccessMixin,  DeleteView):
 # ============================================================================
 # ACCOUNT RELEVANCE REVIEW VIEWS
 # ============================================================================
+# ============================================================================
+# ACCOUNT RELEVANCE REVIEW VIEWS
+# ============================================================================
 class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
     model = AccountRelevanceReview
     template_name = 'dashboard/accountrelevancereview_list.html'
@@ -189,18 +192,31 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
     def get_queryset(self):
         try:
             profile = Profile.objects.get(user=self.request.user)
+            # Start with all reviews for accounts belonging to this user's profile
+            qs = AccountRelevanceReview.objects.filter(account__profile=profile)
+            
             # Optionally filter by a specific account via ?account=<id>
             account_id = self.request.GET.get('account')
-            qs = AccountRelevanceReview.objects.filter(account_id=account_id)
             if account_id:
                 qs = qs.filter(account_id=account_id)
-            return qs.order_by('-created_at')
+            
+            return qs.order_by('-review_date')
         except Profile.DoesNotExist:
             return AccountRelevanceReview.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
+        # If filtering by account, add the account to context
+        account_id = self.request.GET.get('account')
+        if account_id:
+            try:
+                context['filtered_account'] = DigitalAccount.objects.get(
+                    id=account_id,
+                    profile__user=self.request.user
+                )
+            except DigitalAccount.DoesNotExist:
+                pass
         return context
 
 
@@ -220,31 +236,28 @@ class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
     model = AccountRelevanceReview
     form_class = AccountRelevanceReviewForm
     template_name = 'dashboard/accountrelevancereview_form.html'
-    success_url = reverse_lazy('accountrelevancereview_list')
     owner_field = 'account__profile__user'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        # If your form needs the user (e.g. to limit account choices)
         kwargs['user'] = self.request.user
-        # If you are creating a review from a specific account (?account=<id>)
-        account_id = self.request.GET.get('account')
-        if account_id:
-            kwargs['account_id'] = account_id
         return kwargs
 
     def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
+        # Set the reviewer to the current user
+        form.instance.reviewer = self.request.user
         messages.success(self.request, 'Account review created successfully.')
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Redirect back to the account detail page
+        return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
 
 class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
     model = AccountRelevanceReview
     form_class = AccountRelevanceReviewForm
     template_name = 'dashboard/accountrelevancereview_form.html'
-    success_url = reverse_lazy('accountrelevancereview_list')
     owner_field = 'account__profile__user'
 
     def get_form_kwargs(self):
@@ -255,17 +268,24 @@ class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Account review updated successfully.')
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Redirect back to the account detail page
+        return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
 
-class AccountRelevanceReviewDeleteView(FullAccessMixin, DeleteView):
+class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
     model = AccountRelevanceReview
     template_name = 'dashboard/accountrelevancereview_confirm_delete.html'
-    success_url = reverse_lazy('accountrelevancereview_list')
     owner_field = 'account__profile__user'
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Account review deleted successfully.')
         return super().delete(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        # Redirect back to the account list
+        return reverse_lazy('dashboard:account_list')
     
     
 # ============================================================================
