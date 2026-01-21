@@ -6,31 +6,38 @@ urlpatterns = [
     # Dashboard Home
     path('', views.DashboardHomeView.as_view(), name='dashboard_home'),
     
-    # Profile URLs
+    # Profile URLs --- DONE
     path('profile/', views.ProfileDetailView.as_view(), name='profile_detail'),
     path('profile/edit/', views.ProfileUpdateView.as_view(), name='profile_update'),
     
-    # Account Category URLs
+    # Account Category URLs --- DONE
     path('categories/', views.AccountCategoryListView.as_view(), name='accountcategory_list'),
     path('categories/create/', views.AccountCategoryCreateView.as_view(), name='accountcategory_create'),
     path('categories/<int:pk>/edit/', views.AccountCategoryUpdateView.as_view(), name='accountcategory_update'),
     path('categories/<int:pk>/delete/', views.AccountCategoryDeleteView.as_view(), name='accountcategory_delete'),
     
-    # Digital Account URLs
-    path('accounts/', views.DigitalAccountListView.as_view(), name='digitalaccount_list'),
-    path('accounts/<int:pk>/', views.DigitalAccountDetailView.as_view(), name='digitalaccount_detail'),
-    path('accounts/create/', views.DigitalAccountCreateView.as_view(), name='digitalaccount_create'),
-    path('accounts/<int:pk>/edit/', views.DigitalAccountUpdateView.as_view(), name='digitalaccount_update'),
-    path('accounts/<int:pk>/delete/', views.DigitalAccountDeleteView.as_view(), name='digitalaccount_delete'),
+    # Account (Digital) URLs --- DONE
+    path('accounts/', views.DigitalAccountListView.as_view(), name='account_list'),
+    path('accounts/<int:pk>/', views.DigitalAccountDetailView.as_view(), name='account_detail'),
+    path('accounts/create/', views.DigitalAccountCreateView.as_view(), name='account_create'),
+    path('accounts/<int:pk>/edit/', views.DigitalAccountUpdateView.as_view(), name='account_update'),
+    path('accounts/<int:pk>/delete/', views.DigitalAccountDeleteView.as_view(), name='account_delete'),
     
+    # Account Relevance Review
+    path('account-reviews/', views.AccountRelevanceReviewListView.as_view(), name='accountrelevancereview_list'),
+    path('account-reviews/new/', views.AccountRelevanceReviewCreateView.as_view(), name='accountrelevancereview_create'),
+    path('account-reviews/<int:pk>/', views.AccountRelevanceReviewDetailView.as_view(), name='accountrelevancereview_detail'),
+    path('account-reviews/<int:pk>/edit/', views.AccountRelevanceReviewUpdateView.as_view(), name='accountrelevancereview_update'),
+    path('account-reviews/<int:pk>/delete/', views.AccountRelevanceReviewDeleteView.as_view(), name='accountrelevancereview_delete'),
+
     # Contact URLs
     path('contacts/', views.ContactListView.as_view(), name='contact_list'),
     path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
     path('contacts/create/', views.ContactCreateView.as_view(), name='contact_create'),
     path('contacts/<int:pk>/edit/', views.ContactUpdateView.as_view(), name='contact_update'),
-    path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),
+    path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),    
     
-    # Device URLs
+    # Device URLs --- DONE
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
     path('devices/<int:pk>/', views.DeviceDetailView.as_view(), name='device_detail'),
     path('devices/create/', views.DeviceCreateView.as_view(), name='device_create'),

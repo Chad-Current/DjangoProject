@@ -23,51 +23,49 @@
 {% include "baseapp/navbar.html" %}
 {% include "dashboard/navblocks.html" %}
 <div class="main">
-    <div class="parent-row">
-        <div class="list-view">
-            <h1>Devices</h1>
+    <!-- <div class="parent"> -->
+        <div class="section-mt-5">
             {% if devices %}
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Device Type</th>
-                        <th>Update</th>
-                        <th>Remove Item</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for device in devices %}
-                    <tr>
-                        <td><a href="{% url 'dashboard:device_detail' device.pk %}">{{ device.name }}</a></td>
-                        <td>{{ device.location_description}}</td>
-                        <td>{{ device.device_type }}</td>
-                        <td>
-                            {% if can_modify %}
-                            <a href="{% url 'dashboard:device_update' device.pk %}" class="a-style">Edit</a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if can_modify %}
-                            <a href="{% url 'dashboard:device_delete' device.pk %}"
-                                class="a-style">Delete</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% for device in devices %}
+            <div class="client-cards border-dark">
+                <div class="cl-card-1">
+                    <a href="{% url 'dashboard:device_detail' device.pk %}" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="View Full Details for {{ device.name }}">
+                    <flag>{{device.name}}</flag>
+                </a>
+                </div>
+                <div class="cl-card-2">
+                    <h5>Type: {{ device.device_type }}</h5>
+                </div>
+                <div class="cl-card-3">
+                    <h5>Located: {{ device.location_description }}</h5>
+                </div>
+                <div class="cl-card-4">
+                    {% if can_modify %}
+                    <a href="{% url 'dashboard:device_update' device.pk %}" class="a-style"><button
+                            class="button">Edit</button></a>
+                    {% endif %}
+                </div>
+                <div class="cl-card-5">
+                    {% if can_modify %}
+                    <a href="{% url 'dashboard:device_delete' device.pk %}" class="a-style"><button
+                            class="button">Delete</button></a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
             {% else %}
-            <p>No devices yet. Create your first device entry!</p>
-            {% endif %}
-            {% if can_modify %}
-            <a href="{% url 'dashboard:device_create' %}"><button class="button button-100">Add
-                    device</button></a>
+            <p>No Devices added yet. Create your first device entry!</p>
             {% endif %}
         </div>
+        {% if can_modify %}
+        
+        <a href="{% url 'dashboard:device_create' %}"><button class="button button-100">Add
+                device</button></a>
+        {% endif %}
     </div>
-</div>
+<!-- </div> -->
+
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 

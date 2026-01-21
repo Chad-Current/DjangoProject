@@ -176,13 +176,104 @@ class AccountCategoryDeleteView(DeleteAccessMixin,  DeleteView):
         messages.success(request, 'Category deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
+# ============================================================================
+# ACCOUNT RELEVANCE REVIEW VIEWS
+# ============================================================================
+class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
+    model = AccountRelevanceReview
+    template_name = 'dashboard/accountrelevancereview_list.html'
+    context_object_name = 'reviews'
+    owner_field = 'account__profile__user'
+    paginate_by = 20
 
+    def get_queryset(self):
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            # Optionally filter by a specific account via ?account=<id>
+            account_id = self.request.GET.get('account')
+            qs = AccountRelevanceReview.objects.filter(account_id=account_id)
+            if account_id:
+                qs = qs.filter(account_id=account_id)
+            return qs.order_by('-created_at')
+        except Profile.DoesNotExist:
+            return AccountRelevanceReview.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class AccountRelevanceReviewDetailView(ViewAccessMixin, DetailView):
+    model = AccountRelevanceReview
+    template_name = 'dashboard/accountrelevancereview_detail.html'
+    context_object_name = 'review'
+    owner_field = 'account__profile__user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
+    model = AccountRelevanceReview
+    form_class = AccountRelevanceReviewForm
+    template_name = 'dashboard/accountrelevancereview_form.html'
+    success_url = reverse_lazy('accountrelevancereview_list')
+    owner_field = 'account__profile__user'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # If your form needs the user (e.g. to limit account choices)
+        kwargs['user'] = self.request.user
+        # If you are creating a review from a specific account (?account=<id>)
+        account_id = self.request.GET.get('account')
+        if account_id:
+            kwargs['account_id'] = account_id
+        return kwargs
+
+    def form_valid(self, form):
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        form.instance.profile = profile
+        messages.success(self.request, 'Account review created successfully.')
+        return super().form_valid(form)
+
+
+class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
+    model = AccountRelevanceReview
+    form_class = AccountRelevanceReviewForm
+    template_name = 'dashboard/accountrelevancereview_form.html'
+    success_url = reverse_lazy('accountrelevancereview_list')
+    owner_field = 'account__profile__user'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Account review updated successfully.')
+        return super().form_valid(form)
+
+
+class AccountRelevanceReviewDeleteView(FullAccessMixin, DeleteView):
+    model = AccountRelevanceReview
+    template_name = 'dashboard/accountrelevancereview_confirm_delete.html'
+    success_url = reverse_lazy('accountrelevancereview_list')
+    owner_field = 'account__profile__user'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Account review deleted successfully.')
+        return super().delete(request, *args, **kwargs)
+    
+    
 # ============================================================================
 # DIGITAL ACCOUNT VIEWS
 # ============================================================================
 class DigitalAccountListView(ViewAccessMixin, ListView):
     model = DigitalAccount
-    template_name = 'dashboard/digitalaccount_list.html'
+    template_name = 'dashboard/account_list.html'
     context_object_name = 'accounts'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -215,7 +306,7 @@ class DigitalAccountListView(ViewAccessMixin, ListView):
 
 class DigitalAccountDetailView(ViewAccessMixin, DetailView):
     model = DigitalAccount
-    template_name = 'dashboard/digitalaccount_detail.html'
+    template_name = 'dashboard/account_detail.html'
     context_object_name = 'account'
     owner_field = 'profile__user'
     
@@ -228,8 +319,8 @@ class DigitalAccountDetailView(ViewAccessMixin, DetailView):
 class DigitalAccountCreateView(FullAccessMixin, CreateView):
     model = DigitalAccount
     form_class = DigitalAccountForm
-    template_name = 'dashboard/digitalaccount_form.html'
-    success_url = reverse_lazy('dashboard:digitalaccount_list')
+    template_name = 'dashboard/account_form.html'
+    success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -247,8 +338,8 @@ class DigitalAccountCreateView(FullAccessMixin, CreateView):
 class DigitalAccountUpdateView(FullAccessMixin, UpdateView):
     model = DigitalAccount
     form_class = DigitalAccountForm
-    template_name = 'dashboard/digitalaccount_form.html'
-    success_url = reverse_lazy('dashboard:digitalaccount_list')
+    template_name = 'dashboard/account_form.html'
+    success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -263,8 +354,8 @@ class DigitalAccountUpdateView(FullAccessMixin, UpdateView):
 
 class DigitalAccountDeleteView(DeleteAccessMixin,  DeleteView):
     model = DigitalAccount
-    template_name = 'dashboard/digitalaccount_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:digitalaccount_list')
+    template_name = 'dashboard/account_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):

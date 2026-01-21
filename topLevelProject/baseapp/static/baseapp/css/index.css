@@ -17,6 +17,24 @@ tag {
   }
 }
 
+flag {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* background-color: #ffa62b2e; */
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  border: solid 2px var(--ten-percent);
+  border-radius: 20px;
+  width: max-content;
+  padding: 0 0.75em;
+  color: var(--ten-percent);
+  &:hover {
+    background-color: var(--text-color-dark);
+    color: var(--text-color);
+  }
+}
+
 span {
   margin: 0.35rem;
 }

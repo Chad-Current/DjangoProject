@@ -33,9 +33,7 @@
                             <div class="card-header">
                                 <h2>
                                     {% if form.instance.pk %}
-                                    <i class="bi bi-pencil"></i> Edit Account Access
-                                    {% else %}
-                                    <i class="bi bi-plus-circle"></i> Create Account Access
+                                    <i class="bi bi-pencil"></i> Review Account
                                     {% endif %}
                                 </h2>
                             </div>
@@ -44,9 +42,6 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <a href="{% url 'dashboard:digitalaccount_list' %}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Back to Digital Accounts
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -63,3 +58,6 @@
 </body>
 
 </html>
+
+
+<!-- Cancel Button Doesn't Work, Will not cancel back to account category list-->

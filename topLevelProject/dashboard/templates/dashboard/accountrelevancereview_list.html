@@ -23,46 +23,34 @@
 {% include "baseapp/navbar.html" %}
 {% include "dashboard/navblocks.html" %}
 <div class="main">
-    <div class="parent-row">
-        <div class="list-view">
-            <h1>Accounts</h1>
-            {% if categories %}
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Account Type</th>
-                        <!-- <th>Description</th> -->
-                        <th>Remove Type</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for category in categories %}
-                    <tr>
-                        <td>{{ category.name }}</td>
-                        <!-- <td>{{ category.description }}</td> -->
-                        <td>
-                            {% if can_modify %}
-                            <a href="{% url 'dashboard:accountcategory_delete' category.pk %}"
-                                class="a-style">Delete</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No Accounts yet. Create your first account entry!</p>
-            {% endif %}
-            {% if can_modify %}
-            <a href="{% url 'dashboard:accountcategory_create' %}"><button class="button button-100">Add
-                    Category</button></a>
-            {% endif %}
+    <!-- <div class="parent"> -->
+    <div class="section-mt-5">
+        {% if reviews %}
+        {% for review in reviews %}
+        <div class="client-cards border-dark">
+            <div class="cl-card-1">
+                   <flag>{{ review.name }}</flag>
+                </a>
+            </div>
+            <div class="cl-card-2">
+                <h5>Important: {{ review.reviewer }}</h5>
+            </div>
+            <div class="cl-card-3">
+                <h5>Provider: {{ review.date }}</h5>
+            </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <p>Account Reviews</p>
+        {% endif %}
     </div>
+
 </div>
+<!-- </div> -->
+
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-
+<script src="{% static 'dashboard/js/dashboard.js' %}"></script>
 </body>
 
 </html>

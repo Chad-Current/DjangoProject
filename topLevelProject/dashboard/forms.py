@@ -81,6 +81,7 @@ class AccountCategoryForm(forms.ModelForm):
             Row(
                 Column('name', css_class='form-group col-md-8 mb-0'),
             ),
+
             Submit('submit', 'Save Category', css_class='btn btn-primary')
         )
 
