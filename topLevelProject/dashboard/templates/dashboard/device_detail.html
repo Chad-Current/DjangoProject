@@ -1,0 +1,123 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>{{ account.name }} - Account Details</title>
+</head>
+
+<body>
+{% include "baseapp/navbar.html" %}
+{% include "dashboard/navblocks.html" %}
+
+<div class="main">
+    <div class="parent-row">
+        <div class="detail-view">
+            <div class="header-section">
+                <h1>{{ device.name }}</h1>
+                <h3>{{ device.device_type }}</h3>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Device Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Owner:</strong></div>
+                        <div class="col-md-9"><h5>{{ device.owner_label|default:"Not specified" }}</h5></div>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Location:</strong></div>
+                        <div class="col-md-9">
+                            <h5>{{ device.location_description }}</h5>
+                       </div>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Unlock Method:</strong></div>
+                        <div class="col-md-9">
+                                <h5>{{ device.unlock_method_description }}</h5>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Has full disk encryption:</strong></div>
+                        <div class="col-md-9"><h5>{{ device.has_full_disk_encryption|yesno:"Yes,No" }}</h5></div>
+                    </div>
+                    
+                     <div class="row mb-2">
+                        <div class="col-md-3"><strong>Used for 2FA:</strong></div>
+                        <div class="col-md-9"><h5>{{ device.used_for_2fa|yesno:"Yes,No" }}</h5></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Estate Instructions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Action After Death:</strong>
+                               <h5>{{ device.decommission_instruction}}</h5>
+                        </div>
+                    </div>
+                    
+              </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Metadata</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Created:</strong></div>
+                        <div class="col-md-9"><h5>{{ device.created_at|date:"F d, Y g:i A" }}</h5></div>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-md-3"><strong>Last Updated:</strong></div>
+                        <div class="col-md-9"><h5>{{ device.updated_at|date:"F d, Y g:i A" }}</h5></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="button-row">
+            <!-- <div class="action-buttons"> -->
+                {% if can_modify %}
+                <a href="{% url 'dashboard:device_update' device.pk %}">
+                    <button class="button">Edit Account</button>
+                </a>
+                <a href="{% url 'dashboard:device_delete' device.pk %}">
+                    <button class="button">Delete Account</button>
+                </a>
+                {% endif %}
+                <a href="{% url 'dashboard:device_list' %}">
+                    <button class="button">Back to Accounts</button>
+                </a>
+            <!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% include "baseapp/footer.html" %}
+<script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+</body>
+</html>

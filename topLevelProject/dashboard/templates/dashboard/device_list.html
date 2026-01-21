@@ -40,7 +40,7 @@
                 <tbody>
                     {% for device in devices %}
                     <tr>
-                        <td>{{ device.name }}</td>
+                        <td><a href="{% url 'dashboard:device_detail' device.pk %}">{{ device.name }}</a></td>
                         <td>{{ device.location_description}}</td>
                         <td>{{ device.device_type }}</td>
                         <td>
