@@ -185,7 +185,7 @@ class AccountRelevanceReview(models.Model):
     def __str__(self):
         return f"Review of {self.account_relevance.account_name} created {self.account_relevance.created_at.date()}"
 
-
+################ ### MARKED FOR REMOVAL POSSIBLY ### #########################
 class Contact(models.Model):
     """
     Important contacts (family, friends, digital executor, etc.)
@@ -403,7 +403,7 @@ class FamilyNeedsToKnowSection(models.Model):
     def __str__(self):
         return f"{self.document.title} - {self.heading}"
 
-
+################ ### MARKED FOR REMOVAL ### #########################
 class AccountDirectoryEntry(models.Model):
     """
     Quick reference directory of accounts
@@ -504,7 +504,7 @@ class EmergencyContact(models.Model):
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
 
-
+################ ### MARKED FOR REMOVAL ### #########################
 class CheckupType(models.Model):
     """
     Types of periodic checkups (quarterly, annual, etc.)
@@ -527,7 +527,7 @@ class CheckupType(models.Model):
     def __str__(self):
         return f"{self.name} ({self.frequency})"
 
-
+################ ### MARKED FOR POSSIBLE REMOVAL ### #########################
 class Checkup(models.Model):
     """
     Scheduled checkups of digital estate information
@@ -690,7 +690,7 @@ class RecoveryRequest(models.Model):
     def __str__(self):
         return f"Recovery: {self.target_description} ({self.status})"
 
-
+################ ### MARKED FOR REMOVAL ### #########################
 class DocumentCategory(models.Model):
     """
     Categories for important documents
