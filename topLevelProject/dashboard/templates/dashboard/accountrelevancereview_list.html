@@ -27,7 +27,7 @@
     <div class="section-mt-5">
 <h3>Account Reviews TESTING NOW</h3>
 {% if reviews %}
-            <strong>{{ review.account.name }} </strong>
+            <strong>{{ review.next_review_due }} </strong>
             <strong>{{ review.review_date|date:"M d, Y" }}</strong> - 
             {% if review.matters %}Still matters{% else %}No longer matters{% endif %}
 {% else %}
