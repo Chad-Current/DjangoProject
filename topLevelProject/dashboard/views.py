@@ -179,9 +179,6 @@ class AccountCategoryDeleteView(DeleteAccessMixin,  DeleteView):
 # ============================================================================
 # ACCOUNT RELEVANCE REVIEW VIEWS
 # ============================================================================
-# ============================================================================
-# ACCOUNT RELEVANCE REVIEW VIEWS
-# ============================================================================
 class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
     model = AccountRelevanceReview
     template_name = 'dashboard/accountrelevancereview_list.html'
