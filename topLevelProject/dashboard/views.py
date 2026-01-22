@@ -16,8 +16,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
 from .models import (
     Profile,
-    AccountCategory,
-    DigitalAccount,
+    Account,
     AccountRelevanceReview,
     Contact,
     DelegationScope,
@@ -26,7 +25,7 @@ from .models import (
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
     AccountDirectoryEntry,
-    EmergencyNote,
+    EmergencyContact,
     CheckupType,
     Checkup,
     CareRelationship,
@@ -36,8 +35,7 @@ from .models import (
 )
 from .forms import (
     ProfileForm,
-    AccountCategoryForm,
-    DigitalAccountForm,
+    AccountForm,
     AccountRelevanceReviewForm,
     ContactForm,
     DelegationScopeForm,
@@ -46,7 +44,7 @@ from .forms import (
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
     AccountDirectoryEntryForm,
-    EmergencyNoteForm,
+    EmergencyContactForm,
     CheckupTypeForm,
     CheckupForm,
     CareRelationshipForm,
@@ -70,7 +68,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         try:
             profile = Profile.objects.get(user=user)
             context['profile'] = profile
-            context['digital_accounts_count'] = DigitalAccount.objects.filter(profile=profile).count()
+            context['digital_accounts_count'] = Account.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
@@ -115,14 +113,51 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
 
 
 # ============================================================================
-# ACCOUNT CATEGORY VIEWS
+# ACCOUNT VIEWS
 # ============================================================================
-class AccountCategoryListView(ViewAccessMixin, ListView):
-    model = AccountCategory
-    template_name = 'dashboard/accountcategory_list.html'
-    context_object_name = 'categories'
-    owner_field = 'user'
+class AccountListView(ViewAccessMixin, ListView):
+    model = Account
+    template_name = 'dashboard/account_list.html'
+    context_object_name = 'accounts'
+    owner_field = 'profile__user'
     paginate_by = 20
+    
+    def get_queryset(self):
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            queryset = Account.objects.filter(profile=profile)
+            
+            # Filter by category if provided
+            category_id = self.request.GET.get('account_category')
+            if category_id:
+                queryset = queryset.filter(category_id=category_id)
+            
+            # Filter by critical status
+            is_critical = self.request.GET.get('critical')
+            if is_critical:
+                queryset = queryset.filter(is_critical=True)
+            
+            return queryset.order_by('-created_at')
+        except Profile.DoesNotExist:
+            return Account.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        # Fixed: Changed to get categories from DocumentCategory model
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            context['categories'] = AccountDirectoryEntry.objects.filter(profile=profile)
+        except Profile.DoesNotExist:
+            context['categories'] = AccountDirectoryEntry.objects.none()
+        return context
+
+
+class AccountDetailView(ViewAccessMixin, DetailView):
+    model = Account
+    template_name = 'dashboard/account_detail.html'
+    context_object_name = 'account'
+    owner_field = 'profile__user'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,51 +165,52 @@ class AccountCategoryListView(ViewAccessMixin, ListView):
         return context
 
 
-class AccountCategoryCreateView(FullAccessMixin, CreateView):
-    model = AccountCategory
-    form_class = AccountCategoryForm
-    template_name = 'dashboard/accountcategory_form.html'
-    success_url = reverse_lazy('dashboard:accountcategory_list')
-    owner_field = 'user'
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        obj, created = AccountCategory.objects.get_or_create(
-            user=self.request.user,
-            name=form.cleaned_data['name'],
-            defaults=form.cleaned_data
-        )
-        if created:
-            messages.success(self.request, 'Category created successfully.')
-        else:
-            messages.info(self.request, 'Category already exists.')
-        return redirect(self.success_url)
-    # def form_valid(self, form):
-    #     form.instance.user = self.request.user
-    #     messages.success(self.request, 'Category created successfully.')
-    #     return super().form_valid(form)
-
-
-class AccountCategoryUpdateView(FullAccessMixin, UpdateView):
-    model = AccountCategory
-    form_class = AccountCategoryForm
-    template_name = 'dashboard/accountcategory_form.html'
-    success_url = reverse_lazy('dashboard:accountcategory_list')
-    owner_field = 'user'
+class AccountCreateView(FullAccessMixin, CreateView):
+    model = Account
+    form_class = AccountForm
+    template_name = 'dashboard/account_form.html'
+    success_url = reverse_lazy('dashboard:account_list')
+    owner_field = 'profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'Category updated successfully.')
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        form.instance.profile = profile
+        messages.success(self.request, 'Digital account created successfully.')
         return super().form_valid(form)
 
 
-class AccountCategoryDeleteView(DeleteAccessMixin,  DeleteView):
-    model = AccountCategory
-    template_name = 'dashboard/accountcategory_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:accountcategory_list')
-    owner_field = 'user'
+class AccountUpdateView(FullAccessMixin, UpdateView):
+    model = Account
+    form_class = AccountForm
+    template_name = 'dashboard/account_form.html'
+    success_url = reverse_lazy('dashboard:account_list')
+    owner_field = 'profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Digital account updated successfully.')
+        return super().form_valid(form)
+
+
+class AccountDeleteView(DeleteAccessMixin,  DeleteView):
+    model = Account
+    template_name = 'dashboard/account_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:account_list')
+    owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Category deleted successfully.')
+        messages.success(request, 'Account deleted successfully.')
         return super().delete(request, *args, **kwargs)
+    
 
 # ============================================================================
 # ACCOUNT RELEVANCE REVIEW VIEWS
@@ -190,7 +226,7 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
         try:
             profile = Profile.objects.get(user=self.request.user)
             # Start with all reviews for accounts belonging to this user's profile
-            qs = AccountRelevanceReview.objects.filter(account__profile=profile)
+            qs = AccountRelevanceReview.objects.filter(account_relevance_id__profile=profile)
             
             # Optionally filter by a specific account via ?account=<id>
             account_id = self.request.GET.get('account')
@@ -208,11 +244,11 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
         account_id = self.request.GET.get('account')
         if account_id:
             try:
-                context['filtered_account'] = DigitalAccount.objects.get(
+                context['filtered_account'] = Account.objects.get(
                     id=account_id,
                     profile__user=self.request.user
                 )
-            except DigitalAccount.DoesNotExist:
+            except Account.DoesNotExist:
                 pass
         return context
 
@@ -285,101 +321,6 @@ class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
         return reverse_lazy('dashboard:account_list')
     
     
-# ============================================================================
-# DIGITAL ACCOUNT VIEWS
-# ============================================================================
-class DigitalAccountListView(ViewAccessMixin, ListView):
-    model = DigitalAccount
-    template_name = 'dashboard/account_list.html'
-    context_object_name = 'accounts'
-    owner_field = 'profile__user'
-    paginate_by = 20
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            queryset = DigitalAccount.objects.filter(profile=profile)
-            
-            # Filter by category if provided
-            category_id = self.request.GET.get('category')
-            if category_id:
-                queryset = queryset.filter(category_id=category_id)
-            
-            # Filter by critical status
-            is_critical = self.request.GET.get('critical')
-            if is_critical:
-                queryset = queryset.filter(is_critical=True)
-            
-            return queryset.order_by('-created_at')
-        except Profile.DoesNotExist:
-            return DigitalAccount.objects.none()
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        context['categories'] = AccountCategory.objects.filter(user=self.request.user)
-        return context
-
-
-class DigitalAccountDetailView(ViewAccessMixin, DetailView):
-    model = DigitalAccount
-    template_name = 'dashboard/account_detail.html'
-    context_object_name = 'account'
-    owner_field = 'profile__user'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-
-class DigitalAccountCreateView(FullAccessMixin, CreateView):
-    model = DigitalAccount
-    form_class = DigitalAccountForm
-    template_name = 'dashboard/account_form.html'
-    success_url = reverse_lazy('dashboard:account_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        messages.success(self.request, 'Digital account created successfully.')
-        return super().form_valid(form)
-
-
-class DigitalAccountUpdateView(FullAccessMixin, UpdateView):
-    model = DigitalAccount
-    form_class = DigitalAccountForm
-    template_name = 'dashboard/account_form.html'
-    success_url = reverse_lazy('dashboard:account_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Digital account updated successfully.')
-        return super().form_valid(form)
-
-
-class DigitalAccountDeleteView(DeleteAccessMixin,  DeleteView):
-    model = DigitalAccount
-    template_name = 'dashboard/account_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:account_list')
-    owner_field = 'profile__user'
-    
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Digital account deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-
 # ============================================================================
 # CONTACT VIEWS
 # ============================================================================
@@ -677,21 +618,21 @@ class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
 
 
 # ============================================================================
-# EMERGENCY NOTE VIEWS
+# EMERGENCY CONTACT VIEWS
 # ============================================================================
-class EmergencyNoteListView(ViewAccessMixin, ListView):
-    model = EmergencyNote
-    template_name = 'dashboard/emergencynote_list.html'
-    context_object_name = 'notes'
+class EmergencyContactListView(ViewAccessMixin, ListView):
+    model = EmergencyContact
+    template_name = 'dashboard/emergencycontact_list.html'
+    context_object_name = 'emergency'
     owner_field = 'profile__user'
     paginate_by = 20
     
     def get_queryset(self):
         try:
             profile = Profile.objects.get(user=self.request.user)
-            return EmergencyNote.objects.filter(profile=profile).order_by('-created_at')
+            return EmergencyContact.objects.filter(profile=profile).order_by('-created_at')
         except Profile.DoesNotExist:
-            return EmergencyNote.objects.none()
+            return EmergencyContact.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -699,11 +640,11 @@ class EmergencyNoteListView(ViewAccessMixin, ListView):
         return context
 
 
-class EmergencyNoteCreateView(FullAccessMixin, CreateView):
-    model = EmergencyNote
-    form_class = EmergencyNoteForm
-    template_name = 'dashboard/emergencynote_form.html'
-    success_url = reverse_lazy('dashboard:emergencynote_list')
+class EmergencyContactCreateView(FullAccessMixin, CreateView):
+    model = EmergencyContact
+    form_class = EmergencyContact
+    template_name = 'dashboard/emergencycontact_form.html'
+    success_url = reverse_lazy('dashboard:emergencycontact_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -718,11 +659,11 @@ class EmergencyNoteCreateView(FullAccessMixin, CreateView):
         return super().form_valid(form)
 
 
-class EmergencyNoteUpdateView(FullAccessMixin, UpdateView):
-    model = EmergencyNote
-    form_class = EmergencyNoteForm
-    template_name = 'dashboard/emergencynote_form.html'
-    success_url = reverse_lazy('dashboard:emergencynote_list')
+class EmergencyContactUpdateView(FullAccessMixin, UpdateView):
+    model = EmergencyContact
+    form_class = EmergencyContact
+    template_name = 'dashboard/emergencycontact_form.html'
+    success_url = reverse_lazy('dashboard:emergencycontact_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -735,10 +676,10 @@ class EmergencyNoteUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class EmergencyNoteDeleteView(DeleteAccessMixin, DeleteView):
-    model = EmergencyNote
-    template_name = 'dashboard/emergencynote_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:emergencynote_list')
+class EmergencyContactDeleteView(DeleteAccessMixin, DeleteView):
+    model = EmergencyContact
+    template_name = 'dashboard/emergencycontact_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:emergencycontact_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):

@@ -8,8 +8,7 @@
 from django.contrib import admin
 from .models import (
     Profile,
-    AccountCategory,
-    DigitalAccount,
+    Account,
     AccountRelevanceReview,
     Contact,
     DelegationScope,
@@ -18,7 +17,7 @@ from .models import (
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
     AccountDirectoryEntry,
-    EmergencyNote,
+    EmergencyContact,
     CheckupType,
     Checkup,
     CareRelationship,
@@ -63,36 +62,16 @@ class ProfileAdmin(admin.ModelAdmin):
         return obj.user == request.user or request.user.is_superuser
 
 
-@admin.register(AccountCategory)
-class AccountCategoryAdmin(admin.ModelAdmin):
-    # list_display = ['name', 'user', 'sort_order', 'created_at']
-    list_filter = ['created_at']
-    search_fields = ['name', 'description', 'user__username']
-    readonly_fields = ['user', 'created_at', 'updated_at']
-    # ordering = ['user', 'sort_order', 'name']
-    
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(user=request.user)
-    
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.user = request.user
-        super().save_model(request, obj, form, change)
-
-
-@admin.register(DigitalAccount)
-class DigitalAccountAdmin(admin.ModelAdmin):
-    list_display = ['name', 'provider', 'profile', 'category', 'is_critical', 'created_at']
-    list_filter = ['is_critical', 'category', 'created_at']
-    search_fields = ['name', 'provider', 'username_or_email', 'profile__user__username']
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ['account_name', 'provider', 'profile', 'account_category', 'is_critical', 'created_at']
+    list_filter = ['is_critical', 'account_category', 'created_at']
+    search_fields = ['account_name', 'provider', 'username_or_email', 'profile__user__username']
     readonly_fields = ['profile', 'created_at', 'updated_at']
     
     fieldsets = (
         ('Account Info', {
-            'fields': ('profile', 'category', 'name', 'provider', 'website_url')
+            'fields': ('profile', 'account_name', 'account_category', 'provider', 'website_url')
         }),
         ('Credentials', {
             'fields': ('username_or_email', 'credential_storage_location')
@@ -122,7 +101,7 @@ class DigitalAccountAdmin(admin.ModelAdmin):
 
 @admin.register(AccountRelevanceReview)
 class AccountRelevanceReviewAdmin(admin.ModelAdmin):
-    list_display = ['account', 'reviewer', 'matters', 'review_date', 'next_review_due']
+    list_display = ['account_relevance', 'reviewer', 'matters', 'review_date', 'next_review_due']
     list_filter = ['matters', 'review_date', 'next_review_due']
     search_fields = ['account__name', 'reviewer__username', 'reasoning']
     readonly_fields = ['reviewer', 'review_date']
@@ -185,8 +164,8 @@ class DelegationGrantAdmin(admin.ModelAdmin):
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ['name', 'device_type', 'operating_system', 'profile', 'has_full_disk_encryption', 'used_for_2fa']
-    list_filter = ['device_type', 'has_full_disk_encryption', 'used_for_2fa']
+    list_display = ['name', 'device_type', 'profile', 'used_for_2fa']
+    list_filter = ['device_type', 'used_for_2fa']
     search_fields = ['name', 'owner_label', 'profile__user__username']
     readonly_fields = ['profile']
     
@@ -238,11 +217,11 @@ class AccountDirectoryEntryAdmin(admin.ModelAdmin):
         return qs.filter(profile__user=request.user)
 
 
-@admin.register(EmergencyNote)
-class EmergencyNoteAdmin(admin.ModelAdmin):
-    list_display = ['name', 'profile', 'contact', 'created_at']
+@admin.register(EmergencyContact)
+class EmergencyContactAdmin(admin.ModelAdmin):
+    list_display = ['contact_name', 'profile', 'contact_relation', 'created_at']
     list_filter = ['created_at']
-    search_fields = ['name', 'body', 'profile__user__username']
+    search_fields = ['contact_name', 'body', 'profile__user__username']
     readonly_fields = ['profile', 'created_at']
     
     def get_queryset(self, request):

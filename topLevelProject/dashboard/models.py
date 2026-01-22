@@ -9,7 +9,7 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import URLValidator
 from django.utils import timezone
-
+from datetime import timedelta
 
 class Profile(models.Model):
     """
@@ -49,68 +49,41 @@ class Profile(models.Model):
         ordering = ['user']
     
     def __str__(self):
-        return f"{self.full_name} ({self.user.username})"
+        return f"{self.full_name} ({self.user})"
 
 
-class AccountCategory(models.Model):
-    """
-    Categories for organizing digital accounts (e.g., Social Media, Banking, Email)
-    """
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='account_categories',
-        editable=False
-    )
-    DIGITAL_ACCOUNT_CATEGORIES = [
-        ("email", "Email Account"),
-        ("social_media", "Social Media Account"),
-        ("cloud_storage", "Cloud Storage Account"),
-        ("streaming_media", "Streaming Media Account"),
-        ("ecommerce_marketplace", "Ecommerce Marketplace Account"),
-        ("online_banking", "Online Banking Account"),
-        ("neobank_digital_bank", "Neobank/Digital Bank Account"),
-        ("brokerage_investment", "Brokerage/Investment Account"),
-        ("cryptocurrency_exchange", "Cryptocurrency Exchange Account"),
-        ("payment_wallet", "Payment Wallet Account"),
-        ("payment_processor", "Payment Processor Account"),
-        ("productivity_collaboration", "Productivity/Collaboration Account"),
-        ("developer_platform", "Developer Platform Account"),
-        ("app_store", "App Store Account"),
-        ("gaming_platform", "Gaming Platform Account"),
-        ("forum_community", "Forum/Community Account"),
-        ("education_elearning", "Education/Elearning Account"),
-        ("subscription_saas", "Subscription/SaaS Account"),
-        ("government_portal", "Government Portal Account"),
-        ("utilities_telecom_portal", "Utilities/Telecom Portal Account"),
-        ("health_portal", "Health Portal Account"),
-        ("smart_home_iot", "Smart Home/IoT Account"),
-        ("travel_booking", "Travel Booking Account"),
-        ("ride_hailing_delivery", "Ride-Hailing/Delivery Account"),
-        ("password_manager", "Password Manager Account"),
-    ]
-    name = models.CharField(max_length=100, choices=DIGITAL_ACCOUNT_CATEGORIES)
-    description = models.CharField(max_length=500, blank=True)
-    # sort_order = models.IntegerField(default=0, help_text="Display order")
-    # REMOVE SORT ORDER 
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'account_categories'
-        ordering = ['user',  'name']
-        verbose_name_plural = 'Account categories'
-        unique_together = ['user', 'name']
-    
-    def __str__(self):
-        return f"{self.name}"
-
-
-class DigitalAccount(models.Model):
+class Account(models.Model):
     """
     Individual digital accounts (social media, email, banking, etc.)
     """
+    ACCOUNT_CATEGORIES = [
+        ('email', 'Email Account'),
+        ('social_media', 'Social Media Account'),
+        ('cloud_storage', 'Cloud Storage Account'),
+        ('streaming_media', 'Streaming Media Account'),
+        ('ecommerce_marketplace', 'Ecommerce Marketplace Account'),
+        ('online_banking', 'Online Banking Account'),
+        ('neobank_digital_bank', 'Neobank/Digital Bank Account'),
+        ('brokerage_investment', 'Brokerage/Investment Account'),
+        ('cryptocurrency_exchange', 'Cryptocurrency Exchange Account'),
+        ('payment_wallet', 'Payment Wallet Account'),
+        ('payment_processor', 'Payment Processor Account'),
+        ('productivity_collaboration', 'Productivity/Collaboration Account'),
+        ('developer_platform', 'Developer Platform Account'),
+        ('app_store', 'App Store Account'),
+        ('gaming_platform', 'Gaming Platform Account'),
+        ('forum_community', 'Forum/Community Account'),
+        ('education_elearning', 'Education/Elearning Account'),
+        ('subscription_saas', 'Subscription/SaaS Account'),
+        ('government_portal', 'Government Portal Account'),
+        ('utilities_telecom_portal', 'Utilities/Telecom Portal Account'),
+        ('health_portal', 'Health Portal Account'),
+        ('smart_home_iot', 'Smart Home/IoT Account'),
+        ('travel_booking', 'Travel Booking Account'),
+        ('ride_hailing_delivery', 'Ride-Hailing/Delivery Account'),
+        ('password_manager', 'Password Manager Account'),
+        ('not_listed', 'Not Listed'),
+    ]
     INSTRUCTION_CHOICES = [
         ('keep', 'Keep Active'),
         ('close', 'Close Account'),
@@ -121,18 +94,15 @@ class DigitalAccount(models.Model):
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name='digital_accounts',
+        related_name='accounts',
         editable=False
     )
-    category = models.ForeignKey(
-        AccountCategory,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='accounts'
-    )
-
-    name = models.CharField(max_length=200, help_text="Account name or service")
+    account_name = models.CharField(max_length=200, help_text="Account name or service")
+    account_category = models.CharField(
+        max_length=200,
+        choices=ACCOUNT_CATEGORIES,
+        default='email'
+    ) 
     provider = models.CharField(max_length=200, help_text="Company/service provider")
     website_url = models.URLField(blank=True, validators=[URLValidator()])
     username_or_email = models.CharField(
@@ -158,31 +128,29 @@ class DigitalAccount(models.Model):
         blank=True,
         help_text="Instructions or notes for family members"
     )
-    
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'digital_accounts'
-        ordering = ['-is_critical', 'name']
+        db_table = 'accounts'
+        ordering = ['-is_critical', 'account_name']
         indexes = [
             models.Index(fields=['profile', '-created_at']),
-            models.Index(fields=['category']),
+            models.Index(fields=['account_category']),
         ]
     
     def __str__(self):
-        return f"{self.name} - {self.provider}"
+        return f"{self.account_name} - {self.provider}"
 
 
 class AccountRelevanceReview(models.Model):
     """
     Periodic reviews to determine if accounts still matter
     """
-    account = models.ForeignKey(
-        DigitalAccount,
+    account_relevance = models.ForeignKey(
+        Account,
         on_delete=models.CASCADE,
-        related_name='relevance_reviews'
+        related_name='Accoun'
     )
     reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -197,17 +165,25 @@ class AccountRelevanceReview(models.Model):
     )
     reasoning = models.TextField(blank=True)
     next_review_due = models.DateField(null=True, blank=True)
-
     created_at = models.DateTimeField(default=timezone.now)
     # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+### THIS WAS ADDED TO SAVE THE ACCOUNT CREATION DATE AND ADD 90 DAYS TO CRITICAL ACCOUNTS
+    def save(self, *args, **kwargs):
+            # If this is a new object, set the review date 90 days from now
+            if not self.review_date and self.account_relevance.is_critical:
+                self.next_review_due = timezone.now().date() + timedelta(days=90)
+            elif not self.review_date:
+                self.next_review_due = timezone.now().date() + timedelta(days=365)
+            super(AccountRelevanceReview, self).save(*args, **kwargs)
+            
     class Meta:
         db_table = 'account_relevance_reviews'
         ordering = ['-review_date']
     
     def __str__(self):
-        return f"Review of {self.account.name} on {self.review_date.date()}"
+        return f"Review of {self.account_relevance.account_name} created {self.account_relevance.created_at.date()}"
 
 
 class Contact(models.Model):
@@ -328,7 +304,6 @@ class Device(models.Model):
     )
     device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
     name = models.CharField(max_length=200, help_text="Device name or model")
-    operating_system = models.CharField(max_length=100, blank=True)
     owner_label = models.CharField(
         max_length=100,
         blank=True,
@@ -344,7 +319,6 @@ class Device(models.Model):
         blank=True,
         help_text="How to unlock (without revealing actual password)"
     )
-    has_full_disk_encryption = models.BooleanField(default=False)
     used_for_2fa = models.BooleanField(
         default=False,
         help_text="Used for two-factor authentication"
@@ -486,53 +460,49 @@ class AccountDirectoryEntry(models.Model):
         return self.label
 
 
-class EmergencyNote(models.Model):
+class EmergencyContact(models.Model):
     """
     Emergency notes for specific contacts
     """
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name='emergency_notes',
+        related_name='emergency_contacts',
         editable=False
     )
     CONTACTS_CHOICES = [
         ('Spouse', 'Spouse'),
-        ('Daughter', 'Daughter'),
-        ('Daughter-in-law', 'Daughter-in-law'),
-        ('Son', 'Son'),
-        ('Son-in-Law', 'Son-in-Law'),
-        ('Brother', 'Brother'),
-        ('Brother-in-law', 'Brother-in-law'),
-        ('Sister', 'Sister'),
-        ('Sister-in-law', 'Sister-in-law'),
-        ('Father', 'Father'),
-        ('Father-in-law', 'Father-in-low'),
         ('Mother', 'Mother'),
+        ('Father', 'Father'),
+        ('Sister', 'Sister'),
+        ('Brother', 'Brother'),
+        ('Daughter', 'Daughter'),
+        ('Son', 'Son'),
         ('Mother-in-law', 'Mother-in-law'),
+        ('Father-in-law', 'Father-in-low'),
+        ('Sister-in-law', 'Sister-in-law'),
+        ('Brother-in-law', 'Brother-in-law'),
+        ('Daughter-in-law', 'Daughter-in-law'),
+        ('Son-in-Law', 'Son-in-Law'),
         ('Cousin', 'Cousin'),
         ('Other', 'Other'),
     ]
-    # contact = models.ForeignKey(
-    #     Contact,
-    #     on_delete=models.CASCADE,
-    #     related_name='emergency_notes',
-    #     null=True,
-    #     blank=True
-    # )
-    name = models.CharField(max_length=200)
+
+    contact_name = models.CharField(max_length=200)
     body = models.TextField(help_text="Emergency message content")
-    contact = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
+    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
+    is_emergency_contact = models.BooleanField(default=False)
+    is_digital_executor = models.BooleanField(default=False)
+    is_caregiver = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'emergency_notes'
+        db_table = 'emergency_contacts'
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.name} ({self.contact})"
+        return f"{self.contact_name} ({self.contact_relation})"
 
 
 class CheckupType(models.Model):
@@ -690,7 +660,7 @@ class RecoveryRequest(models.Model):
         editable=False
     )
     target_account = models.ForeignKey(
-        DigitalAccount,
+        Account,
         on_delete=models.CASCADE,
         related_name='recovery_requests',
         null=True,

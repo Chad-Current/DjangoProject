@@ -25,24 +25,31 @@
 <div class="main">
     <div class="parent-row">
         <div class="list-view">
-            <h1>Accounts</h1>
-            {% if categories %}
+            <h1>Emergency Contacts</h1>
+            {% if emergency %}
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Account Type</th>
-                        <!-- <th>Description</th> -->
-                        <th>Remove Type</th>
-                    </tr>
+                        <th>Name</th>
+                        <th>Relationship</th>
+                        <th>Information</th>
+                        <th>Update</th>
+                        <th>Remove</th>
                 </thead>
                 <tbody>
-                    {% for category in categories %}
+                    {% for contact in emergency %}
                     <tr>
-                        <td>{{ category.name }}</td>
-                        <!-- <td>{{ category.description }}</td> -->
+                        <td>{{ contact.contact_name }}</td>
+                        <td>{{ contact.contact_relation }}</td>
+                        <td>{{ contact.body|truncatechars:20}}</td>
                         <td>
                             {% if can_modify %}
-                            <a href="{% url 'dashboard:accountcategory_delete' category.pk %}"
+                            <a href="{% url 'dashboard:emergencycontact_update' contact.pk %}" class="a-style">Edit</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if can_modify %}
+                            <a href="{% url 'dashboard:emergencycontact_delete' contact.pk %}"
                                 class="a-style">Delete</a>
                             {% endif %}
                         </td>
@@ -51,11 +58,10 @@
                 </tbody>
             </table>
             {% else %}
-            <p>No Accounts yet. Create your first account entry!</p>
+            <p>No Emergency Notes have been added yet, let's get a note add!</p>
             {% endif %}
             {% if can_modify %}
-            <a href="{% url 'dashboard:accountcategory_create' %}"><button class="button button-100">Add
-                    Category</button></a>
+            <a href="{% url 'dashboard:emergencycontact_create' %}"><button class="button button-100">Add Contact</button></a>
             {% endif %}
         </div>
     </div>

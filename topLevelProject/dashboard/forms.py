@@ -4,8 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Fieldset, Row, Column, HTML, Div
 from .models import (
     Profile,
-    AccountCategory,
-    DigitalAccount,
+    Account,
     AccountRelevanceReview,
     Contact,
     DelegationScope,
@@ -14,7 +13,7 @@ from .models import (
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
     AccountDirectoryEntry,
-    EmergencyNote,
+    EmergencyContact,
     CheckupType,
     Checkup,
     CareRelationship,
@@ -69,29 +68,12 @@ class ProfileForm(forms.ModelForm):
         )
 
 
-class AccountCategoryForm(forms.ModelForm):
+class AccountForm(forms.ModelForm):
     class Meta:
-        model = AccountCategory
-        fields = ["name"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('name', css_class='form-group col-md-8 mb-0'),
-            ),
-
-            Submit('submit', 'Save Category', css_class='btn btn-primary')
-        )
-
-
-class DigitalAccountForm(forms.ModelForm):
-    class Meta:
-        model = DigitalAccount
+        model = Account
         fields = [
-            "category",
-            "name",
+            "account_category",
+            "account_name",
             "provider",
             "website_url",
             "username_or_email",
@@ -105,16 +87,16 @@ class DigitalAccountForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user:
-            self.fields['category'].queryset = AccountCategory.objects.filter(user=self.user)
+        # if self.user:
+        #     self.fields['account_name'].queryset = Account.objects.filter(user=self.user)
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
                 'Account Details',
-                'category',
                 Row(
-                    Column('name', css_class='form-group col-md-6 mb-0'),
+                    Column('account_category', css_class='form-group col-md-6 mb-0'),
+                    Column('account_name', css_class='form-group col-md-6 mb-0'),
                     Column('provider', css_class='form-group col-md-6 mb-0'),
                 ),
                 'website_url',
@@ -137,7 +119,7 @@ class AccountRelevanceReviewForm(forms.ModelForm):
     class Meta:
         model = AccountRelevanceReview
         fields = [
-            "account",
+            "account_relevance",
             "matters",
             "reasoning",
             "next_review_due",
@@ -153,13 +135,13 @@ class AccountRelevanceReviewForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['account'].queryset = DigitalAccount.objects.filter(profile=profile)
+                self.fields['account_relevance'].queryset = Account.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['account'].queryset = DigitalAccount.objects.none()
+                self.fields['account_relevance'].queryset = Account.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'account',
+            'account_revelance',
             Row(
                 Column('matters', css_class='form-group col-md-6 mb-0'),
                 Column('next_review_due', css_class='form-group col-md-6 mb-0'),
@@ -278,11 +260,9 @@ class DeviceForm(forms.ModelForm):
         fields = [
             "device_type",
             "name",
-            "operating_system",
             "owner_label",
             "location_description",
             "unlock_method_description",
-            "has_full_disk_encryption",
             "used_for_2fa",
             "decommission_instruction",
         ]
@@ -296,7 +276,6 @@ class DeviceForm(forms.ModelForm):
                 Row(
                     Column('device_type', css_class='form-group col-md-4 mb-0'),
                     Column('name', css_class='form-group col-md-4 mb-0'),
-                    Column('operating_system', css_class='form-group col-md-4 mb-0'),
                 ),
                 Row(
                     Column('owner_label', css_class='form-group col-md-6 mb-0'),
@@ -307,7 +286,6 @@ class DeviceForm(forms.ModelForm):
                 'Security Information',
                 'unlock_method_description',
                 Row(
-                    Column('has_full_disk_encryption', css_class='form-group col-md-6 mb-0'),
                     Column('used_for_2fa', css_class='form-group col-md-6 mb-0'),
                 ),
             ),
@@ -413,13 +391,16 @@ class AccountDirectoryEntryForm(forms.ModelForm):
         )
 
 
-class EmergencyNoteForm(forms.ModelForm):
+class EmergencyContactForm(forms.ModelForm):
     class Meta:
-        model = EmergencyNote
+        model = EmergencyContact
         fields = [
-            "contact",
-            "name",
-            "body",
+            'contact_relation',
+            'contact_name',
+            'is_emergency_contact',
+            'is_digital_executor',
+            'is_caregiver',
+            'body',
         ]
     
     def __init__(self, *args, **kwargs):
@@ -429,16 +410,19 @@ class EmergencyNoteForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['name'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['contact_name'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['name'].queryset = Contact.objects.none()
+                self.fields['contact_name'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'contact',
-            'name',
+            'contact_relation',
+            'contact_name',
+            'is_emergency_contact',
+            'is_digital_executor',
+            'is_caregiver',
             'body',
-            Submit('submit', 'Save Emergency Note', css_class='btn btn-primary')
+            Submit('submit', 'Save Emergency Contact', css_class='btn btn-primary')
         )
 
 

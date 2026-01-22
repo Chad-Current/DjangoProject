@@ -10,18 +10,12 @@ urlpatterns = [
     path('profile/', views.ProfileDetailView.as_view(), name='profile_detail'),
     path('profile/edit/', views.ProfileUpdateView.as_view(), name='profile_update'),
     
-    # Account Category URLs --- DONE
-    path('categories/', views.AccountCategoryListView.as_view(), name='accountcategory_list'),
-    path('categories/create/', views.AccountCategoryCreateView.as_view(), name='accountcategory_create'),
-    path('categories/<int:pk>/edit/', views.AccountCategoryUpdateView.as_view(), name='accountcategory_update'),
-    path('categories/<int:pk>/delete/', views.AccountCategoryDeleteView.as_view(), name='accountcategory_delete'),
-    
     # Account (Digital) URLs --- DONE
-    path('accounts/', views.DigitalAccountListView.as_view(), name='account_list'),
-    path('accounts/<int:pk>/', views.DigitalAccountDetailView.as_view(), name='account_detail'),
-    path('accounts/create/', views.DigitalAccountCreateView.as_view(), name='account_create'),
-    path('accounts/<int:pk>/edit/', views.DigitalAccountUpdateView.as_view(), name='account_update'),
-    path('accounts/<int:pk>/delete/', views.DigitalAccountDeleteView.as_view(), name='account_delete'),
+    path('accounts/', views.AccountListView.as_view(), name='account_list'),
+    path('accounts/<int:pk>/', views.AccountDetailView.as_view(), name='account_detail'),
+    path('accounts/create/', views.AccountCreateView.as_view(), name='account_create'),
+    path('accounts/<int:pk>/edit/', views.AccountUpdateView.as_view(), name='account_update'),
+    path('accounts/<int:pk>/delete/', views.AccountDeleteView.as_view(), name='account_delete'),
     
     # Account Relevance Review
     path('account-reviews/', views.AccountRelevanceReviewListView.as_view(), name='accountrelevancereview_list'),
@@ -58,10 +52,11 @@ urlpatterns = [
     path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegationgrant_delete'),
     
     # Emergency Note URLs
-    path('emergency-notes/', views.EmergencyNoteListView.as_view(), name='emergencynote_list'),
-    path('emergency-notes/create/', views.EmergencyNoteCreateView.as_view(), name='emergencynote_create'),
-    path('emergency-notes/<int:pk>/edit/', views.EmergencyNoteUpdateView.as_view(), name='emergencynote_update'),
-    path('emergency-notes/<int:pk>/delete/', views.EmergencyNoteDeleteView.as_view(), name='emergencynote_delete'),
+    path('emergency-contacts/', views.EmergencyContactListView.as_view(), name='emergencycontact_list'),
+    path('emergency-contacts<int:pk>/', views.EmergencyContactListView.as_view(), name='emergencycontact_detail'),
+    path('emergency-contacts/create/', views.EmergencyContactCreateView.as_view(), name='emergencycontact_create'),
+    path('emergency-contacts/<int:pk>/edit/', views.EmergencyContactUpdateView.as_view(), name='emergencycontact_update'),
+    path('emergency-contacts/<int:pk>/delete/', views.EmergencyContactDeleteView.as_view(), name='emergencycontact_delete'),
     
     # Checkup URLs
     path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),

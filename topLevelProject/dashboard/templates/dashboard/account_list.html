@@ -26,29 +26,29 @@
     <!-- <div class="parent"> -->
     <div class="section-mt-5">
         {% if accounts %}
-        {% for digital in accounts %}
+        {% for account in accounts %}
         <div class="client-cards border-dark">
             <div class="cl-card-1">
-                <a href="{% url 'dashboard:account_detail' digital.pk %}" data-bs-toggle="tooltip"
-                    data-bs-placement="top" title="View Full Details for {{ digital.name }}">
-                    <flag>{{ digital.name }}</flag>
+                <a href="{% url 'dashboard:account_detail' account.pk %}" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="View Full Details for {{ account.name }}">
+                    <flag>{{ account.account_name }}</flag>
                 </a>
             </div>
             <div class="cl-card-2">
-                <h5>Important: {{ digital.is_critical|yesno:"Yes,No" }}</h5>
+                <h5>Important: {{ account.is_critical|yesno:"Yes,No" }}</h5>
             </div>
             <div class="cl-card-3">
-                <h5>Provider: {{ digital.provider}}</h5>
+                <h5>Provider: {{ account.provider}}</h5>
             </div>
             <div class="cl-card-4">
                 {% if can_modify %}
-                <a href="{% url 'dashboard:account_update' digital.pk %}" class="a-style"><button
+                <a href="{% url 'dashboard:account_update' account.pk %}" class="a-style"><button
                         class="button">Edit</button></a>
                 {% endif %}
             </div>
             <div class="cl-card-5">
                 {% if can_modify %}
-                <a href="{% url 'dashboard:account_delete' digital.pk %}" class="a-style"><button
+                <a href="{% url 'dashboard:account_delete' account.pk %}" class="a-style"><button
                         class="button">Delete</button></a>
                 {% endif %}
             </div>

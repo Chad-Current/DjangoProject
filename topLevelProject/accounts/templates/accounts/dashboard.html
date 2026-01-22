@@ -60,7 +60,7 @@
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          {% if not request.user.account_categories.count %}
+          {% if not user.profile.accounts.all.count >= 1 %}
           <tag class="needs-attention">Needs Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>
@@ -68,13 +68,13 @@
         </div>
         <div class="cl-card-3">
           <h5>Accounts with access details</h5>
-          <p>{{ request.user.account_categories.count }} accounts tracked</p>
+          <p>{{ user.profile.accounts.all.count }} accounts tracked</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ request.user.account_categories.last.updated_at }}</p>
+          <p>{{ request.user.account.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
-          <a href="{% url 'dashboard:accountcategory_list' %}"><button class="button">View</button></a>
+          <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
         </div>
       </div>
 <!-- DEVICES AREA-->
@@ -102,7 +102,7 @@
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          {% if not user.profile.emergency_notes.all.count %}
+          {% if not user.profile.emergency_contacts.all.count %}
           <tag class="needs-attention">Needs Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>
@@ -113,10 +113,10 @@
           <p>Designate who can access your estate in emergencies</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ user.profile.emergency_notes.last.updated_at  }}</p>
+          <p>{{ user.profile.emergency_contacts.last.updated_at  }}</p>
         </div>
         <div class="cl-card-5">
-          <a href="{% url 'dashboard:emergencynote_list' %}"><button class="button">View</button></a>
+          <a href="{% url 'dashboard:emergencycontact_list' %}"><button class="button">View</button></a>
         </div>
       </div>
   <!-- DIGITAL ESTATE DOCUMENTS AREA-->

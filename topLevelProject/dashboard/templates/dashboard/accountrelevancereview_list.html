@@ -25,24 +25,16 @@
 <div class="main">
     <!-- <div class="parent"> -->
     <div class="section-mt-5">
-<h3>Account Reviews TESTING NOW</h3>
-{% if reviews %}
-            <strong>{{ review.next_review_due }} </strong>
-            <strong>{{ review.review_date|date:"M d, Y" }}</strong> - 
-            {% if review.matters %}Still matters{% else %}No longer matters{% endif %}
-{% else %}
-    <p>No reviews yet.</p>
-{% endif %}
+        <div class="list-view">
+        {% for review in reviews %}
+        {{ review.account_relevance.account_name}}
+        {{ review.created_at }}
+        {{ review.next_review_due }}
+        {% endfor %}
+        </div>
 
-{% if can_modify %}
-    <a href="{% url 'dashboard:accountrelevancereview_create' %}?account={{ account.pk }}" class="btn btn-primary">
-        Add Review
-    </a>
-{% endif %}
     </div>
-
 </div>
-<!-- </div> -->
 
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
