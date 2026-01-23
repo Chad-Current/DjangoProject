@@ -186,6 +186,7 @@ class AccountRelevanceReview(models.Model):
         return f"Review of {self.account_relevance.account_name} created {self.account_relevance.created_at.date()}"
 
 ################ ### MARKED FOR REMOVAL POSSIBLY ### #########################
+################ ### COULD BE USED FOR DELEGATIONS (NON EMERGENCY) ### #######
 class Contact(models.Model):
     """
     Important contacts (family, friends, digital executor, etc.)
@@ -225,7 +226,7 @@ class Contact(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.relationship})"
 
-
+############## ### PROBABLY DELETING (UNNECESSARY) #########
 class DelegationScope(models.Model):
     """
     Types of authority that can be delegated (e.g., medical decisions, financial)
@@ -256,12 +257,13 @@ class DelegationGrant(models.Model):
         on_delete=models.CASCADE,
         related_name='delegations_received'
     )
+    ### DELETE WITH DELEGATION SCOPING #################
     scope = models.ForeignKey(
         DelegationScope,
         on_delete=models.CASCADE,
         related_name='grants'
     )
-    
+    #####################################################
     applies_on_death = models.BooleanField(default=False)
     applies_on_incapacity = models.BooleanField(default=False)
     applies_immediately = models.BooleanField(default=False)
@@ -504,7 +506,7 @@ class EmergencyContact(models.Model):
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
 
-################ ### MARKED FOR REMOVAL ### #########################
+################ ### MARKED FOR POSSIBLE REMOVAL ### #########################
 class CheckupType(models.Model):
     """
     Types of periodic checkups (quarterly, annual, etc.)

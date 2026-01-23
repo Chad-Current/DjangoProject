@@ -11,7 +11,10 @@ from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
 from django.urls import reverse_lazy
+from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Min, Sum
+from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
 from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
 from .models import (
@@ -58,30 +61,80 @@ from .forms import (
 # DASHBOARD HOME
 # ============================================================================
 class DashboardHomeView(LoginRequiredMixin, TemplateView):
-    template_name = 'dashboard/home.html'
+    template_name = 'dashboard/dashboard.html'
     login_url = '/accounts/login/'
-    
+
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))  #'payment checking'
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        
+
         try:
             profile = Profile.objects.get(user=user)
+            context['user'] = user
             context['profile'] = profile
-            context['digital_accounts_count'] = Account.objects.filter(profile=profile).count()
+            context['session_expires'] = self.request.session.get_expiry_date()
+            # COUNTS
+            context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
+            context['delegation_count'] = DelegationGrant.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
+            context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
+            context['emergency_contacts_count'] = EmergencyContact.objects.filter(profile=profile).count()
+            context['family_needs_to_know_count'] = FamilyNeedsToKnowSection.objects.filter(document_id__profile=profile).count()
+            # OPTIONALS
+            keys = [
+                    'accounts_count',
+                    'contacts_count',
+                    'devices_count',
+                    'delegation_count',
+                    'documents_count',
+                    'estate_count',
+                    'emergency_contacts_count',
+                    'family_needs_to_know',
+                ]
+            adjusted_values = []
+            for key in keys:
+                value = context.get(key, 0) or 0
+                if value > 1:
+                    value += 1
+                adjusted_values.append(value)
+            total = sum(adjusted_values) or 1  # avoid division by zero
+            context['progress'] = (total / len(keys)) * 100
+            # PERMISSIONS CONTEXT 
+            context['tier_display'] = user.get_tier_display_name()
+            context['can_modify'] = user.can_modify_data()
+            context['can_view'] = user.can_view_data()
+            qs = (AccountRelevanceReview.objects
+                  .exclude(next_review_due__isnull=True)
+                  .aggregate(soonest=Min('next_review_due'))
+                  ['soonest']
+                  )
+            today = datetime.today().date()
+            delta = qs - today          # future date - today
+            context['upcoming_review_days'] = delta.days  # e.g. number of days until next review
+
+            if user.subscription_tier == 'essentials':
+                context['is_edit_active'] = user.is_essentials_edit_active()
+                context['days_remaining'] = user.days_until_essentials_expires()
+                context['essentials_expires'] = user.essentials_expires
+
+            if user.subscription_tier == 'legacy':
+                context['legacy_granted'] = user.legacy_granted_date
+
         except Profile.DoesNotExist:
             context['profile'] = None
-        
-        context['can_modify'] = user.can_modify_data()
-        context['can_view'] = user.can_view_data()
-        context['tier_display'] = user.get_tier_display_name()
-        
+
         return context
-
-
+        
 # ============================================================================
 # PROFILE VIEWS
 # ============================================================================
@@ -652,7 +705,7 @@ class EmergencyContactListView(ViewAccessMixin, ListView):
 
 class EmergencyContactCreateView(FullAccessMixin, CreateView):
     model = EmergencyContact
-    form_class = EmergencyContact
+    form_class = EmergencyContactForm
     template_name = 'dashboard/emergencycontact_form.html'
     success_url = reverse_lazy('dashboard:emergencycontact_list')
     owner_field = 'profile__user'
@@ -671,7 +724,7 @@ class EmergencyContactCreateView(FullAccessMixin, CreateView):
 
 class EmergencyContactUpdateView(FullAccessMixin, UpdateView):
     model = EmergencyContact
-    form_class = EmergencyContact
+    form_class = EmergencyContactForm
     template_name = 'dashboard/emergencycontact_form.html'
     success_url = reverse_lazy('dashboard:emergencycontact_list')
     owner_field = 'profile__user'

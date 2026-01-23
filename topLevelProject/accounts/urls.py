@@ -9,7 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     # Dashboard and Payment
-    path('dashboard/', views.dashboard_view, name='account_dashboard'),
+    # path('dashboard/', views.dashboard_view, name='account_dashboard'),
     path('payment/', views.payment_view, name='payment'),
     
     # Password Reset

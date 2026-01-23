@@ -1,6 +1,7 @@
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.utils import timezone
+from datetime import timedelta
 from .models import Account, AccountRelevanceReview
 
 
@@ -55,11 +56,13 @@ def create_account_relevance_review(sender, instance, created, **kwargs):
                     account_relevance=instance
                 ).latest('review_date')
                 
-                # Update the existing review
+                # Update the existing review with new reasoning and next_review_due
                 if instance.is_critical:
                     latest_review.reasoning = f"Account marked as critical - {latest_review.reasoning}"
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=90)
                 else:
                     latest_review.reasoning = f"Account unmarked as critical - {latest_review.reasoning}"
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=365)
                 
                 latest_review.reviewer = user
                 latest_review.save()

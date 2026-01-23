@@ -31,8 +31,8 @@
       <li class="classes marginLeft "><a aria-current="page" href="{% url 'home_main:home' %}">Home</a></li>
       <li class="classes"><a href="{% url 'faqs_page:faqs' %}">FAQs</a></li>
       <!-- If the user is logged in, show the Logout button/link -->
-        {% if user.is_authenticated %}
-      <li><a href="{% url 'accounts:account_dashboard' %}">My Dashboard</a></li>
+        {% if user.is_authenticated and user.can_view_data %}
+      <li><a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a></li>
       {% endif %}
       <li class="classes">
         {% if user.is_authenticated %}

@@ -547,9 +547,9 @@ class RecoveryRequestForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['target_account'].queryset = DigitalAccount.objects.filter(profile=profile)
+                self.fields['target_account'].queryset = Account.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['target_account'].queryset = DigitalAccount.objects.none()
+                self.fields['target_account'].queryset = Account.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(

@@ -4,7 +4,7 @@ app_name = "dashboard"
 
 urlpatterns = [
     # Dashboard Home
-    path('', views.DashboardHomeView.as_view(), name='dashboard_home'),
+    path('dashboard/', views.DashboardHomeView.as_view(), name='dashboard_home'),
     
     # Profile URLs --- DONE
     path('profile/', views.ProfileDetailView.as_view(), name='profile_detail'),

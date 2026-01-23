@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
-        <!-- <link rel="stylesheet" href="{% static 'baseapp/css/queries.css' %}" type="text/css"> -->
+        <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <linkh
@@ -19,12 +19,321 @@
 
     <body>
         {% include "baseapp/navbar.html" %}
-        <h1>Payment View</h1>
+        {% if not user.can_view_data %}
+       <div class="parent-row-x">
+      <div class="section-header">
+          <h1>Welcome {{ user..username }}</h1>
+            <h3>Your prepardness level is 0% complete. Let's start payment!</h3>
+      </div>
+      <div class="card-grid">
+        <div class="card-1">
+          <div class="row">
+            <img src="/static/accounts/images/Progress--Streamline-Plump.svg" />
+            <h5>0%</h5>
+          </div>
+          <h5>Overall Progress</h5>
+          <p> [|||||||||||||||||\\\\\\\\\\\\\\]</p>
+        </div>
+        <div class="card-2"><img src="/static/accounts/images/Task--Streamline-Plump.svg" />
+          <h5>Task Completed</h5>
+          <p>0 Tasks completed</p>
+        </div>
+        <div class="card-3">
+          <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" />
+          <h5>0 Days Until Review</h5>
+        </div>
+        <div class="card-4"><img src="/static/accounts/images/User-Protection-Check--Streamline-Plump.svg" />
+          <h5>No Accounts Secured</h5>
+          <p>Nothing Organized</p>
+        </div>
+      </div>
+    </div>
+{% block content %}
+<div class="payment-container">
+    <h1 style="text-align: center; margin-bottom: 10px;">Choose Your Plan</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 40px;">
+        Select the subscription tier that best fits your needs
+    </p>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="pricing-cards">
+        <!-- Essentials Tier -->
+        <div class="pricing-card">
+            <div class="tier-name">Essentials</div>
+            <div class="tier-price">
+                <span class="currency">$</span>297
+                <div class="period">one-time payment</div>
+            </div>
+            
+            <ul class="tier-features">
+                <li>Full edit access for 1 year</li>
+                <li>Add, change, and delete data</li>
+                <li>View-only access forever after 1 year</li>
+                <li>Email support</li>
+                <li>Regular updates</li>
+            </ul>
+            
+            <button class="select-tier-btn essentials-btn" onclick="openPaymentModal('essentials', 99.99)">
+                Select Essentials
+            </button>
+        </div>
+        
+        <!-- Legacy Tier -->
+        <div class="pricing-card recommended">
+            <div class="tier-name">Legacy</div>
+            <div class="tier-price">
+                <span class="currency">$</span>597
+                <div class="period">one-time payment</div>
+            </div>
+            
+            <ul class="tier-features">
+                <li>Lifetime full access</li>
+                <li>Add, change, and delete data forever</li>
+                <li>Never lose edit permissions</li>
+                <li>Priority email support</li>
+                <li>All future updates included</li>
+                <li>Best value for long-term use</li>
+            </ul>
+            
+            <button class="select-tier-btn legacy-btn" onclick="openPaymentModal('legacy', 299.99)">
+                Select Legacy
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="payment-modal-content">
+        <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+        <h2 id="modal-title">Complete Your Purchase</h2>
+        <p id="modal-description"></p>
+        
+        <form id="payment-form">
+            {% csrf_token %}
+            <input type="hidden" id="selected-tier" name="tier_choice" value="">
+            
+            <div id="card-element"></div>
+            <div id="card-errors" class="card-errors" role="alert"></div>
+            
+            <div class="spinner" id="loading-spinner"></div>
+            
+            <button type="submit" id="submit-payment">
+                <span id="button-text">Pay Now</span>
+            </button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
+            Secured by Stripe. Your payment information is encrypted.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+    <div class="section-header">
+      <h1>Digital Estate</h1>
+    </div>
+    <div class="section-mt-5">
+<!-- ACCOUNTS AREA-->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.accounts.all.count >= 1 %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>Accounts with access details</h5>
+          <p>0 accounts tracked</p>
+        </div>
+        <div class="cl-card-4">
+          <p></p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+<!-- DEVICES AREA-->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Computer--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>Devices details</h5>
+          <p>0 devices tracked</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Date | Time</p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:device_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+<!-- EMERGENCY AREA-->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.emergency_contacts.all.count %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>Emergency Contact + Delegation</h5>
+          <p>Designate who can access your estate in emergencies</p>
+        </div>
+        <div class="cl-card-4">
+          <p></p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:emergencycontact_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+  <!-- DIGITAL ESTATE DOCUMENTS AREA-->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>Digital Estate Document</h5>
+          <p>Your comprehensive digital will and estate plan</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Date | Time</p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+<!-- FAMILY CARE AREA-->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Family--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>What My Family Needs to Know</h5>
+          <p>Personal instructions and wishes for your loved ones</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Date | Time</p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+<!-- IMPORTANT INFORMATION AREA -->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.devices.all.count %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>What Matters vs What to Ignore</h5>
+          <p>Priority matrix for critical vs non-essential accounts</p>
+        </div>
+        <div class="cl-card-4">
+          <p>0 critical accounts</p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+<!-- PROFILE AREA -->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          {% if not user.profile.full_name %}
+          <tag class="needs-attention"></tag>
+          {% else %}
+          <tag class="completed">Complete</tag>
+          {% endif %}
+        </div>
+        <div class="cl-card-3">
+          <h5>My Profile</h5>
+          <p>Personal information area</p>
+        </div>
+        <div class="cl-card-4">
+          <p></p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:profile_detail' %}"><button class="button">View</button></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h1>Scheduled Reviews & Checkups</h1>
+    </div>
+    <div class="section-mt-6">
+<!-- QUARTERLY REVIEW AREA -->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag></tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Quarterly Digital Checkup</h5>
+          <p>Quick review of recent account changes and updates</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Date | Time </p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:checkup_list' %}"><button class="button">Update Now</button></a>
+        </div>
+      </div>
+<!-- ANNUAL REVIEW AREA -->
+      <div class="client-cards border-light">
+        <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
+        <div class="cl-card-2">
+          <tag></tag>
+        </div>
+        <div class="cl-card-3">
+          <h5>Annual Update + Re-certification</h5>
+          <p>Comprehensive review and re-certify your digital estate</p>
+        </div>
+        <div class="cl-card-4">
+          <p>Last updated: Date | Time</p>
+        </div>
+        <div class="cl-card-5">
+          <a href="{% url 'dashboard:accountrelevancereview_list' %}"><button class="button">Update Now</button></a>
+        </div>
+      </div>
+    </div>
+        {% endif %}
         {% include "baseapp/footer.html" %}
 
 
         <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
         <script src="{% static 'baseapp/js/index.js' %}"></script>
+        <script src="{% static 'accounts/js/payment.js' %}"></script>
         <!-- End body-->
     </body>
 
