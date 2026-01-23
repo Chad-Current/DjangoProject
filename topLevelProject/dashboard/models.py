@@ -150,7 +150,7 @@ class AccountRelevanceReview(models.Model):
     account_relevance = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
-        related_name='Accoun'
+        related_name='relevance_reviews'
     )
     reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL,

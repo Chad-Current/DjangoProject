@@ -25,11 +25,10 @@
 <div class="main">
     <!-- <div class="parent"> -->
     <div class="section-mt-5">
-        <div class="list-view">
+        <div class="form-view">
         {% for review in reviews %}
         {{ review.account_relevance.account_name}}
-        {{ review.created_at }}
-        {{ review.next_review_due }}
+        {{ review.next_review_due|date:"F d, Y" }}
         {% endfor %}
         </div>
 

@@ -136,7 +136,7 @@ class AccountListView(ViewAccessMixin, ListView):
             is_critical = self.request.GET.get('critical')
             if is_critical:
                 queryset = queryset.filter(is_critical=True)
-            
+
             return queryset.order_by('-created_at')
         except Profile.DoesNotExist:
             return Account.objects.none()
@@ -162,6 +162,16 @@ class AccountDetailView(ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
+        
+        # Get the most recent review for this account
+        try:
+            latest_review = AccountRelevanceReview.objects.filter(
+                account_relevance=self.object
+            ).order_by('-review_date').first()
+            context['latest_review'] = latest_review
+        except AccountRelevanceReview.DoesNotExist:
+            context['latest_review'] = None
+            
         return context
 
 

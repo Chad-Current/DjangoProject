@@ -119,32 +119,20 @@
                     </div>
                 </div>
 
+                {% if latest_review %}
                 <div class="card mb-3">
                     <div class="card-header">
-                        <h3>Metadata</h3>
+                        <h3>Upcoming Review Date</h3>
                     </div>
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-md-3"><strong>Created:</strong></div>
-                            <div class="col-md-9">
-                                <h5>{{ account.created_at|date:"F d, Y g:i A" }}</h5>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <div class="col-md-3"><strong>Last Updated:</strong></div>
-                            <div class="col-md-9">
-                                <h5>{{ account.updated_at|date:"F d, Y g:i A" }}</h5>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
                             <div class="col-md-3"><strong>Next Review Date:</strong></div>
                             <div class="col-md-9">
-                                <h5>{{ relevance_reviews.review_date }}</h5>
+                                <h5>{{ latest_review.next_review_due|date:"F d, Y" }}</h5>
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
 
 
