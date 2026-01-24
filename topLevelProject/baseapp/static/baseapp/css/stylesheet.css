@@ -59,6 +59,8 @@ body::-webkit-scrollbar-thumb {
   --paragraph-font: "Inter";
   --purewhite-color: #e7eff7;
   --background-color: #f3f7fc;
+  --background-color-mid: #62a2ce;
+  --background-color-dark: #16283b;
   --text-color: #ede7e3;
   --text-color-dark: #16283b;
   --sixty-percent: #62a2ce;
@@ -149,10 +151,10 @@ strong {
 .main {
   background-color: var(--background-color);
   /* width: 80%; */
-  display: flex;
+  /* display: flex;
   flex-flow: column wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
 }
 
 .icon {
@@ -173,4 +175,45 @@ strong {
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+.pd-0 {
+  padding: 0;
+}
+.pd-1 {
+  padding: 1em;
+}
+.pd-2 {
+  padding: 2em
+}
+
+.col-gap-1 {
+  column-gap: 1em;
+}
+.col-gap-2 {
+  column-gap: 2em;
+}
+.col-gap-3 {
+  column-gap: 3em;
+}
+.col-gap-4 {
+  column-gap: 4em;
+}
+
+.row-gap-1 {
+  row-gap: 1em;
+}
+.row-gap-2 {
+  row-gap: 2em;
+}
+.row-gap-3 {
+  row-gap: 3em;
+}
+.row-gap-2 {
+  row-gap: 4em;
+}
+.w60 {
+  width: 60%;
+}
+.w80 {
+  width: 80%;
 }

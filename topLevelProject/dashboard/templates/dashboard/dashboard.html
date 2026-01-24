@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
     <link
       href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
@@ -19,48 +19,42 @@
 
   <body>
     {% include "baseapp/navbar.html" %}
-    <div class="parent-row-x">
-      <div class="section-header">
+    <div class="head-container ms-2 mg-2">
+      <div class="main-1">
         {% if not profile.full_name %}
         <h1>Welcome {{ user.username }} </h1>
-          {% else %}
-          <h1>Welcome back {{ profile.full_name|default:user.username }}</tag>
-            {% endif %}
+        {% else %}
+        <h1>Welcome back {{ profile.full_name|default:user.username }}</tag>
+          {% endif %}
       </div>
-
-     <div class="card-grid">
-        <div class="card-1">
-          <div class="row">
-            <div class="dashboard-section">
-                    <!-- Hidden input to pass progress value to JavaScript -->
-                    <input type="hidden" id="progress-value" value="{{ progress|default:0 }}">
-                    {% include 'dashboard/progress-circle.html' %}
-                </div>
-          </div>
-          <h5>Overall Progress</h5>
-        </div>
-        <div class="card-2"><img src="/static/accounts/images/Task--Streamline-Plump.svg" />
-          <h5>Task Completed</h5>
-          <p>Two Task Remaining</p>
-        </div>
-        <div class="card-3">
-          <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" />
-          <h5>Days Until Review</h5>
-          <p>{{ upcoming_review_days }} </p>
-        </div>
-        <div class="card-4"><img src="/static/accounts/images/User-Protection-Check--Streamline-Plump.svg" />
-          <h5>Accounts Secured</h5>
-          <p>All Organized</p>
+      <div class="main-2 pd-1 bg-pure bdr-round"><img src="/static/accounts/images/Task--Streamline-Plump.svg"
+          class="img-sm" />
+        <h4>{{ remaining_tasks }} Task Remaining</h4>
+      </div>
+      <div class="main-3 pd-1 bg-pure bdr-round">
+        <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" class="img-sm" />
+        <h4>{{ upcoming_review_days }} Days Until Review</h4>
+      </div>
+      <div class="main-4 pd-1 bg-pure bdr-round"><img
+          src="/static/accounts/images/User-Protection-Check--Streamline-Plump.svg" class="img-sm" />
+        <h4>Accounts Secured</h4>
+      </div>
+      <div class="main-5">
+        <div class="dashboard-section">
+          <!-- Hidden input to pass progress value to JavaScript -->
+          <input type="hidden" id="progress-value" value="{{ progress|default:0 }}">
+          {% include 'dashboard/progress-circle.html' %}
         </div>
       </div>
     </div>
 
-    <div class="section-header">
+
+    <div class="mt-5 ms-2">
       <h1>Digital Estate</h1>
     </div>
-    <div class="section-mt-5">
-<!-- ACCOUNTS AREA-->
-      <div class="client-cards border-light">
+    <div class="parent-row ms-2 mg-2 col-gap-1 row-gap-1">
+      <!-- ACCOUNTS AREA-->
+      <div class="client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.accounts.all.count >= 1 %}
@@ -80,8 +74,8 @@
           <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-<!-- DEVICES AREA-->
-      <div class="client-cards border-light">
+      <!-- DEVICES AREA-->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Computer--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not devices_count %}
@@ -101,8 +95,8 @@
           <a href="{% url 'dashboard:device_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-<!-- EMERGENCY AREA-->
-      <div class="client-cards border-light">
+      <!-- EMERGENCY AREA-->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not emergency_contacts_count %}
@@ -116,14 +110,14 @@
           <p>{{emergency_contacts_count}} Emergency Contacts</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ user.profile.emergency_contacts.last.updated_at  }}</p>
+          <p>{{ user.profile.emergency_contacts.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:emergencycontact_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-  <!-- DIGITAL ESTATE DOCUMENTS AREA-->
-      <div class="client-cards border-light">
+      <!-- DIGITAL ESTATE DOCUMENTS AREA-->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not delegation_count %}
@@ -143,8 +137,8 @@
           <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-<!-- FAMILY CARE AREA-->
-      <div class="client-cards border-light">
+      <!-- FAMILY CARE AREA-->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Family--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not family_needs_to_know_count %}
@@ -164,8 +158,8 @@
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-<!-- IMPORTANT INFORMATION AREA -->
-      <div class="client-cards border-light">
+      <!-- IMPORTANT INFORMATION AREA -->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.devices.all.count %}
@@ -185,12 +179,12 @@
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
-<!-- PROFILE AREA -->
-      <div class="client-cards border-light">
+      <!-- PROFILE AREA -->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.full_name %}
-          <tag class="needs-attention">Needs Review</tag>
+          <tag class="needs-attention">Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>
           {% endif %}
@@ -208,12 +202,12 @@
       </div>
     </div>
 
-    <div class="section-header">
+    <div class="ms-2 mg-10">
       <h1>Scheduled Reviews & Checkups</h1>
     </div>
-    <div class="section-mt-6">
-<!-- QUARTERLY REVIEW AREA -->
-      <div class="client-cards border-light">
+    <div class="parent-row ms-2 mg-4 col-gap-1 row-gap-1">
+      <!-- QUARTERLY REVIEW AREA -->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due %}
@@ -221,7 +215,7 @@
           {% elif alert_attention %}
           <tag class="alert-attention">Upcoming</tag>
           {% else %}
-          <tag class="completed">Update to Date</tag>
+          <tag class="completed">Current</tag>
           {% endif %}
         </div>
         <div class="cl-card-3">
@@ -235,14 +229,16 @@
           <a href="{% url 'dashboard:checkup_list' %}"><button class="button">Update Now</button></a>
         </div>
       </div>
-<!-- ANNUAL REVIEW AREA -->
-      <div class="client-cards border-light">
+      <!-- ANNUAL REVIEW AREA -->
+      <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due_year %}
+          <tag class="needs-attention">Out of Date</tag>
+          {% elif alert_attention_year %}
           <tag class="alert-attention">Upcoming</tag>
           {% else %}
-          <tag class="completed">Update to date</tag>
+          <tag class="completed">Current</tag>
           {% endif %}
         </div>
         <div class="cl-card-3">
@@ -257,13 +253,13 @@
         </div>
       </div>
     </div>
-
-   {% include "baseapp/footer.html" %}
+    <!-- </div> -->
+    {% include "baseapp/footer.html" %}
 
 
     <!-- <script src="{% static 'accounts/js/index.js' %}"></script> -->
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-    <script src="{% static 'dashboard/js/progress.js' %}"></script>   
+    <script src="{% static 'dashboard/js/progress.js' %}"></script>
     <!-- End body-->
   </body>
 

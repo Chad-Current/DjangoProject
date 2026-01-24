@@ -110,6 +110,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 adjusted_values.append(value)
             total = sum(adjusted_values) or 1  # avoid division by zero
             context['progress'] = (total / len(keys)) * 100
+            context['remaining_tasks'] = len(keys) - total
             # PERMISSIONS CONTEXT 
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()

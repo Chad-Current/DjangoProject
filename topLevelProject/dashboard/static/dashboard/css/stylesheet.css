@@ -110,3 +110,95 @@ td {
   font-weight: 700;
   color: var(--ten-percent);
 }
+
+.client-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 10px;
+  border-radius: 20px;
+  background-color: var(--purewhite-color);
+  margin: 0.5em 0 3em;
+  padding: 1em;
+  width: clamp(10em, 18vw, 30em);
+  white-space: wrap;
+
+
+  h5,
+  p {
+    margin: 0;
+    padding: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    font-size: var(--font-nm);
+  }
+
+
+  h5 {
+    font-size: var(--font-md);
+    font-weight: 400;
+  }
+}
+
+
+.cl-card-1 {
+  grid-area: 1 / 1 / 2 / 3;
+}
+
+
+.cl-card-2 {
+  grid-area: 1 / 3 / 2 / 5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+
+.cl-card-3 {
+  grid-area: 2 / 1 / 3 / 5;
+}
+
+
+.cl-card-4 {
+  grid-area: 3 / 1 / 4 / 4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+
+.cl-card-5 {
+  grid-area: 3 / 4 / 4 / 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+
+.login-form {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-radius: 20px;
+  background-color: var(--purewhite-color);
+  margin: 0.5em 0 3em;
+  padding: 1em;
+  width: clamp(20em, 20vw, 30em);
+  height: clamp(20em, 80vh, 50em);
+
+
+  /* border: solid 1px var(--thirty-percent); */
+  :first-child {
+    align-self: center;
+
+
+    a {
+      text-decoration: none;
+      color: var(--sixty-percent);
+    }
+  }
+}
