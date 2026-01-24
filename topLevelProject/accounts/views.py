@@ -168,7 +168,7 @@ class PaymentView(LoginRequiredMixin, View):
     def get(self, request):
         if request.user.has_paid and request.user.subscription_tier != 'none':
             messages.info(request, 'You already have an active subscription.')
-            return redirect('accounts:account_dashboard')
+            return redirect('dashboard:dashboard_page')
         
         context = {
             'user': request.user,
@@ -184,13 +184,13 @@ class PaymentView(LoginRequiredMixin, View):
             request.user.upgrade_to_essentials()
             logger.info(f'User {request.user.email} upgraded to Essentials')
             messages.success(request, 'Essentials tier activated! You have 1 year of edit access.')
-            return redirect('accounts:account_dashboard')
+            return redirect('dashboard:dashboard_home')
         
         elif tier_choice == 'legacy':
             request.user.upgrade_to_legacy()
             logger.info(f'User {request.user.email} upgraded to Legacy')
             messages.success(request, 'Legacy tier activated! You now have lifetime access.')
-            return redirect('accounts:account_dashboard')
+            return redirect('dashboard:dashboard_home')
         
         else:
             messages.error(request, 'Please select a subscription tier.')
@@ -232,7 +232,6 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 register_view = RegisterView.as_view()
 login_view = LoginView.as_view()
 logout_view = LogoutView.as_view()
-# dashboard_view = DashboardView.as_view()
 payment_view = PaymentView.as_view()
 password_reset_view = CustomPasswordResetView.as_view()
 password_reset_done_view = CustomPasswordResetDoneView.as_view()

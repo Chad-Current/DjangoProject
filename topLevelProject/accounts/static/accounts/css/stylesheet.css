@@ -279,9 +279,13 @@ button a {
 
 
 .needs-attention {
-  background-color: rgba(248, 78, 78, 0.651)
+  background-color: rgba(248, 78, 78, 0.651);
 }
 
+.alert-attention {
+  background-color: rgba(248, 231, 78, 0.651);
+  color: var(--text-color-dark);
+}
 .completed {
   background-color: rgba(172, 255, 47, 0.377);
 }

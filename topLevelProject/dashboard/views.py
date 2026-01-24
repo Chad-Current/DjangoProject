@@ -13,7 +13,7 @@ from django.views.generic import (
 from django.urls import reverse_lazy
 from django.urls import reverse
 from django.contrib import messages
-from django.db.models import Min, Sum
+from django.db.models import Min, Max
 from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
 from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
@@ -89,6 +89,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['emergency_contacts_count'] = EmergencyContact.objects.filter(profile=profile).count()
+            # context['emergency_digital_executor_count'] = EmergencyContact.objects.filter(is_digital_executor__profile=profile).count()
             context['family_needs_to_know_count'] = FamilyNeedsToKnowSection.objects.filter(document_id__profile=profile).count()
             # OPTIONALS
             keys = [
@@ -113,15 +114,40 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()
             context['can_view'] = user.can_view_data()
-            qs = (AccountRelevanceReview.objects
-                  .exclude(next_review_due__isnull=True)
-                  .aggregate(soonest=Min('next_review_due'))
-                  ['soonest']
-                  )
+            context['alert_due'] = False
+            context['alert_attention'] = False
+            context['alert_due_year'] = False
+            context['alert_attention_year'] = False
             today = datetime.today().date()
-            delta = qs - today          # future date - today
-            context['upcoming_review_days'] = delta.days  # e.g. number of days until next review
+# THIS COULD BE A POTENTIAL ISSUE DOWN THE ROAD ########
+            review_dates = (AccountRelevanceReview.objects
+                            .exclude(next_review_due__isnull=True)
+                            .aggregate(
+                                soonest=Min('next_review_due'),
+                                farthest=Max('next_review_due')
+                            )
+            )
 
+            soonest_review = review_dates['soonest']
+            farthest_review = review_dates['farthest']
+
+            if soonest_review:
+                first_delta = soonest_review - today
+                if first_delta.days <= 0:
+                    context['alert_due'] = True
+                elif first_delta.days <= 7:
+                    context['alert_attention'] = True
+
+            if farthest_review:
+                last_delta = farthest_review - today
+                if last_delta.days <= 0:
+                    context['alert_due_year'] = True
+                elif last_delta.days <= 30:
+                    context['alert_attention_year'] = True
+###################### STATIC STATES ISSUE #############
+
+            context['upcoming_review_days'] = first_delta.days 
+            context['furthest_review_days'] = last_delta.days
             if user.subscription_tier == 'essentials':
                 context['is_edit_active'] = user.is_essentials_edit_active()
                 context['days_remaining'] = user.days_until_essentials_expires()

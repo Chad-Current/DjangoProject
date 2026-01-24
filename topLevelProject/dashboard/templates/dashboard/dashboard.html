@@ -26,7 +26,6 @@
           {% else %}
           <h1>Welcome back {{ profile.full_name|default:user.username }}</tag>
             {% endif %}
-            <h3>Your prepardness level is {{ progress }}% complete. Let's finish up!</h3>
       </div>
 
      <div class="card-grid">
@@ -39,7 +38,6 @@
                 </div>
           </div>
           <h5>Overall Progress</h5>
-          <p>total {{ total }}</p>
         </div>
         <div class="card-2"><img src="/static/accounts/images/Task--Streamline-Plump.svg" />
           <h5>Task Completed</h5>
@@ -73,10 +71,10 @@
         </div>
         <div class="cl-card-3">
           <h5>Accounts with access details</h5>
-          <p>{{ user.profile.accounts.all.count }} accounts tracked</p>
+          <p>{{ accounts_count }} accounts tracked</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ request.user.account.last.updated_at }}</p>
+          <p>{{ account.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
@@ -94,7 +92,7 @@
         </div>
         <div class="cl-card-3">
           <h5>Devices details</h5>
-          <p>{{ user.profile.devices.all.count }} devices tracked</p>
+          <p>{{ devices_count }} devices tracked</p>
         </div>
         <div class="cl-card-4">
           <p>{{ user.profile.devices.last.updated_at }}</p>
@@ -115,7 +113,7 @@
         </div>
         <div class="cl-card-3">
           <h5>Emergency Contact + Delegation</h5>
-          <p>{{emergency_contacts_count}} Designateed who can access your estate in emergencies</p>
+          <p>{{emergency_contacts_count}} Emergency Contacts</p>
         </div>
         <div class="cl-card-4">
           <p>{{ user.profile.emergency_contacts.last.updated_at  }}</p>
@@ -139,7 +137,7 @@
           <p>Your comprehensive digital will and estate plan</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: Nov 15, 2024</p>
+          <p>Date | Time</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
@@ -158,10 +156,9 @@
         <div class="cl-card-3">
           <h5>What My Family Needs to Know</h5>
           <p>Personal instructions and wishes for your loved ones</p>
-          <p>{{ family_needs_to_know_count }}</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: June 6, 2024</p>
+          <p>Date | Time</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
@@ -219,14 +216,20 @@
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Complete</tag>
+          {% if alert_due %}
+          <tag class="needs-attention">Out of Date</tag>
+          {% elif alert_attention %}
+          <tag class="alert-attention">Upcoming</tag>
+          {% else %}
+          <tag class="completed">Update to Date</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>Quarterly Digital Checkup</h5>
           <p>Quick review of recent account changes and updates</p>
         </div>
         <div class="cl-card-4">
-          <p>Data | Time Place Holder</p>
+          <p>{{ upcoming_review_days }} until your next review</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:checkup_list' %}"><button class="button">Update Now</button></a>
@@ -236,14 +239,18 @@
       <div class="client-cards border-light">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          <tag>Upcoming</tag>
+          {% if alert_due_year %}
+          <tag class="alert-attention">Upcoming</tag>
+          {% else %}
+          <tag class="completed">Update to date</tag>
+          {% endif %}
         </div>
         <div class="cl-card-3">
           <h5>Annual Update + Re-certification</h5>
           <p>Comprehensive review and re-certify your digital estate</p>
         </div>
         <div class="cl-card-4">
-          <p>Last updated: Nov 15, 2024</p>
+          <p>{{ furthest_review_days }} until your next review</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:accountrelevancereview_list' %}"><button class="button">Update Now</button></a>

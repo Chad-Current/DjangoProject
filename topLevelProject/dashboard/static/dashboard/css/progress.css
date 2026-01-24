@@ -2,8 +2,8 @@
 .progress-circle-container {
   position: relative;
   display: inline-block;
-  width: 200px;
-  height: 200px;
+  /* width: 200px;
+  height: 200px; */
 }
 
 .progress-circle {
@@ -13,7 +13,7 @@
 }
 
 .progress-circle-bg {
-  stroke: #e5e7eb;
+  stroke: var(--background-color);
   transition: stroke 0.3s ease;
 }
 
@@ -30,6 +30,7 @@
   transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
+  font-family: var(--main-font);
 }
 
 .progress-percentage {
@@ -43,41 +44,42 @@
 
 .progress-label {
   display: block;
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: var(--font-sm);
+  font-family: var(--main-font);
+  color: var(--text-color-dark);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 /* Color variants based on progress */
 .progress-circle-container[data-progress-level="low"] .progress-circle-fill {
-  stroke: #ef4444; /* Red */
+  stroke: #FF2B2B; /* Red */
 }
 
 .progress-circle-container[data-progress-level="medium"] .progress-circle-fill {
-  stroke: #f59e0b; /* Amber */
+  stroke: #FFCE19; /* Yellow */
 }
 
 .progress-circle-container[data-progress-level="high"] .progress-circle-fill {
-  stroke: #10b981; /* Green */
+  stroke: #19FF5A; /* Green */
 }
 
 .progress-circle-container[data-progress-level="complete"] .progress-circle-fill {
-  stroke: #3b82f6; /* Blue */
+  stroke: #192EFF; /* Blue */
 }
 
 /* Responsive sizing */
 @media (max-width: 640px) {
-  .progress-circle-container {
+  /* .progress-circle-container {
     width: 160px;
     height: 160px;
-  }
+  } */
   
   .progress-percentage {
-    font-size: 2rem;
+    font-size: var(--font-nm);
   }
   
   .progress-label {
-    font-size: 0.75rem;
+    font-size: var(--font-sm);
   }
 }
