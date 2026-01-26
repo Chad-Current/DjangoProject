@@ -149,8 +149,9 @@ strong {
 }
 
 .main {
-  background-color: var(--background-color);
-  /* width: 80%; */
+  /* background-color: var(--background-color); */
+  width: 80%;
+  margin: auto;
   /* display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -176,6 +177,56 @@ strong {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+/* ===============================
+   Reusable Flex Utilities
+   =============================== */
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+.flex-start {
+  align-items: flex-start;
+}
+.flex-end {
+  align-items: flex-end;
+}
+
+.flex-around {
+  justify-content: space-around;
+}
+.flex-evenly {
+  justify-content: space-evenly;
+}
+.flex-between {
+  justify-content: space-between;
+}
+
+.row {
+  flex-direction: row;
+}
+.col {
+  flex-direction: column;
+}
+
+.mt-2 {
+  margin-top: 2em;
+}
+.mt-4 {
+  margin-top: 4em;
+}
+.mt-6 {
+  margin-top: 6em;
+}
+
 .pd-0 {
   padding: 0;
 }
@@ -210,6 +261,12 @@ strong {
 }
 .row-gap-2 {
   row-gap: 4em;
+}
+.w40 {
+  width: 40%;
+}
+.w50 {
+  width: 50%;
 }
 .w60 {
   width: 60%;

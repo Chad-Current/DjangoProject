@@ -19,6 +19,7 @@
 
   <body>
     {% include "baseapp/navbar.html" %}
+    <div class="main">
     <div class="head-container ms-2 mg-2">
       <div class="main-1">
         {% if not profile.full_name %}
@@ -205,9 +206,9 @@
     <div class="ms-2 mg-10">
       <h1>Scheduled Reviews & Checkups</h1>
     </div>
-    <div class="parent-row ms-2 mg-4 col-gap-1 row-gap-1">
+    <div class="parent row flex-between mg-4 col-gap-1 row-gap-1">
       <!-- QUARTERLY REVIEW AREA -->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bdr-light pd-1 w40">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due %}
@@ -230,7 +231,7 @@
         </div>
       </div>
       <!-- ANNUAL REVIEW AREA -->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bdr-light pd-1 w40">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due_year %}
@@ -253,7 +254,8 @@
         </div>
       </div>
     </div>
-    <!-- </div> -->
+    </div>
+
     {% include "baseapp/footer.html" %}
 
 

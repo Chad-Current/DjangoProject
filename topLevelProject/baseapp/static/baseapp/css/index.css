@@ -39,28 +39,6 @@ input {
   }
 }
 
-/* ===============================
-   Reusable Flex Utilities
-   =============================== */
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-}
-.flex-col {
-  display: flex;
-  flex-direction: column;
-}
-.flex-center {
-  align-items: center;
-  justify-content: center;
-}
-.flex-start {
-  align-items: flex-start;
-}
-.flex-end {
-  align-items: flex-end;
-}
 
 /* ===============================
    Badge Elements
@@ -194,6 +172,9 @@ tiny {
   justify-content: flex-start;
 }
 
+.parent-none {
+  display: flex;
+}
 
 /* ===============================
    Sections
@@ -371,8 +352,7 @@ tiny {
 
 .main-4 { grid-area: main-4; }
 
-.main-5 { grid-area: main-5; 
-align-self: center;}
+.main-5 { grid-area: main-5; align-self: center; justify-self: center;}
 
 /* ===============================
    Buttons
