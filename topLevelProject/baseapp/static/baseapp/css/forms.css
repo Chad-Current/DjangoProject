@@ -1,0 +1,576 @@
+/* ============================================
+   CSS Variables
+   ============================================ */
+
+:root {
+    --purewhite-color: #ffffff;
+    --background-color-mid: #f8f9fa;
+    --text-color-dark: #333333;
+    --ten-percent: #1a1a1a;
+    --font-title-size: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-xxl: 1.5rem;
+    --primary-color: #4a90e2;
+    --primary-hover: #357abd;
+    --secondary-color: #6c757d;
+    --secondary-hover: #545b62;
+    --danger-color: #dc3545;
+    --danger-hover: #c82333;
+    --success-color: #28a745;
+    --border-color: #e0e0e0;
+    --border-color-dark: #ccc;
+    --focus-shadow: rgba(74, 144, 226, 0.1);
+}
+
+/* ============================================
+   Base Form Styles
+   ============================================ */
+
+form {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* ============================================
+   Fieldset Styling
+   ============================================ */
+
+fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--purewhite-color);
+}
+
+fieldset legend {
+    font-family: var(--font-title-size);
+    font-size: var(--font-xxl);
+    font-weight: 700;
+    color: var(--ten-percent);
+    padding: 0 0.75rem;
+    margin-bottom: 0;
+    width: auto;
+    border: none;
+}
+
+/* Remove background for nested fieldsets */
+fieldset fieldset {
+    background-color: var(--background-color-mid);
+    border: 1px solid #d0d0d0;
+    padding: 1.5rem;
+}
+
+/* ============================================
+   Form Group Styling
+   ============================================ */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group label[for$="_0"],
+.form-group label[for$="_1"],
+.form-group label[for$="_2"] {
+    font-weight: normal;
+    display: inline;
+    margin-left: 0.5rem;
+}
+
+/* ============================================
+   Input Field Styling
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border-color-dark);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+
+/* Textarea specific */
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* Select specific */
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+}
+
+/* Date inputs */
+input[type="date"],
+input[type="datetime-local"] {
+    cursor: pointer;
+}
+
+/* ============================================
+   Checkbox and Radio Styling
+   ============================================ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    padding-left: 0;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+    margin-top: 0;
+}
+
+.form-check label {
+    margin-bottom: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Boolean field styling */
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+/* ============================================
+   File Input Styling
+   ============================================ */
+
+input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px dashed var(--border-color-dark);
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="file"]:hover {
+    border-color: var(--primary-color);
+    background-color: #f0f7ff;
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+
+/* ============================================
+   Button Styling
+   ============================================ */
+
+button[type="submit"],
+input[type="submit"],
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary,
+button[type="submit"],
+input[type="submit"] {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover,
+input[type="submit"]:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.btn-primary:active,
+button[type="submit"]:active,
+input[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(74, 144, 226, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+/* ============================================
+   Row and Column Layout (Crispy Forms Compatible)
+   ============================================ */
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
+    margin-bottom: 0;
+}
+
+/* All column classes */
+[class*="col-"] {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    flex: 0 0 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Column sizes for medium screens and up */
+@media (min-width: 769px) {
+    .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+    .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+    .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+}
+
+/* Margin utilities */
+.mb-0 { margin-bottom: 0 !important; }
+
+/* ============================================
+   Error and Help Text Styling
+   ============================================ */
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.errorlist li {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    padding: 0.25rem 0;
+}
+
+.error input,
+.error select,
+.error textarea {
+    border-color: var(--danger-color);
+}
+
+.error input:focus,
+.error select:focus,
+.error textarea:focus {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.helptext {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* ============================================
+   Validation States
+   ============================================ */
+
+.is-valid {
+    border-color: var(--success-color);
+}
+
+.is-valid:focus {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.is-invalid:focus {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.valid-feedback {
+    color: var(--success-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.invalid-feedback {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   Disabled State
+   ============================================ */
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+    background-color: #e9ecef;
+    color: var(--secondary-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ============================================
+   Required Field Indicator
+   ============================================ */
+
+.form-group label.required::after,
+.form-group label[required]::after {
+    content: " *";
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+/* ============================================
+   Form Actions (Submit buttons area)
+   ============================================ */
+
+.form-actions {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    [class*="col-md-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .row {
+        margin-right: 0;
+        margin-left: 0;
+    }
+    
+    [class*="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    
+    fieldset {
+        padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions button,
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   Additional Utility Classes
+   ============================================ */
+
+.text-muted {
+    color: var(--secondary-color);
+}
+
+.text-danger {
+    color: var(--danger-color);
+}
+
+.text-success {
+    color: var(--success-color);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+}
+
+/* ============================================
+   Crispy Forms Specific Overrides
+   ============================================ */
+
+.crispy-form {
+    width: 100%;
+}
+
+.crispy-form .asteriskField {
+    color: var(--danger-color);
+    font-weight: bold;
+    margin-left: 0.25rem;
+}
+
+.crispy-form .control-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+/* Crispy forms div wrapper */
+div[id*="div_id_"] {
+    margin-bottom: 1.25rem;
+}
+
+/* ============================================
+   Custom Enhancements
+   ============================================ */
+
+/* Add subtle animation to form elements */
+input, select, textarea, button {
+    transition: all 0.2s ease;
+}
+
+/* Improve visual hierarchy */
+form > fieldset:first-of-type {
+    margin-top: 2rem;
+}
+
+form > button[type="submit"]:last-of-type,
+form > input[type="submit"]:last-of-type {
+    margin-top: 1.5rem;
+}
+
+/* Better spacing for multiple fieldsets */
+fieldset + fieldset {
+    margin-top: 1.5rem;
+}
+
+/* Style for readonly fields */
+input[readonly],
+select[readonly],
+textarea[readonly] {
+    background-color: #f5f5f5;
+    cursor: default;
+}
+
+/* Placeholder styling */
+::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #999;
+}
+
+::-ms-input-placeholder {
+    color: #999;
+}
+
+/* Focus visible for accessibility */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Button grouping in Div elements */
+div > .btn + .btn {
+    margin-left: 0.5rem;
+}
+
+/* Print styles */
+@media print {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select {
+        border: 1px solid #000;
+        background: transparent;
+    }
+    
+    button,
+    input[type="submit"] {
+        display: none;
+    }
+}

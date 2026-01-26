@@ -466,6 +466,12 @@ button:active {
     flex-direction: column;
     align-items: center;
   }
+  .head-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @media screen and (781px <= width <= 1024px) {

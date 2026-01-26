@@ -1,7 +1,7 @@
 #1V-New Claude Chat
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Row, Column, HTML, Div
+from crispy_forms.layout import Layout, Fieldset, Div, Row, Column, Submit, Button 
 from .models import (
     Profile,
     Account,
@@ -98,20 +98,23 @@ class AccountForm(forms.ModelForm):
                     Column('account_category', css_class='form-group col-md-6 mb-0'),
                     Column('account_name', css_class='form-group col-md-6 mb-0'),
                     Column('provider', css_class='form-group col-md-6 mb-0'),
+                    Column('website_url', css_class='form-group col-md-6 mb-0'),
                 ),
-                'website_url',
                 Row(
                     Column('username_or_email', css_class='form-group col-md-8 mb-0'),
-                    Column('is_critical', css_class='form-group col-md-4 mb-0'),
-                ),
-                'credential_storage_location',
+                    Column('credential_storage_location', css_class='form-group col-md-4 mb-0'),
+                    Column('is_critical', css_class='form-group wrap col-md-4 mb-0'),
+                ),                
             ),
             Fieldset(
                 'Instructions for Family',
                 'keep_or_close_instruction',
                 'notes_for_family',
             ),
-            Submit('submit', 'Save Account', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Account', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -147,7 +150,10 @@ class AccountRelevanceReviewForm(forms.ModelForm):
                 Column('next_review_due', css_class='form-group col-md-6 mb-0'),
             ),
             'reasoning',
-            Submit('submit', 'Save Review', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Update', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -191,7 +197,10 @@ class ContactForm(forms.ModelForm):
                 ),
             ),
             'notes',
-            Submit('submit', 'Save Contact', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Contact', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -206,7 +215,10 @@ class DelegationScopeForm(forms.ModelForm):
         self.helper.layout = Layout(
             'name',
             'description',
-            Submit('submit', 'Save Scope', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Delegation', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -250,7 +262,8 @@ class DelegationGrantForm(forms.ModelForm):
                 ),
             ),
             'notes_for_contact',
-            Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary')
+            Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
         )
 
 
@@ -275,7 +288,7 @@ class DeviceForm(forms.ModelForm):
                 'Device Information',
                 Row(
                     Column('device_type', css_class='form-group col-md-4 mb-0'),
-                    Column('name', css_class='form-group col-md-4 mb-0'),
+                    Column('name', css_class='form-group col-md-8 mb-0'),
                 ),
                 Row(
                     Column('owner_label', css_class='form-group col-md-6 mb-0'),
@@ -290,7 +303,10 @@ class DeviceForm(forms.ModelForm):
                 ),
             ),
             'decommission_instruction',
-            Submit('submit', 'Save Device', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Device', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -333,7 +349,10 @@ class DigitalEstateDocumentForm(forms.ModelForm):
                 'wishes_for_photos_and_files',
                 'data_retention_preferences',
             ),
-            Submit('submit', 'Save Document', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Document', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -355,7 +374,10 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
                 Column('sort_order', css_class='form-group col-md-3 mb-0'),
             ),
             'content',
-            Submit('submit', 'Save Section', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Selection', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -387,7 +409,10 @@ class AccountDirectoryEntryForm(forms.ModelForm):
             ),
             'action_after_death',
             'notes',
-            Submit('submit', 'Save Entry', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Entry', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -416,13 +441,22 @@ class EmergencyContactForm(forms.ModelForm):
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'contact_relation',
-            'contact_name',
-            'is_emergency_contact',
-            'is_digital_executor',
-            'is_caregiver',
-            'body',
-            Submit('submit', 'Save Emergency Contact', css_class='btn btn-primary')
+            Fieldset(
+                "Emergency Contacts",
+                Row(
+                    Column('contact_relation', css_class='form-group col-md-6 mb-0'),
+                    Column('contact_name', css_class='form-group col-md-6 mb-0'),
+                    Column('is_emergency_contact', css_class='form-group col-md-4 mb-0'),
+                    Column('is_digital_executor', css_class='form-group col-md-4 mb-0'),
+                    Column('is_caregiver', css_class='form-group col-md-4 mb-0'),
+                    Column('body', css_class='form-group col-md-12 mb-0'),
+                ),
+                Div(
+                Submit('submit', 'Save Emergency Contact', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                ),
+            ),
+
         )
 
 
@@ -444,7 +478,10 @@ class CheckupTypeForm(forms.ModelForm):
                 Column('frequency', css_class='form-group col-md-4 mb-0'),
             ),
             'description',
-            Submit('submit', 'Save Checkup Type', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Update', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -487,7 +524,10 @@ class CheckupForm(forms.ModelForm):
                     Column('documents_up_to_date', css_class='form-group col-md-6 mb-0'),
                 ),
             ),
-            Submit('submit', 'Save Checkup', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Update', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -524,7 +564,10 @@ class CareRelationshipForm(forms.ModelForm):
                 Column('portal_role', css_class='form-group col-md-6 mb-0'),
             ),
             'notes',
-            Submit('submit', 'Save Care Relationship', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Care Relationship', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -561,7 +604,10 @@ class RecoveryRequestForm(forms.ModelForm):
             ),
             'steps_taken',
             'outcome_notes',
-            Submit('submit', 'Save Recovery Request', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Revocery Request', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -583,7 +629,10 @@ class DocumentCategoryForm(forms.ModelForm):
                 Column('sort_order', css_class='form-group col-md-4 mb-0'),
             ),
             'description',
-            Submit('submit', 'Save Category', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Category', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -619,6 +668,9 @@ class ImportantDocumentForm(forms.ModelForm):
                 'file',
             ),
             'requires_legal_review',
-            Submit('submit', 'Save Document', css_class='btn btn-primary')
+            Div(
+            Submit('submit', 'Save Account', css_class='btn btn-primary'),
+            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 

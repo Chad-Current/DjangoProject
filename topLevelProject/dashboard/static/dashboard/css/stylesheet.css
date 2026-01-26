@@ -1,6 +1,7 @@
 table a:last-child {
   margin: 4em 0 0;
 }
+
 th {
   font-size: var(--font-lg);
   font-family: var(--main-font);
@@ -18,6 +19,7 @@ td {
   font-family: var(--main-font);
   text-decoration: none;
   color: var(--thirty-percent);
+
   &:hover {
     color: var(--sixty-percent);
   }
@@ -55,6 +57,7 @@ td {
   background-color: var(--purewhite-color);
   padding: 2em;
 }
+
 .delete-view {
   display: flex;
   flex-flow: column nowrap;
@@ -87,6 +90,7 @@ td {
   padding: 2em;
   border-radius: 20px;
 }
+
 .cancel {
   color: red;
   padding: 0.7em 1.7em;
@@ -121,7 +125,7 @@ td {
   background-color: var(--purewhite-color);
   margin: 0.5em 0 3em;
   padding: 1em;
-  width: clamp(10em, 18vw, 30em);
+  width: clamp(18em, 24vw, 30em);
   white-space: wrap;
 
 

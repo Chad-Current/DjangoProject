@@ -177,6 +177,16 @@ strong {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.critical {
+  font-size: var(--font-xl);
+  font-family: var(--title-font);
+  font-weight: 700;
+  background-color: rgba(248, 78, 78, 0.651);
+  color: var(--purewhite-color);
+  letter-spacing: 0.25rem;
+
+}
 /* ===============================
    Reusable Flex Utilities
    =============================== */
@@ -209,14 +219,34 @@ strong {
 .flex-between {
   justify-content: space-between;
 }
+.flex-just-start {
+  justify-content: flex-start;
+}
+.flex-just-end {
+  justify-content: flex-end;
+}
+.flex-just-center {
+  justify-content: center;
+}
 
-.row {
+.nowrap {
+  flex-wrap: nowrap;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.prow {
   flex-direction: row;
 }
-.col {
+.prow-r {
+  flex-direction: row-reverse;
+}
+.pcol {
   flex-direction: column;
 }
-
+.pcol-r {
+  flex-direction: column-reverse;
+}
 .mt-2 {
   margin-top: 2em;
 }
