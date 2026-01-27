@@ -18,6 +18,7 @@
   </head>
 
   <body>
+    
     {% include "baseapp/navbar.html" %}
     <div class="main">
     <div class="head-container mt-10">
@@ -66,10 +67,10 @@
         </div>
         <div class="cl-card-3">
           <h5>Accounts with access details</h5>
-          <p>{{ accounts_count }} accounts tracked</p>
+          <p>{{ user.profile.accounts.all.count }} accounts tracked</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ account.last.updated_at }}</p>
+          <p>{{ user.profile.accounts.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
@@ -121,7 +122,7 @@
       <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          {% if not delegation_count %}
+          {% if not documents_count %}
           <tag class="needs-attention">Needs Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>
@@ -130,12 +131,13 @@
         <div class="cl-card-3">
           <h5>Digital Estate Document</h5>
           <p>Your comprehensive digital will and estate plan</p>
+          <p>{{ documents_count }} Documents</p>
         </div>
         <div class="cl-card-4">
-          <p>Date | Time</p>
+          <p>{{ user.profile.important_documents.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
-          <a href="{% url 'dashboard:account_list' %}"><button class="button">View</button></a>
+          <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
       <!-- FAMILY CARE AREA-->
@@ -163,7 +165,7 @@
       <div class=" client-cards bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
-          {% if not user.profile.devices.all.count %}
+          {% if not user.profile.importantdocument.all.count %}
           <tag class="needs-attention">Needs Review</tag>
           {% else %}
           <tag class="completed">Complete</tag>

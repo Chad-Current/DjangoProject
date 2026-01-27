@@ -3,27 +3,29 @@
    ============================================ */
 
 :root {
-    --purewhite-color: #ffffff;
-    --background-color-mid: #f8f9fa;
-    --text-color-dark: #333333;
-    --ten-percent: #1a1a1a;
-    --font-title-size: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-xxl: 1.5rem;
-    --primary-color: #4a90e2;
-    --primary-hover: #357abd;
-    --secondary-color: #6c757d;
-    --secondary-hover: #545b62;
-    --danger-color: #dc3545;
-    --danger-hover: #c82333;
-    --success-color: #28a745;
-    --border-color: #e0e0e0;
-    --border-color-dark: #ccc;
-    --focus-shadow: rgba(74, 144, 226, 0.1);
+    --color-white: #ffffff;
+    --color-background: #f8f9fa;
+    --color-text: #333333;
+    --color-text-light: #666666;
+    --color-primary: #4a90e2;
+    --color-primary-hover: #357abd;
+    --color-secondary: #6c757d;
+    --color-secondary-hover: #545b62;
+    --color-danger: #dc3545;
+    --color-danger-hover: #c82333;
+    --color-success: #28a745;
+    --color-border: #e0e0e0;
+    --color-border-dark: #cccccc;
+    --color-shadow: rgba(74, 144, 226, 0.1);
 }
 
 /* ============================================
-   Base Form Styles
+   Base Styles
    ============================================ */
+
+* {
+    box-sizing: border-box;
+}
 
 form {
     max-width: 100%;
@@ -31,11 +33,11 @@ form {
 }
 
 /* ============================================
-   Fieldset Styling
+   Fieldsets
    ============================================ */
 
 fieldset {
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -43,25 +45,20 @@ fieldset {
 }
 
 fieldset legend {
-    font-family: var(--font-title-size);
     font-size: var(--font-xxl);
     font-weight: 700;
     color: var(--ten-percent);
     padding: 0 0.75rem;
-    margin-bottom: 0;
-    width: auto;
-    border: none;
 }
 
-/* Remove background for nested fieldsets */
 fieldset fieldset {
-    background-color: var(--background-color-mid);
-    border: 1px solid #d0d0d0;
-    padding: 1.5rem;
+    background-color: var(--color-background);
+    border-color: var(--thirty-percent);
+
 }
 
 /* ============================================
-   Form Group Styling
+   Form Groups
    ============================================ */
 
 .form-group {
@@ -73,19 +70,11 @@ fieldset fieldset {
     font-weight: 500;
     color: var(--text-color-dark);
     margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-}
-
-.form-group label[for$="_0"],
-.form-group label[for$="_1"],
-.form-group label[for$="_2"] {
-    font-weight: normal;
-    display: inline;
-    margin-left: 0.5rem;
+    font-size: var(--font-nm);
 }
 
 /* ============================================
-   Input Field Styling
+   Input Fields
    ============================================ */
 
 input[type="text"],
@@ -96,35 +85,26 @@ input[type="date"],
 input[type="datetime-local"],
 input[type="number"],
 input[type="password"],
+input[type="file"],
 select,
 textarea {
     width: 100%;
     padding: 0.625rem 0.875rem;
-    border: 1px solid var(--border-color-dark);
+    border: 1px solid var(--ten-percent);
     border-radius: 4px;
-    font-size: 0.95rem;
-    color: #333;
-    background-color: #fff;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-sizing: border-box;
+    font-size: var(--font-nm);
+    background-color: #ffffff;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
-input[type="url"]:focus,
-input[type="date"]:focus,
-input[type="datetime-local"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus,
+input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-shadow);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-shadow);
 }
 
-/* Textarea specific */
 textarea {
     min-height: 100px;
     resize: vertical;
@@ -132,7 +112,6 @@ textarea {
     line-height: 1.5;
 }
 
-/* Select specific */
 select {
     cursor: pointer;
     appearance: none;
@@ -143,81 +122,52 @@ select {
     padding-right: 2.5rem;
 }
 
-/* Date inputs */
-input[type="date"],
-input[type="datetime-local"] {
-    cursor: pointer;
-}
-
 /* ============================================
-   Checkbox and Radio Styling
+   Checkboxes and Radio Buttons
    ============================================ */
 
 input[type="checkbox"],
 input[type="radio"] {
-    width: auto;
+    height: 20px;
+    width: 20px;
     margin-right: 0.5rem;
     cursor: pointer;
-    transform: scale(1.1);
 }
 
 .form-check {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
     margin-bottom: 0.75rem;
-    padding-left: 0;
-}
 
-.form-check input[type="checkbox"],
-.form-check input[type="radio"] {
-    margin-top: 0;
 }
 
 .form-check label {
     margin-bottom: 0;
     cursor: pointer;
-    user-select: none;
 }
 
-/* Boolean field styling */
-.form-group input[type="checkbox"] {
-    width: auto;
-    margin-right: 0.5rem;
-    vertical-align: middle;
-}
+
+
 
 /* ============================================
-   File Input Styling
+   File Inputs
    ============================================ */
 
 input[type="file"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 2px dashed var(--border-color-dark);
-    border-radius: 4px;
+    border: 2px dashed var(--color-border-dark);
     background-color: #f9f9f9;
     cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 input[type="file"]:hover {
-    border-color: var(--primary-color);
+    border-color: var(--color-primary);
     background-color: #f0f7ff;
 }
 
-input[type="file"]:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-shadow);
-}
-
 /* ============================================
-   Button Styling
+   Buttons
    ============================================ */
 
-button[type="submit"],
-input[type="submit"],
 .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
@@ -225,155 +175,133 @@ input[type="submit"],
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    transition: all 0.2s;
     display: inline-block;
-    text-align: center;
     text-decoration: none;
 }
 
 .btn-primary,
 button[type="submit"],
 input[type="submit"] {
-    background-color: var(--primary-color);
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--color-white);
 }
 
 .btn-primary:hover,
-button[type="submit"]:hover,
-input[type="submit"]:hover {
-    background-color: var(--primary-hover);
+button[type="submit"]:hover {
+    background-color: var(--color-primary-hover);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
 }
 
-.btn-primary:active,
-button[type="submit"]:active,
-input[type="submit"]:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(74, 144, 226, 0.3);
-}
-
 .btn-secondary {
-    background-color: var(--secondary-color);
-    color: #fff;
+    background-color: var(--color-secondary);
+    color: var(--color-white);
 }
 
 .btn-secondary:hover {
-    background-color: var(--secondary-hover);
+    background-color: var(--color-secondary-hover);
 }
 
 .btn-danger {
-    background-color: var(--danger-color);
-    color: #fff;
+    background-color: var(--color-danger);
+    color: var(--color-white);
 }
 
 .btn-danger:hover {
-    background-color: var(--danger-hover);
+    background-color: var(--color-danger-hover);
 }
 
 /* ============================================
-   Row and Column Layout (Crispy Forms Compatible)
+   Grid Layout (Row/Column)
    ============================================ */
 
 .row {
     display: flex;
     flex-wrap: wrap;
-    margin-right: -0.75rem;
-    margin-left: -0.75rem;
-    margin-bottom: 0;
+    margin: 0 -0.75rem;
 }
 
-/* All column classes */
 [class*="col-"] {
-    padding-right: 0.75rem;
-    padding-left: 0.75rem;
-    flex: 0 0 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+    padding: 0 0.75rem;
+    width: 100%;
 }
 
-/* Column sizes for medium screens and up */
+/* Medium screens and up */
 @media (min-width: 769px) {
-    .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .col-md-2 { flex: 0 0 16.67%; max-width: 16.67%; }
     .col-md-3 { flex: 0 0 25%; max-width: 25%; }
-    .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-md-4 { flex: 0 0 33.33%; max-width: 33.33%; }
     .col-md-6 { flex: 0 0 50%; max-width: 50%; }
-    .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-md-8 { flex: 0 0 66.67%; max-width: 66.67%; }
     .col-md-9 { flex: 0 0 75%; max-width: 75%; }
 }
 
-/* Margin utilities */
-.mb-0 { margin-bottom: 0 !important; }
+.mb-0 {
+    margin-bottom: 0 !important;
+}
 
 /* ============================================
-   Error and Help Text Styling
+   Error Messages
    ============================================ */
 
 .errorlist {
     list-style: none;
     padding: 0;
-    margin: 0.5rem 0 0 0;
+    margin: 0.5rem 0 0;
 }
 
 .errorlist li {
-    color: var(--danger-color);
+    color: var(--color-danger);
     font-size: 0.875rem;
-    padding: 0.25rem 0;
 }
 
 .error input,
 .error select,
 .error textarea {
-    border-color: var(--danger-color);
-}
-
-.error input:focus,
-.error select:focus,
-.error textarea:focus {
-    border-color: var(--danger-color);
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-}
-
-.helptext {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--secondary-color);
-    margin-top: 0.25rem;
-    font-style: italic;
-}
-
-/* ============================================
-   Validation States
-   ============================================ */
-
-.is-valid {
-    border-color: var(--success-color);
-}
-
-.is-valid:focus {
-    border-color: var(--success-color);
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    border-color: var(--color-danger);
 }
 
 .is-invalid {
-    border-color: var(--danger-color);
+    border-color: var(--color-danger);
 }
 
 .is-invalid:focus {
-    border-color: var(--danger-color);
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
-.valid-feedback {
-    color: var(--success-color);
+.invalid-feedback {
+    color: var(--color-danger);
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
 
-.invalid-feedback {
-    color: var(--danger-color);
+/* ============================================
+   Help Text
+   ============================================ */
+
+.helptext,
+.form-text {
+    display: block;
     font-size: 0.875rem;
+    color: var(--color-secondary);
     margin-top: 0.25rem;
+}
+
+/* ============================================
+   Required Fields
+   ============================================ */
+
+.required::after,
+label.required::after {
+    content: " *";
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+.asteriskField {
+    color: var(--color-danger);
+    font-weight: bold;
 }
 
 /* ============================================
@@ -385,33 +313,17 @@ select:disabled,
 textarea:disabled,
 button:disabled {
     background-color: #e9ecef;
-    color: var(--secondary-color);
+    color: var(--color-secondary);
     cursor: not-allowed;
     opacity: 0.6;
 }
 
 /* ============================================
-   Required Field Indicator
+   Button Groups in Divs
    ============================================ */
 
-.form-group label.required::after,
-.form-group label[required]::after {
-    content: " *";
-    color: var(--danger-color);
-    font-weight: bold;
-}
-
-/* ============================================
-   Form Actions (Submit buttons area)
-   ============================================ */
-
-.form-actions {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+div > .btn + .btn {
+    margin-left: 0.5rem;
 }
 
 /* ============================================
@@ -426,151 +338,58 @@ button:disabled {
     }
     
     .row {
-        margin-right: 0;
-        margin-left: 0;
+        margin: 0;
     }
     
     [class*="col-"] {
-        padding-right: 0;
-        padding-left: 0;
+        padding: 0;
     }
     
     fieldset {
         padding: 1rem;
     }
     
-    .form-actions {
-        flex-direction: column;
-    }
-    
-    .form-actions button,
-    .form-actions .btn {
+    div > .btn {
         width: 100%;
+        margin-left: 0 !important;
+        margin-bottom: 0.5rem;
     }
 }
 
 /* ============================================
-   Additional Utility Classes
+   Utility Classes
    ============================================ */
 
 .text-muted {
-    color: var(--secondary-color);
+    color: var(--color-secondary);
 }
 
 .text-danger {
-    color: var(--danger-color);
+    color: var(--color-danger);
 }
 
 .text-success {
-    color: var(--success-color);
-}
-
-.form-text {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: var(--secondary-color);
+    color: var(--color-success);
 }
 
 /* ============================================
-   Crispy Forms Specific Overrides
+   Placeholder Styling
    ============================================ */
 
-.crispy-form {
-    width: 100%;
-}
-
-.crispy-form .asteriskField {
-    color: var(--danger-color);
-    font-weight: bold;
-    margin-left: 0.25rem;
-}
-
-.crispy-form .control-label {
-    font-weight: 500;
-    color: #444;
-    margin-bottom: 0.5rem;
-}
-
-/* Crispy forms div wrapper */
-div[id*="div_id_"] {
-    margin-bottom: 1.25rem;
-}
-
-/* ============================================
-   Custom Enhancements
-   ============================================ */
-
-/* Add subtle animation to form elements */
-input, select, textarea, button {
-    transition: all 0.2s ease;
-}
-
-/* Improve visual hierarchy */
-form > fieldset:first-of-type {
-    margin-top: 2rem;
-}
-
-form > button[type="submit"]:last-of-type,
-form > input[type="submit"]:last-of-type {
-    margin-top: 1.5rem;
-}
-
-/* Better spacing for multiple fieldsets */
-fieldset + fieldset {
-    margin-top: 1.5rem;
-}
-
-/* Style for readonly fields */
-input[readonly],
-select[readonly],
-textarea[readonly] {
-    background-color: #f5f5f5;
-    cursor: default;
-}
-
-/* Placeholder styling */
 ::placeholder {
     color: #999;
     opacity: 1;
 }
 
-:-ms-input-placeholder {
-    color: #999;
-}
+/* ============================================
+   Focus Visible (Accessibility)
+   ============================================ */
 
-::-ms-input-placeholder {
-    color: #999;
-}
-
-/* Focus visible for accessibility */
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 button:focus-visible {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
-}
-
-/* Button grouping in Div elements */
-div > .btn + .btn {
-    margin-left: 0.5rem;
-}
-
-/* Print styles */
-@media print {
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="url"],
-    textarea,
-    select {
-        border: 1px solid #000;
-        background: transparent;
-    }
-    
-    button,
-    input[type="submit"] {
-        display: none;
-    }
+    background-color: #fafafa;
 }

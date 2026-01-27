@@ -21,38 +21,28 @@ from .models import (
     Profile,
     Account,
     AccountRelevanceReview,
-    Contact,
-    DelegationScope,
     DelegationGrant,
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
-    AccountDirectoryEntry,
     EmergencyContact,
-    CheckupType,
     Checkup,
     CareRelationship,
     RecoveryRequest,
-    DocumentCategory,
     ImportantDocument,
 )
 from .forms import (
     ProfileForm,
     AccountForm,
     AccountRelevanceReviewForm,
-    ContactForm,
-    DelegationScopeForm,
     DelegationGrantForm,
     DeviceForm,
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
-    AccountDirectoryEntryForm,
     EmergencyContactForm,
-    CheckupTypeForm,
     CheckupForm,
     CareRelationshipForm,
     RecoveryRequestForm,
-    DocumentCategoryForm,
     ImportantDocumentForm,
 )
 
@@ -83,14 +73,13 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['session_expires'] = self.request.session.get_expiry_date()
             # COUNTS
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
-            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
             context['delegation_count'] = DelegationGrant.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['emergency_contacts_count'] = EmergencyContact.objects.filter(profile=profile).count()
             # context['emergency_digital_executor_count'] = EmergencyContact.objects.filter(is_digital_executor__profile=profile).count()
-            context['family_needs_to_know_count'] = FamilyNeedsToKnowSection.objects.filter(document_id__profile=profile).count()
+            # context['family_needs_to_know_count'] = FamilyNeedsToKnowSection.objects.filter(document_id__profile=profile).count()
             # OPTIONALS
             keys = [
                     'accounts_count',
@@ -131,7 +120,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
             soonest_review = review_dates['soonest']
             farthest_review = review_dates['farthest']
-
             if soonest_review:
                 first_delta = soonest_review - today
                 if first_delta.days <= 0:
@@ -147,8 +135,10 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                     context['alert_attention_year'] = True
 ###################### STATIC STATES ISSUE #############
 
-            context['upcoming_review_days'] = first_delta.days 
-            context['furthest_review_days'] = last_delta.days
+            ##### CAUSING ERROR FOR UNBOUND ###############
+            # context['upcoming_review_days'] = first_delta
+            # context['furthest_review_days'] = last_delta
+            ################################################
             if user.subscription_tier == 'essentials':
                 context['is_edit_active'] = user.is_essentials_edit_active()
                 context['days_remaining'] = user.days_until_essentials_expires()
@@ -227,9 +217,9 @@ class AccountListView(ViewAccessMixin, ListView):
         # Fixed: Changed to get categories from DocumentCategory model
         try:
             profile = Profile.objects.get(user=self.request.user)
-            context['categories'] = AccountDirectoryEntry.objects.filter(profile=profile)
+            context['categories'] = Account.objects.filter(profile=profile)
         except Profile.DoesNotExist:
-            context['categories'] = AccountDirectoryEntry.objects.none()
+            context['categories'] = Account.objects.none()
         return context
 
 
@@ -244,13 +234,13 @@ class AccountDetailView(ViewAccessMixin, DetailView):
         context['can_modify'] = self.request.user.can_modify_data()
         
         # Get the most recent review for this account
-        try:
-            latest_review = AccountRelevanceReview.objects.filter(
-                account_relevance=self.object
-            ).order_by('-review_date').first()
-            context['latest_review'] = latest_review
-        except AccountRelevanceReview.DoesNotExist:
-            context['latest_review'] = None
+        # try:
+        #     latest_review = AccountRelevanceReview.objects.filter(
+        #         account_relevance=self.object
+        #     ).order_by('-review_date').first()
+        #     context['latest_review'] = latest_review
+        # except AccountRelevanceReview.DoesNotExist:
+        #     context['latest_review'] = None
             
         return context
 
@@ -316,7 +306,7 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
         try:
             profile = Profile.objects.get(user=self.request.user)
             # Start with all reviews for accounts belonging to this user's profile
-            qs = AccountRelevanceReview.objects.filter(account_relevance_id__profile=profile)
+            qs = AccountRelevanceReview.objects.filter(account_id__profile=profile)
             
             # Optionally filter by a specific account via ?account=<id>
             account_id = self.request.GET.get('account')
@@ -411,78 +401,6 @@ class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
         return reverse_lazy('dashboard:account_list')
     
     
-# ============================================================================
-# CONTACT VIEWS
-# ============================================================================
-class ContactListView(ViewAccessMixin, ListView):
-    model = Contact
-    template_name = 'dashboard/contact_list.html'
-    context_object_name = 'contacts'
-    owner_field = 'profile__user'
-    paginate_by = 20
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return Contact.objects.filter(profile=profile).order_by('full_name')
-        except Profile.DoesNotExist:
-            return Contact.objects.none()
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-
-class ContactDetailView(ViewAccessMixin, DetailView):
-    model = Contact
-    template_name = 'dashboard/contact_detail.html'
-    context_object_name = 'contact'
-    owner_field = 'profile__user'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-
-class ContactCreateView(FullAccessMixin, CreateView):
-    model = Contact
-    form_class = ContactForm
-    template_name = 'dashboard/contact_form.html'
-    success_url = reverse_lazy('dashboard:contact_list')
-    owner_field = 'profile__user'
-    
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        messages.success(self.request, 'Contact created successfully.')
-        return super().form_valid(form)
-
-
-class ContactUpdateView(FullAccessMixin, UpdateView):
-    model = Contact
-    form_class = ContactForm
-    template_name = 'dashboard/contact_form.html'
-    success_url = reverse_lazy('dashboard:contact_list')
-    owner_field = 'profile__user'
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Contact updated successfully.')
-        return super().form_valid(form)
-
-
-class ContactDeleteView(DeleteAccessMixin, DeleteView):
-    model = Contact
-    template_name = 'dashboard/contact_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:contact_list')
-    owner_field = 'profile__user'
-    
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Contact deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-
 # ============================================================================
 # DEVICE VIEWS
 # ============================================================================

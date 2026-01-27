@@ -1,5 +1,5 @@
 # ============================================================================
-# PART 9: DASHBOARD MODELS - COMPLETE
+# PART 9: DASHBOARD MODELS - CORRECTED
 # ============================================================================
 
 # ============================================================================
@@ -39,8 +39,6 @@ class Profile(models.Model):
         blank=True,
         help_text="Email or phone number"
     )
-    # created_at = models.DateTimeField(default=timezone.now)
-    # Change back once migrations are completed
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -147,7 +145,7 @@ class AccountRelevanceReview(models.Model):
     """
     Periodic reviews to determine if accounts still matter
     """
-    account_relevance = models.ForeignKey(
+    account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
         related_name='relevance_reviews'
@@ -166,123 +164,23 @@ class AccountRelevanceReview(models.Model):
     reasoning = models.TextField(blank=True)
     next_review_due = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-### THIS WAS ADDED TO SAVE THE ACCOUNT CREATION DATE AND ADD 90 DAYS TO CRITICAL ACCOUNTS
     def save(self, *args, **kwargs):
-            # If this is a new object, set the review date 90 days from now
-            if not self.review_date and self.account_relevance.is_critical:
+        # If this is a new object, set the review date 90 days from now
+        if not self.pk:  # Check if this is a new object
+            if self.account.is_critical:
                 self.next_review_due = timezone.now().date() + timedelta(days=90)
-            elif not self.review_date:
+            else:
                 self.next_review_due = timezone.now().date() + timedelta(days=365)
-            super(AccountRelevanceReview, self).save(*args, **kwargs)
+        super(AccountRelevanceReview, self).save(*args, **kwargs)
             
     class Meta:
         db_table = 'account_relevance_reviews'
         ordering = ['-review_date']
     
     def __str__(self):
-        return f"Review of {self.account_relevance.account_name} created {self.account_relevance.created_at.date()}"
-
-################ ### MARKED FOR REMOVAL POSSIBLY ### #########################
-################ ### COULD BE USED FOR DELEGATIONS (NON EMERGENCY) ### #######
-class Contact(models.Model):
-    """
-    Important contacts (family, friends, digital executor, etc.)
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='contacts',
-        editable=False
-    )
-    full_name = models.CharField(max_length=200)
-    relationship = models.CharField(
-        max_length=100,
-        help_text="e.g., Spouse, Child, Friend, Attorney"
-    )
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    address = models.TextField(blank=True)
-    
-    is_emergency_contact = models.BooleanField(default=False)
-    is_digital_executor = models.BooleanField(default=False)
-    is_caregiver = models.BooleanField(default=False)
-    
-    notes = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'contacts'
-        ordering = ['full_name']
-        indexes = [
-            models.Index(fields=['profile', 'full_name']),
-        ]
-    
-    def __str__(self):
-        return f"{self.full_name} ({self.relationship})"
-
-############## ### PROBABLY DELETING (UNNECESSARY) #########
-class DelegationScope(models.Model):
-    """
-    Types of authority that can be delegated (e.g., medical decisions, financial)
-    """
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    
-    class Meta:
-        db_table = 'delegation_scopes'
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name
-
-
-class DelegationGrant(models.Model):
-    """
-    Grants of authority to contacts for specific scopes
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='delegation_grants',
-        editable=False
-    )
-    contact = models.ForeignKey(
-        Contact,
-        on_delete=models.CASCADE,
-        related_name='delegations_received'
-    )
-    ### DELETE WITH DELEGATION SCOPING #################
-    scope = models.ForeignKey(
-        DelegationScope,
-        on_delete=models.CASCADE,
-        related_name='grants'
-    )
-    #####################################################
-    applies_on_death = models.BooleanField(default=False)
-    applies_on_incapacity = models.BooleanField(default=False)
-    applies_immediately = models.BooleanField(default=False)
-    
-    notes_for_contact = models.TextField(
-        blank=True,
-        help_text="Instructions for the contact"
-    )
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'delegation_grants'
-        ordering = ['contact', 'scope']
-    
-    def __str__(self):
-        return f"{self.scope.name} → {self.contact.full_name}"
+        return f"Review of {self.account.account_name} on {self.review_date.date()}"
 
 
 class Device(models.Model):
@@ -323,7 +221,6 @@ class Device(models.Model):
     )
     used_for_2fa = models.BooleanField(
         default=False,
-        help_text="Used for two-factor authentication"
     )
     decommission_instruction = models.TextField(
         blank=True,
@@ -331,7 +228,6 @@ class Device(models.Model):
     )
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -370,7 +266,6 @@ class DigitalEstateDocument(models.Model):
     data_retention_preferences = models.TextField(blank=True)
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -395,7 +290,6 @@ class FamilyNeedsToKnowSection(models.Model):
     content = models.TextField(help_text="What family needs to know")
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -404,62 +298,6 @@ class FamilyNeedsToKnowSection(models.Model):
     
     def __str__(self):
         return f"{self.document.title} - {self.heading}"
-
-################ ### MARKED FOR REMOVAL ### #########################
-class AccountDirectoryEntry(models.Model):
-    """
-    Quick reference directory of accounts
-    """
-    CRITICALITY_CHOICES = [
-        ('critical', 'Critical'),
-        ('important', 'Important'),
-        ('nice-to-have', 'Nice to Have'),
-    ]
-    
-    ACTION_CHOICES = [
-        ('keep', 'Keep'),
-        ('close', 'Close'),
-        ('memorialize', 'Memorialize'),
-        ('transfer', 'Transfer to Family'),
-    ]
-    
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='account_directory_entries',
-        editable=False
-    )
-    label = models.CharField(max_length=200)
-    category_label = models.CharField(max_length=100, blank=True)
-    website_url = models.URLField(blank=True)
-    username_hint = models.CharField(
-        max_length=200,
-        blank=True,
-        help_text="Hint about username (not the actual username)"
-    )
-    criticality = models.CharField(
-        max_length=20,
-        choices=CRITICALITY_CHOICES,
-        default='nice-to-have'
-    )
-    action_after_death = models.CharField(
-        max_length=20,
-        choices=ACTION_CHOICES,
-        default='close'
-    )
-    notes = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'account_directory_entries'
-        ordering = ['criticality', 'label']
-        verbose_name_plural = 'Account directory entries'
-    
-    def __str__(self):
-        return self.label
 
 
 class EmergencyContact(models.Model):
@@ -481,7 +319,7 @@ class EmergencyContact(models.Model):
         ('Daughter', 'Daughter'),
         ('Son', 'Son'),
         ('Mother-in-law', 'Mother-in-law'),
-        ('Father-in-law', 'Father-in-low'),
+        ('Father-in-law', 'Father-in-law'),
         ('Sister-in-law', 'Sister-in-law'),
         ('Brother-in-law', 'Brother-in-law'),
         ('Daughter-in-law', 'Daughter-in-law'),
@@ -493,6 +331,9 @@ class EmergencyContact(models.Model):
     contact_name = models.CharField(max_length=200)
     body = models.TextField(help_text="Emergency message content")
     contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
     is_emergency_contact = models.BooleanField(default=False)
     is_digital_executor = models.BooleanField(default=False)
     is_caregiver = models.BooleanField(default=False)
@@ -506,30 +347,41 @@ class EmergencyContact(models.Model):
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
 
-################ ### MARKED FOR POSSIBLE REMOVAL ### #########################
-class CheckupType(models.Model):
+
+class DelegationGrant(models.Model):
     """
-    Types of periodic checkups (quarterly, annual, etc.)
+    Grants of authority to contacts for specific scopes
     """
-    FREQUENCY_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('semi-annual', 'Semi-Annual'),
-        ('annual', 'Annual'),
-    ]
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='delegation_grants',
+        editable=False
+    )
+    contact = models.ForeignKey(
+        EmergencyContact,
+        on_delete=models.CASCADE,
+        related_name='delegations_received'
+    )
+    applies_on_death = models.BooleanField(default=False)
+    applies_on_incapacity = models.BooleanField(default=False)
+    applies_immediately = models.BooleanField(default=False)
+    notes_for_contact = models.TextField(
+        blank=True,
+        help_text="Instructions for the contact"
+    )
     
-    name = models.CharField(max_length=100)
-    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
-    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'checkup_types'
-        ordering = ['name']
+        db_table = 'delegation_grants'
+        ordering = ['contact']
     
     def __str__(self):
-        return f"{self.name} ({self.frequency})"
+        return f"Delegation to {self.contact.contact_name}"
 
-################ ### MARKED FOR POSSIBLE REMOVAL ### #########################
+
 class Checkup(models.Model):
     """
     Scheduled checkups of digital estate information
@@ -540,11 +392,13 @@ class Checkup(models.Model):
         related_name='checkups',
         editable=False
     )
-    checkup_type = models.ForeignKey(
-        CheckupType,
-        on_delete=models.CASCADE,
-        related_name='checkups'
-    )
+    FREQUENCY_CHOICES = [
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('semi-annual', 'Semi-Annual'),
+        ('annual', 'Annual'),
+    ]
+    
     due_date = models.DateField()
     completed_at = models.DateTimeField(null=True, blank=True)
     completed_by = models.ForeignKey(
@@ -555,6 +409,7 @@ class Checkup(models.Model):
         related_name='completed_checkups',
         editable=False
     )
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
     summary = models.TextField(blank=True)
     
     all_accounts_reviewed = models.BooleanField(default=False)
@@ -563,7 +418,6 @@ class Checkup(models.Model):
     documents_up_to_date = models.BooleanField(default=False)
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -572,7 +426,7 @@ class Checkup(models.Model):
     
     def __str__(self):
         status = "Completed" if self.completed_at else "Pending"
-        return f"{self.checkup_type.name} - {self.due_date} ({status})"
+        return f"Checkup - {self.due_date} ({status})"  
     
     def is_overdue(self):
         if self.completed_at:
@@ -604,8 +458,8 @@ class CareRelationship(models.Model):
         related_name='care_relationships',
         editable=False
     )
-    contact = models.ForeignKey(
-        Contact,
+    contact_name = models.ForeignKey(
+        EmergencyContact,
         on_delete=models.CASCADE,
         related_name='care_relationships'
     )
@@ -626,15 +480,14 @@ class CareRelationship(models.Model):
     notes = models.TextField(blank=True)
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'care_relationships'
-        ordering = ['contact']
+        ordering = ['contact_name']
     
     def __str__(self):
-        return f"{self.contact.full_name} - {self.relationship_type}"
+        return f"{self.contact_name} - {self.relationship_type}"
 
 
 class RecoveryRequest(models.Model):
@@ -682,7 +535,6 @@ class RecoveryRequest(models.Model):
     outcome_notes = models.TextField(blank=True)
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -691,27 +543,6 @@ class RecoveryRequest(models.Model):
     
     def __str__(self):
         return f"Recovery: {self.target_description} ({self.status})"
-
-################ ### MARKED FOR REMOVAL ### #########################
-class DocumentCategory(models.Model):
-    """
-    Categories for important documents
-    """
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    sort_order = models.IntegerField(default=0)
-
-    created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'document_categories'
-        ordering = ['sort_order', 'name']
-        verbose_name_plural = 'Document categories'
-    
-    def __str__(self):
-        return self.name
 
 
 class ImportantDocument(models.Model):
@@ -724,16 +555,75 @@ class ImportantDocument(models.Model):
         related_name='important_documents',
         editable=False
     )
-    category = models.ForeignKey(
-        DocumentCategory,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='documents'
-    )
+    DOCUMENT_CATEGORY_CHOICES = [
+        ("personal_identification", "Personal Identification"),
+        ("contact_information", "Contact Information"),
+        ("emergency_contacts", "Emergency Contacts"),
+        ("family_relationships", "Family Relationships"),
+        ("dependents_and_care_needs", "Dependents and Care Needs"),
+        ("primary_physician_information", "Primary Physician Information"),
+        ("medical_specialists", "Medical Specialists"),
+        ("current_medications", "Current Medications"),
+        ("medical_history", "Medical History"),
+        ("allergies_and_sensitivities", "Allergies and Sensitivities"),
+        ("health_insurance_policies", "Health Insurance Policies"),
+        ("medicare_medicaid_information", "Medicare / Medicaid Information"),
+        ("advance_directive_living_will", "Advance Directive / Living Will"),
+        ("durable_power_of_attorney_healthcare", "Durable Power of Attorney for Healthcare"),
+        ("hipaa_authorizations", "HIPAA Authorizations"),
+        ("primary_bank_accounts", "Primary Bank Accounts"),
+        ("investment_accounts", "Investment Accounts"),
+        ("retirement_accounts", "Retirement Accounts"),
+        ("pensions_and_annuities", "Pensions and Annuities"),
+        ("life_insurance_policies", "Life Insurance Policies"),
+        ("disability_insurance_policies", "Disability Insurance Policies"),
+        ("long_term_care_insurance", "Long-Term Care Insurance"),
+        ("social_security_information", "Social Security Information"),
+        ("income_sources", "Income Sources"),
+        ("budget_and_recurring_bills", "Budget and Recurring Bills"),
+        ("real_estate_documents", "Real Estate Documents"),
+        ("vehicle_titles_and_registration", "Vehicle Titles and Registration"),
+        ("personal_property_and_valuables", "Personal Property and Valuables"),
+        ("safe_deposit_box_information", "Safe Deposit Box Information"),
+        ("business_ownership_documents", "Business Ownership Documents"),
+        ("will_and_codicils", "Will and Codicils"),
+        ("trust_documents", "Trust Documents"),
+        ("durable_power_of_attorney_financial", "Durable Power of Attorney for Financial Matters"),
+        ("guardianship_designations", "Guardianship Designations"),
+        ("executor_personal_representative_info", "Executor / Personal Representative Info"),
+        ("beneficiary_designations", "Beneficiary Designations"),
+        ("tax_returns_and_records", "Tax Returns and Records"),
+        ("debts_and_liabilities", "Debts and Liabilities"),
+        ("loans_and_mortgages", "Loans and Mortgages"),
+        ("credit_card_accounts", "Credit Card Accounts"),
+        ("online_accounts_and_passwords", "Online Accounts and Passwords"),
+        ("email_accounts", "Email Accounts"),
+        ("social_media_accounts", "Social Media Accounts"),
+        ("cloud_storage_accounts", "Cloud Storage Accounts"),
+        ("online_banking_and_finance_logins", "Online Banking and Finance Logins"),
+        ("digital_subscriptions_and_services", "Digital Subscriptions and Services"),
+        ("password_manager_information", "Password Manager Information"),
+        ("funeral_and_burial_wishes", "Funeral and Burial Wishes"),
+        ("organ_donation_preferences", "Organ Donation Preferences"),
+        ("memorial_instructions", "Memorial Instructions"),
+        ("care_preferences_at_home", "Care Preferences at Home"),
+        ("assisted_living_or_nursing_home_info", "Assisted Living or Nursing Home Info"),
+        ("in_home_care_providers", "In-Home Care Providers"),
+        ("pet_care_and_ownership", "Pet Care and Ownership"),
+        ("membership_and_affiliations", "Membership and Affiliations"),
+        ("charitable_giving_plans", "Charitable Giving Plans"),
+        ("important_personal_documents", "Important Personal Documents"),
+        ("notes_and_special_instructions", "Notes and Special Instructions"),
+    ]
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    physical_location = models.TextField(
+    description = models.CharField(max_length=200,blank=True)
+    document_category = models.CharField(
+        max_length=50,
+        choices=DOCUMENT_CATEGORY_CHOICES,
+        default='important_personal_documents'
+    )
+    physical_location = models.CharField(
+        max_length=200,
         blank=True,
         help_text="Where physical document is stored"
     )
@@ -754,13 +644,11 @@ class ImportantDocument(models.Model):
     )
     
     created_at = models.DateTimeField(default=timezone.now)
-    # created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'important_documents'
-        ordering = ['category', 'title']
+        ordering = ['document_category', 'title']
     
     def __str__(self):
         return self.title
-

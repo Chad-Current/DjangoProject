@@ -256,6 +256,9 @@ strong {
 .mt-6 {
   margin-top: 6em;
 }
+.mg-10 {
+  margin: 10em;
+}
 
 .pd-0 {
   padding: 0;

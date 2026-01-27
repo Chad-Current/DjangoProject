@@ -1,24 +1,19 @@
-#1V-New Claude Chat
+# dashboard/forms.py
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Div, Row, Column, Submit, Button 
+from crispy_forms.layout import Layout, HTML, Fieldset, Div, Row, Column, Submit, Button
 from .models import (
     Profile,
     Account,
     AccountRelevanceReview,
-    Contact,
-    DelegationScope,
     DelegationGrant,
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
-    AccountDirectoryEntry,
     EmergencyContact,
-    CheckupType,
     Checkup,
     CareRelationship,
     RecoveryRequest,
-    DocumentCategory,
     ImportantDocument,
 )
 
@@ -87,9 +82,6 @@ class AccountForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        # if self.user:
-        #     self.fields['account_name'].queryset = Account.objects.filter(user=self.user)
-        
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
@@ -103,7 +95,7 @@ class AccountForm(forms.ModelForm):
                 Row(
                     Column('username_or_email', css_class='form-group col-md-8 mb-0'),
                     Column('credential_storage_location', css_class='form-group col-md-4 mb-0'),
-                    Column('is_critical', css_class='form-group wrap col-md-4 mb-0'),
+                    Column('is_critical', css_class='form-group col-md-4 mb-0'),
                 ),                
             ),
             Fieldset(
@@ -112,8 +104,8 @@ class AccountForm(forms.ModelForm):
                 'notes_for_family',
             ),
             Div(
-            Submit('submit', 'Save Account', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Account', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -122,7 +114,7 @@ class AccountRelevanceReviewForm(forms.ModelForm):
     class Meta:
         model = AccountRelevanceReview
         fields = [
-            "account_relevance",
+            "account",
             "matters",
             "reasoning",
             "next_review_due",
@@ -138,86 +130,21 @@ class AccountRelevanceReviewForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['account_relevance'].queryset = Account.objects.filter(profile=profile)
+                self.fields['account'].queryset = Account.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['account_relevance'].queryset = Account.objects.none()
+                self.fields['account'].queryset = Account.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'account_revelance',
+            'account',
             Row(
                 Column('matters', css_class='form-group col-md-6 mb-0'),
                 Column('next_review_due', css_class='form-group col-md-6 mb-0'),
             ),
             'reasoning',
             Div(
-            Submit('submit', 'Save Update', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-            ),
-        )
-
-
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = [
-            "full_name",
-            "relationship",
-            "email",
-            "phone",
-            "address",
-            "is_emergency_contact",
-            "is_digital_executor",
-            "is_caregiver",
-            "notes",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                'Contact Information',
-                Row(
-                    Column('full_name', css_class='form-group col-md-6 mb-0'),
-                    Column('relationship', css_class='form-group col-md-6 mb-0'),
-                ),
-                Row(
-                    Column('email', css_class='form-group col-md-6 mb-0'),
-                    Column('phone', css_class='form-group col-md-6 mb-0'),
-                ),
-                'address',
-            ),
-            Fieldset(
-                'Contact Roles',
-                Row(
-                    Column('is_emergency_contact', css_class='form-group col-md-4 mb-0'),
-                    Column('is_digital_executor', css_class='form-group col-md-4 mb-0'),
-                    Column('is_caregiver', css_class='form-group col-md-4 mb-0'),
-                ),
-            ),
-            'notes',
-            Div(
-            Submit('submit', 'Save Contact', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-            ),
-        )
-
-
-class DelegationScopeForm(forms.ModelForm):
-    class Meta:
-        model = DelegationScope
-        fields = ["name", "description"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'name',
-            'description',
-            Div(
-            Submit('submit', 'Save Delegation', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Review', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -227,7 +154,6 @@ class DelegationGrantForm(forms.ModelForm):
         model = DelegationGrant
         fields = [
             "contact",
-            "scope",
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
@@ -241,18 +167,13 @@ class DelegationGrantForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
-                if hasattr(DelegationScope, 'user'):
-                    self.fields['scope'].queryset = DelegationScope.objects.filter(user=self.user)
+                self.fields['contact'].queryset = EmergencyContact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact'].queryset = Contact.objects.none()
+                self.fields['contact'].queryset = EmergencyContact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Row(
-                Column('contact', css_class='form-group col-md-6 mb-0'),
-                Column('scope', css_class='form-group col-md-6 mb-0'),
-            ),
+            'contact',
             Fieldset(
                 'When Does This Apply?',
                 Row(
@@ -262,8 +183,10 @@ class DelegationGrantForm(forms.ModelForm):
                 ),
             ),
             'notes_for_contact',
-            Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            Div(
+                Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )
 
 
@@ -287,8 +210,8 @@ class DeviceForm(forms.ModelForm):
             Fieldset(
                 'Device Information',
                 Row(
-                    Column('device_type', css_class='form-group col-md-4 mb-0'),
-                    Column('name', css_class='form-group col-md-8 mb-0'),
+                    Column('device_type', css_class='form-group col-md-6 mb-0'),
+                    Column('name', css_class='form-group col-md-6 mb-2'),
                 ),
                 Row(
                     Column('owner_label', css_class='form-group col-md-6 mb-0'),
@@ -297,15 +220,20 @@ class DeviceForm(forms.ModelForm):
             ),
             Fieldset(
                 'Security Information',
-                'unlock_method_description',
                 Row(
-                    Column('used_for_2fa', css_class='form-group col-md-6 mb-0'),
+                    Column('unlock_method_description', css_class='form-group col-md-12 mb-4'),
+                    Column('decommission_instruction', css_class="form-group col-md-12 mb-4"),
+                ),
+                Row(
+                    Column(
+                        HTML("<label>Uses Two-Factor Authenication</label>"),
+                    ), 
+                    Column('used_for_2fa', css_class="form-group col-md-12 mt-0"),
                 ),
             ),
-            'decommission_instruction',
             Div(
-            Submit('submit', 'Save Device', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Device', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -350,8 +278,8 @@ class DigitalEstateDocumentForm(forms.ModelForm):
                 'data_retention_preferences',
             ),
             Div(
-            Submit('submit', 'Save Document', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Document', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -375,43 +303,8 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             ),
             'content',
             Div(
-            Submit('submit', 'Save Selection', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-            ),
-        )
-
-
-class AccountDirectoryEntryForm(forms.ModelForm):
-    class Meta:
-        model = AccountDirectoryEntry
-        fields = [
-            "label",
-            "category_label",
-            "website_url",
-            "username_hint",
-            "criticality",
-            "action_after_death",
-            "notes",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('label', css_class='form-group col-md-6 mb-0'),
-                Column('category_label', css_class='form-group col-md-6 mb-0'),
-            ),
-            'website_url',
-            Row(
-                Column('username_hint', css_class='form-group col-md-6 mb-0'),
-                Column('criticality', css_class='form-group col-md-6 mb-0'),
-            ),
-            'action_after_death',
-            'notes',
-            Div(
-            Submit('submit', 'Save Entry', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Section', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -422,6 +315,9 @@ class EmergencyContactForm(forms.ModelForm):
         fields = [
             'contact_relation',
             'contact_name',
+            'email',
+            'phone',
+            'address',
             'is_emergency_contact',
             'is_digital_executor',
             'is_caregiver',
@@ -432,55 +328,31 @@ class EmergencyContactForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user:
-            try:
-                profile = Profile.objects.get(user=self.user)
-                self.fields['contact_name'].queryset = Contact.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                self.fields['contact_name'].queryset = Contact.objects.none()
-        
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                "Emergency Contacts",
+                "Emergency Contact Information",
                 Row(
                     Column('contact_relation', css_class='form-group col-md-6 mb-0'),
                     Column('contact_name', css_class='form-group col-md-6 mb-0'),
-                    Column('is_emergency_contact', css_class='form-group col-md-4 mb-0'),
-                    Column('is_digital_executor', css_class='form-group col-md-4 mb-0'),
-                    Column('is_caregiver', css_class='form-group col-md-4 mb-0'),
-                    Column('body', css_class='form-group col-md-12 mb-0'),
                 ),
-                Div(
+                Row(
+                    Column('email', css_class='form-group col-md-6 mb-0'),
+                    Column('phone', css_class='form-group col-md-6 mb-0'),
+                ),
+                'address',
+                Row(
+                    Column('is_emergency_contact', css_class='form-group col-md-12 mb-0'),
+                    Column('is_digital_executor', css_class='form-group col-md-12 mb-0'),
+                    Column('is_caregiver', css_class='form-group col-md-12 mb-0'),
+                ),
+                Row(
+                    Column('body',css_class="form-group col-md-12 mb-0"),
+                ),
+            ),
+            Div(
                 Submit('submit', 'Save Emergency Contact', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-                ),
-            ),
-
-        )
-
-
-class CheckupTypeForm(forms.ModelForm):
-    class Meta:
-        model = CheckupType
-        fields = [
-            "name",
-            "frequency",
-            "description",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('name', css_class='form-group col-md-8 mb-0'),
-                Column('frequency', css_class='form-group col-md-4 mb-0'),
-            ),
-            'description',
-            Div(
-            Submit('submit', 'Save Update', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -489,7 +361,7 @@ class CheckupForm(forms.ModelForm):
     class Meta:
         model = Checkup
         fields = [
-            "checkup_type",
+            "frequency",
             "due_date",
             "completed_at",
             "summary",
@@ -507,10 +379,10 @@ class CheckupForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'checkup_type',
             Row(
-                Column('due_date', css_class='form-group col-md-6 mb-0'),
-                Column('completed_at', css_class='form-group col-md-6 mb-0'),
+                Column('frequency', css_class='form-group col-md-4 mb-0'),
+                Column('due_date', css_class='form-group col-md-4 mb-0'),
+                Column('completed_at', css_class='form-group col-md-4 mb-0'),
             ),
             'summary',
             Fieldset(
@@ -525,8 +397,8 @@ class CheckupForm(forms.ModelForm):
                 ),
             ),
             Div(
-            Submit('submit', 'Save Update', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Checkup', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -535,7 +407,7 @@ class CareRelationshipForm(forms.ModelForm):
     class Meta:
         model = CareRelationship
         fields = [
-            "contact",
+            "contact_name",
             "relationship_type",
             "has_portal_access",
             "portal_role",
@@ -549,14 +421,14 @@ class CareRelationshipForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['contact_name'].queryset = EmergencyContact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact'].queryset = Contact.objects.none()
+                self.fields['contact_name'].queryset = EmergencyContact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('contact', css_class='form-group col-md-6 mb-0'),
+                Column('contact_name', css_class='form-group col-md-6 mb-0'),
                 Column('relationship_type', css_class='form-group col-md-6 mb-0'),
             ),
             Row(
@@ -565,8 +437,8 @@ class CareRelationshipForm(forms.ModelForm):
             ),
             'notes',
             Div(
-            Submit('submit', 'Save Care Relationship', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Care Relationship', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -605,33 +477,8 @@ class RecoveryRequestForm(forms.ModelForm):
             'steps_taken',
             'outcome_notes',
             Div(
-            Submit('submit', 'Save Revocery Request', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-            ),
-        )
-
-
-class DocumentCategoryForm(forms.ModelForm):
-    class Meta:
-        model = DocumentCategory
-        fields = [
-            "name",
-            "description",
-            "sort_order",
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('name', css_class='form-group col-md-8 mb-0'),
-                Column('sort_order', css_class='form-group col-md-4 mb-0'),
-            ),
-            'description',
-            Div(
-            Submit('submit', 'Save Category', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Recovery Request', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
 
@@ -640,7 +487,7 @@ class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
-            "category",
+            "document_category",
             "title",
             "description",
             "physical_location",
@@ -653,24 +500,29 @@ class ImportantDocumentForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user and hasattr(DocumentCategory, 'user'):
-            self.fields['category'].queryset = DocumentCategory.objects.filter(user=self.user)
-        
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'category',
-            'title',
-            'description',
+            Fieldset(
+            'Document',
+            Row(
+                Column('document_category', css_class="form-group col-md-4 mb-0"),
+                Column('title', css_class="form-group col-md-4 mb-o"),
+                Column('description', css_class="form-group col-md-4 mb-o"),
+            ),
             Fieldset(
                 'Document Location',
-                'physical_location',
-                'digital_location',
-                'file',
+                Row(
+                Column('physical_location', css_class="form-group col-md-4 mb-0"),
+
+                Column('digital_location', css_class="form-group col-md-4 mb-0"),
+
+                Column('file', css_class="form-group col-md-4 mb-0"),
+                ),
             ),
             'requires_legal_review',
             Div(
-            Submit('submit', 'Save Account', css_class='btn btn-primary'),
-            Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Submit('submit', 'Save Document', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
+          ),
         )
-

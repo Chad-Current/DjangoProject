@@ -109,7 +109,7 @@ tiny {
   border-radius: 20px;
 }
 .cover-img {
-  width: clamp(20em, 70vw, 50em);
+  width: clamp(20em, 50vw, 50em);
   box-shadow: 2px 1px 20px 0 var(--sixty-percent);
   border-radius: 20px;
 }
