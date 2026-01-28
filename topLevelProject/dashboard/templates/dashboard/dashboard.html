@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-grid.css' %}" type="text/css">
+
     <link
       href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
       rel="stylesheet">
@@ -56,7 +58,7 @@
     </div>
     <div class="parent row  wrap mg-2 col-gap-1 row-gap-1">
       <!-- ACCOUNTS AREA-->
-      <div class="client-cards bdr-light pd-1">
+      <div class="client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.accounts.all.count >= 1 %}
@@ -77,7 +79,7 @@
         </div>
       </div>
       <!-- DEVICES AREA-->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Computer--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not devices_count %}
@@ -98,7 +100,7 @@
         </div>
       </div>
       <!-- EMERGENCY AREA-->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Emergency--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not emergency_contacts_count %}
@@ -119,7 +121,7 @@
         </div>
       </div>
       <!-- DIGITAL ESTATE DOCUMENTS AREA-->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Script--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not documents_count %}
@@ -134,14 +136,14 @@
           <p>{{ documents_count }} Documents</p>
         </div>
         <div class="cl-card-4">
-          <p>{{ user.profile.important_documents.last.updated_at }}</p>
+          <p>{{ user.profile.documents.last.updated_at }}</p>
         </div>
         <div class="cl-card-5">
           <a href="{% url 'dashboard:importantdocument_list' %}"><button class="button">View</button></a>
         </div>
       </div>
       <!-- FAMILY CARE AREA-->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Family--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not family_needs_to_know_count %}
@@ -162,7 +164,7 @@
         </div>
       </div>
       <!-- IMPORTANT INFORMATION AREA -->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.importantdocument.all.count %}
@@ -183,7 +185,7 @@
         </div>
       </div>
       <!-- PROFILE AREA -->
-      <div class=" client-cards bdr-light pd-1">
+      <div class=" client-cards bg-pure bdr-light pd-1">
         <div class="cl-card-1"><img src="/static/accounts/images/Matters--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if not user.profile.full_name %}
@@ -210,7 +212,7 @@
     </div>
     <div class="parent row flex-between mg-4 col-gap-1 row-gap-1">
       <!-- QUARTERLY REVIEW AREA -->
-      <div class=" client-cards bdr-light pd-1 w40">
+      <div class=" client-cards bg-pure bdr-light pd-1 w40">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due %}
@@ -233,7 +235,7 @@
         </div>
       </div>
       <!-- ANNUAL REVIEW AREA -->
-      <div class=" client-cards bdr-light pd-1 w40">
+      <div class=" client-cards bg-pure bdr-light pd-1 w40">
         <div class="cl-card-1"><img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg"></div>
         <div class="cl-card-2">
           {% if alert_due_year %}

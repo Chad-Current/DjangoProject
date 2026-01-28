@@ -1,0 +1,460 @@
+/* Listing Table Responsive Styles */
+
+/* Container & Layout */
+.listing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.header-content {
+    flex: 1;
+    min-width: 250px;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.header-action {
+    flex-shrink: 0;
+}
+
+.btn-add-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-add-contact:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+.btn-add-contact i {
+    font-size: 1.1rem;
+}
+
+/* Desktop Table View */
+.contacts-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.contacts-table thead {
+    background: #f9fafb;
+}
+
+.contacts-table thead th {
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.contacts-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.contacts-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.contacts-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.contacts-table tbody td {
+    padding: 1.25rem;
+    vertical-align: middle;
+}
+
+.contact-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.contact-icon {
+    font-size: 1.75rem;
+    color: #3b82f6;
+}
+
+.badge-relationship {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.contact-info {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-edit {
+    background: #f0f9ff;
+    color: #0284c7;
+}
+
+.btn-edit:hover {
+    background: #0284c7;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-delete {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Mobile Card View */
+.card-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.card-header-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.contact-avatar {
+    flex-shrink: 0;
+}
+
+.contact-avatar i {
+    font-size: 3rem;
+    color: #3b82f6;
+}
+
+.contact-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.contact-card-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    word-wrap: break-word;
+}
+
+.badge-relationship-mobile {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-radius: 12px;
+    font-size: 0.813rem;
+    font-weight: 600;
+}
+
+.card-body-section {
+    margin-bottom: 1rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.contact-info-text {
+    color: #374151;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-card-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-card {
+    background: #f0f9ff;
+    color: #0284c7;
+}
+
+.btn-edit-card:hover {
+    background: #0284c7;
+    color: white;
+}
+
+.btn-delete-card {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.btn-delete-card:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+}
+
+.empty-state-icon i {
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.empty-state-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state-text {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-add-first {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-add-first:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+/* Responsive Breakpoints */
+
+/* Tablet */
+@media (max-width: 991px) {
+    .page-title {
+        font-size: 1.75rem;
+    }
+    
+    .listing-container {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .listing-container {
+        padding: 1rem 0.75rem;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    .header-action {
+        width: 100%;
+    }
+    
+    .btn-add-contact {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .page-subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .contact-card {
+        padding: 1rem;
+    }
+    
+    .contact-avatar i {
+        font-size: 2.5rem;
+    }
+    
+    .contact-card-name {
+        font-size: 1.125rem;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
+    
+    .btn-card-action {
+        width: 100%;
+    }
+}
+
+/* Accessibility & Print */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media print {
+    .btn-add-contact,
+    .action-buttons,
+    .card-actions {
+        display: none !important;
+    }
+    
+    .contact-card {
+        page-break-inside: avoid;
+    }
+}
+
+/* Focus states for accessibility */
+.btn-add-contact:focus,
+.btn-action:focus,
+.btn-card-action:focus,
+.btn-add-first:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}

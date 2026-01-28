@@ -26,9 +26,9 @@ main {
   margin: -20em 0 0 0;
 }
 
-nav {
+/* nav {
   background-color: var(--purewhite-color);
-}
+} */
 
 nav ul {
   list-style: none;

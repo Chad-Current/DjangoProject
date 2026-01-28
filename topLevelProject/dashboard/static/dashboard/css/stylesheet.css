@@ -1,29 +1,3 @@
-table a:last-child {
-  margin: 4em 0 0;
-}
-
-th {
-  font-size: var(--font-lg);
-  font-family: var(--main-font);
-  color: var(--ten-percent);
-}
-
-td {
-  font-size: var(--font-md);
-  font-family: var(--main-font);
-  color: var(--thirty-percent);
-}
-
-.a-style {
-  font-size: var(--font-md);
-  font-family: var(--main-font);
-  text-decoration: none;
-  color: var(--thirty-percent);
-
-  &:hover {
-    color: var(--sixty-percent);
-  }
-}
 
 .form-row {
   display: flex;
@@ -122,7 +96,7 @@ td {
   grid-column-gap: 0px;
   grid-row-gap: 10px;
   border-radius: 20px;
-  background-color: var(--purewhite-color);
+  /* background-color: var(--purewhite-color); */
   margin: 0.5em 0 3em;
   padding: 1em;
   width: clamp(18em, 24vw, 30em);

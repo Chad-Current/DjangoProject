@@ -24,10 +24,10 @@
 {% include "dashboard/navblocks.html" %}
 <div class="main">
     <!-- <div class="parent"> -->
-        <div class="section-mt-5">
+        <div class="parent-row">
             {% if devices %}
             {% for device in devices %}
-            <div class="client-cards border-dark">
+            <div class="client-cards bg-pure border-dark">
                 <div class="cl-card-1">
                     <a href="{% url 'dashboard:device_detail' device.pk %}" data-bs-toggle="tooltip"
                     data-bs-placement="top" title="View Full Details for {{ device.name }}">

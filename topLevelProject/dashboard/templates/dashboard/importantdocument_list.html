@@ -26,7 +26,7 @@
     <div class="parent prow flex-just-start wrap mt-10 col-gap-1">
         {% if documents %}
         {% for document in documents %}
-        <div class="client-cards border-dark">
+        <div class="client-cards bg-pure border-dark">
             <div class="cl-card-1">
                 <a href="{% url 'dashboard:importantdocument_detail' document.pk %}" data-bs-toggle="tooltip"
                     data-bs-placement="top" title="View Full Details for {{ document.pk }}">
