@@ -142,6 +142,12 @@ li {
   padding: 0.5rem;
 }
 
+/* i {
+  font-size: var(--font-sm);
+  font-family: var(--main-font);
+  font-weight: 300;
+} */
+
 strong {
   font-size: var(--font-lg);
   font-weight: 500;

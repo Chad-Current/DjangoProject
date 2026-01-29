@@ -40,8 +40,12 @@
                         <img src="/static/accounts/images/Task--Streamline-Plump.svg" alt="" class="stat-icon">
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ remaining_tasks }}</div>
-                        <div class="stat-label">Tasks Remaining</div>
+                        {% if remaining_tasks >= 0 %}
+                        <!-- <div class="stat-value"><h3></h3></div> -->
+                        <div class="stat-label"><h4>{{ remaining_tasks }} Tasks Remaining</h4></div>
+                        {% else %}
+                        <div class="stat-label"><h4>No Tasks Remaining</h4></div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -50,8 +54,8 @@
                         <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" alt="" class="stat-icon">
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ upcoming_review_days }}</div>
-                        <div class="stat-label">Days Until Review</div>
+                        <!-- <div class="stat-value"><h3></h3></div> -->
+                        <div class="stat-label"><h4>{{ soonest.day }} Days Until Review</h4></div>
                     </div>
                 </div>
 
@@ -60,8 +64,14 @@
                         <img src="/static/accounts/images/User-Protection-Check--Streamline-Plump.svg" alt="" class="stat-icon">
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">Secured</div>
-                        <div class="stat-label">Accounts Protected</div>
+                        <!-- <div class="stat-value"><h3>Secured</h3></div> -->
+                        {% if accounts_count == 0 %}
+                        <div class="stat-label"><h4>No Accounts Protected</h4></div>
+                        {% elif accounts_count == 1 %}
+                        <div class="stat-label"><h4>1 Account Protected</h4></div>
+                        {% elif user.profile.accounts.all.count >= 2 %}
+                        <div class="stat-label"><h4>{{ accounts_count }} Account Protected</h4></div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -75,21 +85,21 @@
         </div>
 
         <!-- Digital Estate Section -->
-        <section class="dashboard-section">
+        <section class="dashboard-section mt-4">
             <h2>Digital Estate</h2>
             <div class="dashboard-grid">
                 <!-- Accounts Card -->
                 <div class="estate-card" data-category="accounts">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Padlock-Key--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not user.profile.accounts.all.count >= 1 %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
@@ -99,7 +109,7 @@
                         <div class="card-meta">
                             <span class="meta-item">{{ user.profile.accounts.all.count }} accounts tracked</span>
                             {% if user.profile.accounts.last %}
-                            <span class="meta-date">{{ user.profile.accounts.last.updated_at|date:"M d, Y" }}</span>
+                            <span class="meta-date">Last updated: {{ user.profile.accounts.last.updated_at|date:"M d, Y" }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -118,14 +128,14 @@
                 <div class="estate-card" data-category="devices">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Computer--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not devices_count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
@@ -135,7 +145,7 @@
                         <div class="card-meta">
                             <span class="meta-item">{{ devices_count }} devices tracked</span>
                             {% if user.profile.devices.last %}
-                            <span class="meta-date">{{ user.profile.devices.last.updated_at|date:"M d, Y" }}</span>
+                            <span class="meta-date">Last updated: {{ user.profile.devices.last.updated_at|date:"M d, Y" }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -154,24 +164,24 @@
                 <div class="estate-card" data-category="emergency">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Emergency--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not emergency_contacts_count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
                     <div class="card-content">
-                        <h3 class="card-title">Emergency Contacts</h3>
+                        <h3 class="card-title">Contacts</h3>
                         <p class="card-description">Contact + Delegation</p>
                         <div class="card-meta">
                             <span class="meta-item">{{ emergency_contacts_count }} emergency contacts</span>
                             {% if user.profile.emergency_contacts.last %}
-                            <span class="meta-date">{{ user.profile.emergency_contacts.last.updated_at|date:"M d, Y" }}</span>
+                            <span class="meta-date">Last updated: {{ user.profile.emergency_contacts.last.updated_at|date:"M d, Y" }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -186,28 +196,66 @@
                     </div>
                 </div>
 
+                <!-- Estate Card -->
+                <div class="estate-card" data-category="documents">
+                    <div class="card-icon-wrapper">
+                        <img src="/static/accounts/images/Script--Streamline-Plump.svg" alt="" class="card-icon">
+                        <!-- <div class="icon-glow"></div> -->
+                    </div>
+                    
+                    <div class="card-status">
+                        {% if not estate_count %}
+                        <span class="status-badge status-attention">Needs Review</span>
+                        {% else %}
+                        <span class="status-badge status-complete">Reviewed</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-content">
+                        <h3 class="card-title">Estate Documents</h3>
+                        <p class="card-description">Your comprehensive digital estate plan</p>
+                        <div class="card-meta">
+                            <span class="meta-item">{{ estate_count }} estate documents</span>
+                            {% if user.profile.estate_documents.last %}
+                            <span class="meta-date">Last updated: {{ user.profile.estate_documents.last.updated_at|date:"M d, Y" }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-action">
+                        <a href="{% url 'dashboard:estate_list' %}" class="btn-card">
+                            <span>View Details</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+
+    
                 <!-- Documents Card -->
                 <div class="estate-card" data-category="documents">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Script--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not documents_count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
                     <div class="card-content">
-                        <h3 class="card-title">Digital Estate Document</h3>
+                        <h3 class="card-title">Important Documents</h3>
                         <p class="card-description">Your comprehensive digital will and estate plan</p>
                         <div class="card-meta">
                             <span class="meta-item">{{ documents_count }} documents</span>
-                            {% if user.profile.documents.last %}
-                            <span class="meta-date">{{ user.profile.documents.last.updated_at|date:"M d, Y" }}</span>
+                            {% if user.profile.documents.last.updated_at %}
+                            <span class="meta-date">{Last updated: { user.profile.documents.last.updated_at|date:"M d, Y" }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -226,14 +274,14 @@
                 <div class="estate-card" data-category="family">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Family--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not family_needs_to_know_count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
@@ -259,14 +307,14 @@
                 <div class="estate-card" data-category="matters">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not user.profile.importantdocument.all.count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
@@ -292,14 +340,14 @@
                 <div class="estate-card" data-category="profile">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
                         {% if not user.profile.full_name %}
                         <span class="status-badge status-attention">Review</span>
                         {% else %}
-                        <span class="status-badge status-complete">Complete</span>
+                        <span class="status-badge status-complete">Reviewed</span>
                         {% endif %}
                     </div>
                     
@@ -331,7 +379,7 @@
                 <div class="review-card" data-category="quarterly">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">
@@ -366,7 +414,7 @@
                 <div class="review-card" data-category="annual">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg" alt="" class="card-icon">
-                        <div class="icon-glow"></div>
+                        <!-- <div class="icon-glow"></div> -->
                     </div>
                     
                     <div class="card-status">

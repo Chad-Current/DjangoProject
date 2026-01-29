@@ -26,17 +26,18 @@
     {% include "dashboard/navblocks.html" %}
     
     <div class="main">
+        <div class="listin-container">
             <!-- Header Section -->
             <div class="page-header">
                 <div class="header-content">
-                    <h1 class="page-title">Accounts</h1>
-                    <p class="page-subtitle">Manage your accounts information</p>
+                    <h1 class="page-title">Estate Documents</h1>
+                    <p class="page-subtitle">Manage your estates documents</p>
                 </div>
                 {% if can_modify %}
                 <div class="header-action">
-                    <a href="{% url 'dashboard:account_create' %}" class="btn-add-contact">
+                    <a href="{% url 'dashboard:estate_create' %}" class="btn-add-contact">
                         <i class="fas fa-plus-circle"></i>
-                        <span>Add Account</span>
+                        <span>Add estate</span>
                     </a>
                 </div>
                 {% endif %}
@@ -44,43 +45,43 @@
 
             <!-- Content Section -->
             <div class="contacts-content">
-                {% if accounts %}
+                {% if estates %}
                     <!-- Desktop Table View -->
                     <div class="table-view d-none d-md-block">
                         <div class="table-responsive">
                             <table class="table contacts-table">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Relationship</th>
-                                        <th>Information</th>
+                                        <th>Title</th>
+                                        <th>Is Active</th>
+                                        <th>Instructions</th>
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for account in accounts %}
+                                    {% for estate in estates %}
                                     <tr>
                                         <td>
                                             <div class="contact-name">
                                                 <i class="fas fa-user-circle contact-icon"></i>
-                                                <span>{{ account.account_name }}</span>
+                                                <span>{{ estate.title }}</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-relationship">{{ account.account_category }}</span>
+                                            <span class="badge-relationship">{{ estate.is_active }}</span>
                                         </td>
                                         <td>
-                                            <span class="contact-info">{{ account.provider|truncatechars:50 }}</span>
+                                            <span class="contact-info">{{ estate.overall_instructions|truncatechars:50 }}</span>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
                                                 {% if can_modify %}
-                                                <a href="{% url 'dashboard:account_update' account.pk %}" 
+                                                <a href="{% url 'dashboard:estate_update' estate.pk %}" 
                                                    class="btn-action btn-edit" 
                                                    title="Edit contact">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="{% url 'dashboard:account_delete' account.pk %}" 
+                                                <a href="{% url 'dashboard:estate_delete' estate.pk %}" 
                                                    class="btn-action btn-delete" 
                                                    title="Delete contact">
                                                     <i class="fas fa-trash-alt"></i>
@@ -97,31 +98,31 @@
 
                     <!-- Mobile Card View -->
                     <div class="card-view d-md-none">
-                        {% for account in accounts %}
+                        {% for estate in estates %}
                         <div class="contact-card">
                             <div class="card-header-section">
                                 <div class="contact-avatar">
                                     <i class="fas fa-user-circle"></i>
                                 </div>
                                 <div class="contact-details">
-                                    <h3 class="contact-card-name">{{ account.account_name }}</h3>
-                                    <span class="badge-relationship-mobile">{{ account.account_category }}</span>
+                                    <h3 class="contact-card-name">{{ estate.estate_name }}</h3>
+                                    <span class="badge-relationship-mobile">{{ estate.estate_category }}</span>
                                 </div>
                             </div>
                             
                             <div class="card-body-section">
                                 <div class="info-label">Information</div>
-                                <p class="contact-info-text">{{ account.account_provider|truncatechars:100 }}</p>
+                                <p class="contact-info-text">{{ estate.estate_provider|truncatechars:100 }}</p>
                             </div>
                             
                             {% if can_modify %}
                             <div class="card-actions">
-                                <a href="{% url 'dashboard:account_update' account.pk %}" 
+                                <a href="{% url 'dashboard:estate_update' estate.pk %}" 
                                    class="btn-card-action btn-edit-card">
                                     <i class="fas fa-edit"></i>
                                     <span>Edit</span>
                                 </a>
-                                <a href="{% url 'dashboard:account_delete' account.pk %}" 
+                                <a href="{% url 'dashboard:estate_delete' estate.pk %}" 
                                    class="btn-card-action btn-delete-card">
                                     <i class="fas fa-trash-alt"></i>
                                     <span>Delete</span>
@@ -138,19 +139,20 @@
                         <div class="empty-state-icon">
                             <i class="fas fa-address-book"></i>
                         </div>
-                        <h2 class="empty-state-title">No Accounts Yet</h2>
+                        <h2 class="empty-state-title">No Estate Documents Yet</h2>
                         <p class="empty-state-text">
-                            Start building your accounts list by adding your first account.
+                            Start building your estates list by adding your first estate.
                         </p>
                         {% if can_modify %}
-                        <a href="{% url 'dashboard:account_create' %}" class="btn-add-first">
+                        <a href="{% url 'dashboard:estate_create' %}" class="btn-add-first">
                             <!-- <i class="fas fa-plus-circle"></i> -->
-                            Add Your First Account
+                            Add Your First estate
                         </a>
                         {% endif %}
                     </div>
                 {% endif %}
             </div>
+        </div>
     </div>
 
     {% include "baseapp/footer.html" %}

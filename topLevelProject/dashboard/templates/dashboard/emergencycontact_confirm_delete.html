@@ -24,8 +24,9 @@
     <div class="main">
         <div class="parent">
             <div class="delete-view">
-                <h1>Delete Category</h1>
-                <p>Are you sure you want to delete "{{ object.name }}"?</p>
+                <h1>Delete Contact</h1>
+                <h3>{{ object.contact_name }}</h3>
+                <p>Are you sure you want to delete?</p>
 
                 <form method="post">
                     {% csrf_token %}

@@ -120,6 +120,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
             soonest_review = review_dates['soonest']
             farthest_review = review_dates['farthest']
+            context['soonest'] = soonest_review
             if soonest_review:
                 first_delta = soonest_review - today
                 if first_delta.days <= 0:
@@ -236,7 +237,7 @@ class AccountDetailView(ViewAccessMixin, DetailView):
         # Get the most recent review for this account
         # try:
         #     latest_review = AccountRelevanceReview.objects.filter(
-        #         account_relevance=self.object
+        #         account=self.object
         #     ).order_by('-review_date').first()
         #     context['latest_review'] = latest_review
         # except AccountRelevanceReview.DoesNotExist:
@@ -306,7 +307,7 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
         try:
             profile = Profile.objects.get(user=self.request.user)
             # Start with all reviews for accounts belonging to this user's profile
-            qs = AccountRelevanceReview.objects.filter(account_id__profile=profile)
+            qs = AccountRelevanceReview.objects.filter(account__profile=profile)
             
             # Optionally filter by a specific account via ?account=<id>
             account_id = self.request.GET.get('account')
@@ -472,6 +473,87 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
         messages.success(request, 'Device deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
+
+# ============================================================================
+# DIGITAL ESTATE DOCUMENT VIEWS
+# ============================================================================
+class EsateListView(ViewAccessMixin, ListView):
+    model = DigitalEstateDocument
+    template_name = 'dashboard/estate_list.html'
+    context_object_name = 'estates'
+    owner_field = 'profile__user'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            return DigitalEstateDocument.objects.filter(profile=profile).order_by('-created_at')
+        except Profile.DoesNotExist:
+            return DigitalEstateDocument.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class EstatetDetailView(ViewAccessMixin, DetailView):
+    model = DigitalEstateDocument
+    template_name = 'dashboard/estate_detail.html'
+    context_object_name = 'estate'
+    owner_field = 'profile__user'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class EstatetCreateView(FullAccessMixin, CreateView):
+    model = DigitalEstateDocument
+    form_class = DigitalEstateDocumentForm
+    template_name = 'dashboard/estate_form.html'
+    success_url = reverse_lazy('dashboard:estate_list')
+    owner_field = 'profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        form.instance.profile = profile
+        messages.success(self.request, 'Estate document created successfully.')
+        return super().form_valid(form)
+
+
+class EstateUpdateView(FullAccessMixin, UpdateView):
+    model = DigitalEstateDocument
+    form_class = DigitalEstateDocumentForm
+    template_name = 'dashboard/estate_form.html'
+    success_url = reverse_lazy('dashboard:estate_list')
+    owner_field = 'profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Estate document updated successfully.')
+        return super().form_valid(form)
+
+
+class EstateDeleteView(DeleteAccessMixin, DeleteView):
+    model = DigitalEstateDocument
+    template_name = 'dashboard/estate_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:estate_list')
+    owner_field = 'profile__user'
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Estate document deleted successfully.')
+        return super().delete(request, *args, **kwargs)
 
 # ============================================================================
 # IMPORTANT DOCUMENT VIEWS
@@ -663,7 +745,7 @@ class EmergencyContactCreateView(FullAccessMixin, CreateView):
     def form_valid(self, form):
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         form.instance.profile = profile
-        messages.success(self.request, 'Emergency note created successfully.')
+        messages.success(self.request, 'Emergency contact created successfully.')
         return super().form_valid(form)
 
 
@@ -680,7 +762,7 @@ class EmergencyContactUpdateView(FullAccessMixin, UpdateView):
         return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'Emergency note updated successfully.')
+        messages.success(self.request, 'Emergency contact updated successfully.')
         return super().form_valid(form)
 
 
@@ -691,7 +773,7 @@ class EmergencyContactDeleteView(DeleteAccessMixin, DeleteView):
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Emergency note deleted successfully.')
+        messages.success(request, 'Emergency contact deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
 

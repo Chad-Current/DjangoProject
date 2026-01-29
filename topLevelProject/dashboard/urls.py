@@ -24,12 +24,12 @@ urlpatterns = [
     path('account-reviews/<int:pk>/edit/', views.AccountRelevanceReviewUpdateView.as_view(), name='accountrelevancereview_update'),
     path('account-reviews/<int:pk>/delete/', views.AccountRelevanceReviewDeleteView.as_view(), name='accountrelevancereview_delete'),
 
-    # Contact URLs
-    # path('contacts/', views.ContactListView.as_view(), name='contact_list'),
-    # path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
-    # path('contacts/create/', views.ContactCreateView.as_view(), name='contact_create'),
-    # path('contacts/<int:pk>/edit/', views.ContactUpdateView.as_view(), name='contact_update'),
-    # path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),    
+    # Digital Estate
+    path('estate/', views.EsateListView.as_view(), name='estate_list'),
+    path('estate/<int:pk>/', views.EstatetDetailView.as_view(), name='estate_detail'),
+    path('estate/create/', views.EstatetCreateView.as_view(), name='estate_create'),
+    path('estate/<int:pk>/edit/', views.EstateUpdateView.as_view(), name='estate_update'),
+    path('estate/<int:pk>/delete/', views.EstateDeleteView.as_view(), name='estate_delete'),    
     
     # Device URLs --- DONE
     path('devices/', views.DeviceListView.as_view(), name='device_list'),

@@ -255,15 +255,15 @@ class DigitalEstateDocument(models.Model):
         help_text="Is this the current active document?"
     )
     
-    overall_instructions = models.TextField(
+    overall_instructions = models.CharField(
         blank=True,
         help_text="General instructions for family"
     )
-    location_of_legal_will = models.TextField(blank=True)
-    location_of_password_manager_instructions = models.TextField(blank=True)
-    wishes_for_social_media = models.TextField(blank=True)
-    wishes_for_photos_and_files = models.TextField(blank=True)
-    data_retention_preferences = models.TextField(blank=True)
+    location_of_legal_will = models.CharField(max_length=500, blank=True)
+    location_of_password_manager_instructions = models.CharField(max_length=500, blank=True)
+    wishes_for_social_media = models.CharField(max_length=500, blank=True)
+    wishes_for_photos_and_files = models.CharField(max_length=500, blank=True)
+    data_retention_preferences = models.CharField(max_length=500, blank=True)
     
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

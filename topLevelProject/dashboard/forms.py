@@ -225,9 +225,7 @@ class DeviceForm(forms.ModelForm):
                     Column('decommission_instruction', css_class="form-group col-md-12 mb-4"),
                 ),
                 Row(
-                    Column(
-                        HTML("<label>Uses Two-Factor Authenication</label>"),
-                    ), 
+                    HTML("<i>Uses Two-Factor Authenication</i>"),
                     Column('used_for_2fa', css_class="form-group col-md-12 mt-0"),
                 ),
             ),
@@ -254,7 +252,9 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # ADDED: Accept user parameter like ImportantDocumentForm
         super().__init__(*args, **kwargs)
+        
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
