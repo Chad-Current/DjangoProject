@@ -6,7 +6,7 @@
     --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --orange-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
     --dark-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     
     --bg-color: #f8f9fc;
@@ -150,15 +150,15 @@ body {
 
 /* Different gradients for each category */
 .nav-card[data-category="accounts"]::before {
-    background: var(--primary-gradient);
+    background: var(--success-gradient);
 }
 
 .nav-card[data-category="devices"]::before {
-    background: var(--accent-gradient);
+    background: var(--success-gradient);
 }
 
 .nav-card[data-category="emergency"]::before {
-    background: var(--secondary-gradient);
+    background: var(--success-gradient);
 }
 
 .nav-card[data-category="documents"]::before {
@@ -166,11 +166,11 @@ body {
 }
 
 .nav-card[data-category="family"]::before {
-    background: var(--warning-gradient);
+    background: var(--success-gradient);
 }
 
 .nav-card[data-category="matters"]::before {
-    background: var(--dark-gradient);
+    background: var(--success-gradient);
 }
 
 .nav-card[data-category="quarterly"]::before {
