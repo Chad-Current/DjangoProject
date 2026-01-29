@@ -256,6 +256,7 @@ class DigitalEstateDocument(models.Model):
     )
     
     overall_instructions = models.CharField(
+        max_length=500,
         blank=True,
         help_text="General instructions for family"
     )
