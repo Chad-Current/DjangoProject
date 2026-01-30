@@ -66,19 +66,16 @@ class Account(models.Model):
         ('cryptocurrency_exchange', 'Cryptocurrency Exchange Account'),
         ('payment_wallet', 'Payment Wallet Account'),
         ('payment_processor', 'Payment Processor Account'),
-        ('productivity_collaboration', 'Productivity/Collaboration Account'),
-        ('developer_platform', 'Developer Platform Account'),
         ('app_store', 'App Store Account'),
         ('gaming_platform', 'Gaming Platform Account'),
         ('forum_community', 'Forum/Community Account'),
         ('education_elearning', 'Education/Elearning Account'),
-        ('subscription_saas', 'Subscription/SaaS Account'),
+        ('subscription_saas', 'Subscription Account'),
         ('government_portal', 'Government Portal Account'),
         ('utilities_telecom_portal', 'Utilities/Telecom Portal Account'),
         ('health_portal', 'Health Portal Account'),
         ('smart_home_iot', 'Smart Home/IoT Account'),
         ('travel_booking', 'Travel Booking Account'),
-        ('ride_hailing_delivery', 'Ride-Hailing/Delivery Account'),
         ('password_manager', 'Password Manager Account'),
         ('not_listed', 'Not Listed'),
     ]
@@ -156,11 +153,11 @@ class AccountRelevanceReview(models.Model):
         related_name='account_reviews',
         editable=False
     )
-    review_date = models.DateTimeField(auto_now_add=True)
     matters = models.BooleanField(
         default=True,
         help_text="Does this account still matter?"
     )
+    review_date = models.DateTimeField(auto_now_add=True)
     reasoning = models.TextField(blank=True)
     next_review_due = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -260,12 +257,7 @@ class DigitalEstateDocument(models.Model):
         blank=True,
         help_text="General instructions for family"
     )
-    location_of_legal_will = models.CharField(max_length=500, blank=True)
-    location_of_password_manager_instructions = models.CharField(max_length=500, blank=True)
-    wishes_for_social_media = models.CharField(max_length=500, blank=True)
-    wishes_for_photos_and_files = models.CharField(max_length=500, blank=True)
-    data_retention_preferences = models.CharField(max_length=500, blank=True)
-    
+   
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -328,31 +320,25 @@ class FamilyNeedsToKnowSection(models.Model):
     """
     Sections within the estate document that family needs to know
     """
-    document = models.ForeignKey(
-        DigitalEstateDocument,
-        on_delete=models.CASCADE,
-        related_name='family_sections'
-    )
     relation = models.ForeignKey(
         Contact,
         on_delete=models.CASCADE,
         related_name='family_relations',
     )
-    heading = models.CharField(max_length=200)
-    body = models.TextField(blank=True)
-    # REMOVE SORT_ORDER
-    sort_order = models.IntegerField(default=0)
     content = models.TextField(help_text="What family needs to know")
-    
+    is_location_of_legal_will = models.BooleanField(default=False)
+    is_password_manager = models.BooleanField(default=False)
+    is_social_media = models.BooleanField(default=False)
+    is_photos_or_files = models.BooleanField(default=False)
+    is_data_retention_preferences = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'family_needs_to_know_sections'
-        ordering = ['document', 'sort_order', 'heading']
-        # REMOVE SORT_ORDER
+        ordering = ['relation', 'content']
     def __str__(self):
-        return f"{self.document.title} - {self.heading}"
+        return f"{self.relation} - {self.content}"
     
 
 class DelegationGrant(models.Model):

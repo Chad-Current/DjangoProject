@@ -133,7 +133,7 @@ class AccountRelevanceReviewAdmin(admin.ModelAdmin):
     list_display = [
         'account',
         'reviewer',
-        'matters_badge',
+        'matters',
         'review_date',
         'next_review_due',
     ]
@@ -228,20 +228,13 @@ class DeviceAdmin(admin.ModelAdmin):
 # ============================================================================
 # DIGITAL ESTATE DOCUMENT ADMIN
 # ============================================================================
-class FamilyNeedsToKnowSectionInline(admin.TabularInline):
-    model = FamilyNeedsToKnowSection
-    extra = 0
-    fields = ['heading', 'sort_order', 'content']
-    ordering = ['sort_order', 'heading']
-
-
 @admin.register(DigitalEstateDocument)
 class DigitalEstateDocumentAdmin(admin.ModelAdmin):
     list_display = [
         'title',
         'version',
         'profile',
-        'is_active_badge',
+        'is_active',
         'created_at',
         'updated_at',
     ]
@@ -264,18 +257,11 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
         ('General Instructions', {
             'fields': ('overall_instructions',)
         }),
-        ('Important Locations', {
-            'fields': ('location_of_legal_will', 'location_of_password_manager_instructions')
-        }),
-        ('Digital Wishes', {
-            'fields': ('wishes_for_social_media', 'wishes_for_photos_and_files', 'data_retention_preferences')
-        }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
-    inlines = [FamilyNeedsToKnowSectionInline]
     date_hierarchy = 'created_at'
     
     def is_active_badge(self, obj):
@@ -295,26 +281,21 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
 @admin.register(FamilyNeedsToKnowSection)
 class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
     list_display = [
-        'heading',
-        'body',
-        'document',
-        'sort_order',
+        'relation',
+        'content',
         'created_at',
     ]
     list_filter = [
-        'document',
         'created_at',
     ]
     search_fields = [
-        'heading',
-        'body',
+        'relation',
         'content',
-        'document__title',
     ]
     readonly_fields = ['created_at', 'updated_at']
     fieldsets = (
         ('Section Information', {
-            'fields': ('document', 'body','heading', 'sort_order')
+            'fields': ('relation',)
         }),
         ('Content', {
             'fields': ('content',)

@@ -80,7 +80,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
             context['emergency_contacts_count'] = Contact.objects.filter(profile=profile,is_emergency_contact=True).count()
-            # context['family_awareness_count'] = FamilyNeedsToKnowSection.objects.filter(account_profile=profile)
+            context['family_awareness_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
             # OPTIONALS
             keys = [
                 'accounts_count',
@@ -540,13 +540,13 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
     model = FamilyNeedsToKnowSection
     template_name = 'dashboard/familyawareness_list.html'
     context_object_name = 'familyawareness_objects'
-    owner_field = 'document__profile__user'
+    owner_field = 'relation__profile__user'
     paginate_by = 20
     
     def get_queryset(self):
         try:
             profile = Profile.objects.get(user=self.request.user)
-            return FamilyNeedsToKnowSection.objects.filter(document__profile=profile).order_by('sort_order', '-created_at')
+            return FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).order_by('-created_at')
         except Profile.DoesNotExist:
             return FamilyNeedsToKnowSection.objects.none()
     
@@ -560,7 +560,7 @@ class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
     model = FamilyNeedsToKnowSection
     template_name = 'dashboard/familyawareness_detail.html'
     context_object_name = 'familyawareness'
-    owner_field = 'document__profile__user'
+    owner_field = 'relation__profile__user'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -573,7 +573,7 @@ class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
     form_class = FamilyNeedsToKnowSectionForm
     template_name = 'dashboard/familyawareness_form.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
-    owner_field = 'contact__profile__user'
+    owner_field = 'relation__profile__user'
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -590,7 +590,7 @@ class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
     form_class = FamilyNeedsToKnowSectionForm
     template_name = 'dashboard/familyawareness_form.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
-    owner_field = 'document__profile__user'
+    owner_field = 'relation__profile__user'
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -606,13 +606,17 @@ class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
     model = FamilyNeedsToKnowSection
     template_name = 'dashboard/familyawareness_confirm_delete.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
-    owner_field = 'document__profile__user'
+    owner_field = 'contact__profile__user'
     
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Family awareness section deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
-
+   
+    def get_success_url(self):
+        return reverse_lazy('dashboard:familyawareness_list')
+    
+    def get_success_url(self):
+        return reverse_lazy('dashboard:account_list')
 # ============================================================================
 # IMPORTANT DOCUMENT VIEWS
 # ============================================================================

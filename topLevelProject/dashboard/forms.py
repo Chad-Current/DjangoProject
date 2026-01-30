@@ -1,7 +1,7 @@
 # dashboard/forms.py
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, HTML, Fieldset, Div, Row, Column, Submit, Button
+from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Row, Column, Submit, Button, ButtonHolder
 from .models import (
     Profile,
     Account,
@@ -90,7 +90,7 @@ class AccountForm(forms.ModelForm):
                     Column('account_category', css_class='form-group col-md-6 mb-0'),
                     Column('account_name', css_class='form-group col-md-6 mb-0'),
                     Column('provider', css_class='form-group col-md-6 mb-0'),
-                    Column('website_url', css_class='form-group col-md-6 mb-0'),
+                    Column('website_url', css_class='form-group col-md-6 mb-0', placeholder="https://"),
                 ),
                 Row(
                     Column('username_or_email', css_class='form-group col-md-8 mb-0'),
@@ -246,11 +246,6 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             "version",
             "is_active",
             "overall_instructions",
-            "location_of_legal_will",
-            "location_of_password_manager_instructions",
-            "wishes_for_social_media",
-            "wishes_for_photos_and_files",
-            "data_retention_preferences",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -268,17 +263,6 @@ class DigitalEstateDocumentForm(forms.ModelForm):
                 ),
                 'overall_instructions',
             ),
-            Fieldset(
-                'Important Locations',
-                'location_of_legal_will',
-                'location_of_password_manager_instructions',
-            ),
-            Fieldset(
-                'Your Wishes',
-                'wishes_for_social_media',
-                'wishes_for_photos_and_files',
-                'data_retention_preferences',
-            ),
             Div(
                 Submit('submit', 'Save Document', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
@@ -290,12 +274,13 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
     class Meta:
         model = FamilyNeedsToKnowSection
         fields = [
-            "document",
             "relation",
-            "heading",
-            "body",
-            "sort_order",
             "content",
+            "is_location_of_legal_will",
+            "is_password_manager",
+            "is_social_media",
+            "is_photos_or_files",
+            "is_data_retention_preferences",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -306,30 +291,25 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['document'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
                 self.fields['relation'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['document'].queryset = DigitalEstateDocument.objects.none()
                 self.fields['relation'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                'Family Awareness Section',
-                Row(
-                    Column('document', css_class='form-group col-md-6 mb-0'),
-                    Column('relation', css_class='form-group col-md-6 mb-0'),
-                ),
-                Row(
-                    Column('heading', css_class='form-group col-md-9 mb-0'),
-                    Column('sort_order', css_class='form-group col-md-3 mb-0'),
-                ),
-                'body',
-                'content',
+            HTML('<h2>Family Awareness</h2>'),
+            Field('relation',placeholder='Tied to who?'),
+            Field('content'),
+            Row(
+                Column('is_location_of_legal_will'),
+                Column('is_password_manager'),
+                Column('is_social_media'),
+                Column('is_photos_or_files'),
+                Column('is_data_retention_preferences'),                
             ),
-            Div(
-                Submit('submit', 'Save Section', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ButtonHolder(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
             ),
         )
 

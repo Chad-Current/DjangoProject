@@ -1,0 +1,395 @@
+/* ============================================
+   CSS Variables
+   ============================================ */
+
+:root {
+    --color-white: #ffffff;
+    --color-background: #f8f9fa;
+    --color-text: #333333;
+    --color-text-light: #666666;
+    --color-primary: #4a90e2;
+    --color-primary-hover: #357abd;
+    --color-secondary: #6c757d;
+    --color-secondary-hover: #545b62;
+    --color-danger: #dc3545;
+    --color-danger-hover: #c82333;
+    --color-success: #28a745;
+    --color-border: #e0e0e0;
+    --color-border-dark: #cccccc;
+    --color-shadow: rgba(74, 144, 226, 0.1);
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+form {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* ============================================
+   Fieldsets
+   ============================================ */
+
+fieldset {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--purewhite-color);
+}
+
+fieldset legend {
+    font-size: var(--font-xxl);
+    font-weight: 700;
+    color: var(--ten-percent);
+    padding: 0 0.75rem;
+}
+
+fieldset fieldset {
+    background-color: var(--color-background);
+    border-color: var(--thirty-percent);
+
+}
+
+/* ============================================
+   Form Groups
+   ============================================ */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    margin-bottom: 0.5rem;
+    font-size: var(--font-nm);
+}
+
+/* ============================================
+   Input Fields
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="number"],
+input[type="password"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--ten-percent);
+    border-radius: 4px;
+    font-size: var(--font-nm);
+    background-color: #ffffff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-shadow);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+}
+
+/* ============================================
+   Checkboxes and Radio Buttons
+   ============================================ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    height: 20px;
+    width: 20px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+
+}
+
+.form-check label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+
+
+
+/* ============================================
+   File Inputs
+   ============================================ */
+
+input[type="file"] {
+    border: 2px dashed var(--color-border-dark);
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: var(--color-primary);
+    background-color: #f0f7ff;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-primary,
+button[type="submit"],
+input[type="submit"] {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-secondary-hover);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-white);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-danger-hover);
+}
+
+/* ============================================
+   Grid Layout (Row/Column)
+   ============================================ */
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.75rem;
+}
+
+[class*="col-"] {
+    padding: 0 0.75rem;
+    width: 100%;
+}
+
+/* Medium screens and up */
+@media (min-width: 769px) {
+    .col-md-2 { flex: 0 0 16.67%; max-width: 16.67%; }
+    .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+    .col-md-4 { flex: 0 0 33.33%; max-width: 33.33%; }
+    .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+    .col-md-8 { flex: 0 0 66.67%; max-width: 66.67%; }
+    .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+/* ============================================
+   Error Messages
+   ============================================ */
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+}
+
+.errorlist li {
+    color: var(--color-danger);
+    font-size: 0.875rem;
+}
+
+.error input,
+.error select,
+.error textarea {
+    border-color: var(--color-danger);
+}
+
+.is-invalid {
+    border-color: var(--color-danger);
+}
+
+.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.invalid-feedback {
+    color: var(--color-danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   Help Text
+   ============================================ */
+
+.helptext,
+.form-text {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   Required Fields
+   ============================================ */
+
+.required::after,
+label.required::after {
+    content: " *";
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+.asteriskField {
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+/* ============================================
+   Disabled State
+   ============================================ */
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+    background-color: #e9ecef;
+    color: var(--color-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ============================================
+   Button Groups in Divs
+   ============================================ */
+
+div > .btn + .btn {
+    margin-left: 0.5rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    [class*="col-md-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .row {
+        margin: 0;
+    }
+    
+    [class*="col-"] {
+        padding: 0;
+    }
+    
+    fieldset {
+        padding: 1rem;
+    }
+    
+    div > .btn {
+        width: 100%;
+        margin-left: 0 !important;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.text-muted {
+    color: var(--color-secondary);
+}
+
+.text-danger {
+    color: var(--color-danger);
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+/* ============================================
+   Placeholder Styling
+   ============================================ */
+
+::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+/* ============================================
+   Focus Visible (Accessibility)
+   ============================================ */
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    background-color: #fafafa;
+}
