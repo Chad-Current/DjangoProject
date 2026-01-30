@@ -1,5 +1,5 @@
 # ============================================================================
-# PART 7: DASHBOARD APP - ALL VIEWS
+# PART 7: DASHBOARD APP - ALL VIEWS - CORRECTED
 # ============================================================================
 
 # ============================================================================
@@ -25,7 +25,7 @@ from .models import (
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
-    EmergencyContact,
+    Contact,
     Checkup,
     CareRelationship,
     RecoveryRequest,
@@ -39,7 +39,7 @@ from .forms import (
     DeviceForm,
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
-    EmergencyContactForm,
+    ContactForm,
     CheckupForm,
     CareRelationshipForm,
     RecoveryRequestForm,
@@ -58,7 +58,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         user = request.user
 
         if not getattr(user, "has_paid", False):
-            return redirect(reverse("accounts:payment"))  #'payment checking'
+            return redirect(reverse("accounts:payment"))
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -71,36 +71,36 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['user'] = user
             context['profile'] = profile
             context['session_expires'] = self.request.session.get_expiry_date()
+            
             # COUNTS
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
             context['delegation_count'] = DelegationGrant.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
-            context['emergency_contacts_count'] = EmergencyContact.objects.filter(profile=profile).count()
-            # context['emergency_digital_executor_count'] = EmergencyContact.objects.filter(is_digital_executor__profile=profile).count()
-            # context['family_needs_to_know_count'] = FamilyNeedsToKnowSection.objects.filter(document_id__profile=profile).count()
+            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
+            
             # OPTIONALS
             keys = [
-                    'accounts_count',
-                    'contacts_count',
-                    'devices_count',
-                    'delegation_count',
-                    'documents_count',
-                    'estate_count',
-                    'emergency_contacts_count',
-                    'family_needs_to_know',
-                ]
+                'accounts_count',
+                'contacts_count',
+                'devices_count',
+                'delegation_count',
+                'documents_count',
+                'estate_count',
+                'family_needs_to_know',
+            ]
             adjusted_values = []
             for key in keys:
                 value = context.get(key, 0) or 0
                 if value > 1:
                     value += 1
                 adjusted_values.append(value)
-            total = sum(adjusted_values) or 1  # avoid division by zero
+            total = sum(adjusted_values) or 1
             context['progress'] = (total / len(keys)) * 100
             context['remaining_tasks'] = len(keys) - total
-            # PERMISSIONS CONTEXT 
+            
+            # PERMISSIONS CONTEXT
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()
             context['can_view'] = user.can_view_data()
@@ -109,18 +109,18 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['alert_due_year'] = False
             context['alert_attention_year'] = False
             today = datetime.today().date()
-# THIS COULD BE A POTENTIAL ISSUE DOWN THE ROAD ########
+            
             review_dates = (AccountRelevanceReview.objects
                             .exclude(next_review_due__isnull=True)
                             .aggregate(
                                 soonest=Min('next_review_due'),
                                 farthest=Max('next_review_due')
-                            )
-            )
+                            ))
 
             soonest_review = review_dates['soonest']
             farthest_review = review_dates['farthest']
             context['soonest'] = soonest_review
+            
             if soonest_review:
                 first_delta = soonest_review - today
                 if first_delta.days <= 0:
@@ -134,12 +134,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                     context['alert_due_year'] = True
                 elif last_delta.days <= 30:
                     context['alert_attention_year'] = True
-###################### STATIC STATES ISSUE #############
 
-            ##### CAUSING ERROR FOR UNBOUND ###############
-            # context['upcoming_review_days'] = first_delta
-            # context['furthest_review_days'] = last_delta
-            ################################################
             if user.subscription_tier == 'essentials':
                 context['is_edit_active'] = user.is_essentials_edit_active()
                 context['days_remaining'] = user.days_until_essentials_expires()
@@ -152,7 +147,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['profile'] = None
 
         return context
-        
+
+
 # ============================================================================
 # PROFILE VIEWS
 # ============================================================================
@@ -198,12 +194,10 @@ class AccountListView(ViewAccessMixin, ListView):
             profile = Profile.objects.get(user=self.request.user)
             queryset = Account.objects.filter(profile=profile)
             
-            # Filter by category if provided
             category_id = self.request.GET.get('account_category')
             if category_id:
                 queryset = queryset.filter(category_id=category_id)
             
-            # Filter by critical status
             is_critical = self.request.GET.get('critical')
             if is_critical:
                 queryset = queryset.filter(is_critical=True)
@@ -215,7 +209,6 @@ class AccountListView(ViewAccessMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
-        # Fixed: Changed to get categories from DocumentCategory model
         try:
             profile = Profile.objects.get(user=self.request.user)
             context['categories'] = Account.objects.filter(profile=profile)
@@ -233,16 +226,6 @@ class AccountDetailView(ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
-        
-        # Get the most recent review for this account
-        # try:
-        #     latest_review = AccountRelevanceReview.objects.filter(
-        #         account=self.object
-        #     ).order_by('-review_date').first()
-        #     context['latest_review'] = latest_review
-        # except AccountRelevanceReview.DoesNotExist:
-        #     context['latest_review'] = None
-            
         return context
 
 
@@ -282,7 +265,7 @@ class AccountUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
 
 
-class AccountDeleteView(DeleteAccessMixin,  DeleteView):
+class AccountDeleteView(DeleteAccessMixin, DeleteView):
     model = Account
     template_name = 'dashboard/account_confirm_delete.html'
     success_url = reverse_lazy('dashboard:account_list')
@@ -291,7 +274,7 @@ class AccountDeleteView(DeleteAccessMixin,  DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Account deleted successfully.')
         return super().delete(request, *args, **kwargs)
-    
+
 
 # ============================================================================
 # ACCOUNT RELEVANCE REVIEW VIEWS
@@ -306,10 +289,8 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
     def get_queryset(self):
         try:
             profile = Profile.objects.get(user=self.request.user)
-            # Start with all reviews for accounts belonging to this user's profile
             qs = AccountRelevanceReview.objects.filter(account__profile=profile)
             
-            # Optionally filter by a specific account via ?account=<id>
             account_id = self.request.GET.get('account')
             if account_id:
                 qs = qs.filter(account_id=account_id)
@@ -321,7 +302,6 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
-        # If filtering by account, add the account to context
         account_id = self.request.GET.get('account')
         if account_id:
             try:
@@ -358,13 +338,11 @@ class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        # Set the reviewer to the current user
         form.instance.reviewer = self.request.user
         messages.success(self.request, 'Account review created successfully.')
         return super().form_valid(form)
     
     def get_success_url(self):
-        # Redirect back to the account detail page
         return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
 
@@ -384,7 +362,6 @@ class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        # Redirect back to the account detail page
         return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
 
@@ -398,10 +375,9 @@ class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
     
     def get_success_url(self):
-        # Redirect back to the account list
         return reverse_lazy('dashboard:account_list')
-    
-    
+
+
 # ============================================================================
 # DEVICE VIEWS
 # ============================================================================
@@ -477,7 +453,7 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 # DIGITAL ESTATE DOCUMENT VIEWS
 # ============================================================================
-class EsateListView(ViewAccessMixin, ListView):
+class EstateListView(ViewAccessMixin, ListView):
     model = DigitalEstateDocument
     template_name = 'dashboard/estate_list.html'
     context_object_name = 'estates'
@@ -497,7 +473,7 @@ class EsateListView(ViewAccessMixin, ListView):
         return context
 
 
-class EstatetDetailView(ViewAccessMixin, DetailView):
+class EstateDetailView(ViewAccessMixin, DetailView):
     model = DigitalEstateDocument
     template_name = 'dashboard/estate_detail.html'
     context_object_name = 'estate'
@@ -509,7 +485,7 @@ class EstatetDetailView(ViewAccessMixin, DetailView):
         return context
 
 
-class EstatetCreateView(FullAccessMixin, CreateView):
+class EstateCreateView(FullAccessMixin, CreateView):
     model = DigitalEstateDocument
     form_class = DigitalEstateDocumentForm
     template_name = 'dashboard/estate_form.html'
@@ -554,6 +530,87 @@ class EstateDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Estate document deleted successfully.')
         return super().delete(request, *args, **kwargs)
+
+
+# ============================================================================
+# FAMILY AWARENESS VIEWS (FamilyNeedsToKnowSection)
+# ============================================================================
+class FamilyAwarenessListView(ViewAccessMixin, ListView):
+    model = FamilyNeedsToKnowSection
+    template_name = 'dashboard/familyawareness_list.html'
+    context_object_name = 'familyawareness_objects'
+    owner_field = 'document__profile__user'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            return FamilyNeedsToKnowSection.objects.filter(document__profile=profile).order_by('sort_order', '-created_at')
+        except Profile.DoesNotExist:
+            return FamilyNeedsToKnowSection.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
+    model = FamilyNeedsToKnowSection
+    template_name = 'dashboard/familyawareness_detail.html'
+    context_object_name = 'familyawareness'
+    owner_field = 'document__profile__user'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        return context
+
+
+class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
+    model = FamilyNeedsToKnowSection
+    form_class = FamilyNeedsToKnowSectionForm
+    template_name = 'dashboard/familyawareness_form.html'
+    success_url = reverse_lazy('dashboard:familyawareness_list')
+    owner_field = 'contact__profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Family awareness section created successfully.')
+        return super().form_valid(form)
+
+
+class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
+    model = FamilyNeedsToKnowSection
+    form_class = FamilyNeedsToKnowSectionForm
+    template_name = 'dashboard/familyawareness_form.html'
+    success_url = reverse_lazy('dashboard:familyawareness_list')
+    owner_field = 'document__profile__user'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Family awareness section updated successfully.')
+        return super().form_valid(form)
+
+
+class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
+    model = FamilyNeedsToKnowSection
+    template_name = 'dashboard/familyawareness_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:familyawareness_list')
+    owner_field = 'document__profile__user'
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Family awareness section deleted successfully.')
+        return super().delete(request, *args, **kwargs)
+
 
 # ============================================================================
 # IMPORTANT DOCUMENT VIEWS
@@ -708,21 +765,21 @@ class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
 
 
 # ============================================================================
-# EMERGENCY CONTACT VIEWS
+# CONTACT VIEWS
 # ============================================================================
-class EmergencyContactListView(ViewAccessMixin, ListView):
-    model = EmergencyContact
-    template_name = 'dashboard/emergencycontact_list.html'
-    context_object_name = 'emergency'
+class ContactListView(ViewAccessMixin, ListView):
+    model = Contact
+    template_name = 'dashboard/contact_list.html'
+    context_object_name = 'contacts'
     owner_field = 'profile__user'
     paginate_by = 20
     
     def get_queryset(self):
         try:
             profile = Profile.objects.get(user=self.request.user)
-            return EmergencyContact.objects.filter(profile=profile).order_by('-created_at')
+            return Contact.objects.filter(profile=profile).order_by('-created_at')
         except Profile.DoesNotExist:
-            return EmergencyContact.objects.none()
+            return Contact.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -730,11 +787,11 @@ class EmergencyContactListView(ViewAccessMixin, ListView):
         return context
 
 
-class EmergencyContactCreateView(FullAccessMixin, CreateView):
-    model = EmergencyContact
-    form_class = EmergencyContactForm
-    template_name = 'dashboard/emergencycontact_form.html'
-    success_url = reverse_lazy('dashboard:emergencycontact_list')
+class ContactCreateView(FullAccessMixin, CreateView):
+    model = Contact
+    form_class = ContactForm
+    template_name = 'dashboard/contact_form.html'
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -745,15 +802,15 @@ class EmergencyContactCreateView(FullAccessMixin, CreateView):
     def form_valid(self, form):
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         form.instance.profile = profile
-        messages.success(self.request, 'Emergency contact created successfully.')
+        messages.success(self.request, 'Contact created successfully.')
         return super().form_valid(form)
 
 
-class EmergencyContactUpdateView(FullAccessMixin, UpdateView):
-    model = EmergencyContact
-    form_class = EmergencyContactForm
-    template_name = 'dashboard/emergencycontact_form.html'
-    success_url = reverse_lazy('dashboard:emergencycontact_list')
+class ContactUpdateView(FullAccessMixin, UpdateView):
+    model = Contact
+    form_class = ContactForm
+    template_name = 'dashboard/contact_form.html'
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -762,18 +819,18 @@ class EmergencyContactUpdateView(FullAccessMixin, UpdateView):
         return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'Emergency contact updated successfully.')
+        messages.success(self.request, 'Contact updated successfully.')
         return super().form_valid(form)
 
 
-class EmergencyContactDeleteView(DeleteAccessMixin, DeleteView):
-    model = EmergencyContact
-    template_name = 'dashboard/emergencycontact_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:emergencycontact_list')
+class ContactDeleteView(DeleteAccessMixin, DeleteView):
+    model = Contact
+    template_name = 'dashboard/contact_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Emergency contact deleted successfully.')
+        messages.success(request, 'Contact deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
 

@@ -35,7 +35,7 @@
                 </div>
                 {% if can_modify %}
                 <div class="header-action">
-                    <a href="{% url 'dashboard:emergencycontact_create' %}" class="btn-add-contact">
+                    <a href="{% url 'dashboard:contact_create' %}" class="btn-add-contact">
                         <i class="fas fa-plus-circle"></i>
                         <span>Add Contact</span>
                     </a>
@@ -45,7 +45,7 @@
 
             <!-- Content Section -->
             <div class="contacts-content">
-                {% if emergency %}
+                {% if contacts %}
                     <!-- Desktop Table View -->
                     <div class="table-view d-none d-md-block">
                         <div class="table-responsive">
@@ -60,7 +60,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for contact in emergency %}
+                                    {% for contact in contacts %}
                                     <tr>
                                         <td>
                                             <div class="contact-name">
@@ -72,19 +72,19 @@
                                             <span class="badge-relationship">{{ contact.contact_relation }}</span>
                                         </td>
                                         <td>
-                                            <span class="contact-info">{{ contact.is_emergency_contact|yesno:"Yes,No" }}</span>
+                                            <span class="contact-info">{{ contact.is__contact|yesno:"Yes,No" }}</span>
                                         <td>
                                             <span class="contact-info">{{ contact.phone|phone2numeric }}</span>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
                                                 {% if can_modify %}
-                                                <a href="{% url 'dashboard:emergencycontact_update' contact.pk %}" 
+                                                <a href="{% url 'dashboard:contact_update' contact.pk %}" 
                                                    class="btn-action btn-edit" 
                                                    title="Edit contact">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="{% url 'dashboard:emergencycontact_delete' contact.pk %}" 
+                                                <a href="{% url 'dashboard:contact_delete' contact.pk %}" 
                                                    class="btn-action btn-delete" 
                                                    title="Delete contact">
                                                     <i class="fas fa-trash-alt"></i>
@@ -101,7 +101,7 @@
 
                     <!-- Mobile Card View -->
                     <div class="card-view d-md-none">
-                        {% for contact in emergency %}
+                        {% for contact in contacts %}
                         <div class="contact-card">
                             <div class="card-header-section">
                                 <div class="contact-avatar">
@@ -114,18 +114,18 @@
                             </div>
                             
                             <div class="card-body-section">
-                                <div class="info-label">Information</div>
-                                <p class="contact-info-text">{{ contact.body|truncatechars:100 }}</p>
+                                <div class="info-label">Phone</div>
+                                <p class="contact-info-text">{{ contact.phone|phone2numeric }}</p>
                             </div>
                             
                             {% if can_modify %}
                             <div class="card-actions">
-                                <a href="{% url 'dashboard:emergencycontact_update' contact.pk %}" 
+                                <a href="{% url 'dashboard:contact_update' contact.pk %}" 
                                    class="btn-card-action btn-edit-card">
                                     <i class="fas fa-edit"></i>
                                     <span>Edit</span>
                                 </a>
-                                <a href="{% url 'dashboard:emergencycontact_delete' contact.pk %}" 
+                                <a href="{% url 'dashboard:contact_delete' contact.pk %}" 
                                    class="btn-card-action btn-delete-card">
                                     <i class="fas fa-trash-alt"></i>
                                     <span>Delete</span>
@@ -142,12 +142,12 @@
                         <div class="empty-state-icon">
                             <i class="fas fa-address-book"></i>
                         </div>
-                        <h2 class="empty-state-title">No Emergency Contacts Yet</h2>
+                        <h2 class="empty-state-title">No Contacts Yet</h2>
                         <p class="empty-state-text">
-                            Start building your emergency contact list by adding your first contact.
+                            Start building your contact list by adding your first contact.
                         </p>
                         {% if can_modify %}
-                        <a href="{% url 'dashboard:emergencycontact_create' %}" class="btn-add-first">
+                        <a href="{% url 'dashboard:contact_create' %}" class="btn-add-first">
                             <i class="fas fa-plus-circle"></i>
                             Add Your First Contact
                         </a>

@@ -10,7 +10,7 @@ from .models import (
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
-    EmergencyContact,
+    Contact,
     DelegationGrant,
     Checkup,
     CareRelationship,
@@ -296,6 +296,7 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
 class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
     list_display = [
         'heading',
+        'body',
         'document',
         'sort_order',
         'created_at',
@@ -306,13 +307,14 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
     ]
     search_fields = [
         'heading',
+        'body',
         'content',
         'document__title',
     ]
     readonly_fields = ['created_at', 'updated_at']
     fieldsets = (
         ('Section Information', {
-            'fields': ('document', 'heading', 'sort_order')
+            'fields': ('document', 'body','heading', 'sort_order')
         }),
         ('Content', {
             'fields': ('content',)
@@ -326,10 +328,10 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
 
 
 # ============================================================================
-# EMERGENCY CONTACT ADMIN
+# CONTACT ADMIN
 # ============================================================================
-@admin.register(EmergencyContact)
-class EmergencyContactAdmin(admin.ModelAdmin):
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
     list_display = [
         'contact_name',
         'contact_relation',

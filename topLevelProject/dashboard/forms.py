@@ -10,7 +10,7 @@ from .models import (
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
-    EmergencyContact,
+    Contact,
     Checkup,
     CareRelationship,
     RecoveryRequest,
@@ -167,9 +167,9 @@ class DelegationGrantForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact'].queryset = EmergencyContact.objects.filter(profile=profile)
+                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact'].queryset = EmergencyContact.objects.none()
+                self.fields['contact'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -225,7 +225,9 @@ class DeviceForm(forms.ModelForm):
                     Column('decommission_instruction', css_class="form-group col-md-12 mb-4"),
                 ),
                 Row(
-                    HTML("<i>Uses Two-Factor Authenication</i>"),
+                    Column(
+                        HTML("<label>Uses Two-Factor Authenication</label>"),
+                    ), 
                     Column('used_for_2fa', css_class="form-group col-md-12 mt-0"),
                 ),
             ),
@@ -288,20 +290,43 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
     class Meta:
         model = FamilyNeedsToKnowSection
         fields = [
+            "document",
+            "relation",
             "heading",
+            "body",
             "sort_order",
             "content",
         ]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        
+        # Filter documents and contacts by user's profile
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['document'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
+                self.fields['relation'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['document'].queryset = DigitalEstateDocument.objects.none()
+                self.fields['relation'].queryset = Contact.objects.none()
+        
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Row(
-                Column('heading', css_class='form-group col-md-9 mb-0'),
-                Column('sort_order', css_class='form-group col-md-3 mb-0'),
+            Fieldset(
+                'Family Awareness Section',
+                Row(
+                    Column('document', css_class='form-group col-md-6 mb-0'),
+                    Column('relation', css_class='form-group col-md-6 mb-0'),
+                ),
+                Row(
+                    Column('heading', css_class='form-group col-md-9 mb-0'),
+                    Column('sort_order', css_class='form-group col-md-3 mb-0'),
+                ),
+                'body',
+                'content',
             ),
-            'content',
             Div(
                 Submit('submit', 'Save Section', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
@@ -309,9 +334,9 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         )
 
 
-class EmergencyContactForm(forms.ModelForm):
+class ContactForm(forms.ModelForm):
     class Meta:
-        model = EmergencyContact
+        model = Contact
         fields = [
             'contact_relation',
             'contact_name',
@@ -331,7 +356,7 @@ class EmergencyContactForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                "Emergency Contact Information",
+                "Contact Information",
                 Row(
                     Column('contact_relation', css_class='form-group col-md-6 mb-0'),
                     Column('contact_name', css_class='form-group col-md-6 mb-0'),
@@ -351,7 +376,7 @@ class EmergencyContactForm(forms.ModelForm):
                 ),
             ),
             Div(
-                Submit('submit', 'Save Emergency Contact', css_class='btn btn-primary'),
+                Submit('submit', 'Save Contact', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
@@ -421,9 +446,9 @@ class CareRelationshipForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact_name'].queryset = EmergencyContact.objects.filter(profile=profile)
+                self.fields['contact_name'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact_name'].queryset = EmergencyContact.objects.none()
+                self.fields['contact_name'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.layout = Layout(

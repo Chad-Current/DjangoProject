@@ -24,10 +24,17 @@ urlpatterns = [
     path('account-reviews/<int:pk>/edit/', views.AccountRelevanceReviewUpdateView.as_view(), name='accountrelevancereview_update'),
     path('account-reviews/<int:pk>/delete/', views.AccountRelevanceReviewDeleteView.as_view(), name='accountrelevancereview_delete'),
 
+    # Contacts URLs
+    path('contacts/', views.ContactListView.as_view(), name='contact_list'),
+    path('contacts<int:pk>/', views.ContactListView.as_view(), name='contact_detail'),
+    path('contacts/create/', views.ContactCreateView.as_view(), name='contact_create'),
+    path('contacts/<int:pk>/edit/', views.ContactUpdateView.as_view(), name='contact_update'),
+    path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),
+
     # Digital Estate
-    path('estate/', views.EsateListView.as_view(), name='estate_list'),
-    path('estate/<int:pk>/', views.EstatetDetailView.as_view(), name='estate_detail'),
-    path('estate/create/', views.EstatetCreateView.as_view(), name='estate_create'),
+    path('estate/', views.EstateListView.as_view(), name='estate_list'),
+    path('estate/<int:pk>/', views.EstateDetailView.as_view(), name='estate_detail'),
+    path('estate/create/', views.EstateCreateView.as_view(), name='estate_create'),
     path('estate/<int:pk>/edit/', views.EstateUpdateView.as_view(), name='estate_update'),
     path('estate/<int:pk>/delete/', views.EstateDeleteView.as_view(), name='estate_delete'),    
     
@@ -38,6 +45,15 @@ urlpatterns = [
     path('devices/<int:pk>/edit/', views.DeviceUpdateView.as_view(), name='device_update'),
     path('devices/<int:pk>/delete/', views.DeviceDeleteView.as_view(), name='device_delete'),
     
+  # Family Awareness URLs
+    path('familyawareness/', views.FamilyAwarenessListView.as_view(), name='familyawareness_list'),
+    path('familyawareness/<int:pk>/', views.FamilyAwarenessDetailView.as_view(), name='familyawareness_detail'),
+    path('familyawareness/create/', views.FamilyAwarenessCreateView.as_view(), name='familyawareness_create'),
+    path('familyawareness/<int:pk>/edit/', views.FamilyAwarenessUpdateView.as_view(), name='familyawareness_update'),
+    path('familyawareness/<int:pk>/delete/', views.FamilyAwarenessDeleteView.as_view(), name='familyawareness_delete'),
+
+
+
     # Important Document URLs
     path('documents/', views.ImportantDocumentListView.as_view(), name='importantdocument_list'),
     path('documents/<int:pk>/', views.ImportantDocumentDetailView.as_view(), name='importantdocument_detail'),
@@ -51,12 +67,6 @@ urlpatterns = [
     path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegationgrant_update'),
     path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegationgrant_delete'),
     
-    # Emergency Note URLs
-    path('emergency-contacts/', views.EmergencyContactListView.as_view(), name='emergencycontact_list'),
-    path('emergency-contacts<int:pk>/', views.EmergencyContactListView.as_view(), name='emergencycontact_detail'),
-    path('emergency-contacts/create/', views.EmergencyContactCreateView.as_view(), name='emergencycontact_create'),
-    path('emergency-contacts/<int:pk>/edit/', views.EmergencyContactUpdateView.as_view(), name='emergencycontact_update'),
-    path('emergency-contacts/<int:pk>/delete/', views.EmergencyContactDeleteView.as_view(), name='emergencycontact_delete'),
     
     # Checkup URLs
     path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),

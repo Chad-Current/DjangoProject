@@ -277,38 +277,14 @@ class DigitalEstateDocument(models.Model):
         return f"{self.title} v{self.version}"
 
 
-class FamilyNeedsToKnowSection(models.Model):
+class Contact(models.Model):
     """
-    Sections within the estate document that family needs to know
-    """
-    document = models.ForeignKey(
-        DigitalEstateDocument,
-        on_delete=models.CASCADE,
-        related_name='family_sections'
-    )
-    heading = models.CharField(max_length=200)
-    sort_order = models.IntegerField(default=0)
-    content = models.TextField(help_text="What family needs to know")
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'family_needs_to_know_sections'
-        ordering = ['document', 'sort_order', 'heading']
-    
-    def __str__(self):
-        return f"{self.document.title} - {self.heading}"
-
-
-class EmergencyContact(models.Model):
-    """
-    Emergency notes for specific contacts
+    Notes for specific contacts
     """
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name='emergency_contacts',
+        related_name='relation_contacts',
         editable=False
     )
     CONTACTS_CHOICES = [
@@ -342,12 +318,42 @@ class EmergencyContact(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'emergency_contacts'
+        db_table = 'primary_contacts'
         ordering = ['-created_at']
     
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
 
+class FamilyNeedsToKnowSection(models.Model):
+    """
+    Sections within the estate document that family needs to know
+    """
+    document = models.ForeignKey(
+        DigitalEstateDocument,
+        on_delete=models.CASCADE,
+        related_name='family_sections'
+    )
+    relation = models.ForeignKey(
+        Contact,
+        on_delete=models.CASCADE,
+        related_name='family_relations',
+    )
+    heading = models.CharField(max_length=200)
+    body = models.TextField(blank=True)
+    # REMOVE SORT_ORDER
+    sort_order = models.IntegerField(default=0)
+    content = models.TextField(help_text="What family needs to know")
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'family_needs_to_know_sections'
+        ordering = ['document', 'sort_order', 'heading']
+        # REMOVE SORT_ORDER
+    def __str__(self):
+        return f"{self.document.title} - {self.heading}"
+    
 
 class DelegationGrant(models.Model):
     """
@@ -360,7 +366,7 @@ class DelegationGrant(models.Model):
         editable=False
     )
     contact = models.ForeignKey(
-        EmergencyContact,
+        Contact,
         on_delete=models.CASCADE,
         related_name='delegations_received'
     )
@@ -460,7 +466,7 @@ class CareRelationship(models.Model):
         editable=False
     )
     contact_name = models.ForeignKey(
-        EmergencyContact,
+        Contact,
         on_delete=models.CASCADE,
         related_name='care_relationships'
     )
@@ -557,10 +563,8 @@ class ImportantDocument(models.Model):
         editable=False
     )
     DOCUMENT_CATEGORY_CHOICES = [
+        ("important_personal_documents", "Important Personal Documents"),
         ("personal_identification", "Personal Identification"),
-        ("contact_information", "Contact Information"),
-        ("emergency_contacts", "Emergency Contacts"),
-        ("family_relationships", "Family Relationships"),
         ("dependents_and_care_needs", "Dependents and Care Needs"),
         ("primary_physician_information", "Primary Physician Information"),
         ("medical_specialists", "Medical Specialists"),
@@ -613,7 +617,6 @@ class ImportantDocument(models.Model):
         ("pet_care_and_ownership", "Pet Care and Ownership"),
         ("membership_and_affiliations", "Membership and Affiliations"),
         ("charitable_giving_plans", "Charitable Giving Plans"),
-        ("important_personal_documents", "Important Personal Documents"),
         ("notes_and_special_instructions", "Notes and Special Instructions"),
     ]
     title = models.CharField(max_length=200)
