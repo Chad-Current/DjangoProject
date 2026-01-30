@@ -79,7 +79,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
-            
+            context['emergency_contacts_count'] = Contact.objects.filter(profile=profile,is_emergency_contact=True).count()
+            # context['family_awareness_count'] = FamilyNeedsToKnowSection.objects.filter(account_profile=profile)
             # OPTIONALS
             keys = [
                 'accounts_count',
