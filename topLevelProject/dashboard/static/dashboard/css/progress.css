@@ -1,7 +1,7 @@
 /* Progress Circle Styles */
 .progress-circle-container {
   position: relative;
-  display: inline-block;
+  /* display: inline-block; */
   /* width: 200px;
   height: 200px; */
 }

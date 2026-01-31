@@ -29,11 +29,11 @@
 }
 
 /* Reset & Base */
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+} */
 /* 
 body {
     font-family: var(--font-body);
@@ -100,22 +100,23 @@ body {
     flex-wrap: wrap;
     gap: 1.25rem;
     justify-content: center;
+    align-items: center;
     margin-bottom: 2rem;
 }
 
 .stat-card {
-    flex: 1 1 calc(25% - 1.25rem);
-    min-width: 200px;
-    max-width: 280px;
+flex: 1 1 calc(25% - 1.25rem);
+    min-width: 400px;
+    max-width: 600px;
     box-shadow: 2px 1px 10px 0 var(--sixty-percent);
     border-radius: 20px;
-    padding: 1.5rem;
+    padding: 0.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin: 1em;
     transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideInUp 0.5s ease-out forwards;
-    opacity: 0;
 }
 
 .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -134,10 +135,10 @@ body {
     }
 }
 
-.stat-card:hover {
+/* .stat-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
-}
+} */
 
 .stat-icon-wrapper {
     width: 48px;
@@ -169,8 +170,7 @@ body {
     margin-top: 0.25rem;
 }
 
-/* .progress-card {
-    justify-content: center;
+.progress-card {
     align-items: center;
     padding: 1rem;
 }
@@ -178,7 +178,7 @@ body {
 .progress-wrapper {
     width: 100%;
     max-width: 120px;
-} */
+}
 
 /* Dashboard Sections */
 .dashboard-section {

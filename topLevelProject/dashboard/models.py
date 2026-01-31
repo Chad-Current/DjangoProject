@@ -147,6 +147,7 @@ class AccountRelevanceReview(models.Model):
         on_delete=models.CASCADE,
         related_name='relevance_reviews'
     )
+    # FOR DATA INTEGRITY (KEEP?)
     reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

@@ -13,7 +13,7 @@ from django.views.generic import (
 from django.urls import reverse_lazy
 from django.urls import reverse
 from django.contrib import messages
-from django.db.models import Min, Max
+from django.db.models import Min, Max, Q
 from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
 from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
@@ -72,9 +72,38 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['profile'] = profile
             context['session_expires'] = self.request.session.get_expiry_date()
             
-            # COUNTS
+            # ALL COUNTS
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
+            # ACCOUNT COUNTS
+            context['app_store'] = Account.objects.filter(Q(account_category='app_store')).count()
+            context['cloud_storage'] = Account.objects.filter(Q(account_category='cloud_storage')).count()
+            context['email'] = Account.objects.filter(Q(account_category='email')).count()
+            context['education_elearning'] = Account.objects.filter(Q(account_category='education_elearning')).count()
+            context['forum_community'] = Account.objects.filter(Q(account_category='forum_community')).count()
+            context['gaming_platform'] = Account.objects.filter(Q(account_category='gaming_platform')).count()
+            context['social_media'] = Account.objects.filter(Q(account_category='social_media')).count()
+            context['subscription_saas'] = Account.objects.filter(Q(account_category='subscription_saas')).count()
+            context['streaming_media'] = Account.objects.filter(Q(account_category='streaming_media')).count()
+            context['ecommerce_marketplace'] = Account.objects.filter(Q(account_category='ecommerce_marketplace')).count()
+            context['online_financial'] = Account.objects.filter(Q(account_category='online_banking') | Q(account_category='neobank_digital_bank') \
+                    | Q(account_category='brokerage_investment') | Q(account_category='cryptocurrency_exchange') | Q(account_category='payment_wallet') \
+                    | Q(account_category='payment_processor')).count()
+            context['government_portal'] = Account.objects.filter(Q(account_category='government_portal')).count()
+            context['health_portal'] = Account.objects.filter(Q(account_category='health_portal')).count()
+            context['smart_home_iot'] = Account.objects.filter(Q(account_category='smart_home_iot')).count()
+            context['travel_booking'] = Account.objects.filter(Q(account_category='travel_booking')).count()
+            context['password_manager'] = Account.objects.filter(Q(account_category='password_manager')).count()
+            context['utilities_telecom_portal'] = Account.objects.filter(Q(account_category='utilities_telecom_portal')).count()
+            context['not_listed'] = Account.objects.filter(Q(account_category='not_listed')).count()
+            #DEVICE COUNTS
+            context['phones'] = Device.objects.filter(Q(device_type='phone')).count()
+            context['tablets'] = Device.objects.filter(Q(device_type='tablet')).count()
+            context['laptops'] = Device.objects.filter(Q(device_type='laptop')).count()
+            context['desktops'] = Device.objects.filter(Q(device_type='desktop')).count()
+            context['smartwatchs'] = Device.objects.filter(Q(device_type='smartwatch')).count()
+            context['others'] = Device.objects.filter(Q(device_type='other')).count()
+
             context['delegation_count'] = DelegationGrant.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()

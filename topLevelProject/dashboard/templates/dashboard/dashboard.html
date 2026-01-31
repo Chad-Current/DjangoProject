@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-cards.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-charts.css' %}" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,6 +36,7 @@
 
             <!-- Stats Cards -->
             <div class="stats-grid">
+                <div class="parent-col">
                 <div class="stat-card" data-stat="tasks">
                     <div class="stat-icon-wrapper">
                         <img src="/static/accounts/images/Task--Streamline-Plump.svg" alt="" class="stat-icon">
@@ -49,16 +51,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card" data-stat="review">
-                    <div class="stat-icon-wrapper">
-                        <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" alt="" class="stat-icon">
-                    </div>
-                    <div class="stat-content">
-                        <!-- <div class="stat-value"><h3></h3></div> -->
-                        <div class="stat-label"><h4>{{ soonest.day }} Days Until Review</h4></div>
-                    </div>
-                </div>
-
+                
                 <div class="stat-card" data-stat="secured">
                     <div class="stat-icon-wrapper">
                         <img src="/static/accounts/images/User-Protection-Check--Streamline-Plump.svg" alt="" class="stat-icon">
@@ -69,11 +62,23 @@
                         <div class="stat-label"><h4>No Accounts Protected</h4></div>
                         {% elif accounts_count == 1 %}
                         <div class="stat-label"><h4>1 Account Protected</h4></div>
-                        {% elif user.profile.accounts.all.count >= 2 %}
+                        {% elif accounts_count >= 2 %}
                         <div class="stat-label"><h4>{{ accounts_count }} Account Protected</h4></div>
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="stat-card" data-stat="review">
+                    <div class="stat-icon-wrapper">
+                        <img src="/static/accounts/images/Reset-Clock--Streamline-Plump.svg" alt="" class="stat-icon">
+                    </div>
+                    <div class="stat-content">
+                        <!-- <div class="stat-value"><h3></h3></div> -->
+                        <div class="stat-label"><h4>{{ soonest.day }} Days Until Review</h4></div>
+                    </div>
+                </div>
+            </div>
+            
 
                 <div class="progress-card" data-stat="progress">
                     <div>
@@ -81,8 +86,83 @@
                         {% include 'dashboard/progress-circle.html' %}
                     </div>
                 </div>
+
             </div>
         </div>
+
+<!-- <section class="dashboard-section">
+            <h2>Analytics Overview</h2>
+            
+            <!-- Summary Stats -->
+            <!-- <div class="summary-stats">
+                <div class="summary-card">
+                    <div class="summary-value" id="total-accounts">{{ accounts_count }}</div>
+                    <div class="summary-label">Total Accounts</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="total-documents">{{ documents_count }}</div>
+                    <div class="summary-label">Documents</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="total-devices">{{ devices_count }}</div>
+                    <div class="summary-label">Devices</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="total-contacts">{{ contacts_count }}</div>
+                    <div class="summary-label">Contacts</div>
+                </div>
+            </div> -->
+
+            <!-- Charts Grid -->
+            <!-- <div class="charts-grid"> -->
+                <!-- Account Categories Chart -->
+                <!-- <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Accounts by Category</h2>
+                        <p class="chart-description">Financial Accounts: {{ online_financial }}</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="bar-chart" id="account-categories-chart"></div>
+                    </div>
+                </div>
+                 -->
+                <!-- Document Categories Chart -->
+                <!-- <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Document Categories</h2>
+                        <p class="chart-description">Your important documents breakdown</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="vertical-bar-chart" id="document-categories-chart"></div>
+                    </div>
+                </div> -->
+                
+                <!-- Device Types Chart -->
+                <!-- <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Device Types</h2>
+                        <p class="chart-description">Connected devices in your estate</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="bar-chart" id="device-types-chart"></div>
+                    </div>
+                </div> -->
+                
+                <!-- Estate Overview Chart -->
+                <!-- <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Estate Overview</h2>
+                        <p class="chart-description">Complete digital estate summary</p>
+                    </div>
+                    <div class="chart-container">
+                        <div class="vertical-bar-chart" id="estate-overview-chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- END ANALYTICS SECTION -->
+
+
 
         <!-- Digital Estate Section -->
         <section class="dashboard-section mt-4">
@@ -96,7 +176,7 @@
                     </div>
                     
                     <div class="card-status">
-                        {% if not user.profile.accounts.all.count >= 1 %}
+                        {% if not accounts_count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
                         <span class="status-badge status-complete">Reviewed</span>
@@ -142,6 +222,12 @@
                     <div class="card-content">
                         <h3 class="card-title">Devices</h3>
                         <p class="card-description">Device details</p>
+                        <p>Phones: {{ phones|default:0}} </p>
+                        <p>Tablets: {{ tablets|default:0 }} </p>
+                        <p>Laptop: {{ laptops|default:0}} </p>
+                        <p>Tablets: {{ desktops|default:0 }} </p>
+                        <p>SmartWatchs: {{ smartwatchs|default:0 }} </p>
+                        <p>Other Devices: {{ others|default:0 }} </p>
                         <div class="card-meta">
                             <span class="meta-item">{{ devices_count }} devices tracked</span>
                             {% if user.profile.devices.last %}
@@ -452,6 +538,7 @@
 
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="{% static 'dashboard/js/progress.js' %}"></script>
+    <script src="{% static 'dashboard/js/dashboard-charts.js' %}"></script>
     <script>
         // Add staggered animation on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -461,6 +548,8 @@
             });
         });
     </script>
+
+
 </body>
 
 </html>
