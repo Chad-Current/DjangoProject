@@ -153,7 +153,8 @@ class DelegationGrantForm(forms.ModelForm):
     class Meta:
         model = DelegationGrant
         fields = [
-            "contact",
+            'delegate_to',
+            'delegate_doc',
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
@@ -167,13 +168,16 @@ class DelegationGrantForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['contact'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['delegate_to'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['delegate_doc'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['contact'].queryset = Contact.objects.none()
-        
+                self.fields['delegate_to'].queryset = Contact.objects.none()
+                self.fields['delegate_doc'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'contact',
+            'delegate_to',
+            'delegate_doc',
             Fieldset(
                 'When Does This Apply?',
                 Row(
@@ -243,7 +247,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         model = DigitalEstateDocument
         fields = [
             "title",
-            "version",
+            "estate_document",
             "is_active",
             "overall_instructions",
         ]
@@ -258,7 +262,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
                 'Document Details',
                 Row(
                     Column('title', css_class='form-group col-md-8 mb-0'),
-                    Column('version', css_class='form-group col-md-2 mb-0'),
+                    Column('estate_document', css_class='form-group col-md-2 mb-0'),
                     Column('is_active', css_class='form-group col-md-2 mb-0'),
                 ),
                 'overall_instructions',

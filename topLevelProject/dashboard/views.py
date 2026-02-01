@@ -75,6 +75,11 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             # ALL COUNTS
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
+            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
+            context['estates_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
+            context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
+            context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
+            context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
             # ACCOUNT COUNTS
             context['app_store'] = Account.objects.filter(Q(account_category='app_store')).count()
             context['cloud_storage'] = Account.objects.filter(Q(account_category='cloud_storage')).count()
@@ -114,11 +119,11 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             keys = [
                 'accounts_count',
                 'contacts_count',
-                'devices_count',
-                'delegation_count',
+                'devicess_count',
                 'documents_count',
-                'estate_count',
-                'family_needs_to_know',
+                'estates_count',
+                'family_family_knows_count',
+                'care_relations_count',
             ]
             adjusted_values = []
             for key in keys:
@@ -150,7 +155,11 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             soonest_review = review_dates['soonest']
             farthest_review = review_dates['farthest']
             context['soonest'] = soonest_review
-            
+
+            # THROWS ERROR IS ACCOUNT IS DELETED BACK TO ZERO ####
+            # context['first_delta'] = soonest_review - today
+            # NEEDS DEFAULT OR FIXED THROUGH OTHER SOLUTION ######
+
             if soonest_review:
                 first_delta = soonest_review - today
                 if first_delta.days <= 0:
@@ -481,7 +490,7 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
 
 
 # ============================================================================
-# DIGITAL ESTATE DOCUMENT VIEWS
+# DESTATE DOCUMENT VIEWS
 # ============================================================================
 class EstateListView(ViewAccessMixin, ListView):
     model = DigitalEstateDocument
@@ -733,7 +742,7 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class DelegationGrantListView(ViewAccessMixin, ListView):
     model = DelegationGrant
-    template_name = 'dashboard/delegationgrant_list.html'
+    template_name = 'dashboard/delegate_list.html'
     context_object_name = 'grants'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -754,8 +763,8 @@ class DelegationGrantListView(ViewAccessMixin, ListView):
 class DelegationGrantCreateView(FullAccessMixin, CreateView):
     model = DelegationGrant
     form_class = DelegationGrantForm
-    template_name = 'dashboard/delegationgrant_form.html'
-    success_url = reverse_lazy('dashboard:delegationgrant_list')
+    template_name = 'dashboard/delegate_form.html'
+    success_url = reverse_lazy('dashboard:delegate_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -773,8 +782,8 @@ class DelegationGrantCreateView(FullAccessMixin, CreateView):
 class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
     model = DelegationGrant
     form_class = DelegationGrantForm
-    template_name = 'dashboard/delegationgrant_form.html'
-    success_url = reverse_lazy('dashboard:delegationgrant_list')
+    template_name = 'dashboard/delegate_form.html'
+    success_url = reverse_lazy('dashboard:delegate_list')
     owner_field = 'profile__user'
     
     def get_form_kwargs(self):
@@ -790,7 +799,7 @@ class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
 class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
     model = DelegationGrant
     template_name = 'dashboard/delegationgrant_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:delegationgrant_list')
+    success_url = reverse_lazy('dashboard:delegate_list')
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):

@@ -52,8 +52,6 @@ urlpatterns = [
     path('familyawareness/<int:pk>/edit/', views.FamilyAwarenessUpdateView.as_view(), name='familyawareness_update'),
     path('familyawareness/<int:pk>/delete/', views.FamilyAwarenessDeleteView.as_view(), name='familyawareness_delete'),
 
-
-
     # Important Document URLs
     path('documents/', views.ImportantDocumentListView.as_view(), name='importantdocument_list'),
     path('documents/<int:pk>/', views.ImportantDocumentDetailView.as_view(), name='importantdocument_detail'),
@@ -62,10 +60,10 @@ urlpatterns = [
     path('documents/<int:pk>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
     
     # Delegation Grant URLs
-    path('delegations/', views.DelegationGrantListView.as_view(), name='delegationgrant_list'),
-    path('delegations/create/', views.DelegationGrantCreateView.as_view(), name='delegationgrant_create'),
-    path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegationgrant_update'),
-    path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegationgrant_delete'),
+    path('delegations/', views.DelegationGrantListView.as_view(), name='delegate_list'),
+    path('delegations/create/', views.DelegationGrantCreateView.as_view(), name='delegate_create'),
+    path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegate_update'),
+    path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegate_delete'),
     
     
     # Checkup URLs

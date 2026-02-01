@@ -240,19 +240,34 @@ class DigitalEstateDocument(models.Model):
     """
     The main digital estate planning document
     """
+    PERSONAL_ESTATE_DOCUMENTS = [
+    ("Last Will and Testament", "Directs distribution of assets, names executor, may name guardians for minor children."),
+    ("Revocable Living Trust", "Holds property during life and distributes it after death, often avoiding probate."),
+    ("Financial Power of Attorney", "Authorizes someone to manage finances if you are incapacitated."),
+    ("Health Care Power of Attorney", "Authorizes someone to make medical decisions if you cannot."),
+    ("Living Will / Advance Directive", "States your wishes for end-of-life or critical medical care."),
+    ("Beneficiary Designations", "Forms for life insurance, retirement accounts, etc., naming who receives benefits."),
+    ("HIPAA Authorization", "Allows named individuals to access your medical information."),
+    ("Letter of Instruction", "Informal document with guidance for heirs, location of assets, and personal wishes."),
+    ("Insurance Policies", "Life, disability, and other policies relevant to your estate and survivors."),
+    ("Property Deeds and Titles", "Deeds, titles, and related ownership documents for real estate and vehicles."),
+]
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
         related_name='estate_documents',
         editable=False
     )
-    title = models.CharField(max_length=200)
-    version = models.CharField(max_length=20, default="1.0")
+    estate_document = models.CharField(
+        max_length=200,
+        choices=PERSONAL_ESTATE_DOCUMENTS,
+        default='important_personal_documents'
+    )
+    title = models.CharField(max_length=200, blank=True)
     is_active = models.BooleanField(
         default=True,
         help_text="Is this the current active document?"
-    )
-    
+    )    
     overall_instructions = models.CharField(
         max_length=500,
         blank=True,
@@ -267,7 +282,7 @@ class DigitalEstateDocument(models.Model):
         ordering = ['-is_active', '-created_at']
     
     def __str__(self):
-        return f"{self.title} v{self.version}"
+        return f"{self.title}"
 
 
 class Contact(models.Model):
@@ -317,6 +332,7 @@ class Contact(models.Model):
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
 
+
 class FamilyNeedsToKnowSection(models.Model):
     """
     Sections within the estate document that family needs to know
@@ -352,11 +368,18 @@ class DelegationGrant(models.Model):
         related_name='delegation_grants',
         editable=False
     )
-    contact = models.ForeignKey(
+    delegate_to = models.ForeignKey(
         Contact,
         on_delete=models.CASCADE,
-        related_name='delegations_received'
+        related_name='delegations_received',
     )
+
+    delegate_doc = models.ForeignKey(
+        DigitalEstateDocument, 
+        on_delete=models.CASCADE,
+        related_name='delegation_estate_doc'
+    )
+
     applies_on_death = models.BooleanField(default=False)
     applies_on_incapacity = models.BooleanField(default=False)
     applies_immediately = models.BooleanField(default=False)
@@ -370,10 +393,10 @@ class DelegationGrant(models.Model):
     
     class Meta:
         db_table = 'delegation_grants'
-        ordering = ['contact']
+        ordering = ['delegate_to', 'delegate_doc']
     
     def __str__(self):
-        return f"Delegation to {self.contact.contact_name}"
+        return f"Delegation to {self.delegate_to.contact_name}"
 
 
 class Checkup(models.Model):

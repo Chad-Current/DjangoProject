@@ -232,7 +232,6 @@ class DeviceAdmin(admin.ModelAdmin):
 class DigitalEstateDocumentAdmin(admin.ModelAdmin):
     list_display = [
         'title',
-        'version',
         'profile',
         'is_active',
         'created_at',
@@ -245,14 +244,13 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
     ]
     search_fields = [
         'title',
-        'version',
         'profile__full_name',
         'overall_instructions',
     ]
     readonly_fields = ['profile', 'created_at', 'updated_at']
     fieldsets = (
         ('Document Information', {
-            'fields': ('profile', 'title', 'version', 'is_active')
+            'fields': ('profile', 'title', 'is_active')
         }),
         ('General Instructions', {
             'fields': ('overall_instructions',)
@@ -377,14 +375,17 @@ class ContactAdmin(admin.ModelAdmin):
 @admin.register(DelegationGrant)
 class DelegationGrantAdmin(admin.ModelAdmin):
     list_display = [
-        'contact',
         'profile',
+        'delegate_to',
+        'delegate_doc',
         'applies_on_death',
         'applies_on_incapacity',
         'applies_immediately',
         'created_at',
     ]
     list_filter = [
+        'delegate_to',
+        'delegate_doc',
         'applies_on_death',
         'applies_on_incapacity',
         'applies_immediately',

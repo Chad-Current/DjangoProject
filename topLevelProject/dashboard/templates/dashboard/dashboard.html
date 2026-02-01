@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-cards.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-charts.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-charts.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-bargraph.css' %}" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +32,10 @@
                     Welcome back {{ profile.full_name|default:user.username }}
                     {% endif %}
                 </h1>
+                <h5>{{ tier_display }}</h5>
+                {% if user.subscription_tier == 'essentials'%}
+                <p>Your have untill {{ essentials_expires }} to input data!</p>
+                {% endif %}
                 <p>Your digital estate at a glance</p>
             </div>
 
@@ -74,7 +79,7 @@
                     </div>
                     <div class="stat-content">
                         <!-- <div class="stat-value"><h3></h3></div> -->
-                        <div class="stat-label"><h4>{{ soonest.day }} Days Until Review</h4></div>
+                        <div class="stat-label"><h4>{{ first_delta.days }} Days Until Review</h4></div>
                     </div>
                 </div>
             </div>
@@ -89,79 +94,6 @@
 
             </div>
         </div>
-
-<!-- <section class="dashboard-section">
-            <h2>Analytics Overview</h2>
-            
-            <!-- Summary Stats -->
-            <!-- <div class="summary-stats">
-                <div class="summary-card">
-                    <div class="summary-value" id="total-accounts">{{ accounts_count }}</div>
-                    <div class="summary-label">Total Accounts</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value" id="total-documents">{{ documents_count }}</div>
-                    <div class="summary-label">Documents</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value" id="total-devices">{{ devices_count }}</div>
-                    <div class="summary-label">Devices</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value" id="total-contacts">{{ contacts_count }}</div>
-                    <div class="summary-label">Contacts</div>
-                </div>
-            </div> -->
-
-            <!-- Charts Grid -->
-            <!-- <div class="charts-grid"> -->
-                <!-- Account Categories Chart -->
-                <!-- <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">Accounts by Category</h2>
-                        <p class="chart-description">Financial Accounts: {{ online_financial }}</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="bar-chart" id="account-categories-chart"></div>
-                    </div>
-                </div>
-                 -->
-                <!-- Document Categories Chart -->
-                <!-- <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">Document Categories</h2>
-                        <p class="chart-description">Your important documents breakdown</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="vertical-bar-chart" id="document-categories-chart"></div>
-                    </div>
-                </div> -->
-                
-                <!-- Device Types Chart -->
-                <!-- <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">Device Types</h2>
-                        <p class="chart-description">Connected devices in your estate</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="bar-chart" id="device-types-chart"></div>
-                    </div>
-                </div> -->
-                
-                <!-- Estate Overview Chart -->
-                <!-- <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">Estate Overview</h2>
-                        <p class="chart-description">Complete digital estate summary</p>
-                    </div>
-                    <div class="chart-container">
-                        <div class="vertical-bar-chart" id="estate-overview-chart"></div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-        <!-- END ANALYTICS SECTION -->
-
 
 
         <!-- Digital Estate Section -->
@@ -187,10 +119,10 @@
                         <h3 class="card-title">Accounts</h3>
                         <p class="card-description">Accounts with access details</p>
                         <div class="card-meta">
-                            <span class="meta-item">{{ user.profile.accounts.all.count }} accounts tracked</span>
-                            {% if user.profile.accounts.last %}
+                            <!-- <span class="meta-item">{{ user.profile.accounts.all.count }} accounts tracked</span> -->
+                            <!-- {% if user.profile.accounts.last %}
                             <span class="meta-date">Last updated: {{ user.profile.accounts.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -222,17 +154,17 @@
                     <div class="card-content">
                         <h3 class="card-title">Devices</h3>
                         <p class="card-description">Device details</p>
-                        <p>Phones: {{ phones|default:0}} </p>
+                        <!-- <p>Phones: {{ phones|default:0}} </p>
                         <p>Tablets: {{ tablets|default:0 }} </p>
                         <p>Laptop: {{ laptops|default:0}} </p>
                         <p>Tablets: {{ desktops|default:0 }} </p>
                         <p>SmartWatchs: {{ smartwatchs|default:0 }} </p>
-                        <p>Other Devices: {{ others|default:0 }} </p>
+                        <p>Other Devices: {{ others|default:0 }} </p> -->
                         <div class="card-meta">
-                            <span class="meta-item">{{ devices_count }} devices tracked</span>
-                            {% if user.profile.devices.last %}
+                            <!-- <span class="meta-item">{{ devices_count }} devices tracked</span> -->
+                            <!-- {% if user.profile.devices.last %}
                             <span class="meta-date">Last updated: {{ user.profile.devices.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -246,7 +178,7 @@
                     </div>
                 </div>
 
-                <!-- Emergency Contacts Card -->
+                <!-- Contacts Card -->
                 <div class="estate-card" data-category="emergency">
                     <div class="card-icon-wrapper">
                         <img src="/static/accounts/images/Emergency--Streamline-Plump.svg" alt="" class="card-icon">
@@ -263,12 +195,12 @@
                     
                     <div class="card-content">
                         <h3 class="card-title">Contacts</h3>
-                        <p class="card-description">Contact + Delegation</p>
+                        <p class="card-description">Contacts</p>
                         <div class="card-meta">
-                            <span class="meta-item">{{ emergency_contacts_count }} emergency contacts</span>
-                            {% if user.profile.emergency_contacts.last %}
+                            <!-- <span class="meta-item">{{ emergency_contacts_count }} emergency contacts</span> -->
+                            <!-- {% if user.profile.emergency_contacts.last %}
                             <span class="meta-date">Last updated: {{ user.profile.emergency_contacts.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -301,10 +233,10 @@
                         <h3 class="card-title">Estate Documents</h3>
                         <p class="card-description">Your comprehensive digital estate plan</p>
                         <div class="card-meta">
-                            <span class="meta-item">{{ estate_count }} estate documents</span>
-                            {% if user.profile.estate_documents.last %}
+                            <!-- <span class="meta-item">{{ estate_count }} estate documents</span> -->
+                            <!-- {% if user.profile.estate_documents.last %}
                             <span class="meta-date">Last updated: {{ user.profile.estate_documents.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -339,10 +271,10 @@
                         <h3 class="card-title">Important Documents</h3>
                         <p class="card-description">Your comprehensive digital will and estate plan</p>
                         <div class="card-meta">
-                            <span class="meta-item">{{ documents_count }} documents</span>
-                            {% if user.profile.documents.last.updated_at %}
+                            <!-- <span class="meta-item">{{ documents_count }} documents</span> -->
+                            <!-- {% if user.profile.documents.last.updated_at %}
                             <span class="meta-date">{Last updated: { user.profile.documents.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -397,7 +329,7 @@
                     </div>
                     
                     <div class="card-status">
-                        {% if not user.profile.importantdocument.all.count %}
+                        {% if not user.profile.delegate.all.count %}
                         <span class="status-badge status-attention">Needs Review</span>
                         {% else %}
                         <span class="status-badge status-complete">Reviewed</span>
@@ -405,15 +337,15 @@
                     </div>
                     
                     <div class="card-content">
-                        <h3 class="card-title">What Matters</h3>
+                        <h3 class="card-title">Delegations (Estate Documents)</h3>
                         <p class="card-description">Priority matrix for critical accounts</p>
                         <div class="card-meta">
-                            <span class="meta-item">Account priorities</span>
+                            <span class="meta-item">Delegation priorities</span>
                         </div>
                     </div>
                     
                     <div class="card-action">
-                        <a href="{% url 'dashboard:importantdocument_list' %}" class="btn-card">
+                        <a href="{% url 'dashboard:delegate_list' %}" class="btn-card">
                             <span>View Details</span>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                 <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -539,6 +471,7 @@
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="{% static 'dashboard/js/progress.js' %}"></script>
     <script src="{% static 'dashboard/js/dashboard-charts.js' %}"></script>
+    <script src="{% static 'dashboard/js/bargraph.js' %}"></script>
     <script>
         // Add staggered animation on page load
         document.addEventListener('DOMContentLoaded', function() {
