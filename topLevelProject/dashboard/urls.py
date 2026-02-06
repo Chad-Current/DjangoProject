@@ -64,7 +64,7 @@ urlpatterns = [
     path('delegations/create/', views.DelegationGrantCreateView.as_view(), name='delegate_create'),
     path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegate_update'),
     path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegate_delete'),
-    
+    path('delegations/<int:pk>/', views.DelegationGrantDetailView.as_view(), name='delegate_detail'),
     
     # Checkup URLs
     path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),

@@ -1,0 +1,322 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/listing.css' %}" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Delegation Grant Detail - {{ grant.delegate_to.contact_name }}</title>
+</head>
+
+<body>
+    {% include "baseapp/navbar.html" %}
+    {% include "dashboard/navblocks.html" %}
+
+    <div class="main">
+        <div class="container mt-4">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>Delegation Grant Details</h2>
+                    <p class="text-muted mb-0">Authority granted to {{ grant.delegate_to.contact_name }}</p>
+                </div>
+                <div>
+                    {% if can_modify %}
+                    <a href="{% url 'dashboard:delegate_update' grant.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'dashboard:delegate_delete' grant.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'dashboard:delegate_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column: Contact & Delegation Details -->
+                <div class="col-lg-5 col-md-12">
+                    <!-- Contact Information Card -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-user"></i> Delegated To</h5>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">{{ grant.delegate_to.contact_name }}</h5>
+                            
+                            <div class="mb-3">
+                                <strong><i class="fas fa-users"></i> Relationship:</strong> 
+                                <span class="text-muted">{{ grant.delegate_to.get_contact_relation_display }}</span>
+                            </div>
+                            
+                            {% if grant.delegate_to.email %}
+                            <div class="mb-2">
+                                <strong><i class="fas fa-envelope"></i> Email:</strong> 
+                                <a href="mailto:{{ grant.delegate_to.email }}">{{ grant.delegate_to.email }}</a>
+                            </div>
+                            {% endif %}
+                            
+                            {% if grant.delegate_to.phone %}
+                            <div class="mb-2">
+                                <strong><i class="fas fa-phone"></i> Phone:</strong> 
+                                <a href="tel:{{ grant.delegate_to.phone }}">{{ grant.delegate_to.phone }}</a>
+                            </div>
+                            {% endif %}
+
+                            {% if grant.delegate_to.address %}
+                            <div class="mb-3">
+                                <strong><i class="fas fa-map-marker-alt"></i> Address:</strong>
+                                <div class="text-muted mt-1">{{ grant.delegate_to.address|linebreaks }}</div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Contact Roles -->
+                            {% if grant.delegate_to.is_emergency_contact or grant.delegate_to.is_digital_executor or grant.delegate_to.is_caregiver %}
+                            <div class="mt-3 pt-3 border-top">
+                                <strong class="d-block mb-2"><i class="fas fa-tag"></i> Roles:</strong>
+                                {% if grant.delegate_to.is_emergency_contact %}
+                                <span class="badge bg-danger me-1 mb-1">Emergency Contact</span>
+                                {% endif %}
+                                {% if grant.delegate_to.is_digital_executor %}
+                                <span class="badge bg-success me-1 mb-1">Digital Executor</span>
+                                {% endif %}
+                                {% if grant.delegate_to.is_caregiver %}
+                                <span class="badge bg-info me-1 mb-1">Caregiver</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- When Delegation Applies Card -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> When This Delegation Applies</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="fas {% if applies_on_death %}fa-check-circle text-success{% else %}fa-times-circle text-muted{% endif %} me-2"></i>
+                                    <strong>Upon Death</strong>
+                                    {% if applies_on_death %}
+                                    <span class="badge bg-success ms-2">Active</span>
+                                    {% endif %}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas {% if applies_on_incapacity %}fa-check-circle text-success{% else %}fa-times-circle text-muted{% endif %} me-2"></i>
+                                    <strong>Upon Incapacity</strong>
+                                    {% if applies_on_incapacity %}
+                                    <span class="badge bg-success ms-2">Active</span>
+                                    {% endif %}
+                                </li>
+                                <li class="mb-0">
+                                    <i class="fas {% if applies_immediately %}fa-check-circle text-success{% else %}fa-times-circle text-muted{% endif %} me-2"></i>
+                                    <strong>Immediately (Active Now)</strong>
+                                    {% if applies_immediately %}
+                                    <span class="badge bg-success ms-2">Active</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Instructions Card -->
+                    {% if grant.notes_for_contact %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="fas fa-sticky-note"></i> Instructions for Contact</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-muted">{{ grant.notes_for_contact|linebreaks }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right Column: Delegated Documents -->
+                <div class="col-lg-7 col-md-12">
+                    <!-- Delegated Estate Documents Card -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-scroll"></i> Delegated Estate Documents
+                            </h5>
+                            <span class="badge bg-light text-dark">{{ estate_documents.count }}</span>
+                        </div>
+                        <div class="card-body">
+                            {% if estate_documents %}
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-info-circle"></i> 
+                                These estate documents have been specifically delegated to {{ grant.delegate_to.contact_name }}:
+                            </p>
+                            <div class="list-group">
+                                {% for doc in estate_documents %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <i class="fas fa-file-contract text-success"></i> 
+                                                {{ doc.title|default:"Untitled Document" }}
+                                            </h6>
+                                            <p class="mb-2 text-muted small">
+                                                <strong>Category:</strong> {{ doc.get_estate_document_display }}
+                                            </p>
+                                            {% if doc.overall_instructions %}
+                                            <div class="alert alert-light py-2 px-3 mb-2">
+                                                <strong class="small">Instructions:</strong>
+                                                <p class="mb-0 small">{{ doc.overall_instructions }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="ms-3">
+                                            {% if doc.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 pt-2 border-top">
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar"></i> Last Updated: {{ doc.updated_at|date:"M d, Y" }}
+                                        </small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning mb-0">
+                                <i class="fas fa-exclamation-triangle"></i> 
+                                No estate documents have been delegated in this grant.
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Delegated Important Documents Card -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-alt"></i> Delegated Important Documents
+                            </h5>
+                            <span class="badge bg-light text-dark">{{ important_documents.count }}</span>
+                        </div>
+                        <div class="card-body">
+                            {% if important_documents %}
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-info-circle"></i> 
+                                These important documents have been specifically delegated to {{ grant.delegate_to.contact_name }}:
+                            </p>
+                            <div class="list-group">
+                                {% for doc in important_documents %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <i class="fas fa-file-alt text-warning"></i> 
+                                                {{ doc.title }}
+                                            </h6>
+                                            <p class="mb-2 text-muted small">
+                                                <strong>Category:</strong> {{ doc.get_document_category_display }}
+                                            </p>
+                                            {% if doc.description %}
+                                            <p class="mb-2 small text-muted">{{ doc.description }}</p>
+                                            {% endif %}
+                                            
+                                            <!-- Document Locations -->
+                                            {% if doc.physical_location or doc.digital_location or doc.file %}
+                                            <div class="alert alert-light py-2 px-3 mb-2">
+                                                <strong class="small d-block mb-1">Locations:</strong>
+                                                {% if doc.physical_location %}
+                                                <div class="small mb-1">
+                                                    <i class="fas fa-map-marker-alt text-primary"></i> 
+                                                    <strong>Physical:</strong> {{ doc.physical_location }}
+                                                </div>
+                                                {% endif %}
+                                                {% if doc.digital_location %}
+                                                <div class="small mb-1">
+                                                    <i class="fas fa-cloud text-info"></i> 
+                                                    <strong>Digital:</strong> {{ doc.digital_location }}
+                                                </div>
+                                                {% endif %}
+                                                {% if doc.file %}
+                                                <div class="small mb-0">
+                                                    <i class="fas fa-file-download text-success"></i> 
+                                                    <strong>File:</strong> 
+                                                    <a href="{{ doc.file.url }}" target="_blank">Download</a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="ms-3">
+                                            {% if doc.requires_legal_review %}
+                                            <span class="badge bg-danger" title="Requires Legal Review">
+                                                <i class="fas fa-exclamation-triangle"></i> Legal Review
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 pt-2 border-top">
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar"></i> Last Updated: {{ doc.updated_at|date:"M d, Y" }}
+                                        </small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle"></i> 
+                                No important documents have been delegated in this grant. This delegation only covers estate documents.
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Additional Documents Associated with Contact (Not Delegated) -->
+
+                </div>
+            </div>
+
+            <!-- Metadata Footer -->
+            <div class="card shadow-sm">
+                <div class="card-body bg-light">
+                    <div class="row text-muted small">
+                        <div class="col-md-6">
+                            <i class="far fa-calendar-plus"></i> 
+                            <strong>Created:</strong> {{ grant.created_at|date:"F d, Y g:i A" }}
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <i class="far fa-calendar-check"></i> 
+                            <strong>Last Updated:</strong> {{ grant.updated_at|date:"F d, Y g:i A" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "baseapp/footer.html" %}
+
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

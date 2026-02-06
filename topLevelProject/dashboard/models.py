@@ -1,5 +1,5 @@
 # ============================================================================
-# PART 9: DASHBOARD MODELS - CORRECTED
+# PART 9: DASHBOARD MODELS - WITH M2M DELEGATE_DOC
 # ============================================================================
 
 # ============================================================================
@@ -55,35 +55,35 @@ class Account(models.Model):
     Individual digital accounts (social media, email, banking, etc.)
     """
     ACCOUNT_CATEGORIES = [
-        ('email', 'Email Account'),
-        ('social_media', 'Social Media Account'),
-        ('cloud_storage', 'Cloud Storage Account'),
-        ('streaming_media', 'Streaming Media Account'),
-        ('ecommerce_marketplace', 'Ecommerce Marketplace Account'),
-        ('online_banking', 'Online Banking Account'),
-        ('neobank_digital_bank', 'Neobank/Digital Bank Account'),
-        ('brokerage_investment', 'Brokerage/Investment Account'),
-        ('cryptocurrency_exchange', 'Cryptocurrency Exchange Account'),
-        ('payment_wallet', 'Payment Wallet Account'),
-        ('payment_processor', 'Payment Processor Account'),
-        ('app_store', 'App Store Account'),
-        ('gaming_platform', 'Gaming Platform Account'),
-        ('forum_community', 'Forum/Community Account'),
-        ('education_elearning', 'Education/Elearning Account'),
-        ('subscription_saas', 'Subscription Account'),
-        ('government_portal', 'Government Portal Account'),
-        ('utilities_telecom_portal', 'Utilities/Telecom Portal Account'),
-        ('health_portal', 'Health Portal Account'),
-        ('smart_home_iot', 'Smart Home/IoT Account'),
-        ('travel_booking', 'Travel Booking Account'),
-        ('password_manager', 'Password Manager Account'),
-        ('not_listed', 'Not Listed'),
+        ('Email Account', 'Email Account'),
+        ('Social Media Account', 'Social Media Account'),
+        ('Cloud Storage Account', 'Cloud Storage Account'),
+        ('Streaming Media Account', 'Streaming Media Account'),
+        ('Ecommerce Marketplace Account', 'Ecommerce Marketplace Account'),
+        ('Online Banking Account', 'Online Banking Account'),
+        ('Neobank/Digital Bank Account', 'Neobank/Digital Bank Account'),
+        ('Brokerage/Investment Account', 'Brokerage/Investment Account'),
+        ('Cryptocurrency Exchange Account', 'Cryptocurrency Exchange Account'),
+        ('Payment Wallet Account', 'Payment Wallet Account'),
+        ('Payment Processor Account', 'Payment Processor Account'),
+        ('App Store Account', 'App Store Account'),
+        ('Gaming Platform Account', 'Gaming Platform Account'),
+        ('Forum/Community Account', 'Forum/Community Account'),
+        ('Education/Elearning Account', 'Education/Elearning Account'),
+        ('Subscription Account', 'Subscription Account'),
+        ('Government Portal Account', 'Government Portal Account'),
+        ('Utilities/Telecom Portal Account', 'Utilities/Telecom Portal Account'),
+        ('Health Portal Account', 'Health Portal Account'),
+        ('Smart Home/IoT Account', 'Smart Home/IoT Account'),
+        ('Travel Booking Account', 'Travel Booking Account'),
+        ('Password Manager Account', 'Password Manager Account'),
+        ('Not Listed', 'Not Listed'),
     ]
     INSTRUCTION_CHOICES = [
-        ('keep', 'Keep Active'),
-        ('close', 'Close Account'),
-        ('memorialize', 'Memorialize'),
-        ('other', 'Other (See Notes)'),
+        ('Keep Active', 'Keep Active'),
+        ('Close Account', 'Close Account'),
+        ('Memorialize', 'Memorialize'),
+        ('Other (See Notes)', 'Other (See Notes)'),
     ]
     
     profile = models.ForeignKey(
@@ -186,12 +186,12 @@ class Device(models.Model):
     Physical devices (phones, computers, tablets, etc.)
     """
     DEVICE_TYPE_CHOICES = [
-        ('phone', 'Phone'),
-        ('tablet', 'Tablet'),
-        ('laptop', 'Laptop'),
-        ('desktop', 'Desktop'),
-        ('smartwatch', 'Smart Watch'),
-        ('other', 'Other'),
+        ('Phone', 'Phone'),
+        ('Tablet', 'Tablet'),
+        ('Laptop', 'Laptop'),
+        ('Desktop', 'Desktop'),
+        ('Smart Watch', 'Smart Watch'),
+        ('Other', 'Other'),
     ]
     
     profile = models.ForeignKey(
@@ -236,55 +236,6 @@ class Device(models.Model):
         return f"{self.name} ({self.device_type})"
 
 
-class DigitalEstateDocument(models.Model):
-    """
-    The main digital estate planning document
-    """
-    PERSONAL_ESTATE_DOCUMENTS = [
-    ("Last Will and Testament", "Directs distribution of assets, names executor, may name guardians for minor children."),
-    ("Revocable Living Trust", "Holds property during life and distributes it after death, often avoiding probate."),
-    ("Financial Power of Attorney", "Authorizes someone to manage finances if you are incapacitated."),
-    ("Health Care Power of Attorney", "Authorizes someone to make medical decisions if you cannot."),
-    ("Living Will / Advance Directive", "States your wishes for end-of-life or critical medical care."),
-    ("Beneficiary Designations", "Forms for life insurance, retirement accounts, etc., naming who receives benefits."),
-    ("HIPAA Authorization", "Allows named individuals to access your medical information."),
-    ("Letter of Instruction", "Informal document with guidance for heirs, location of assets, and personal wishes."),
-    ("Insurance Policies", "Life, disability, and other policies relevant to your estate and survivors."),
-    ("Property Deeds and Titles", "Deeds, titles, and related ownership documents for real estate and vehicles."),
-]
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='estate_documents',
-        editable=False
-    )
-    estate_document = models.CharField(
-        max_length=200,
-        choices=PERSONAL_ESTATE_DOCUMENTS,
-        default='important_personal_documents'
-    )
-    title = models.CharField(max_length=200, blank=True)
-    is_active = models.BooleanField(
-        default=True,
-        help_text="Is this the current active document?"
-    )    
-    overall_instructions = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text="General instructions for family"
-    )
-   
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'digital_estate_documents'
-        ordering = ['-is_active', '-created_at']
-    
-    def __str__(self):
-        return f"{self.title}"
-
-
 class Contact(models.Model):
     """
     Notes for specific contacts
@@ -313,7 +264,10 @@ class Contact(models.Model):
         ('Other', 'Other'),
     ]
 
-    contact_name = models.CharField(max_length=200)
+    contact_name = models.CharField(
+        max_length=200,
+        default="Enter name"
+    )
     body = models.TextField(help_text="Emergency message content")
     contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
     email = models.EmailField(blank=True)
@@ -331,6 +285,69 @@ class Contact(models.Model):
     
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
+
+
+class DigitalEstateDocument(models.Model):
+    """
+    The main digital estate planning document
+    """
+    PERSONAL_ESTATE_DOCUMENTS = [
+        ("Healthcare Documents", [
+            ("Advance Directive / Living Will", "Advance Directive / Living Will — States your wishes for end-of-life or critical medical care."),
+            ("Durable Power of Attorney for Healthcare", "Durable Power of Attorney for Healthcare — Authorizes someone to make medical decisions if you cannot."),
+            ("Living Will / Advance Directive", "Living Will / Advance Directive — States your wishes for end-of-life or critical medical care."),
+            ("HIPAA Authorizations", "HIPAA Authorizations — Allows named individuals to access your medical information."),
+            ("Organ Donation Preferences", "Organ Donation Preferences — Documents or forms stating your organ donation wishes."),
+        ]),
+        ("Financial and Legal Documents", [
+            ("Durable Power of Attorney for Financial Matters", "Durable Power of Attorney for Financial Matters — Authorizes someone to manage finances if you are incapacitated."),
+            ("Beneficiary Designations", "Beneficiary Designations — Forms for life insurance, retirement accounts, etc., naming who receives benefits."),
+            ("Guardianship Designations", "Guardianship Designations — Documents naming guardians for minor children or dependents."),
+            ("Trust Documents", "Trust Documents — Revocable or irrevocable trust agreements holding and distributing property."),
+        ]),
+        ("Estate Administration and Final Instructions", [
+            ("Executor / Personal Representative Info", "Executor / Personal Representative Info — Information about the person(s) designated to administer your estate."),
+            ("Letter of Instruction", "Letter of Instruction — Provides guidance for heirs, location of assets, and personal wishes."),
+            ("Will and Codicils", "Will and Codicils — Last Will and Testament and any amendments (codicils)."),
+        ]),
+    ]
+    
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='estate_documents',
+        editable=False
+    )
+    
+    # ManyToMany relationship with Contact through DelegationGrant
+    # This is established via the reverse relationship from DelegationGrant
+    
+    estate_document = models.CharField(
+        max_length=200,
+        choices=PERSONAL_ESTATE_DOCUMENTS,
+        default='important_personal_documents',
+    )
+    
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Is this the current active document?"
+    )    
+    
+    overall_instructions = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="General instructions for family"
+    )
+   
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'digital_estate_documents'
+        ordering = ['-is_active', '-created_at']
+    
+    def __str__(self):
+        return f"{self.estate_document}"
 
 
 class FamilyNeedsToKnowSection(models.Model):
@@ -354,49 +371,9 @@ class FamilyNeedsToKnowSection(models.Model):
     class Meta:
         db_table = 'family_needs_to_know_sections'
         ordering = ['relation', 'content']
+        
     def __str__(self):
         return f"{self.relation} - {self.content}"
-    
-
-class DelegationGrant(models.Model):
-    """
-    Grants of authority to contacts for specific scopes
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='delegation_grants',
-        editable=False
-    )
-    delegate_to = models.ForeignKey(
-        Contact,
-        on_delete=models.CASCADE,
-        related_name='delegations_received',
-    )
-
-    delegate_doc = models.ForeignKey(
-        DigitalEstateDocument, 
-        on_delete=models.CASCADE,
-        related_name='delegation_estate_doc'
-    )
-
-    applies_on_death = models.BooleanField(default=False)
-    applies_on_incapacity = models.BooleanField(default=False)
-    applies_immediately = models.BooleanField(default=False)
-    notes_for_contact = models.TextField(
-        blank=True,
-        help_text="Instructions for the contact"
-    )
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'delegation_grants'
-        ordering = ['delegate_to', 'delegate_doc']
-    
-    def __str__(self):
-        return f"Delegation to {self.delegate_to.contact_name}"
 
 
 class Checkup(models.Model):
@@ -456,17 +433,17 @@ class CareRelationship(models.Model):
     Relationships with caregivers or those providing care
     """
     RELATIONSHIP_CHOICES = [
-        ('caregiver', 'Caregiver'),
-        ('healthcare-proxy', 'Healthcare Proxy'),
-        ('power-of-attorney', 'Power of Attorney'),
-        ('trustee', 'Trustee'),
-        ('other', 'Other'),
+        ('Caregiver', 'Caregiver'),
+        ('Healthcare-proxy', 'Healthcare Proxy'),
+        ('Power-of-attorney', 'Power of Attorney'),
+        ('Trustee', 'Trustee'),
+        ('Other', 'Other'),
     ]
     
     ROLE_CHOICES = [
-        ('view-only', 'View Only'),
-        ('editor', 'Editor'),
-        ('admin', 'Administrator'),
+        ('View Only', 'View Only'),
+        ('Editor', 'Editor'),
+        ('Administrator', 'Administrator'),
     ]
     
     profile = models.ForeignKey(
@@ -512,11 +489,11 @@ class RecoveryRequest(models.Model):
     Requests to recover accounts (for deceased or incapacitated users)
     """
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('in-progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('denied', 'Denied'),
-        ('cancelled', 'Cancelled'),
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed'),
+        ('Denied', 'Denied'),
+        ('Cancelled', 'Cancelled'),
     ]
     
     profile = models.ForeignKey(
@@ -572,69 +549,53 @@ class ImportantDocument(models.Model):
         related_name='important_documents',
         editable=False
     )
+    
+    # ManyToMany relationship with Contact through DelegationGrant
+    # This is established via the reverse relationship from DelegationGrant
+
     DOCUMENT_CATEGORY_CHOICES = [
-        ("important_personal_documents", "Important Personal Documents"),
-        ("personal_identification", "Personal Identification"),
-        ("dependents_and_care_needs", "Dependents and Care Needs"),
-        ("primary_physician_information", "Primary Physician Information"),
-        ("medical_specialists", "Medical Specialists"),
-        ("current_medications", "Current Medications"),
-        ("medical_history", "Medical History"),
-        ("allergies_and_sensitivities", "Allergies and Sensitivities"),
-        ("health_insurance_policies", "Health Insurance Policies"),
-        ("medicare_medicaid_information", "Medicare / Medicaid Information"),
-        ("advance_directive_living_will", "Advance Directive / Living Will"),
-        ("durable_power_of_attorney_healthcare", "Durable Power of Attorney for Healthcare"),
-        ("hipaa_authorizations", "HIPAA Authorizations"),
-        ("primary_bank_accounts", "Primary Bank Accounts"),
-        ("investment_accounts", "Investment Accounts"),
-        ("retirement_accounts", "Retirement Accounts"),
-        ("pensions_and_annuities", "Pensions and Annuities"),
-        ("life_insurance_policies", "Life Insurance Policies"),
-        ("disability_insurance_policies", "Disability Insurance Policies"),
-        ("long_term_care_insurance", "Long-Term Care Insurance"),
-        ("social_security_information", "Social Security Information"),
-        ("income_sources", "Income Sources"),
-        ("budget_and_recurring_bills", "Budget and Recurring Bills"),
-        ("real_estate_documents", "Real Estate Documents"),
-        ("vehicle_titles_and_registration", "Vehicle Titles and Registration"),
-        ("personal_property_and_valuables", "Personal Property and Valuables"),
-        ("safe_deposit_box_information", "Safe Deposit Box Information"),
-        ("business_ownership_documents", "Business Ownership Documents"),
-        ("will_and_codicils", "Will and Codicils"),
-        ("trust_documents", "Trust Documents"),
-        ("durable_power_of_attorney_financial", "Durable Power of Attorney for Financial Matters"),
-        ("guardianship_designations", "Guardianship Designations"),
-        ("executor_personal_representative_info", "Executor / Personal Representative Info"),
-        ("beneficiary_designations", "Beneficiary Designations"),
-        ("tax_returns_and_records", "Tax Returns and Records"),
-        ("debts_and_liabilities", "Debts and Liabilities"),
-        ("loans_and_mortgages", "Loans and Mortgages"),
-        ("credit_card_accounts", "Credit Card Accounts"),
-        ("online_accounts_and_passwords", "Online Accounts and Passwords"),
-        ("email_accounts", "Email Accounts"),
-        ("social_media_accounts", "Social Media Accounts"),
-        ("cloud_storage_accounts", "Cloud Storage Accounts"),
-        ("online_banking_and_finance_logins", "Online Banking and Finance Logins"),
-        ("digital_subscriptions_and_services", "Digital Subscriptions and Services"),
-        ("password_manager_information", "Password Manager Information"),
-        ("funeral_and_burial_wishes", "Funeral and Burial Wishes"),
-        ("organ_donation_preferences", "Organ Donation Preferences"),
-        ("memorial_instructions", "Memorial Instructions"),
-        ("care_preferences_at_home", "Care Preferences at Home"),
-        ("assisted_living_or_nursing_home_info", "Assisted Living or Nursing Home Info"),
-        ("in_home_care_providers", "In-Home Care Providers"),
-        ("pet_care_and_ownership", "Pet Care and Ownership"),
-        ("membership_and_affiliations", "Membership and Affiliations"),
-        ("charitable_giving_plans", "Charitable Giving Plans"),
-        ("notes_and_special_instructions", "Notes and Special Instructions"),
+        # 1. Personal Identification & Legal Records
+        ("Personal Identification", "Driver’s license, passport, and other official IDs."),
+        ("Important Personal Documents", "Birth certificate, marriage certificate, and similar records."),
+        ("Social Security Information", "Social Security number and benefit details."),
+        ("Property Deeds and Titles", "Ownership records for homes, vehicles, or land."),
+        ("Safe Deposit Box Information", "Location, access instructions, and contents list."),
+
+        # 2. Health & Care Information
+        ("Medical Summary", "Includes allergies, medications, medical history, and specialists."),
+        ("Care Preferences and Providers", "In-home care, nursing home info, and care instructions."),
+        ("Health Insurance and Benefits", "Insurance policy details, Medicare/Medicaid info."),
+        ("Dependents and Pet Care", "Dependent care needs and pet care instructions."),
+        ("Funeral and Memorial Wishes", "Funeral, burial, or memorial preferences."),
+
+        # 3. Financial Accounts & Assets
+        ("Bank and Cash Accounts", "Checking, savings, and credit card details."),
+        ("Loans and Liabilities", "Debts, mortgages, and other financial obligations."),
+        ("Investments and Retirement", "Investment accounts, pensions, and annuities."),
+        ("Income and Budgets", "Income sources, monthly bills, and recurring expenses."),
+        ("Insurance Policies", "Life, disability, and long-term care policies."),
+        ("Tax and Financial Records", "Tax returns, property records, and valuation documents."),
+
+        # 4. Business & Legal Interests
+        ("Business Ownership Documents", "Operating agreements, partnership and ownership records."),
+        ("Charitable Giving and Memberships", "Charitable plans, affiliations, and organizations."),
+
+        # 5. Digital & Online Accounts
+        ("Online Accounts and Passwords", "Online services, financial logins, and subscriptions."),
+        ("Cloud and Email Accounts", "Cloud storage, email accounts, and access credentials."),
+        ("Password Management", "Password manager info and recovery instructions."),
+        ("Social Media Accounts", "Profiles and legacy social media preferences."),
+
+        # 6. Personal Property & Notes
+        ("Personal Property and Valuables", "Inventory of personal valuables."),
+        ("Notes and Special Instructions", "Additional notes or specific personal guidance."),
     ]
-    title = models.CharField(max_length=200)
-    description = models.CharField(max_length=200,blank=True)
+    
+    description = models.CharField(max_length=200, blank=True)
     document_category = models.CharField(
         max_length=50,
         choices=DOCUMENT_CATEGORY_CHOICES,
-        default='important_personal_documents'
+        default='Important Personal Documents'
     )
     physical_location = models.CharField(
         max_length=200,
@@ -662,7 +623,83 @@ class ImportantDocument(models.Model):
     
     class Meta:
         db_table = 'important_documents'
-        ordering = ['document_category', 'title']
+        ordering = ['document_category']
     
     def __str__(self):
-        return self.title
+        return self.document_category
+
+
+class DelegationGrant(models.Model):
+    """
+    Grants of authority to contacts for specific scopes.
+    This is the through model that connects Contact with DigitalEstateDocument and ImportantDocument.
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='delegation_grants',
+        editable=False
+    )
+
+    delegate_to = models.ForeignKey(
+        Contact,
+        on_delete=models.CASCADE,
+        related_name='delegation_grants',
+        help_text="Contact receiving this delegation"
+    )
+
+    # ManyToMany relationships
+    delegate_estate_documents = models.ManyToManyField(
+        DigitalEstateDocument,
+        related_name='delegation_grants',
+        blank=True,
+        help_text="Estate documents this delegation covers"
+    )
+
+    delegate_important_documents = models.ManyToManyField(
+        ImportantDocument,
+        related_name='delegation_grants',
+        blank=True,
+        help_text="Important documents this delegation covers"
+    )
+    
+    DELEGATION_SCOPE_CHOICES = [
+        ("Estate and Property Oversight", "Estate and Property Oversight"),
+        ("Family Affairs", "Family Affairs"),
+        ("Financial Authority", "Financial Authority"),
+        ("Healthcare Decision-Making", "Healthcare Decision-Making"),
+        ("Personal Items", "Personal Items"),
+    ]
+    
+    delegation_category = models.CharField(
+        max_length=200,
+        choices=DELEGATION_SCOPE_CHOICES,
+        default='MEDICAL_TREATMENT_DECISIONS'
+    )
+    
+    applies_on_death = models.BooleanField(default=False)
+    applies_on_incapacity = models.BooleanField(default=False)
+    applies_immediately = models.BooleanField(default=False)
+    
+    notes_for_contact = models.TextField(
+        blank=True,
+        help_text="Instructions for the contact"
+    )
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'delegation_grants'
+        ordering = ['delegate_to', '-created_at']
+    
+    def __str__(self):
+        return f"Delegation to {self.delegate_to.contact_name}"
+    
+    def get_estate_documents_count(self):
+        """Return the count of delegated estate documents"""
+        return self.delegate_estate_documents.count()
+    
+    def get_important_documents_count(self):
+        """Return the count of delegated important documents"""
+        return self.delegate_important_documents.count()

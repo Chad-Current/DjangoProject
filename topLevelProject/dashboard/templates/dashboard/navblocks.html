@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard-grid.css' %}" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap"
+        rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
@@ -23,121 +25,130 @@
             <p class="dashboard-subtitle">Access your important information</p>
         </div> -->
 
-        <nav class="dashboard-nav mt-4" role="navigation" aria-label="Main dashboard navigation">
-            <!-- Accounts Card -->
-            <a href="{% url 'dashboard:account_list' %}" class="nav-card" data-category="accounts">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Script--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Accounts</h2>
-                    <!-- <p class="card-description">Manage your accounts</p> -->
-                </div>
-             </a>
+    <nav class="dashboard-nav mt-4" role="navigation" aria-label="Main dashboard navigation">
+        <!-- Accounts Card -->
+        <a href="{% url 'dashboard:account_list' %}" class="nav-card" data-category="accounts">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Script--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Accounts</h2>
+                <!-- <p class="card-description">Manage your accounts</p> -->
+            </div>
+        </a>
 
-            <!-- Devices Card -->
-            <a href="{% url 'dashboard:device_list' %}" class="nav-card" data-category="devices">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Computer--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Devices</h2>
-                    <!-- <p class="card-description">Your connected devices</p> -->
-                </div>
-            </a>
+        <!-- Devices Card -->
+        <a href="{% url 'dashboard:device_list' %}" class="nav-card" data-category="devices">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Computer--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Devices</h2>
+                <!-- <p class="card-description">Your connected devices</p> -->
+            </div>
+        </a>
 
-            <!-- Emergency Contacts Card -->
-            <a href="{% url 'dashboard:contact_list' %}" class="nav-card" data-category="emergency">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Emergency--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Contacts</h2>
-                    <!-- <p class="card-description">Quick access contacts</p> -->
-                </div>
-            </a>
+        <!-- Emergency Contacts Card -->
+        <a href="{% url 'dashboard:contact_list' %}" class="nav-card" data-category="emergency">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Emergency--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Contacts</h2>
+                <!-- <p class="card-description">Quick access contacts</p> -->
+            </div>
+        </a>
 
-            <!-- Important Documents Card -->
-            <a href="{% url 'dashboard:importantdocument_list' %}" class="nav-card" data-category="documents">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Family--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Important Documents</h2>
-                    <!-- <p class="card-description">Secure document storage</p> -->
-                </div>
-            </a>
+        <!-- Digital Estate Card -->
+        <a href="{% url 'dashboard:estate_list' %}" class="nav-card" data-category="family">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Estate Documents</h2>
+                <!-- <p class="card-description">Family information hub</p> -->
+            </div>
+        </a>
+
+        <!-- Important Documents Card -->
+        <a href="{% url 'dashboard:importantdocument_list' %}" class="nav-card" data-category="documents">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Family--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Important Documents</h2>
+                <!-- <p class="card-description">Secure document storage</p> -->
+            </div>
+        </a>
 
 
-            <!-- Digital Estate Card -->
-            <a href="{% url 'dashboard:estate_list' %}" class="nav-card" data-category="family">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Estate Documents</h2>
-                    <!-- <p class="card-description">Family information hub</p> -->
-                </div>
-            </a>
+        <!-- Family Needs Card -->
+        <a href="{% url 'dashboard:familyawareness_list' %}" class="nav-card" data-category="family">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Family--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Family Needs</h2>
+                <!-- <p class="card-description">Family information hub</p> -->
+            </div>
+        </a>
 
-            <!-- Family Needs Card -->
-            <a href="{% url 'dashboard:familyawareness_list' %}" class="nav-card" data-category="family">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Family--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Family Needs</h2>
-                    <!-- <p class="card-description">Family information hub</p> -->
-                </div>
-            </a>
+        <!-- Important Matters Card -->
+        <a href="{% url 'dashboard:delegate_list' %}" class="nav-card" data-category="matters">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Delegations</h2>
+                <!-- <p class="card-description">Critical items tracker</p> -->
+            </div>
+        </a>
 
-            <!-- Important Matters Card -->
-            <a href="{% url 'dashboard:delegate_list' %}" class="nav-card" data-category="matters">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Delegations</h2>
-                    <!-- <p class="card-description">Critical items tracker</p> -->
-                </div>
-            </a>
+        <!-- Quarterly Review Card -->
+        <a href="{% url 'dashboard:account_list' %}" class="nav-card" data-category="quarterly">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Quarterly Review</h2>
+                <!-- <p class="card-description">Review your progress</p> -->
+            </div>
+        </a>
 
-            <!-- Quarterly Review Card -->
-            <a href="{% url 'dashboard:account_list' %}" class="nav-card" data-category="quarterly">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Calendar-Mark--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Quarterly Review</h2>
-                    <!-- <p class="card-description">Review your progress</p> -->
-                </div>
-            </a>
-
-            <!-- Annual Review Card -->
-            <a href="{% url 'dashboard:accountrelevancereview_list' %}" class="nav-card" data-category="annual">
-                <div class="card-icon-wrapper">
-                    <img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg" alt="" class="card-icon" aria-hidden="true">
-                    <!-- <div class="icon-glow"></div> -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">Annual Review</h2>
-                    <!-- <p class="card-description">Yearly assessment</p> -->
-                </div>
-            </a>
-        </nav>
+        <!-- Annual Review Card -->
+        <a href="{% url 'dashboard:accountrelevancereview_list' %}" class="nav-card" data-category="annual">
+            <div class="card-icon-wrapper">
+                <img src="/static/accounts/images/Calendar-Add--Streamline-Plump.svg" alt="" class="card-icon"
+                    aria-hidden="true">
+                <!-- <div class="icon-glow"></div> -->
+            </div>
+            <div class="card-content">
+                <h2 class="card-title">Annual Review</h2>
+                <!-- <p class="card-description">Yearly assessment</p> -->
+            </div>
+        </a>
+    </nav>
     </div>
 
     <script>
         // Add staggered animation on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.nav-card');
             cards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.05}s`;

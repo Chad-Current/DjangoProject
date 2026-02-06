@@ -72,7 +72,7 @@
                                             <span class="badge-relationship">{{ contact.contact_relation }}</span>
                                         </td>
                                         <td>
-                                            <span class="contact-info">{{ contact.is__contact|yesno:"Yes,No" }}</span>
+                                            <span class="contact-info">{{ contact.is_emergency_contact|yesno:"Yes,No" }}</span>
                                         <td>
                                             <span class="contact-info">{{ contact.phone|phone2numeric }}</span>
                                         </td>

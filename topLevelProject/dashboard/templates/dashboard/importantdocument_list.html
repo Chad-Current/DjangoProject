@@ -52,7 +52,6 @@
                             <table class="table contacts-table">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
                                         <th>Category</th>
                                         <th>Description</th>
                                         <th class="text-end">Actions</th>
@@ -61,12 +60,6 @@
                                 <tbody>
                                     {% for document in documents %}
                                     <tr>
-                                        <td>
-                                            <div class="contact-name">
-                                                <i class="fas fa-user-circle contact-icon"></i>
-                                                <span>{{ document.title }}</span>
-                                            </div>
-                                        </td>
                                         <td>
                                             <span class="badge-relationship">{{ document.document_category }}</span>
                                         </td>
@@ -112,7 +105,7 @@
                             
                             <div class="card-body-section">
                                 <div class="info-label">Description</div>
-                                <p class="contact-info-text">{{ docuemnt.document.description|truncatechars:100 }}</p>
+                                <p class="contact-info-text">{{  document.description|truncatechars:50 }}</p>
                             </div>
                             
                             {% if can_modify %}

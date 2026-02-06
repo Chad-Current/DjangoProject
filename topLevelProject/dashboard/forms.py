@@ -149,51 +149,6 @@ class AccountRelevanceReviewForm(forms.ModelForm):
         )
 
 
-class DelegationGrantForm(forms.ModelForm):
-    class Meta:
-        model = DelegationGrant
-        fields = [
-            'delegate_to',
-            'delegate_doc',
-            "applies_on_death",
-            "applies_on_incapacity",
-            "applies_immediately",
-            "notes_for_contact",
-        ]
-    
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        
-        if self.user:
-            try:
-                profile = Profile.objects.get(user=self.user)
-                self.fields['delegate_to'].queryset = Contact.objects.filter(profile=profile)
-                self.fields['delegate_doc'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                self.fields['delegate_to'].queryset = Contact.objects.none()
-                self.fields['delegate_doc'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
-
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'delegate_to',
-            'delegate_doc',
-            Fieldset(
-                'When Does This Apply?',
-                Row(
-                    Column('applies_on_death', css_class='form-group col-md-4 mb-0'),
-                    Column('applies_on_incapacity', css_class='form-group col-md-4 mb-0'),
-                    Column('applies_immediately', css_class='form-group col-md-4 mb-0'),
-                ),
-            ),
-            'notes_for_contact',
-            Div(
-                Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
-            ),
-        )
-
-
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
@@ -246,14 +201,13 @@ class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
         fields = [
-            "title",
             "estate_document",
             "is_active",
             "overall_instructions",
         ]
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # ADDED: Accept user parameter like ImportantDocumentForm
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
         self.helper = FormHelper()
@@ -261,14 +215,13 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             Fieldset(
                 'Document Details',
                 Row(
-                    Column('title', css_class='form-group col-md-8 mb-0'),
-                    Column('estate_document', css_class='form-group col-md-2 mb-0'),
-                    Column('is_active', css_class='form-group col-md-2 mb-0'),
+                    Column('estate_document', css_class='form-group col-md-8 mb-0'),
+                    Column('is_active', css_class='form-group col-md-4 mb-0'),
                 ),
                 'overall_instructions',
             ),
             Div(
-                Submit('submit', 'Save Document', css_class='btn btn-primary'),
+                Submit('submit', 'Save Estate Document', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
         )
@@ -291,7 +244,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        # Filter documents and contacts by user's profile
+        # Filter contacts by user's profile
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
@@ -302,7 +255,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             HTML('<h2>Family Awareness</h2>'),
-            Field('relation',placeholder='Tied to who?'),
+            Field('relation', placeholder='Tied to who?'),
             Field('content'),
             Row(
                 Column('is_location_of_legal_will'),
@@ -356,7 +309,7 @@ class ContactForm(forms.ModelForm):
                     Column('is_caregiver', css_class='form-group col-md-12 mb-0'),
                 ),
                 Row(
-                    Column('body',css_class="form-group col-md-12 mb-0"),
+                    Column('body', css_class="form-group col-md-12 mb-0"),
                 ),
             ),
             Div(
@@ -497,7 +450,6 @@ class ImportantDocumentForm(forms.ModelForm):
         model = ImportantDocument
         fields = [
             "document_category",
-            "title",
             "description",
             "physical_location",
             "digital_location",
@@ -512,26 +464,91 @@ class ImportantDocumentForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-            'Document',
-            Row(
-                Column('document_category', css_class="form-group col-md-4 mb-0"),
-                Column('title', css_class="form-group col-md-4 mb-o"),
-                Column('description', css_class="form-group col-md-4 mb-o"),
+                'Document',
+                Row(
+                    Column('document_category', css_class="form-group col-md-8 mb-0"),
+                    Column('requires_legal_review', css_class="form-group col-md-4 mb-0"),
+                ),
+                'description',
             ),
             Fieldset(
                 'Document Location',
                 Row(
-                Column('physical_location', css_class="form-group col-md-4 mb-0"),
-
-                Column('digital_location', css_class="form-group col-md-4 mb-0"),
-
-                Column('file', css_class="form-group col-md-4 mb-0"),
+                    Column('physical_location', css_class="form-group col-md-4 mb-0"),
+                    Column('digital_location', css_class="form-group col-md-4 mb-0"),
+                    Column('file', css_class="form-group col-md-4 mb-0"),
                 ),
             ),
-            'requires_legal_review',
             Div(
                 Submit('submit', 'Save Document', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
             ),
-          ),
+        )
+
+
+class DelegationGrantForm(forms.ModelForm):
+    class Meta:
+        model = DelegationGrant
+        fields = [
+            'delegate_to',
+            'delegation_category',
+            'delegate_estate_documents',  
+            'delegate_important_documents',
+            "applies_on_death",
+            "applies_on_incapacity",
+            "applies_immediately",
+            "notes_for_contact",
+        ]
+        widgets = {
+            'delegate_estate_documents': forms.CheckboxSelectMultiple(),  
+            'delegate_important_documents': forms.CheckboxSelectMultiple(),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['delegate_to'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.filter(profile=profile) 
+                self.fields['delegate_important_documents'].queryset = ImportantDocument.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['delegate_to'].queryset = Contact.objects.none()
+                self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.none()  
+                self.fields['delegate_important_documents'].queryset = ImportantDocument.objects.none()
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Delegation Details',
+                Row(
+                    Column('delegate_to', css_class='form-group col-md-6 mb-0'),
+                    Column('delegation_category', css_class='form-group col-md-6 mb-0'),
+                ),
+            ),
+            Fieldset(
+                'Estate Documents',
+                HTML('<p class="text-muted small">Select which estate documents this delegation covers:</p>'),
+                'delegate_estate_documents',
+            ),
+            Fieldset(
+                'Important Documents',
+                HTML('<p class="text-muted small">Select which important documents this delegation covers (optional):</p>'),
+                'delegate_important_documents',
+            ),
+            Fieldset(
+                'When Does This Apply?',
+                Row(
+                    Column('applies_on_death', css_class='form-group col-md-4 mb-0'),
+                    Column('applies_on_incapacity', css_class='form-group col-md-4 mb-0'),
+                    Column('applies_immediately', css_class='form-group col-md-4 mb-0'),
+                ),
+            ),
+            'notes_for_contact',
+            Div(
+                Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+            ),
         )

@@ -51,9 +51,8 @@
                             <table class="table contacts-table">
                                 <thead>
                                     <tr>
-                                        <th>Document Name</th>
-                                        <th>Delegatee</th>
-                                        <th>Notes</th>
+                                        <th>Document Type</th>
+                                        <th>Delegate to</th>
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
@@ -63,14 +62,11 @@
                                         <td>
                                             <div class="contact-name">
                                                 <i class="fas fa-user-circle contact-icon"></i>
-                                                <span>{{ grant.delegate_doc }}</span>
+                                                <span>{{ grant.delegation_category }}</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-relationship">{{ grant.delegate_to }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="contact-info">{{ grant.notes_for_contact|truncatechars:50 }}</span>
+                                            <a href="{% url 'dashboard:delegate_detail' grant.pk %}"><span class="contact-info">{{ grant.delegate_to }}</span></a>
                                         </td>
                                         <td>
                                             <div class="action-buttons">

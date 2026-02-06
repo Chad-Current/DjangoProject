@@ -26,7 +26,9 @@
             <div class="delete-view">
                 <h1>Are you sure you want to delete?</h1>
                 <!-- <h1>Delete Access Information</h1> -->
-                <h3>{{ delegate }}</h3>
+                <h5>{{ object.delegate_to }}</h5>
+                <h5>from</h5>
+                <h5>{{ object.delegation_category }}</h5>
 
                 <form method="post">
                     {% csrf_token %}
