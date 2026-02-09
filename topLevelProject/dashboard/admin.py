@@ -42,14 +42,14 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('account_name', 'provider', 'profile', 'account_category', 'is_critical', 'created_at')
+    list_display = ('account_name_or_provider',  'account_category', 'is_critical', 'created_at')
     list_filter = ('account_category', 'is_critical', 'keep_or_close_instruction', 'created_at')
-    search_fields = ('account_name', 'provider', 'username_or_email', 'profile__full_name')
-    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('account_name_or_provider', 'username_or_email', 'profile__full_name')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Account Information', {
-            'fields': ('profile', 'account_name', 'account_category', 'provider', 'website_url')
+            'fields': ('profile', 'account_name_or_provider', 'account_category', 'website_url')
         }),
         ('Credentials', {
             'fields': ('username_or_email', 'credential_storage_location')
@@ -68,7 +68,7 @@ class AccountAdmin(admin.ModelAdmin):
 class AccountRelevanceReviewAdmin(admin.ModelAdmin):
     list_display = ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
     list_filter = ('matters', 'review_date', 'next_review_due')
-    search_fields = ('account__account_name', 'reviewer__username', 'reasoning')
+    search_fields = ('account__account_name_or_provider', 'reviewer__username', 'reasoning')
     readonly_fields = ('review_date', 'created_at', 'updated_at')
     
     fieldsets = (
@@ -87,10 +87,10 @@ class AccountRelevanceReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'device_type', 'profile', 'owner_label', 'used_for_2fa', 'created_at')
+    list_display = ('name', 'device_type', 'owner_label', 'used_for_2fa', 'created_at')
     list_filter = ('device_type', 'used_for_2fa', 'created_at')
     search_fields = ('name', 'owner_label', 'profile__full_name')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('profile','created_at', 'updated_at')
     
     fieldsets = (
         ('Device Information', {
@@ -108,14 +108,14 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(DigitalEstateDocument)
 class DigitalEstateDocumentAdmin(admin.ModelAdmin):
-    list_display = ('estate_document', 'profile', 'is_active', 'created_at')
-    list_filter = ('is_active', 'estate_document', 'created_at')
+    list_display = ('estate_document', 'name_or_title', 'created_at')
+    list_filter = ('name_or_title', 'estate_document', 'created_at')
     search_fields = ('estate_document', 'profile__full_name', 'overall_instructions')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ( 'profile', 'created_at', 'updated_at','estate_file')
     
     fieldsets = (
         ('Document Information', {
-            'fields': ('profile', 'estate_document', 'is_active')
+            'fields': ('profile', 'estate_document', 'name_or_title')
         }),
         ('Instructions', {
             'fields': ('overall_instructions',)
@@ -129,10 +129,10 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('contact_name', 'contact_relation', 'profile', 'email', 'phone', 'is_emergency_contact', 'is_digital_executor')
+    list_display = ('contact_name', 'contact_relation', 'email', 'phone', 'is_emergency_contact', 'is_digital_executor')
     list_filter = ('contact_relation', 'is_emergency_contact', 'is_digital_executor', 'is_caregiver', 'created_at')
     search_fields = ('contact_name', 'email', 'phone', 'profile__full_name')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ( 'profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Contact Information', {
@@ -164,7 +164,9 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
     )
     search_fields = ('relation__contact_name', 'content')
     readonly_fields = ('created_at', 'updated_at')
-    
+    #NEEDS TO HAVE PROFILE ADD TO HERE FOR ISOLATIOJ :::
+
+
     def content_preview(self, obj):
         return obj.content[:50] + '...' if len(obj.content) > 50 else obj.content
     content_preview.short_description = 'Content'
@@ -191,10 +193,10 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
 
 @admin.register(Checkup)
 class CheckupAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'due_date', 'frequency', 'completed_at', 'completed_by', 'is_overdue')
+    list_display = ('due_date', 'frequency', 'completed_at', 'completed_by', 'is_overdue')
     list_filter = ('frequency', 'due_date', 'completed_at', 'created_at')
     search_fields = ('profile__full_name', 'summary')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Checkup Information', {
@@ -220,10 +222,10 @@ class CheckupAdmin(admin.ModelAdmin):
 
 @admin.register(CareRelationship)
 class CareRelationshipAdmin(admin.ModelAdmin):
-    list_display = ('contact_name', 'profile', 'relationship_type', 'has_portal_access', 'portal_role', 'created_at')
+    list_display = ('contact_name', 'relationship_type', 'has_portal_access', 'portal_role', 'created_at')
     list_filter = ('relationship_type', 'has_portal_access', 'portal_role', 'created_at')
     search_fields = ('contact_name__contact_name', 'profile__full_name', 'notes')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Relationship Information', {
@@ -244,10 +246,10 @@ class CareRelationshipAdmin(admin.ModelAdmin):
 
 @admin.register(RecoveryRequest)
 class RecoveryRequestAdmin(admin.ModelAdmin):
-    list_display = ('target_description', 'profile', 'requested_by', 'status', 'provider_ticket_number', 'created_at')
+    list_display = ('target_description', 'requested_by', 'status', 'provider_ticket_number', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('target_description', 'profile__full_name', 'requested_by__username', 'provider_ticket_number')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Request Information', {
@@ -268,17 +270,17 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
 
 @admin.register(ImportantDocument)
 class ImportantDocumentAdmin(admin.ModelAdmin):
-    list_display = ('document_category', 'profile', 'requires_legal_review', 'created_at')
+    list_display = ('document_category', 'requires_legal_review', 'created_at')
     list_filter = ('document_category', 'requires_legal_review', 'created_at')
     search_fields = ('document_category', 'description', 'profile__full_name')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Document Information', {
             'fields': ('profile', 'document_category', 'description', 'requires_legal_review')
         }),
         ('Locations', {
-            'fields': ('physical_location', 'digital_location', 'file')
+            'fields': ('physical_location', 'digital_location', 'important_file')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),

@@ -92,13 +92,15 @@ class Account(models.Model):
         related_name='accounts',
         editable=False
     )
-    account_name = models.CharField(max_length=200, help_text="Account name or service")
     account_category = models.CharField(
         max_length=200,
         choices=ACCOUNT_CATEGORIES,
         default='email'
     ) 
-    provider = models.CharField(max_length=200, help_text="Company/service provider")
+    account_name_or_provider = models.CharField(
+        max_length=200, 
+        help_text="Account name or service"
+        )
     website_url = models.URLField(blank=True, validators=[URLValidator()])
     username_or_email = models.CharField(
         max_length=200,
@@ -128,14 +130,14 @@ class Account(models.Model):
     
     class Meta:
         db_table = 'accounts'
-        ordering = ['-is_critical', 'account_name']
+        ordering = ['-is_critical', 'account_name_or_provider']
         indexes = [
             models.Index(fields=['profile', '-created_at']),
             models.Index(fields=['account_category']),
         ]
     
     def __str__(self):
-        return f"{self.account_name} - {self.provider}"
+        return f"{self.account_name_or_provider}" 
 
 
 class AccountRelevanceReview(models.Model):
@@ -327,12 +329,20 @@ class DigitalEstateDocument(models.Model):
         choices=PERSONAL_ESTATE_DOCUMENTS,
         default='important_personal_documents',
     )
-    
-    is_active = models.BooleanField(
-        default=True,
-        help_text="Is this the current active document?"
-    )    
-    
+
+    name_or_title = models.CharField(
+        max_length=100,
+        blank=False,
+        help_text="Specific name of Document"
+    )
+
+    estate_file = models.FileField(
+        upload_to='documents/%Y/%m/',
+        blank=True,
+        null=True,
+        help_text="Upload digital copy"
+    )
+
     overall_instructions = models.CharField(
         max_length=500,
         blank=True,
@@ -342,9 +352,19 @@ class DigitalEstateDocument(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
+    
     class Meta:
         db_table = 'digital_estate_documents'
-        ordering = ['-is_active', '-created_at']
+        ordering = ['-name_or_title', '-created_at']
+    
+    def is_delegated(self):
+        """Check if this document is already delegated"""
+        return self.delegation_grants.exists()
+    
+    def delegated_to(self):
+        """Return the contact this document is delegated to, if any"""
+        grant = self.delegation_grants.first()
+        return grant.delegate_to if grant else None
     
     def __str__(self):
         return f"{self.estate_document}"
@@ -590,29 +610,43 @@ class ImportantDocument(models.Model):
         ("Personal Property and Valuables", "Inventory of personal valuables."),
         ("Notes and Special Instructions", "Additional notes or specific personal guidance."),
     ]
+
+    name_or_title = models.CharField(
+    max_length=100,
+    blank=False,
+    help_text="Specific name of Document"
+    )
+
+    description = models.CharField(
+        max_length=200, 
+        blank=True
+    )
     
-    description = models.CharField(max_length=200, blank=True)
     document_category = models.CharField(
         max_length=50,
         choices=DOCUMENT_CATEGORY_CHOICES,
         default='Important Personal Documents'
     )
+
     physical_location = models.CharField(
         max_length=200,
         blank=True,
         help_text="Where physical document is stored"
     )
+
     digital_location = models.CharField(
         max_length=500,
         blank=True,
         help_text="Where digital copy is stored"
     )
-    file = models.FileField(
+
+    important_file = models.FileField(
         upload_to='documents/%Y/%m/',
         blank=True,
         null=True,
         help_text="Upload digital copy"
     )
+
     requires_legal_review = models.BooleanField(
         default=False,
         help_text="Needs legal professional review"
@@ -621,9 +655,19 @@ class ImportantDocument(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
+    
     class Meta:
         db_table = 'important_documents'
         ordering = ['document_category']
+    
+    def is_delegated(self):
+        """Check if this document is already delegated"""
+        return self.delegation_grants.exists()
+    
+    def delegated_to(self):
+        """Return the contact this document is delegated to, if any"""
+        grant = self.delegation_grants.first()
+        return grant.delegate_to if grant else None
     
     def __str__(self):
         return self.document_category
@@ -703,3 +747,4 @@ class DelegationGrant(models.Model):
     def get_important_documents_count(self):
         """Return the count of delegated important documents"""
         return self.delegate_important_documents.count()
+

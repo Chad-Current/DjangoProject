@@ -24,7 +24,7 @@
 <body>
     {% include "baseapp/navbar.html" %}
     {% include "dashboard/navblocks.html" %}
-    
+
     <div class="main">
         <div class="listin-container">
             <!-- Header Section -->
@@ -46,117 +46,117 @@
             <!-- Content Section -->
             <div class="contacts-content">
                 {% if estates %}
-                    <!-- Desktop Table View -->
-                    <div class="table-view d-none d-md-block">
-                        <div class="table-responsive">
-                            <table class="table contacts-table">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Is Active</th>
-                                        <th>Instructions</th>
-                                        <th class="text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for estate in estates %}
-                                    <tr>
-                                        <td>
-                                            <div class="contact-name">
-                                                <i class="fas fa-user-circle contact-icon"></i>
-                                                <span>{{ estate.estate_document }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge-relationship">{{ estate.is_active }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="contact-info">{{ estate.overall_instructions|truncatechars:50 }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                {% if can_modify %}
-                                                <a href="{% url 'dashboard:estate_update' estate.pk %}" 
-                                                   class="btn-action btn-edit" 
-                                                   title="Edit contact">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="{% url 'dashboard:estate_delete' estate.pk %}" 
-                                                   class="btn-action btn-delete" 
-                                                   title="Delete contact">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                <!-- Desktop Table View -->
+                <div class="table-view d-none d-md-block">
+                    <div class="table-responsive">
+                        <table class="table contacts-table">
+                            <thead>
+                                <tr>
+                                    <th>Document Category</th>
+                                    <th>Delegated to</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for estate in estates %}
+                                <tr>
+                                    <td>
+                                        <div class="contact-name">
+                                            <i class="fas fa-user-circle contact-icon"></i>
+                                            <span>{{ estate.estate_document }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if estate.is_delegated %}
+                                        <span class="">
+                                            {{ estate.delegated_to.contact_name }}
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Not Delegated</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            {% if can_modify %}
+                                            <a href="{% url 'dashboard:estate_update' estate.pk %}"
+                                                class="btn-action btn-edit" title="Edit contact">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'dashboard:estate_delete' estate.pk %}"
+                                                class="btn-action btn-delete" title="Delete contact">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
+                </div>
 
-                    <!-- Mobile Card View -->
-                    <div class="card-view d-md-none">
-                        {% for estate in estates %}
-                        <div class="contact-card">
-                            <div class="card-header-section">
-                                <div class="contact-avatar">
-                                    <i class="fas fa-user-circle"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <h3 class="contact-card-name">{{ estate.estate_name }}</h3>
-                                    <span class="badge-relationship-mobile">{{ estate.estate_category }}</span>
-                                </div>
+                <!-- Mobile Card View -->
+                <div class="card-view d-md-none">
+                    {% for estate in estates %}
+                    <div class="contact-card">
+                        <div class="card-header-section">
+                            <div class="contact-avatar">
+                                <i class="fas fa-user-circle"></i>
                             </div>
-                            
-                            <div class="card-body-section">
-                                <div class="info-label">Information</div>
-                                <p class="contact-info-text">{{ estate.estate_provider|truncatechars:100 }}</p>
+                            <div class="contact-details">
+                                <h3 class="contact-card-name">{{ estate.estate_name }}</h3>
+                                <span class="badge-relationship-mobile">{{ estate.estate_category }}</span>
                             </div>
-                            
-                            {% if can_modify %}
-                            <div class="card-actions">
-                                <a href="{% url 'dashboard:estate_update' estate.pk %}" 
-                                   class="btn-card-action btn-edit-card">
-                                    <i class="fas fa-edit"></i>
-                                    <span>Edit</span>
-                                </a>
-                                <a href="{% url 'dashboard:estate_delete' estate.pk %}" 
-                                   class="btn-card-action btn-delete-card">
-                                    <i class="fas fa-trash-alt"></i>
-                                    <span>Delete</span>
-                                </a>
-                            </div>
-                            {% endif %}
                         </div>
-                        {% endfor %}
-                    </div>
 
-                {% else %}
-                    <!-- Empty State -->
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="fas fa-address-book"></i>
+                        <div class="card-body-section">
+                            <div class="info-label">Information</div>
+                            <p class="contact-info-text">{{ estate.estate_provider|truncatechars:100 }}</p>
                         </div>
-                        <h2 class="empty-state-title">No Estate Documents Yet</h2>
-                        <p class="empty-state-text">
-                            Start building your estates list by adding your first estate.
-                        </p>
+
                         {% if can_modify %}
-                        <a href="{% url 'dashboard:estate_create' %}" class="btn-add-first">
-                            <!-- <i class="fas fa-plus-circle"></i> -->
-                            Add Your First estate
-                        </a>
+                        <div class="card-actions">
+                            <a href="{% url 'dashboard:estate_update' estate.pk %}"
+                                class="btn-card-action btn-edit-card">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
+                            </a>
+                            <a href="{% url 'dashboard:estate_delete' estate.pk %}"
+                                class="btn-card-action btn-delete-card">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Delete</span>
+                            </a>
+                        </div>
                         {% endif %}
                     </div>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <h2 class="empty-state-title">No Estate Documents Yet</h2>
+                    <p class="empty-state-text">
+                        Start building your estates list by adding your first estate.
+                    </p>
+                    {% if can_modify %}
+                    <a href="{% url 'dashboard:estate_create' %}" class="btn-add-first">
+                        <!-- <i class="fas fa-plus-circle"></i> -->
+                        Add Your First estate
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
     {% include "baseapp/footer.html" %}
-    
+
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

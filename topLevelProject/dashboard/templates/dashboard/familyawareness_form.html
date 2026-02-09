@@ -19,20 +19,7 @@
 </head>
 
 <body>
-    {% block forms_html %}
-    {% include "baseapp/navbar.html" %}
-    <div class="main">
-        <div class="parent-row">
-            <div class="form-container">
-                <div class="form-wrapper">
-                    {% crispy form %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% include "baseapp/footer.html" %}
-    {% endblock %}
+    {% include 'dashboard/account_form.html' %}
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 
 </body>

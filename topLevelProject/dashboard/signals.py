@@ -44,7 +44,7 @@ def create_account_relevance_review(sender, instance, created, **kwargs):
             account=instance,  # FIXED: Changed from account_relevance to account
             reviewer=user,
             matters=True,
-            reasoning=f"Initial review created for new account: {instance.account_name}"
+            reasoning=f"Initial review created for new account: {instance.account_name_or_provider}"
         )
     else:
         # Check if is_critical status changed

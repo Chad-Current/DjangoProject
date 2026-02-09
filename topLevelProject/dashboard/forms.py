@@ -1,7 +1,6 @@
-# dashboard/forms.py
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Row, Column, Submit, Button, ButtonHolder
+from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Button
 from .models import (
     Profile,
     Account,
@@ -38,28 +37,26 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Personal Information',
-                Row(
-                    Column('full_name', css_class='form-group col-md-6 mb-0'),
-                    Column('date_of_birth', css_class='form-group col-md-6 mb-0'),
-                ),
-                Row(
-                    Column('primary_email', css_class='form-group col-md-6 mb-0'),
-                    Column('phone_number', css_class='form-group col-md-6 mb-0'),
-                ),
-                'notes',
+                Field('full_name', css_class='textinput'),
+                Field('date_of_birth', css_class='dateinput'),
+                Field('primary_email', css_class='emailinput'),
+                Field('phone_number', css_class='textinput'),
+                Field('notes', css_class='textarea'),
             ),
             Fieldset(
                 'Digital Executor Information',
-                'has_digital_executor',
-                Row(
-                    Column('digital_executor_name', css_class='form-group col-md-6 mb-0'),
-                    Column('digital_executor_contact', css_class='form-group col-md-6 mb-0'),
-                ),
+                Field('has_digital_executor', css_class='checkboxinput form-check-input'),
+                Field('digital_executor_name', css_class='textinput'),
+                Field('digital_executor_contact', css_class='textinput'),
             ),
-            Submit('submit', 'Save Profile', css_class='btn btn-primary')
+            Div(
+                Submit('submit', 'Save Profile', css_class='btn btn-primary'),
+                css_class='button-group'
+            )
         )
 
 
@@ -68,8 +65,7 @@ class AccountForm(forms.ModelForm):
         model = Account
         fields = [
             "account_category",
-            "account_name",
-            "provider",
+            "account_name_or_provider",
             "website_url",
             "username_or_email",
             "credential_storage_location",
@@ -83,29 +79,26 @@ class AccountForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Account Details',
-                Row(
-                    Column('account_category', css_class='form-group col-md-6 mb-0'),
-                    Column('account_name', css_class='form-group col-md-6 mb-0'),
-                    Column('provider', css_class='form-group col-md-6 mb-0'),
-                    Column('website_url', css_class='form-group col-md-6 mb-0', placeholder="https://"),
-                ),
-                Row(
-                    Column('username_or_email', css_class='form-group col-md-8 mb-0'),
-                    Column('credential_storage_location', css_class='form-group col-md-4 mb-0'),
-                    Column('is_critical', css_class='form-group col-md-4 mb-0'),
-                ),                
+                Field('account_category', css_class='select'),
+                Field('account_name_or_provider', css_class='textinput'),
+                Field('website_url', css_class='urlinput', placeholder="https://"),
+                Field('username_or_email', css_class='textinput'),
+                Field('credential_storage_location', css_class='textinput'),
+                Field('is_critical', css_class='checkboxinput form-check-input'),
             ),
             Fieldset(
                 'Instructions for Family',
-                'keep_or_close_instruction',
-                'notes_for_family',
+                Field('keep_or_close_instruction', css_class='select'),
+                Field('notes_for_family', css_class='textarea'),
             ),
             Div(
                 Submit('submit', 'Save Account', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -135,16 +128,16 @@ class AccountRelevanceReviewForm(forms.ModelForm):
                 self.fields['account'].queryset = Account.objects.none()
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
-            'account',
-            Row(
-                Column('matters', css_class='form-group col-md-6 mb-0'),
-                Column('next_review_due', css_class='form-group col-md-6 mb-0'),
-            ),
-            'reasoning',
+            Field('account', css_class='select'),
+            Field('matters', css_class='select'),
+            Field('next_review_due', css_class='dateinput'),
+            Field('reasoning', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Review', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -165,34 +158,25 @@ class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Device Information',
-                Row(
-                    Column('device_type', css_class='form-group col-md-6 mb-0'),
-                    Column('name', css_class='form-group col-md-6 mb-2'),
-                ),
-                Row(
-                    Column('owner_label', css_class='form-group col-md-6 mb-0'),
-                    Column('location_description', css_class='form-group col-md-6 mb-0'),
-                ),
+                Field('device_type', css_class='select'),
+                Field('name', css_class='textinput'),
+                Field('owner_label', css_class='textinput'),
+                Field('location_description', css_class='textinput'),
             ),
             Fieldset(
                 'Security Information',
-                Row(
-                    Column('unlock_method_description', css_class='form-group col-md-12 mb-4'),
-                    Column('decommission_instruction', css_class="form-group col-md-12 mb-4"),
-                ),
-                Row(
-                    Column(
-                        HTML("<label>Uses Two-Factor Authenication</label>"),
-                    ), 
-                    Column('used_for_2fa', css_class="form-group col-md-12 mt-0"),
-                ),
+                Field('unlock_method_description', css_class='textarea'),
+                Field('decommission_instruction', css_class='textarea'),
+                Field('used_for_2fa', css_class='checkboxinput form-check-input', wrapper_class='checkbox-wrapper'),
             ),
             Div(
                 Submit('submit', 'Save Device', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -202,8 +186,9 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         model = DigitalEstateDocument
         fields = [
             "estate_document",
-            "is_active",
+            "name_or_title",
             "overall_instructions",
+            "estate_file"
         ]
 
     def __init__(self, *args, **kwargs):
@@ -211,18 +196,19 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Document Details',
-                Row(
-                    Column('estate_document', css_class='form-group col-md-8 mb-0'),
-                    Column('is_active', css_class='form-group col-md-4 mb-0'),
-                ),
-                'overall_instructions',
+                Field('name_or_title', css_class='textinput'),
+                Field('estate_document', css_class='select'),
+                Field('estate_file', css_class='fileinput'),
+                Field('overall_instructions', css_class='textarea'),
             ),
             Div(
                 Submit('submit', 'Save Estate Document', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -244,7 +230,6 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        # Filter contacts by user's profile
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
@@ -253,20 +238,23 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
                 self.fields['relation'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
-            HTML('<h2>Family Awareness</h2>'),
-            Field('relation', placeholder='Tied to who?'),
-            Field('content'),
-            Row(
-                Column('is_location_of_legal_will'),
-                Column('is_password_manager'),
-                Column('is_social_media'),
-                Column('is_photos_or_files'),
-                Column('is_data_retention_preferences'),                
+            HTML('<h2 class="form-section-title">Family Awareness</h2>'),
+            Field('relation', css_class='select', placeholder='Tied to who?'),
+            Field('content', css_class='textarea'),
+            Div(
+                Field('is_location_of_legal_will', css_class='checkboxinput form-check-input'),
+                Field('is_password_manager', css_class='checkboxinput form-check-input'),
+                Field('is_social_media', css_class='checkboxinput form-check-input'),
+                Field('is_photos_or_files', css_class='checkboxinput form-check-input'),
+                Field('is_data_retention_preferences', css_class='checkboxinput form-check-input'),
+                css_class='checkbox-grid'
             ),
-            ButtonHolder(
+            Div(
                 Submit('submit', 'Save', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -291,30 +279,27 @@ class ContactForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 "Contact Information",
-                Row(
-                    Column('contact_relation', css_class='form-group col-md-6 mb-0'),
-                    Column('contact_name', css_class='form-group col-md-6 mb-0'),
+                Field('contact_relation', css_class='select'),
+                Field('contact_name', css_class='textinput'),
+                Field('email', css_class='emailinput'),
+                Field('phone', css_class='textinput'),
+                Field('address', css_class='textarea'),
+                Div(
+                    Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
+                    Field('is_digital_executor', css_class='checkboxinput form-check-input'),
+                    Field('is_caregiver', css_class='checkboxinput form-check-input'),
+                    css_class='checkbox-group'
                 ),
-                Row(
-                    Column('email', css_class='form-group col-md-6 mb-0'),
-                    Column('phone', css_class='form-group col-md-6 mb-0'),
-                ),
-                'address',
-                Row(
-                    Column('is_emergency_contact', css_class='form-group col-md-12 mb-0'),
-                    Column('is_digital_executor', css_class='form-group col-md-12 mb-0'),
-                    Column('is_caregiver', css_class='form-group col-md-12 mb-0'),
-                ),
-                Row(
-                    Column('body', css_class="form-group col-md-12 mb-0"),
-                ),
+                Field('body', css_class='textarea'),
             ),
             Div(
                 Submit('submit', 'Save Contact', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -340,27 +325,26 @@ class CheckupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
-            Row(
-                Column('frequency', css_class='form-group col-md-4 mb-0'),
-                Column('due_date', css_class='form-group col-md-4 mb-0'),
-                Column('completed_at', css_class='form-group col-md-4 mb-0'),
-            ),
-            'summary',
+            Field('frequency', css_class='select'),
+            Field('due_date', css_class='dateinput'),
+            Field('completed_at', css_class='datetimeinput'),
+            Field('summary', css_class='textarea'),
             Fieldset(
                 'Checkup Items',
-                Row(
-                    Column('all_accounts_reviewed', css_class='form-group col-md-6 mb-0'),
-                    Column('all_devices_reviewed', css_class='form-group col-md-6 mb-0'),
-                ),
-                Row(
-                    Column('contacts_up_to_date', css_class='form-group col-md-6 mb-0'),
-                    Column('documents_up_to_date', css_class='form-group col-md-6 mb-0'),
+                Div(
+                    Field('all_accounts_reviewed', css_class='checkboxinput form-check-input'),
+                    Field('all_devices_reviewed', css_class='checkboxinput form-check-input'),
+                    Field('contacts_up_to_date', css_class='checkboxinput form-check-input'),
+                    Field('documents_up_to_date', css_class='checkboxinput form-check-input'),
+                    css_class='checkbox-grid'
                 ),
             ),
             Div(
                 Submit('submit', 'Save Checkup', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -388,19 +372,17 @@ class CareRelationshipForm(forms.ModelForm):
                 self.fields['contact_name'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
-            Row(
-                Column('contact_name', css_class='form-group col-md-6 mb-0'),
-                Column('relationship_type', css_class='form-group col-md-6 mb-0'),
-            ),
-            Row(
-                Column('has_portal_access', css_class='form-group col-md-6 mb-0'),
-                Column('portal_role', css_class='form-group col-md-6 mb-0'),
-            ),
-            'notes',
+            Field('contact_name', css_class='select'),
+            Field('relationship_type', css_class='select'),
+            Field('has_portal_access', css_class='checkboxinput form-check-input'),
+            Field('portal_role', css_class='select'),
+            Field('notes', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Care Relationship', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -429,18 +411,18 @@ class RecoveryRequestForm(forms.ModelForm):
                 self.fields['target_account'].queryset = Account.objects.none()
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
-            'target_account',
-            'target_description',
-            Row(
-                Column('status', css_class='form-group col-md-6 mb-0'),
-                Column('provider_ticket_number', css_class='form-group col-md-6 mb-0'),
-            ),
-            'steps_taken',
-            'outcome_notes',
+            Field('target_account', css_class='select'),
+            Field('target_description', css_class='textinput'),
+            Field('status', css_class='select'),
+            Field('provider_ticket_number', css_class='textinput'),
+            Field('steps_taken', css_class='textarea'),
+            Field('outcome_notes', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Recovery Request', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -449,11 +431,12 @@ class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
+            "name_or_title",
             "document_category",
             "description",
             "physical_location",
             "digital_location",
-            "file",
+            "important_file",
             "requires_legal_review",
         ]
     
@@ -462,26 +445,25 @@ class ImportantDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Document',
-                Row(
-                    Column('document_category', css_class="form-group col-md-8 mb-0"),
-                    Column('requires_legal_review', css_class="form-group col-md-4 mb-0"),
-                ),
-                'description',
+                Field('name_or_title', css_class='textinput'),
+                Field('document_category', css_class='select'),
+                Field('requires_legal_review', css_class='checkboxinput form-check-input'),
+                Field('description', css_class='textarea'),
             ),
             Fieldset(
                 'Document Location',
-                Row(
-                    Column('physical_location', css_class="form-group col-md-4 mb-0"),
-                    Column('digital_location', css_class="form-group col-md-4 mb-0"),
-                    Column('file', css_class="form-group col-md-4 mb-0"),
-                ),
+                Field('important_file', css_class='fileinput'),
+                Field('physical_location', css_class='textinput'),
+                Field('digital_location', css_class='textinput'),
             ),
             Div(
                 Submit('submit', 'Save Document', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )
 
@@ -512,43 +494,82 @@ class DelegationGrantForm(forms.ModelForm):
             try:
                 profile = Profile.objects.get(user=self.user)
                 self.fields['delegate_to'].queryset = Contact.objects.filter(profile=profile)
-                self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.filter(profile=profile) 
-                self.fields['delegate_important_documents'].queryset = ImportantDocument.objects.filter(profile=profile)
+                
+                all_estate_docs = DigitalEstateDocument.objects.filter(profile=profile)
+                all_important_docs = ImportantDocument.objects.filter(profile=profile)
+                
+                if self.instance and self.instance.pk:
+                    already_delegated_estate_ids = DelegationGrant.objects.filter(
+                        profile=profile
+                    ).exclude(pk=self.instance.pk).values_list('delegate_estate_documents', flat=True)
+                    
+                    already_delegated_important_ids = DelegationGrant.objects.filter(
+                        profile=profile
+                    ).exclude(pk=self.instance.pk).values_list('delegate_important_documents', flat=True)
+                else:
+                    already_delegated_estate_ids = DelegationGrant.objects.filter(
+                        profile=profile
+                    ).values_list('delegate_estate_documents', flat=True)
+                    
+                    already_delegated_important_ids = DelegationGrant.objects.filter(
+                        profile=profile
+                    ).values_list('delegate_important_documents', flat=True)
+                
+                self.fields['delegate_estate_documents'].queryset = all_estate_docs.exclude(
+                    id__in=already_delegated_estate_ids
+                )
+                self.fields['delegate_important_documents'].queryset = all_important_docs.exclude(
+                    id__in=already_delegated_important_ids
+                )
+                
+                available_estate_count = self.fields['delegate_estate_documents'].queryset.count()
+                available_important_count = self.fields['delegate_important_documents'].queryset.count()
+                
+                self.fields['delegate_estate_documents'].help_text = (
+                    f"{available_estate_count} estate document(s) available for delegation. "
+                    "Documents already delegated to other contacts are not shown."
+                )
+                self.fields['delegate_important_documents'].help_text = (
+                    f"{available_important_count} important document(s) available for delegation. "
+                    "Documents already delegated to other contacts are not shown."
+                )
+                
             except Profile.DoesNotExist:
                 self.fields['delegate_to'].queryset = Contact.objects.none()
                 self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.none()  
                 self.fields['delegate_important_documents'].queryset = ImportantDocument.objects.none()
 
         self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
                 'Delegation Details',
-                Row(
-                    Column('delegate_to', css_class='form-group col-md-6 mb-0'),
-                    Column('delegation_category', css_class='form-group col-md-6 mb-0'),
-                ),
+                Field('delegate_to', css_class='select'),
+                Field('delegation_category', css_class='select'),
             ),
             Fieldset(
                 'Estate Documents',
-                HTML('<p class="text-muted small">Select which estate documents this delegation covers:</p>'),
-                'delegate_estate_documents',
+                HTML('<p class="field-help-text">Select which estate documents this delegation covers:</p>'),
+                Field('delegate_estate_documents', css_class='checkbox-list'),
             ),
             Fieldset(
                 'Important Documents',
-                HTML('<p class="text-muted small">Select which important documents this delegation covers (optional):</p>'),
-                'delegate_important_documents',
+                HTML('<p class="field-help-text">Select which important documents this delegation covers (optional):</p>'),
+                Field('delegate_important_documents', css_class='checkbox-list'),
             ),
             Fieldset(
                 'When Does This Apply?',
-                Row(
-                    Column('applies_on_death', css_class='form-group col-md-4 mb-0'),
-                    Column('applies_on_incapacity', css_class='form-group col-md-4 mb-0'),
-                    Column('applies_immediately', css_class='form-group col-md-4 mb-0'),
+                Div(
+                    Field('applies_on_death', css_class='checkboxinput form-check-input'),
+                    Field('applies_on_incapacity', css_class='checkboxinput form-check-input'),
+                    Field('applies_immediately', css_class='checkboxinput form-check-input'),
+                    css_class='checkbox-grid'
                 ),
             ),
-            'notes_for_contact',
+            Field('notes_for_contact', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Delegation Grant', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();")
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
             ),
         )

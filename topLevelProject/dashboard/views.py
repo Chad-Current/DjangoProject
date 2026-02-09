@@ -250,11 +250,11 @@ class AccountListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         try:
             profile = Profile.objects.get(user=self.request.user)
-            context['categories'] = Account.objects.filter(profile=profile)
+            context['"account_name_or_provider"'] = Account.objects.filter(profile=profile)
         except Profile.DoesNotExist:
-            context['categories'] = Account.objects.none()
+            context['"account_name_or_provider"'] = Account.objects.none()
         return context
-
+        #CHANGE FROM CATEGORIES to "account_name_or_provider"
 
 class AccountDetailView(ViewAccessMixin, DetailView):
     model = Account
@@ -938,7 +938,7 @@ class ContactDetailView(ViewAccessMixin, DetailView):
         
         context['delegated_estate_documents'] = estate_docs
         context['delegated_important_documents'] = important_docs
-        
+
         return context
 
 

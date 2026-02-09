@@ -19,19 +19,9 @@
 </head>
 
 <body>
-    {% block forms_html %}
-    {% include "baseapp/navbar.html" %}
-    <div class="main">
-        <div class="parent row flex-center flex-just-center nowrap mg-10 ">
-            {% crispy form %}
-        </div>
-    </div>
-
-    {% include "baseapp/footer.html" %}
-    {% endblock %}
+    {% include 'dashboard/account_form.html' %}
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 
 </body>
 
 </html>
-

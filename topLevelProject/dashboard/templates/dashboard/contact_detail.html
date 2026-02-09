@@ -1,0 +1,228 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Contact Details - {{ contact.contact_name }}</title>
+</head>
+
+<body>
+    {% include "baseapp/navbar.html" %}
+    {% include "dashboard/navblocks.html" %}
+
+  <div class="main container py-4">
+        <!-- Contact Header -->
+        <div class="contact-header">
+            <h1><i class="fas fa-user-circle"></i> {{ contact.contact_name }}</h1>
+            <div class="subtitle">{{ contact.contact_relation|default:"Contact" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Contact Information Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-address-card"></i> Contact Information</h3>
+                    
+                    {% if contact.email %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </div>
+                        <div class="info-value">
+                            <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.phone %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-phone"></i> Phone
+                        </div>
+                        <div class="info-value">
+                            <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.address %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-map-marker-alt"></i> Address
+                        </div>
+                        <div class="info-value">{{ contact.address }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.contact_relation %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-heart"></i> Relationship
+                        </div>
+                        <div class="info-value">{{ contact.contact_relation }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Roles Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-user-tag"></i> Roles & Responsibilities</h3>
+                    <div>
+                        {% if contact.is_emergency_contact %}
+                        <span class="badge-role badge-emergency">
+                            <i class="fas fa-exclamation-triangle"></i> Emergency Contact
+                        </span>
+                        {% endif %}
+
+                        {% if contact.is_digital_executor %}
+                        <span class="badge-role badge-executor">
+                            <i class="fas fa-gavel"></i> Digital Executor
+                        </span>
+                        {% endif %}
+
+                        {% if contact.is_caregiver %}
+                        <span class="badge-role badge-caregiver">
+                            <i class="fas fa-hands-helping"></i> Caregiver
+                        </span>
+                        {% endif %}
+
+                        {% if not contact.is_emergency_contact and not contact.is_digital_executor and not contact.is_caregiver %}
+                        <p class="text-muted mb-0">No special roles assigned</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <!-- Delegation Grants Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-file-signature"></i> Delegation Grants</h3>
+                    
+                    {% if delegations %}
+                        {% for delegation in delegations %}
+                        <div class="delegation-item">
+                            <h5>
+                                <i class="fas fa-scroll"></i> 
+                                <a href="{% url 'dashboard:delegate_detail' delegation.pk %}">
+                                    Grant #{{ delegation.pk }}
+                                </a>
+                            </h5>
+                            
+                            <div class="delegation-conditions">
+                                {% if delegation.applies_immediately %}
+                                <span class="condition-badge">
+                                    <i class="fas fa-bolt"></i> Immediate Access
+                                </span>
+                                {% endif %}
+                                {% if delegation.applies_on_death %}
+                                <span class="condition-badge">
+                                    <i class="fas fa-star-of-life"></i> Upon Death
+                                </span>
+                                {% endif %}
+                                {% if delegation.applies_on_incapacity %}
+                                <span class="condition-badge">
+                                    <i class="fas fa-hospital"></i> Upon Incapacity
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            {% if delegation.delegate_estate_documents.all or delegation.delegate_important_documents.all %}
+                            <div class="document-list">
+                                <small class="text-muted">Delegated Documents:</small>
+                                {% for doc in delegation.delegate_estate_documents.all %}
+                                <div class="document-item">
+                                    <i class="fas fa-file-contract"></i>
+                                    <span>{{ doc.document_title }}</span>
+                                </div>
+                                {% endfor %}
+                                {% for doc in delegation.delegate_important_documents.all %}
+                                <div class="document-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>{{ doc.document_title }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No delegation grants for this contact</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- All Delegated Documents Summary -->
+                {% if delegated_estate_documents or delegated_important_documents %}
+                <div class="info-card">
+                    <h3><i class="fas fa-archive"></i> All Delegated Documents</h3>
+                    
+                    {% if delegated_estate_documents %}
+                    <h5 class="mt-3"><i class="fas fa-file-contract"></i> Estate Documents ({{ delegated_estate_documents|length }})</h5>
+                    {% for doc in delegated_estate_documents %}
+                    <div class="document-item">
+                        <i class="fas fa-file-contract"></i>
+                        <a href="{% url 'dashboard:estate_detail' doc.pk %}">{{ doc.document_title }}</a>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if delegated_important_documents %}
+                    <h5 class="mt-3"><i class="fas fa-file-alt"></i> Important Documents ({{ delegated_important_documents|length }})</h5>
+                    {% for doc in delegated_important_documents %}
+                    <div class="document-item">
+                        <i class="fas fa-file-alt"></i>
+                        <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">{{ doc.document_title }}</a>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        {% if can_modify %}
+        <div class="action-buttons">
+            <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn btn-edit btn-custom">
+                <i class="fas fa-edit"></i> Edit Contact
+            </a>
+            <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn btn-delete btn-custom">
+                <i class="fas fa-trash-alt"></i> Delete Contact
+            </a>
+            <a href="{% url 'dashboard:contact_list' %}" class="btn btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        {% else %}
+        <div class="action-buttons">
+            <a href="{% url 'dashboard:contact_list' %}" class="btn btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% include "baseapp/footer.html" %}
+
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

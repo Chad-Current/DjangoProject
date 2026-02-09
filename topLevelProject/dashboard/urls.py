@@ -26,7 +26,7 @@ urlpatterns = [
 
     # Contacts URLs
     path('contacts/', views.ContactListView.as_view(), name='contact_list'),
-    path('contacts<int:pk>/', views.ContactListView.as_view(), name='contact_detail'),
+    path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
     path('contacts/create/', views.ContactCreateView.as_view(), name='contact_create'),
     path('contacts/<int:pk>/edit/', views.ContactUpdateView.as_view(), name='contact_update'),
     path('contacts/<int:pk>/delete/', views.ContactDeleteView.as_view(), name='contact_delete'),
