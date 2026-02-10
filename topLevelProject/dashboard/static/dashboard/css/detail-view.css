@@ -1,5 +1,5 @@
 .delegation-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #62a2ce 100%, #5790b6 0%);
     color: white;
     padding: 2rem;
     border-radius: 12px;
@@ -12,12 +12,14 @@
     font-weight: 700;
     margin-bottom: 0.5rem;
     line-height: 1.2;
+    color: var(--pure-white);
 }
 
 .delegation-header .subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
     line-height: 1.4;
+    color: var(--pure-white);
 }
 
 .info-card {
@@ -331,6 +333,34 @@
 .metadata-footer .meta-item i {
     color: #667eea;
     margin-right: 0.5rem;
+}
+
+.summary-stats {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
 }
 
 /* Mobile Specific Styles */

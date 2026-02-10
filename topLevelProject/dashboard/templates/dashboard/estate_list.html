@@ -67,13 +67,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {% if estate.is_delegated %}
                                         <span class="">
-                                            {{ estate.delegated_to.contact_name }}
+                                            {{ estate.name_or_title }}
                                         </span>
-                                        {% else %}
-                                        <span class="badge bg-secondary">Not Delegated</span>
-                                        {% endif %}
                                     </td>
                                     <td>
                                         <div class="action-buttons">

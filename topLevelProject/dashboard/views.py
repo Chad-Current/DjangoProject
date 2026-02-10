@@ -7,6 +7,8 @@
 # ============================================================================
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
+from django.db.models import Count, Q
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
@@ -21,7 +23,6 @@ from .models import (
     Profile,
     Account,
     AccountRelevanceReview,
-    DelegationGrant,
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
@@ -35,7 +36,6 @@ from .forms import (
     ProfileForm,
     AccountForm,
     AccountRelevanceReviewForm,
-    DelegationGrantForm,
     DeviceForm,
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
@@ -756,153 +756,6 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
 
 
 # ============================================================================
-# DELEGATION GRANT VIEWS
-# ============================================================================
-class DelegationGrantListView(ViewAccessMixin, ListView):
-    model = DelegationGrant
-    template_name = 'dashboard/delegate_list.html'
-    context_object_name = 'grants'
-    owner_field = 'profile__user'
-    paginate_by = 20
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return (
-                DelegationGrant.objects
-                .filter(profile=profile)
-                .select_related('delegate_to', 'profile')
-                .prefetch_related('delegate_estate_documents', 'delegate_important_documents')
-                .order_by('-created_at')
-            )
-        except Profile.DoesNotExist:
-            return DelegationGrant.objects.none()
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-
-class DelegationGrantCreateView(FullAccessMixin, CreateView):
-    model = DelegationGrant
-    form_class = DelegationGrantForm
-    template_name = 'dashboard/delegate_form.html'
-    success_url = reverse_lazy('dashboard:delegate_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        messages.success(self.request, 'Delegation grant created successfully.')
-        return super().form_valid(form)
-
-
-class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
-    model = DelegationGrant
-    form_class = DelegationGrantForm
-    template_name = 'dashboard/delegate_form.html'
-    success_url = reverse_lazy('dashboard:delegate_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        
-        # After saving, check if the delegation is now empty
-        # (This shouldn't happen due to form validation, but belt and suspenders)
-        if self.object.has_no_documents():
-            self.object.delete()
-            messages.warning(
-                self.request, 
-                'Delegation was removed because no documents were selected.'
-            )
-            return redirect('dashboard:delegate_list')
-        
-        messages.success(self.request, 'Delegation grant updated successfully.')
-        return response
-
-
-class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
-    model = DelegationGrant
-    template_name = 'dashboard/delegate_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:delegate_list')
-    owner_field = 'profile__user'
-    
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Delegation grant deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-
-class DelegationGrantDetailView(ViewAccessMixin, DetailView):
-    model = DelegationGrant
-    template_name = 'dashboard/delegate_detail.html'
-    context_object_name = 'grant'
-    owner_field = 'profile__user'
-
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .select_related('profile', 'delegate_to')
-            .prefetch_related('delegate_estate_documents', 'delegate_important_documents')
-            .filter(profile__user=self.request.user)
-        )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        grant = self.object
-        contact = grant.delegate_to
-
-        # Contact information
-        context['delegate_contact'] = contact
-        context['can_modify'] = self.request.user.can_modify_data()
-        
-        # DELEGATED DOCUMENTS (documents in THIS specific delegation grant)
-        # Multiple estate documents (ManyToMany)
-        context['estate_documents'] = grant.delegate_estate_documents.all()
-        
-        # Important documents selected for this delegation (ManyToMany)
-        context['important_documents'] = grant.delegate_important_documents.all()
-        
-        # ALL DOCUMENTS DELEGATED TO THIS CONTACT (across all delegation grants)
-        # Get all delegation grants for this contact
-        all_grants_for_contact = DelegationGrant.objects.filter(
-            delegate_to=contact,
-            profile=grant.profile
-        ).prefetch_related('delegate_estate_documents', 'delegate_important_documents')
-        
-        # Collect all estate documents across all grants for this contact
-        estate_docs_for_contact = set()
-        for g in all_grants_for_contact:
-            estate_docs_for_contact.update(g.delegate_estate_documents.all())
-        
-        # Collect all important documents across all grants for this contact
-        important_docs_for_contact = set()
-        for g in all_grants_for_contact:
-            important_docs_for_contact.update(g.delegate_important_documents.all())
-        
-        context['estate_documents_for_contact'] = estate_docs_for_contact
-        context['important_documents_for_contact'] = important_docs_for_contact
-
-        # Application conditions
-        context['applies_on_death'] = grant.applies_on_death
-        context['applies_on_incapacity'] = grant.applies_on_incapacity
-        context['applies_immediately'] = grant.applies_immediately
-        
-        return context
-
-
-# ============================================================================
 # CONTACT VIEWS
 # ============================================================================
 class ContactListView(ViewAccessMixin, ListView):
@@ -935,26 +788,22 @@ class ContactDetailView(ViewAccessMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
         
-        # Get all delegation grants for this contact
         contact = self.object
-        delegations = DelegationGrant.objects.filter(
-            delegate_to=contact
-        ).prefetch_related('delegate_estate_documents', 'delegate_important_documents')
         
-        context['delegations'] = delegations
+        # Get ALL documents assigned to this contact
+        estate_docs = DigitalEstateDocument.objects.filter(
+            delegated_to=contact
+        ).order_by('name_or_title')
         
-        # Get all documents delegated to this contact across all grants
-        estate_docs = set()
-        important_docs = set()
-        for grant in delegations:
-            estate_docs.update(grant.delegate_estate_documents.all())
-            important_docs.update(grant.delegate_important_documents.all())
+        important_docs = ImportantDocument.objects.filter(
+            delegated_to=contact
+        ).order_by('name_or_title')
         
         context['delegated_estate_documents'] = estate_docs
         context['delegated_important_documents'] = important_docs
+        context['total_documents'] = estate_docs.count() + important_docs.count()
 
         return context
-
 
 class ContactCreateView(FullAccessMixin, CreateView):
     model = Contact

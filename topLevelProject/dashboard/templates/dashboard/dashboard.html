@@ -233,10 +233,6 @@
                         <h3 class="card-title">Estate Documents</h3>
                         <p class="card-description">Your comprehensive digital estate plan</p>
                         <div class="card-meta">
-                            <!-- <span class="meta-item">{{ estate_count }} estate documents</span> -->
-                            <!-- {% if user.profile.estate_documents.last %}
-                            <span class="meta-date">Last updated: {{ user.profile.estate_documents.last.updated_at|date:"M d, Y" }}</span>
-                            {% endif %} -->
                         </div>
                     </div>
                     
@@ -313,39 +309,6 @@
                     
                     <div class="card-action">
                         <a href="{% url 'dashboard:familyawareness_list' %}" class="btn-card">
-                            <span>View Details</span>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Important Matters Card -->
-                <div class="estate-card" data-category="matters">
-                    <div class="card-icon-wrapper">
-                        <img src="/static/accounts/images/Matters--Streamline-Plump.svg" alt="" class="card-icon">
-                        <!-- <div class="icon-glow"></div> -->
-                    </div>
-                    
-                    <div class="card-status">
-                        {% if not user.profile.delegate.all.count %}
-                        <span class="status-badge status-attention">Needs Review</span>
-                        {% else %}
-                        <span class="status-badge status-complete">Reviewed</span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="card-content">
-                        <h3 class="card-title">Delegations (Estate Documents)</h3>
-                        <p class="card-description">Priority matrix for critical accounts</p>
-                        <div class="card-meta">
-                            <span class="meta-item">Delegation priorities</span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-action">
-                        <a href="{% url 'dashboard:delegate_list' %}" class="btn-card">
                             <span>View Details</span>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                 <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

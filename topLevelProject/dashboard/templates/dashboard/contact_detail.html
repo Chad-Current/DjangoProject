@@ -24,15 +24,39 @@
     {% include "baseapp/navbar.html" %}
     {% include "dashboard/navblocks.html" %}
 
-  <div class="main container py-4">
+   <div class="main container py-4">
         <!-- Contact Header -->
-        <div class="contact-header">
+        <div class="delegation-header">
             <h1><i class="fas fa-user-circle"></i> {{ contact.contact_name }}</h1>
-            <div class="subtitle">{{ contact.contact_relation|default:"Contact" }}</div>
+            <div class="subtitle">{{ contact.get_contact_relation_display|default:"Contact" }}</div>
         </div>
 
+        <!-- Summary Statistics -->
+        {% if delegated_estate_documents or delegated_important_documents %}
+        <div class="summary-stats">
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">{{ total_documents|default:0 }}</div>
+                    <div class="stat-label">Total Documents</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">{{ delegated_estate_documents|length }}</div>
+                    <div class="stat-label">Estate Documents</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">{{ delegated_important_documents|length }}</div>
+                    <div class="stat-label">Important Documents</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-5">
                 <!-- Contact Information Card -->
                 <div class="info-card">
                     <h3><i class="fas fa-address-card"></i> Contact Information</h3>
@@ -73,7 +97,7 @@
                         <div class="info-label">
                             <i class="fas fa-heart"></i> Relationship
                         </div>
-                        <div class="info-value">{{ contact.contact_relation }}</div>
+                        <div class="info-value">{{ contact.get_contact_relation_display }}</div>
                     </div>
                     {% endif %}
                 </div>
@@ -105,94 +129,192 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <!-- Emergency Message -->
+                {% if contact.body %}
+                <div class="info-card">
+                    <h3><i class="fas fa-comment-medical"></i> Emergency Message</h3>
+                    <div class="instructions-box">
+                        <p>{{ contact.body|linebreaks }}</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
-            <div class="col-lg-6">
-                <!-- Delegation Grants Card -->
+            <div class="col-lg-7">
+                <!-- Estate Documents -->
                 <div class="info-card">
-                    <h3><i class="fas fa-file-signature"></i> Delegation Grants</h3>
+                    <h3>
+                        <i class="fas fa-file-contract"></i> Delegated Estate Documents
+                        <span class="section-count">{{ delegated_estate_documents|length }}</span>
+                    </h3>
                     
-                    {% if delegations %}
-                        {% for delegation in delegations %}
-                        <div class="delegation-item">
+                    {% if delegated_estate_documents %}
+                        {% for doc in delegated_estate_documents %}
+                        <div class="document-item estate-doc">
                             <h5>
-                                <i class="fas fa-scroll"></i> 
-                                <a href="{% url 'dashboard:delegate_detail' delegation.pk %}">
-                                    Grant #{{ delegation.pk }}
+                                <i class="fas fa-file-contract"></i> 
+                                <a href="{% url 'dashboard:estate_detail' doc.pk %}">
+                                    {{ doc.name_or_title }}
                                 </a>
                             </h5>
                             
-                            <div class="delegation-conditions">
-                                {% if delegation.applies_immediately %}
-                                <span class="condition-badge">
-                                    <i class="fas fa-bolt"></i> Immediate Access
-                                </span>
-                                {% endif %}
-                                {% if delegation.applies_on_death %}
-                                <span class="condition-badge">
-                                    <i class="fas fa-star-of-life"></i> Upon Death
-                                </span>
-                                {% endif %}
-                                {% if delegation.applies_on_incapacity %}
-                                <span class="condition-badge">
-                                    <i class="fas fa-hospital"></i> Upon Incapacity
-                                </span>
-                                {% endif %}
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
+                                <span style="font-size: 0.9rem;">{{ doc.get_estate_document_display }}</span>
                             </div>
 
-                            {% if delegation.delegate_estate_documents.all or delegation.delegate_important_documents.all %}
-                            <div class="document-list">
-                                <small class="text-muted">Delegated Documents:</small>
-                                {% for doc in delegation.delegate_estate_documents.all %}
-                                <div class="document-item">
-                                    <i class="fas fa-file-contract"></i>
-                                    <span>{{ doc.document_title }}</span>
-                                </div>
-                                {% endfor %}
-                                {% for doc in delegation.delegate_important_documents.all %}
-                                <div class="document-item">
-                                    <i class="fas fa-file-alt"></i>
-                                    <span>{{ doc.document_title }}</span>
-                                </div>
-                                {% endfor %}
+                            {% if doc.overall_instructions %}
+                            <div class="instructions-box">
+                                <strong style="font-size: 0.9rem;">Instructions:</strong>
+                                <p class="mt-1">{{ doc.overall_instructions }}</p>
                             </div>
                             {% endif %}
+
+                            <!-- Conditions -->
+                            {% if doc.applies_immediately or doc.applies_on_death or doc.applies_on_incapacity %}
+                            <div class="mt-3">
+                                <strong style="font-size: 0.9rem; color: #6b7280;">Applies:</strong>
+                                <div class="mt-2">
+                                    {% if doc.applies_immediately %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-bolt"></i> Immediately
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.applies_on_death %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-star-of-life"></i> Upon Death
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.applies_on_incapacity %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-hospital"></i> Upon Incapacity
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="document-meta">
+                                <div class="document-meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    Updated {{ doc.updated_at|date:"M d, Y" }}
+                                </div>
+                                {% if doc.estate_file %}
+                                <div class="document-meta-item">
+                                    <i class="fas fa-file-download" style="color: #10b981;"></i>
+                                    <a href="{{ doc.estate_file.url }}" target="_blank">Download File</a>
+                                </div>
+                                {% endif %}
+                            </div>
                         </div>
                         {% endfor %}
                     {% else %}
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
-                            <p>No delegation grants for this contact</p>
+                            <p>No estate documents delegated to this contact</p>
                         </div>
                     {% endif %}
                 </div>
 
-                <!-- All Delegated Documents Summary -->
-                {% if delegated_estate_documents or delegated_important_documents %}
+                <!-- Important Documents -->
                 <div class="info-card">
-                    <h3><i class="fas fa-archive"></i> All Delegated Documents</h3>
+                    <h3>
+                        <i class="fas fa-file-alt"></i> Delegated Important Documents
+                        <span class="section-count">{{ delegated_important_documents|length }}</span>
+                    </h3>
                     
-                    {% if delegated_estate_documents %}
-                    <h5 class="mt-3"><i class="fas fa-file-contract"></i> Estate Documents ({{ delegated_estate_documents|length }})</h5>
-                    {% for doc in delegated_estate_documents %}
-                    <div class="document-item">
-                        <i class="fas fa-file-contract"></i>
-                        <a href="{% url 'dashboard:estate_detail' doc.pk %}">{{ doc.document_title }}</a>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
                     {% if delegated_important_documents %}
-                    <h5 class="mt-3"><i class="fas fa-file-alt"></i> Important Documents ({{ delegated_important_documents|length }})</h5>
-                    {% for doc in delegated_important_documents %}
-                    <div class="document-item">
-                        <i class="fas fa-file-alt"></i>
-                        <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">{{ doc.document_title }}</a>
-                    </div>
-                    {% endfor %}
+                        {% for doc in delegated_important_documents %}
+                        <div class="document-item important-doc">
+                            <h5>
+                                <i class="fas fa-file-alt"></i> 
+                                <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">
+                                    {{ doc.name_or_title }}
+                                </a>
+                            </h5>
+                            
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
+                                <span style="font-size: 0.9rem;">{{ doc.get_document_category_display }}</span>
+                            </div>
+
+                            {% if doc.description %}
+                            <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6b7280;">{{ doc.description }}</p>
+                            {% endif %}
+
+                            <!-- Document Locations -->
+                            {% if doc.physical_location or doc.digital_location or doc.important_file %}
+                            <div class="mt-3">
+                                <strong style="font-size: 0.9rem; color: #6b7280;">Locations:</strong>
+                                <div class="mt-2">
+                                    {% if doc.physical_location %}
+                                    <span class="location-badge">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Physical: {{ doc.physical_location }}
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.digital_location %}
+                                    <span class="location-badge">
+                                        <i class="fas fa-cloud"></i>
+                                        Digital: {{ doc.digital_location }}
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.important_file %}
+                                    <span class="location-badge">
+                                        <i class="fas fa-file-download"></i>
+                                        <a href="{{ doc.important_file.url }}" target="_blank">Download File</a>
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Conditions -->
+                            {% if doc.applies_immediately or doc.applies_on_death or doc.applies_on_incapacity %}
+                            <div class="mt-3">
+                                <strong style="font-size: 0.9rem; color: #6b7280;">Applies:</strong>
+                                <div class="mt-2">
+                                    {% if doc.applies_immediately %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-bolt"></i> Immediately
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.applies_on_death %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-star-of-life"></i> Upon Death
+                                    </span>
+                                    {% endif %}
+                                    {% if doc.applies_on_incapacity %}
+                                    <span class="condition-badge">
+                                        <i class="fas fa-hospital"></i> Upon Incapacity
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="document-meta">
+                                <div class="document-meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    Updated {{ doc.updated_at|date:"M d, Y" }}
+                                </div>
+                                {% if doc.requires_legal_review %}
+                                <div class="document-meta-item" style="color: #dc2626;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Requires Legal Review
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No important documents delegated to this contact</p>
+                        </div>
                     {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
 
@@ -217,6 +339,7 @@
         </div>
         {% endif %}
     </div>
+
     {% include "baseapp/footer.html" %}
 
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>

@@ -53,7 +53,7 @@
                         <thead>
                             <tr>
                                 <th>Document Category</th>
-                                <th>Description</th>
+                                <th>Title</th>
                                 <th>Delegated to</th>
                                 <th class="text-end">Actions</th>
                             </tr>
@@ -65,16 +65,12 @@
                                     <span class="badge-relationship">{{ document.document_category }}</span>
                                 </td>
                                 <td>
-                                    <span class="contact-info">{{ document.description|truncatechars:50 }}</span>
+                                    <span class="contact-info">{{ document.name_or_title|truncatechars:50 }}</span>
                                 </td>
                                 <td>
-                                    {% if document.is_delegated %}
                                     <span class="">
-                                        {{ document.delegated_to.contact_name }}
+                                        {{ document.delegated_to }}
                                     </span>
-                                    {% else %}
-                                    <span class="badge bg-secondary">Not Delegated</span>
-                                    {% endif %}
                                 </td>
                                 <td>
                                     <div class="action-buttons">

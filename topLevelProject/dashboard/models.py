@@ -1,10 +1,3 @@
-# ============================================================================
-# PART 9: DASHBOARD MODELS - WITH M2M DELEGATE_DOC
-# ============================================================================
-
-# ============================================================================
-# dashboard/models.py
-# ============================================================================
 from django.db import models
 from django.conf import settings
 from django.core.validators import URLValidator
@@ -100,7 +93,7 @@ class Account(models.Model):
     account_name_or_provider = models.CharField(
         max_length=200, 
         help_text="Account name or service"
-        )
+    )
     website_url = models.URLField(blank=True, validators=[URLValidator()])
     username_or_email = models.CharField(
         max_length=200,
@@ -149,7 +142,6 @@ class AccountRelevanceReview(models.Model):
         on_delete=models.CASCADE,
         related_name='relevance_reviews'
     )
-    # FOR DATA INTEGRITY (KEEP?)
     reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -167,8 +159,7 @@ class AccountRelevanceReview(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # If this is a new object, set the review date 90 days from now
-        if not self.pk:  # Check if this is a new object
+        if not self.pk:
             if self.account.is_critical:
                 self.next_review_due = timezone.now().date() + timedelta(days=90)
             else:
@@ -180,7 +171,7 @@ class AccountRelevanceReview(models.Model):
         ordering = ['-review_date']
     
     def __str__(self):
-        return f"Review of {self.account.account_name} on {self.review_date.date()}"
+        return f"Review of {self.account.account_name_or_provider} on {self.review_date.date()}"
 
 
 class Device(models.Model):
@@ -219,9 +210,7 @@ class Device(models.Model):
         blank=True,
         help_text="How to unlock (without revealing actual password)"
     )
-    used_for_2fa = models.BooleanField(
-        default=False,
-    )
+    used_for_2fa = models.BooleanField(default=False)
     decommission_instruction = models.TextField(
         blank=True,
         help_text="What to do with this device after death"
@@ -240,7 +229,7 @@ class Device(models.Model):
 
 class Contact(models.Model):
     """
-    Notes for specific contacts
+    Contacts for estate planning
     """
     profile = models.ForeignKey(
         Profile,
@@ -266,10 +255,7 @@ class Contact(models.Model):
         ('Other', 'Other'),
     ]
 
-    contact_name = models.CharField(
-        max_length=200,
-        default="Enter name"
-    )
+    contact_name = models.CharField(max_length=200, default="Enter name")
     body = models.TextField(help_text="Emergency message content")
     contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
     email = models.EmailField(blank=True)
@@ -287,17 +273,28 @@ class Contact(models.Model):
     
     def __str__(self):
         return f"{self.contact_name} ({self.contact_relation})"
+    
+    def get_estate_documents_count(self):
+        """Count of estate documents delegated to this contact"""
+        return self.delegated_estate_documents.count()
+    
+    def get_important_documents_count(self):
+        """Count of important documents delegated to this contact"""
+        return self.delegated_important_documents.count()
+    
+    def get_total_documents_count(self):
+        """Total documents delegated to this contact"""
+        return self.get_estate_documents_count() + self.get_important_documents_count()
 
 
 class DigitalEstateDocument(models.Model):
     """
-    The main digital estate planning document
+    Estate planning documents - MUST be assigned to a contact
     """
     PERSONAL_ESTATE_DOCUMENTS = [
         ("Healthcare Documents", [
             ("Advance Directive / Living Will", "Advance Directive / Living Will — States your wishes for end-of-life or critical medical care."),
             ("Durable Power of Attorney for Healthcare", "Durable Power of Attorney for Healthcare — Authorizes someone to make medical decisions if you cannot."),
-            ("Living Will / Advance Directive", "Living Will / Advance Directive — States your wishes for end-of-life or critical medical care."),
             ("HIPAA Authorizations", "HIPAA Authorizations — Allows named individuals to access your medical information."),
             ("Organ Donation Preferences", "Organ Donation Preferences — Documents or forms stating your organ donation wishes."),
         ]),
@@ -321,8 +318,13 @@ class DigitalEstateDocument(models.Model):
         editable=False
     )
     
-    # ManyToMany relationship with Contact through DelegationGrant
-    # This is established via the reverse relationship from DelegationGrant
+    # ONE-TO-ONE: Each estate document MUST be assigned to exactly one contact
+    delegated_to = models.ForeignKey(
+        Contact,
+        on_delete=models.PROTECT,  # Can't delete contact if they have documents
+        related_name='delegated_estate_documents',
+        help_text="Contact who has access to this document"
+    )
     
     estate_document = models.CharField(
         max_length=200,
@@ -352,22 +354,121 @@ class DigitalEstateDocument(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
-    
+    applies_on_death = models.BooleanField(default=False)
+    applies_on_incapacity = models.BooleanField(default=False)
+    applies_immediately = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'digital_estate_documents'
-        ordering = ['-name_or_title', '-created_at']
-    
-    def is_delegated(self):
-        """Check if this document is already delegated"""
-        return self.delegation_grants.exists()
-    
-    def delegated_to(self):
-        """Return the contact this document is delegated to, if any"""
-        grant = self.delegation_grants.first()
-        return grant.delegate_to if grant else None
+        ordering = ['delegated_to', 'name_or_title', '-created_at']
+        indexes = [
+            models.Index(fields=['profile', 'delegated_to']),
+        ]
     
     def __str__(self):
-        return f"{self.estate_document}"
+        return f"{self.name_or_title} → {self.delegated_to.contact_name}"
+
+
+class ImportantDocument(models.Model):
+    """
+    Important documents - MUST be assigned to a contact
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='important_documents',
+        editable=False
+    )
+    
+    # ONE-TO-ONE: Each important document MUST be assigned to exactly one contact
+    delegated_to = models.ForeignKey(
+        Contact,
+        on_delete=models.PROTECT,  # Can't delete contact if they have documents
+        related_name='delegated_important_documents',
+        help_text="Contact who has access to this document"
+    )
+
+    DOCUMENT_CATEGORY_CHOICES = [
+        ("Personal Identification", "Driver's license, passport, and other official IDs."),
+        ("Important Personal Documents", "Birth certificate, marriage certificate, and similar records."),
+        ("Social Security Information", "Social Security number and benefit details."),
+        ("Property Deeds and Titles", "Ownership records for homes, vehicles, or land."),
+        ("Safe Deposit Box Information", "Location, access instructions, and contents list."),
+        ("Medical Summary", "Includes allergies, medications, medical history, and specialists."),
+        ("Care Preferences and Providers", "In-home care, nursing home info, and care instructions."),
+        ("Health Insurance and Benefits", "Insurance policy details, Medicare/Medicaid info."),
+        ("Dependents and Pet Care", "Dependent care needs and pet care instructions."),
+        ("Funeral and Memorial Wishes", "Funeral, burial, or memorial preferences."),
+        ("Bank and Cash Accounts", "Checking, savings, and credit card details."),
+        ("Loans and Liabilities", "Debts, mortgages, and other financial obligations."),
+        ("Investments and Retirement", "Investment accounts, pensions, and annuities."),
+        ("Income and Budgets", "Income sources, monthly bills, and recurring expenses."),
+        ("Insurance Policies", "Life, disability, and long-term care policies."),
+        ("Tax and Financial Records", "Tax returns, property records, and valuation documents."),
+        ("Business Ownership Documents", "Operating agreements, partnership and ownership records."),
+        ("Charitable Giving and Memberships", "Charitable plans, affiliations, and organizations."),
+        ("Online Accounts and Passwords", "Online services, financial logins, and subscriptions."),
+        ("Cloud and Email Accounts", "Cloud storage, email accounts, and access credentials."),
+        ("Password Management", "Password manager info and recovery instructions."),
+        ("Social Media Accounts", "Profiles and legacy social media preferences."),
+        ("Personal Property and Valuables", "Inventory of personal valuables."),
+        ("Notes and Special Instructions", "Additional notes or specific personal guidance."),
+    ]
+
+    name_or_title = models.CharField(
+        max_length=100,
+        blank=False,
+        help_text="Specific name of Document"
+    )
+
+    description = models.CharField(max_length=200, blank=True)
+    
+    document_category = models.CharField(
+        max_length=50,
+        choices=DOCUMENT_CATEGORY_CHOICES,
+        default='Important Personal Documents'
+    )
+
+    physical_location = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Where physical document is stored"
+    )
+
+    digital_location = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Where digital copy is stored"
+    )
+
+    important_file = models.FileField(
+        upload_to='documents/%Y/%m/',
+        blank=True,
+        null=True,
+        help_text="Upload digital copy"
+    )
+
+    requires_legal_review = models.BooleanField(
+        default=False,
+        help_text="Needs legal professional review"
+    )
+
+    applies_on_death = models.BooleanField(default=False)
+    applies_on_incapacity = models.BooleanField(default=False)
+    applies_immediately = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'important_documents'
+        ordering = ['delegated_to', 'document_category']
+        indexes = [
+            models.Index(fields=['profile', 'delegated_to']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name_or_title} → {self.delegated_to.contact_name}"
 
 
 class FamilyNeedsToKnowSection(models.Model):
@@ -393,7 +494,7 @@ class FamilyNeedsToKnowSection(models.Model):
         ordering = ['relation', 'content']
         
     def __str__(self):
-        return f"{self.relation} - {self.content}"
+        return f"{self.relation} - {self.content[:50]}"
 
 
 class Checkup(models.Model):
@@ -557,214 +658,3 @@ class RecoveryRequest(models.Model):
     
     def __str__(self):
         return f"Recovery: {self.target_description} ({self.status})"
-
-
-class ImportantDocument(models.Model):
-    """
-    Important documents (wills, deeds, insurance, etc.)
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='important_documents',
-        editable=False
-    )
-    
-    # ManyToMany relationship with Contact through DelegationGrant
-    # This is established via the reverse relationship from DelegationGrant
-
-    DOCUMENT_CATEGORY_CHOICES = [
-        # 1. Personal Identification & Legal Records
-        ("Personal Identification", "Driver’s license, passport, and other official IDs."),
-        ("Important Personal Documents", "Birth certificate, marriage certificate, and similar records."),
-        ("Social Security Information", "Social Security number and benefit details."),
-        ("Property Deeds and Titles", "Ownership records for homes, vehicles, or land."),
-        ("Safe Deposit Box Information", "Location, access instructions, and contents list."),
-
-        # 2. Health & Care Information
-        ("Medical Summary", "Includes allergies, medications, medical history, and specialists."),
-        ("Care Preferences and Providers", "In-home care, nursing home info, and care instructions."),
-        ("Health Insurance and Benefits", "Insurance policy details, Medicare/Medicaid info."),
-        ("Dependents and Pet Care", "Dependent care needs and pet care instructions."),
-        ("Funeral and Memorial Wishes", "Funeral, burial, or memorial preferences."),
-
-        # 3. Financial Accounts & Assets
-        ("Bank and Cash Accounts", "Checking, savings, and credit card details."),
-        ("Loans and Liabilities", "Debts, mortgages, and other financial obligations."),
-        ("Investments and Retirement", "Investment accounts, pensions, and annuities."),
-        ("Income and Budgets", "Income sources, monthly bills, and recurring expenses."),
-        ("Insurance Policies", "Life, disability, and long-term care policies."),
-        ("Tax and Financial Records", "Tax returns, property records, and valuation documents."),
-
-        # 4. Business & Legal Interests
-        ("Business Ownership Documents", "Operating agreements, partnership and ownership records."),
-        ("Charitable Giving and Memberships", "Charitable plans, affiliations, and organizations."),
-
-        # 5. Digital & Online Accounts
-        ("Online Accounts and Passwords", "Online services, financial logins, and subscriptions."),
-        ("Cloud and Email Accounts", "Cloud storage, email accounts, and access credentials."),
-        ("Password Management", "Password manager info and recovery instructions."),
-        ("Social Media Accounts", "Profiles and legacy social media preferences."),
-
-        # 6. Personal Property & Notes
-        ("Personal Property and Valuables", "Inventory of personal valuables."),
-        ("Notes and Special Instructions", "Additional notes or specific personal guidance."),
-    ]
-
-    name_or_title = models.CharField(
-    max_length=100,
-    blank=False,
-    help_text="Specific name of Document"
-    )
-
-    description = models.CharField(
-        max_length=200, 
-        blank=True
-    )
-    
-    document_category = models.CharField(
-        max_length=50,
-        choices=DOCUMENT_CATEGORY_CHOICES,
-        default='Important Personal Documents'
-    )
-
-    physical_location = models.CharField(
-        max_length=200,
-        blank=True,
-        help_text="Where physical document is stored"
-    )
-
-    digital_location = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Where digital copy is stored"
-    )
-
-    important_file = models.FileField(
-        upload_to='documents/%Y/%m/',
-        blank=True,
-        null=True,
-        help_text="Upload digital copy"
-    )
-
-    requires_legal_review = models.BooleanField(
-        default=False,
-        help_text="Needs legal professional review"
-    )
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    
-    class Meta:
-        db_table = 'important_documents'
-        ordering = ['document_category']
-    
-    def is_delegated(self):
-        """Check if this document is already delegated"""
-        return self.delegation_grants.exists()
-    
-    def delegated_to(self):
-        """Return the contact this document is delegated to, if any"""
-        grant = self.delegation_grants.first()
-        return grant.delegate_to if grant else None
-    
-    def __str__(self):
-        return self.document_category
-
-
-class DelegationGrant(models.Model):
-    """
-    Grants of authority to contacts for specific scopes.
-    This is the through model that connects Contact with DigitalEstateDocument and ImportantDocument.
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='delegation_grants',
-        editable=False
-    )
-
-    delegate_to = models.ForeignKey(
-        Contact,
-        on_delete=models.CASCADE,
-        related_name='delegation_grants',
-        help_text="Contact receiving this delegation"
-    )
-
-    # ManyToMany relationships - FIXED: Added through model to handle deletions properly
-    delegate_estate_documents = models.ManyToManyField(
-        DigitalEstateDocument,
-        related_name='delegation_grants',
-        blank=True,
-        help_text="Estate documents this delegation covers"
-    )
-
-    delegate_important_documents = models.ManyToManyField(
-        ImportantDocument,
-        related_name='delegation_grants',
-        blank=True,
-        help_text="Important documents this delegation covers"
-    )
-    
-    DELEGATION_SCOPE_CHOICES = [
-        ("Estate and Property Oversight", "Estate and Property Oversight"),
-        ("Family Affairs", "Family Affairs"),
-        ("Financial Authority", "Financial Authority"),
-        ("Healthcare Decision-Making", "Healthcare Decision-Making"),
-        ("Personal Items", "Personal Items"),
-    ]
-    
-    delegation_category = models.CharField(
-        max_length=200,
-        choices=DELEGATION_SCOPE_CHOICES,
-        default='MEDICAL_TREATMENT_DECISIONS'
-    )
-    
-    applies_on_death = models.BooleanField(default=False)
-    applies_on_incapacity = models.BooleanField(default=False)
-    applies_immediately = models.BooleanField(default=False)
-    
-    notes_for_contact = models.TextField(
-        blank=True,
-        help_text="Instructions for the contact"
-    )
-
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'delegation_grants'
-        ordering = ['delegate_to', '-created_at']
-    
-    def __str__(self):
-        return f"Delegation to {self.delegate_to.contact_name}"
-
-    def save(self, *args, **kwargs):
-        """Override save to clean up empty delegations"""
-        super().save(*args, **kwargs)
-        
-        # After save, check if delegation has no documents
-        # Note: This only works after the M2M relationships are set
-        # So we need to check in a post_save signal or in the view
-    
-    def has_no_documents(self):
-        """Check if this delegation has no documents assigned"""
-        return (
-            self.delegate_estate_documents.count() == 0 and 
-            self.delegate_important_documents.count() == 0
-        )
-    
-    def clean_if_empty(self):
-        """Delete this delegation if it has no documents"""
-        if self.pk and self.has_no_documents():
-            self.delete()
-              
-    def get_estate_documents_count(self):
-        """Return the count of delegated estate documents"""
-        return self.delegate_estate_documents.count()
-    
-    def get_important_documents_count(self):
-        """Return the count of delegated important documents"""
-        return self.delegate_important_documents.count()
-

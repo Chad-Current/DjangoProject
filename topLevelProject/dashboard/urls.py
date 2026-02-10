@@ -60,11 +60,11 @@ urlpatterns = [
     path('documents/<int:pk>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
     
     # Delegation Grant URLs
-    path('delegations/', views.DelegationGrantListView.as_view(), name='delegate_list'),
-    path('delegations/create/', views.DelegationGrantCreateView.as_view(), name='delegate_create'),
-    path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegate_update'),
-    path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegate_delete'),
-    path('delegations/<int:pk>/', views.DelegationGrantDetailView.as_view(), name='delegate_detail'),
+    # path('delegations/', views.DelegationGrantListView.as_view(), name='delegate_list'),
+    # path('delegations/create/', views.DelegationGrantCreateView.as_view(), name='delegate_create'),
+    # path('delegations/<int:pk>/edit/', views.DelegationGrantUpdateView.as_view(), name='delegate_update'),
+    # path('delegations/<int:pk>/delete/', views.DelegationGrantDeleteView.as_view(), name='delegate_delete'),
+    # path('delegations/<int:pk>/', views.DelegationGrantDetailView.as_view(), name='delegate_detail'),
     
     # Checkup URLs
     path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),

@@ -1,5 +1,6 @@
 # dashboard/admin.py
 from django.contrib import admin
+from django.db.models import Count, Q, F
 from .models import (
     Profile,
     Account,
@@ -12,7 +13,6 @@ from .models import (
     CareRelationship,
     RecoveryRequest,
     ImportantDocument,
-    DelegationGrant,
 )
 
 
@@ -42,7 +42,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('account_name_or_provider',  'account_category', 'is_critical', 'created_at')
+    list_display = ('account_name_or_provider', 'account_category', 'is_critical', 'created_at')
     list_filter = ('account_category', 'is_critical', 'keep_or_close_instruction', 'created_at')
     search_fields = ('account_name_or_provider', 'username_or_email', 'profile__full_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
@@ -90,7 +90,7 @@ class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name', 'device_type', 'owner_label', 'used_for_2fa', 'created_at')
     list_filter = ('device_type', 'used_for_2fa', 'created_at')
     search_fields = ('name', 'owner_label', 'profile__full_name')
-    readonly_fields = ('profile','created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Device Information', {
@@ -108,14 +108,18 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(DigitalEstateDocument)
 class DigitalEstateDocumentAdmin(admin.ModelAdmin):
-    list_display = ('estate_document', 'name_or_title', 'created_at')
-    list_filter = ('name_or_title', 'estate_document', 'created_at')
-    search_fields = ('estate_document', 'profile__full_name', 'overall_instructions')
-    readonly_fields = ( 'profile', 'created_at', 'updated_at','estate_file')
+    list_display = ('name_or_title', 'estate_document', 'delegated_to', 'profile', 'created_at')
+    list_filter = ('estate_document', 'created_at', 'delegated_to')
+    search_fields = ('name_or_title', 'profile__full_name', 'overall_instructions', 'delegated_to__contact_name')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
+        ('Assignment', {
+            'fields': ('profile', 'delegated_to'),
+            'description': 'Document must be assigned to a contact.'
+        }),
         ('Document Information', {
-            'fields': ('profile', 'estate_document', 'name_or_title')
+            'fields': ('estate_document', 'name_or_title', 'estate_file')
         }),
         ('Instructions', {
             'fields': ('overall_instructions',)
@@ -125,14 +129,25 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('profile', 'delegated_to')
 
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('contact_name', 'contact_relation', 'email', 'phone', 'is_emergency_contact', 'is_digital_executor')
+    list_display = (
+        'contact_name',
+        'contact_relation',
+        'email',
+        'phone',
+        'is_emergency_contact',
+        'is_digital_executor',
+        'documents_count'
+    )
     list_filter = ('contact_relation', 'is_emergency_contact', 'is_digital_executor', 'is_caregiver', 'created_at')
     search_fields = ('contact_name', 'email', 'phone', 'profile__full_name')
-    readonly_fields = ( 'profile', 'created_at', 'updated_at')
+    readonly_fields = ('profile', 'created_at', 'updated_at', 'documents_count_display')
     
     fieldsets = (
         ('Contact Information', {
@@ -140,6 +155,10 @@ class ContactAdmin(admin.ModelAdmin):
         }),
         ('Roles', {
             'fields': ('is_emergency_contact', 'is_digital_executor', 'is_caregiver')
+        }),
+        ('Document Assignment', {
+            'fields': ('documents_count_display',),
+            'description': 'Number of documents assigned to this contact.'
         }),
         ('Message', {
             'fields': ('body',)
@@ -149,6 +168,29 @@ class ContactAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.annotate(
+            estate_count=Count('delegated_estate_documents'),
+            important_count=Count('delegated_important_documents')
+        )
+    
+    def documents_count(self, obj):
+        """Display total document count in list view"""
+        total = obj.estate_count + obj.important_count
+        return f"{total} ({obj.estate_count} estate, {obj.important_count} important)"
+    documents_count.short_description = 'Documents'
+    documents_count.admin_order_field = 'estate_count'
+    
+    def documents_count_display(self, obj):
+        """Display document count in detail view"""
+        if obj.pk:
+            estate = obj.delegated_estate_documents.count()
+            important = obj.delegated_important_documents.count()
+            return f"{estate + important} total ({estate} estate, {important} important)"
+        return "Save contact first to see document count"
+    documents_count_display.short_description = 'Documents Assigned'
 
 
 @admin.register(FamilyNeedsToKnowSection)
@@ -164,8 +206,6 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
     )
     search_fields = ('relation__contact_name', 'content')
     readonly_fields = ('created_at', 'updated_at')
-    #NEEDS TO HAVE PROFILE ADD TO HERE FOR ISOLATIOJ :::
-
 
     def content_preview(self, obj):
         return obj.content[:50] + '...' if len(obj.content) > 50 else obj.content
@@ -270,14 +310,18 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
 
 @admin.register(ImportantDocument)
 class ImportantDocumentAdmin(admin.ModelAdmin):
-    list_display = ('document_category', 'requires_legal_review', 'created_at')
-    list_filter = ('document_category', 'requires_legal_review', 'created_at')
-    search_fields = ('document_category', 'description', 'profile__full_name')
+    list_display = ('name_or_title', 'document_category', 'delegated_to', 'requires_legal_review', 'created_at')
+    list_filter = ('document_category', 'requires_legal_review', 'created_at', 'delegated_to')
+    search_fields = ('name_or_title', 'description', 'profile__full_name', 'delegated_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
+        ('Assignment', {
+            'fields': ('profile', 'delegated_to'),
+            'description': 'Document must be assigned to a contact.'
+        }),
         ('Document Information', {
-            'fields': ('profile', 'document_category', 'description', 'requires_legal_review')
+            'fields': ('name_or_title', 'document_category', 'description', 'requires_legal_review')
         }),
         ('Locations', {
             'fields': ('physical_location', 'digital_location', 'important_file')
@@ -287,88 +331,11 @@ class ImportantDocumentAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-
-
-@admin.register(DelegationGrant)
-class DelegationGrantAdmin(admin.ModelAdmin):
-    list_display = (
-        'delegate_to',
-        'delegation_category',
-        'estate_docs_count',
-        'important_docs_count',
-        'applies_on_death',
-        'applies_on_incapacity',
-        'applies_immediately',
-        'created_at'
-    )
-    list_filter = (
-        'delegation_category',
-        'applies_on_death',
-        'applies_on_incapacity',
-        'applies_immediately',
-        'created_at',
-        'updated_at'
-    )
-    search_fields = (
-        'delegate_to__contact_name',
-        'profile__full_name',
-        'notes_for_contact'
-    )
-    readonly_fields = ('created_at', 'updated_at', 'profile')
-    
-    # Use filter_horizontal for better M2M widget
-    filter_horizontal = ('delegate_estate_documents', 'delegate_important_documents')
-    
-    fieldsets = (
-        ('Delegation Information', {
-            'fields': ('profile', 'delegate_to', 'delegation_category')
-        }),
-        ('Estate Documents', {
-            'fields': ('delegate_estate_documents',),
-            'description': 'Select which estate documents this delegation covers.'
-        }),
-        ('Important Documents', {
-            'fields': ('delegate_important_documents',),
-            'description': 'Select which important documents this delegation covers (optional).'
-        }),
-        ('Application Conditions', {
-            'fields': ('applies_on_death', 'applies_on_incapacity', 'applies_immediately'),
-            'description': 'Specify when this delegation becomes active.'
-        }),
-        ('Notes', {
-            'fields': ('notes_for_contact',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    def estate_docs_count(self, obj):
-        """Display count of estate documents"""
-        count = obj.delegate_estate_documents.count()
-        return f"{count} document{'s' if count != 1 else ''}"
-    estate_docs_count.short_description = 'Estate Docs'
-    
-    def important_docs_count(self, obj):
-        """Display count of important documents"""
-        count = obj.delegate_important_documents.count()
-        return f"{count} document{'s' if count != 1 else ''}"
-    important_docs_count.short_description = 'Important Docs'
     
     def get_queryset(self, request):
-        """Optimize queryset with prefetch_related"""
-        queryset = super().get_queryset(request)
-        return queryset.select_related(
-            'profile',
-            'delegate_to'
-        ).prefetch_related(
-            'delegate_estate_documents',
-            'delegate_important_documents'
-        )
+        return super().get_queryset(request).select_related('profile', 'delegated_to')
 
-
-# Optional: Customize admin site header
+# Customize admin site header
 admin.site.site_header = "Digital Estate Planning Administration"
 admin.site.site_title = "Digital Estate Admin"
 admin.site.index_title = "Welcome to Digital Estate Planning Administration"
