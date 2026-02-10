@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Button
 from .models import (
@@ -499,6 +500,11 @@ class DelegationGrantForm(forms.ModelForm):
                 all_important_docs = ImportantDocument.objects.filter(profile=profile)
                 
                 if self.instance and self.instance.pk:
+                    # For editing: exclude docs delegated to OTHER contacts
+                    # But include docs currently in THIS delegation
+                    current_estate_ids = self.instance.delegate_estate_documents.values_list('id', flat=True)
+                    current_important_ids = self.instance.delegate_important_documents.values_list('id', flat=True)
+                    
                     already_delegated_estate_ids = DelegationGrant.objects.filter(
                         profile=profile
                     ).exclude(pk=self.instance.pk).values_list('delegate_estate_documents', flat=True)
@@ -506,7 +512,16 @@ class DelegationGrantForm(forms.ModelForm):
                     already_delegated_important_ids = DelegationGrant.objects.filter(
                         profile=profile
                     ).exclude(pk=self.instance.pk).values_list('delegate_important_documents', flat=True)
+                    
+                    # Include currently selected docs OR docs not delegated elsewhere
+                    self.fields['delegate_estate_documents'].queryset = all_estate_docs.filter(
+                        Q(id__in=current_estate_ids) | ~Q(id__in=already_delegated_estate_ids)
+                    )
+                    self.fields['delegate_important_documents'].queryset = all_important_docs.filter(
+                        Q(id__in=current_important_ids) | ~Q(id__in=already_delegated_important_ids)
+                    )
                 else:
+                    # For creating: exclude docs already delegated to any contact
                     already_delegated_estate_ids = DelegationGrant.objects.filter(
                         profile=profile
                     ).values_list('delegate_estate_documents', flat=True)
@@ -514,13 +529,13 @@ class DelegationGrantForm(forms.ModelForm):
                     already_delegated_important_ids = DelegationGrant.objects.filter(
                         profile=profile
                     ).values_list('delegate_important_documents', flat=True)
-                
-                self.fields['delegate_estate_documents'].queryset = all_estate_docs.exclude(
-                    id__in=already_delegated_estate_ids
-                )
-                self.fields['delegate_important_documents'].queryset = all_important_docs.exclude(
-                    id__in=already_delegated_important_ids
-                )
+                    
+                    self.fields['delegate_estate_documents'].queryset = all_estate_docs.exclude(
+                        id__in=already_delegated_estate_ids
+                    )
+                    self.fields['delegate_important_documents'].queryset = all_important_docs.exclude(
+                        id__in=already_delegated_important_ids
+                    )
                 
                 available_estate_count = self.fields['delegate_estate_documents'].queryset.count()
                 available_important_count = self.fields['delegate_important_documents'].queryset.count()
@@ -536,7 +551,7 @@ class DelegationGrantForm(forms.ModelForm):
                 
             except Profile.DoesNotExist:
                 self.fields['delegate_to'].queryset = Contact.objects.none()
-                self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.none()  
+                self.fields['delegate_estate_documents'].queryset = DigitalEstateDocument.objects.none()
                 self.fields['delegate_important_documents'].queryset = ImportantDocument.objects.none()
 
         self.helper = FormHelper()
@@ -573,3 +588,20 @@ class DelegationGrantForm(forms.ModelForm):
                 css_class='button-group'
             ),
         )
+    
+    def clean(self):
+        """Validate that at least one document is selected"""
+        cleaned_data = super().clean()
+        estate_docs = cleaned_data.get('delegate_estate_documents')
+        important_docs = cleaned_data.get('delegate_important_documents')
+        
+        # Check if any documents are selected
+        has_estate = estate_docs and estate_docs.exists()
+        has_important = important_docs and important_docs.exists()
+        
+        if not has_estate and not has_important:
+            raise forms.ValidationError(
+                "You must select at least one estate document or important document to delegate."
+            )
+        
+        return cleaned_data

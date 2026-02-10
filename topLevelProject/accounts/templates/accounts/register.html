@@ -1,79 +1,90 @@
 {% load static %}
 <!DOCTYPE html>
-<html="en">
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <linkh
-            href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-            rel="stylesheet">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'accounts/css/enhanced-forms.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+</head>
 
-    <body>
-        {% include "baseapp/navbar.html" %}
-        <div class="main">
-            <div class="parent">
-                <div class="login-form">
-                    <h1>Register</h1>
-
-                    {% if messages %}
+<body>
+    {% include "baseapp/navbar.html" %}
+    
+    <div class="main">
+        <div class="form-container">
+            <div class="form-wrapper">
+                <h1 class="form-section-title">Create Account</h1>
+                
+                {% if messages %}
                     {% for message in messages %}
-                    <div class="messages {% if message.tags %}{{ message.tags }}{% endif %}">
-                        {{ message }}
-                    </div>
+                        <div class="error">
+                            {{ message }}
+                        </div>
                     {% endfor %}
-                    {% endif %}
+                {% endif %}
 
-                    <form method="post">
-                        {% csrf_token %}
+                <form method="post">
+                    {% csrf_token %}
 
+                    <div class="form-field">
                         <label for="{{ form.username.id_for_label }}">Username:</label>
                         {{ form.username }}
                         {% if form.username.errors %}
-                        <div class="error">{{ form.username.errors }}</div>
+                            <div class="error">{{ form.username.errors }}</div>
                         {% endif %}
+                    </div>
 
+                    <div class="form-field">
                         <label for="{{ form.email.id_for_label }}">Email:</label>
                         {{ form.email }}
                         {% if form.email.errors %}
-                        <div class="error">{{ form.email.errors }}</div>
+                            <div class="error">{{ form.email.errors }}</div>
                         {% endif %}
+                    </div>
 
+                    <div class="form-field">
                         <label for="{{ form.password1.id_for_label }}">Password:</label>
                         {{ form.password1 }}
                         {% if form.password1.errors %}
-                        <div class="error">{{ form.password1.errors }}</div>
+                            <div class="error">{{ form.password1.errors }}</div>
                         {% endif %}
+                    </div>
 
+                    <div class="form-field">
                         <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
                         {{ form.password2 }}
                         {% if form.password2.errors %}
-                        <div class="error">{{ form.password2.errors }}</div>
+                            <div class="error">{{ form.password2.errors }}</div>
                         {% endif %}
-                        
-                        <button class="login-btn" type="submit">Register</button>
-                    </form>
-                    
-                    <div class="text-center">
-                        <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
                     </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-primary" type="submit">Register</button>
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
                 </div>
             </div>
-
-
-        </div> <!-- END MAIN -->
-
-        <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-        <script src="{% static 'baseapp/js/index.js' %}"></script>
-        <!-- End body-->
-    </body>
+        </div>
+    </div> <!-- END MAIN -->
+    
     {% include "baseapp/footer.html" %}
 
-    </html>
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
+
+</html>

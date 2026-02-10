@@ -200,10 +200,10 @@ class PaymentView(LoginRequiredMixin, View):
 # Password Reset Views
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'accounts/password_reset.html'
-    email_template_name = 'accounts/password_reset_email.html'
+    email_template_name = 'accounts/password_reset_email.txt'
+    html_email_template_name = 'accounts/password_reset_email.html'  
     subject_template_name = 'accounts/password_reset_subject.txt'
-    form_class = CustomPasswordResetForm
-    success_url = reverse_lazy('password_reset_done')
+    success_url = reverse_lazy('accounts:password_reset_done')
     
     def form_valid(self, form):
         messages.success(self.request, 'Password reset email has been sent.')

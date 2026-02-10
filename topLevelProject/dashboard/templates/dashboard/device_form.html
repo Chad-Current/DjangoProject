@@ -19,9 +19,15 @@
 </head>
 
 <body>
-    {% include 'dashboard/account_form.html' %}
-    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    {% include "baseapp/navbar.html" %}
+    
+    <div class="form-container">
+        {% crispy form %}
+    </div>
 
+    {% include "baseapp/footer.html" %}
+    
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

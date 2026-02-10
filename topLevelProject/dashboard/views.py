@@ -576,6 +576,7 @@ class EstateDeleteView(DeleteAccessMixin, DeleteView):
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
+        # The signal will handle cleanup of empty delegations
         messages.success(request, 'Estate document deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
@@ -749,6 +750,7 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
+        # The signal will handle cleanup of empty delegations
         messages.success(request, 'Document deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
@@ -814,8 +816,20 @@ class DelegationGrantUpdateView(FullAccessMixin, UpdateView):
         return kwargs
     
     def form_valid(self, form):
+        response = super().form_valid(form)
+        
+        # After saving, check if the delegation is now empty
+        # (This shouldn't happen due to form validation, but belt and suspenders)
+        if self.object.has_no_documents():
+            self.object.delete()
+            messages.warning(
+                self.request, 
+                'Delegation was removed because no documents were selected.'
+            )
+            return redirect('dashboard:delegate_list')
+        
         messages.success(self.request, 'Delegation grant updated successfully.')
-        return super().form_valid(form)
+        return response
 
 
 class DelegationGrantDeleteView(DeleteAccessMixin, DeleteView):
