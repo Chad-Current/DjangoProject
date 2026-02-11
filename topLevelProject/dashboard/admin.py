@@ -39,101 +39,6 @@ class ProfileAdmin(admin.ModelAdmin):
         }),
     )
 
-
-@admin.register(Account)
-class AccountAdmin(admin.ModelAdmin):
-    list_display = ('account_name_or_provider', 'account_category', 'is_critical', 'created_at')
-    list_filter = ('account_category', 'is_critical', 'keep_or_close_instruction', 'created_at')
-    search_fields = ('account_name_or_provider', 'username_or_email', 'profile__full_name')
-    readonly_fields = ('profile', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Account Information', {
-            'fields': ('profile', 'account_name_or_provider', 'account_category', 'website_url')
-        }),
-        ('Credentials', {
-            'fields': ('username_or_email', 'credential_storage_location')
-        }),
-        ('Status & Instructions', {
-            'fields': ('is_critical', 'keep_or_close_instruction', 'notes_for_family')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
-@admin.register(AccountRelevanceReview)
-class AccountRelevanceReviewAdmin(admin.ModelAdmin):
-    list_display = ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
-    list_filter = ('matters', 'review_date', 'next_review_due')
-    search_fields = ('account__account_name_or_provider', 'reviewer__username', 'reasoning')
-    readonly_fields = ('review_date', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Review Information', {
-            'fields': ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
-        }),
-        ('Details', {
-            'fields': ('reasoning',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
-@admin.register(Device)
-class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'device_type', 'owner_label', 'used_for_2fa', 'created_at')
-    list_filter = ('device_type', 'used_for_2fa', 'created_at')
-    search_fields = ('name', 'owner_label', 'profile__full_name')
-    readonly_fields = ('profile', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Device Information', {
-            'fields': ('profile', 'device_type', 'name', 'owner_label', 'location_description')
-        }),
-        ('Security', {
-            'fields': ('unlock_method_description', 'used_for_2fa', 'decommission_instruction')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
-@admin.register(DigitalEstateDocument)
-class DigitalEstateDocumentAdmin(admin.ModelAdmin):
-    list_display = ('name_or_title', 'estate_document', 'delegated_to', 'profile', 'created_at')
-    list_filter = ('estate_document', 'created_at', 'delegated_to')
-    search_fields = ('name_or_title', 'profile__full_name', 'overall_instructions', 'delegated_to__contact_name')
-    readonly_fields = ('profile', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Assignment', {
-            'fields': ('profile', 'delegated_to'),
-            'description': 'Document must be assigned to a contact.'
-        }),
-        ('Document Information', {
-            'fields': ('estate_document', 'name_or_title', 'estate_file')
-        }),
-        ('Instructions', {
-            'fields': ('overall_instructions',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('profile', 'delegated_to')
-
-
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     list_display = (
@@ -191,6 +96,104 @@ class ContactAdmin(admin.ModelAdmin):
             return f"{estate + important} total ({estate} estate, {important} important)"
         return "Save contact first to see document count"
     documents_count_display.short_description = 'Documents Assigned'
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ('account_name_or_provider', 'account_category', 'delegated_account_to','is_critical', 'created_at')
+    list_filter = ('account_category', 'is_critical', 'keep_or_close_instruction', 'delegated_account_to','created_at')
+    search_fields = ('account_name_or_provider', 'username_or_email', 'profile__full_name','delegated_account_to__contact_name')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Account Information', {
+            'fields': ('profile', 'account_name_or_provider', 'account_category', 'website_url', 'delegated_acccount_to')
+        }),
+        ('Credentials', {
+            'fields': ('username_or_email', 'credential_storage_location')
+        }),
+        ('Status & Instructions', {
+            'fields': ('is_critical', 'keep_or_close_instruction', 'notes_for_family')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('profile', 'delegated_account_to')
+
+
+@admin.register(AccountRelevanceReview)
+class AccountRelevanceReviewAdmin(admin.ModelAdmin):
+    list_display = ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
+    list_filter = ('matters', 'review_date', 'next_review_due')
+    search_fields = ('account__account_name_or_provider', 'reviewer__username', 'reasoning')
+    readonly_fields = ('review_date', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Review Information', {
+            'fields': ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
+        }),
+        ('Details', {
+            'fields': ('reasoning',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(Device)
+class DeviceAdmin(admin.ModelAdmin):
+    list_display = ('device_name', 'device_type', 'owner_label', 'used_for_2fa', 'delegated_device_to', 'created_at')
+    list_filter = ('device_type', 'used_for_2fa', 'created_at', 'delegated_device_to')
+    search_fields = ('device_name', 'owner_label', 'profile__full_name','delegated_device_to__contact_name')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Device Information', {
+            'fields': ('profile', 'device_type', 'device_name', 'owner_label', 'location_description', 'delegated_device_to')
+        }),
+        ('Security', {
+            'fields': ('unlock_method_description', 'used_for_2fa', 'decommission_instruction')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('profile', 'delegated_device_to')
+
+@admin.register(DigitalEstateDocument)
+class DigitalEstateDocumentAdmin(admin.ModelAdmin):
+    list_display = ('name_or_title', 'estate_category', 'delegated_estate_to', 'profile', 'created_at')
+    list_filter = ('estate_category', 'created_at', 'delegated_estate_to')
+    search_fields = ('name_or_title', 'profile__full_name', 'estate_overall_instructions', 'delegated_estate_to__contact_name')
+    readonly_fields = ('profile', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Assignment', {
+            'fields': ('profile', 'delegated_estate_to'),
+            'description': 'Document must be assigned to a contact.'
+        }),
+        ('Document Information', {
+            'fields': ('estate_category', 'name_or_title', 'estate_file')
+        }),
+        ('Instructions', {
+            'fields': ('estate_overall_instructions',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('profile', 'delegated_estate_to')
 
 
 @admin.register(FamilyNeedsToKnowSection)
@@ -310,14 +313,14 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
 
 @admin.register(ImportantDocument)
 class ImportantDocumentAdmin(admin.ModelAdmin):
-    list_display = ('name_or_title', 'document_category', 'delegated_to', 'requires_legal_review', 'created_at')
-    list_filter = ('document_category', 'requires_legal_review', 'created_at', 'delegated_to')
-    search_fields = ('name_or_title', 'description', 'profile__full_name', 'delegated_to__contact_name')
+    list_display = ('name_or_title', 'document_category', 'delegated_important_document_to', 'requires_legal_review', 'created_at')
+    list_filter = ('document_category', 'requires_legal_review', 'created_at', 'delegated_important_document_to')
+    search_fields = ('name_or_title', 'description', 'profile__full_name', 'delegated_important_document_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Assignment', {
-            'fields': ('profile', 'delegated_to'),
+            'fields': ('profile', 'delegated_important_document_to'),
             'description': 'Document must be assigned to a contact.'
         }),
         ('Document Information', {
@@ -333,7 +336,7 @@ class ImportantDocumentAdmin(admin.ModelAdmin):
     )
     
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('profile', 'delegated_to')
+        return super().get_queryset(request).select_related('profile', 'delegated_important_document_to')
 
 # Customize admin site header
 admin.site.site_header = "Digital Estate Planning Administration"

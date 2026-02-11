@@ -73,8 +73,8 @@ def prevent_contact_deletion_with_documents(sender, instance, **kwargs):
     This is also enforced by the PROTECT on_delete, but this provides a clearer message.
     """
     if instance.pk:  # Only for existing contacts
-        estate_count = DigitalEstateDocument.objects.filter(delegated_to=instance).count()
-        important_count = ImportantDocument.objects.filter(delegated_to=instance).count()
+        estate_count = DigitalEstateDocument.objects.filter(delegated_estate_to=instance).count()
+        important_count = ImportantDocument.objects.filter(delegated_important_document_to=instance).count()
         
         if estate_count > 0 or important_count > 0:
             # Contact has documents - they're protected

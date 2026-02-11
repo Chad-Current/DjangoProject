@@ -1,5 +1,5 @@
 # ============================================================================
-# PART 7: DASHBOARD APP - ALL VIEWS - WITH M2M DELEGATE_DOCS
+# PART 7: DASHBOARD APP - ALL VIEWS - WITH M2M DELEGATE_DOCS - CORRECTED
 # ============================================================================
 
 # ============================================================================
@@ -12,10 +12,9 @@ from django.db.models import Count, Q
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
-from django.urls import reverse_lazy
-from django.urls import reverse
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
-from django.db.models import Min, Max, Q
+from django.db.models import Min, Max
 from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
 from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
@@ -46,7 +45,6 @@ from .forms import (
     ImportantDocumentForm,
 )
 
-
 # ============================================================================
 # DASHBOARD HOME
 # ============================================================================
@@ -56,10 +54,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-
         if not getattr(user, "has_paid", False):
             return redirect(reverse("accounts:payment"))
-
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -72,7 +68,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['profile'] = profile
             context['session_expires'] = self.request.session.get_expiry_date()
             
-            # ALL COUNTS
+            # ALL COUNTS - FIXED TO USE PROFILE FILTER
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
@@ -80,85 +76,72 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
             context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
-            # ACCOUNT COUNTS
-            context['app_store'] = Account.objects.filter(Q(account_category='app_store')).count()
-            context['cloud_storage'] = Account.objects.filter(Q(account_category='cloud_storage')).count()
-            context['email'] = Account.objects.filter(Q(account_category='email')).count()
-            context['education_elearning'] = Account.objects.filter(Q(account_category='education_elearning')).count()
-            context['forum_community'] = Account.objects.filter(Q(account_category='forum_community')).count()
-            context['gaming_platform'] = Account.objects.filter(Q(account_category='gaming_platform')).count()
-            context['social_media'] = Account.objects.filter(Q(account_category='social_media')).count()
-            context['subscription_saas'] = Account.objects.filter(Q(account_category='subscription_saas')).count()
-            context['streaming_media'] = Account.objects.filter(Q(account_category='streaming_media')).count()
-            context['ecommerce_marketplace'] = Account.objects.filter(Q(account_category='ecommerce_marketplace')).count()
-            context['online_financial'] = Account.objects.filter(Q(account_category='online_banking') | Q(account_category='neobank_digital_bank') \
-                    | Q(account_category='brokerage_investment') | Q(account_category='cryptocurrency_exchange') | Q(account_category='payment_wallet') \
-                    | Q(account_category='payment_processor')).count()
-            context['government_portal'] = Account.objects.filter(Q(account_category='government_portal')).count()
-            context['health_portal'] = Account.objects.filter(Q(account_category='health_portal')).count()
-            context['smart_home_iot'] = Account.objects.filter(Q(account_category='smart_home_iot')).count()
-            context['travel_booking'] = Account.objects.filter(Q(account_category='travel_booking')).count()
-            context['password_manager'] = Account.objects.filter(Q(account_category='password_manager')).count()
-            context['utilities_telecom_portal'] = Account.objects.filter(Q(account_category='utilities_telecom_portal')).count()
-            context['not_listed'] = Account.objects.filter(Q(account_category='not_listed')).count()
-            #DEVICE COUNTS
-            context['phones'] = Device.objects.filter(Q(device_type='phone')).count()
-            context['tablets'] = Device.objects.filter(Q(device_type='tablet')).count()
-            context['laptops'] = Device.objects.filter(Q(device_type='laptop')).count()
-            context['desktops'] = Device.objects.filter(Q(device_type='desktop')).count()
-            context['smartwatchs'] = Device.objects.filter(Q(device_type='smartwatch')).count()
-            context['others'] = Device.objects.filter(Q(device_type='other')).count()
+            
+            # ACCOUNT CATEGORY COUNTS - FIXED TO USE PROFILE FILTER
+            context['app_store'] = Account.objects.filter(profile=profile, account_category='app_store').count()
+            context['cloud_storage'] = Account.objects.filter(profile=profile, account_category='cloud_storage').count()
+            context['email'] = Account.objects.filter(profile=profile, account_category='email').count()
+            context['education_elearning'] = Account.objects.filter(profile=profile, account_category='education_elearning').count()
+            context['forum_community'] = Account.objects.filter(profile=profile, account_category='forum_community').count()
+            context['gaming_platform'] = Account.objects.filter(profile=profile, account_category='gaming_platform').count()
+            context['social_media'] = Account.objects.filter(profile=profile, account_category='social_media').count()
+            context['subscription_saas'] = Account.objects.filter(profile=profile, account_category='subscription_saas').count()
+            context['streaming_media'] = Account.objects.filter(profile=profile, account_category='streaming_media').count()
+            context['ecommerce_marketplace'] = Account.objects.filter(profile=profile, account_category='ecommerce_marketplace').count()
+            context['online_financial'] = Account.objects.filter(
+                profile=profile,
+                account_category__in=['online_banking', 'neobank_digital_bank', 'brokerage_investment', 
+                                    'cryptocurrency_exchange', 'payment_wallet', 'payment_processor']
+            ).count()
+            context['government_portal'] = Account.objects.filter(profile=profile, account_category='government_portal').count()
+            context['health_portal'] = Account.objects.filter(profile=profile, account_category='health_portal').count()
+            context['smart_home_iot'] = Account.objects.filter(profile=profile, account_category='smart_home_iot').count()
+            context['travel_booking'] = Account.objects.filter(profile=profile, account_category='travel_booking').count()
+            context['password_manager'] = Account.objects.filter(profile=profile, account_category='password_manager').count()
+            context['utilities_telecom_portal'] = Account.objects.filter(profile=profile, account_category='utilities_telecom_portal').count()
+            context['not_listed'] = Account.objects.filter(profile=profile, account_category='not_listed').count()
+            
+            # DEVICE COUNTS - FIXED TO USE PROFILE FILTER
+            context['phones'] = Device.objects.filter(profile=profile, device_type='phone').count()
+            context['tablets'] = Device.objects.filter(profile=profile, device_type='tablet').count()
+            context['laptops'] = Device.objects.filter(profile=profile, device_type='laptop').count()
+            context['desktops'] = Device.objects.filter(profile=profile, device_type='desktop').count()
+            context['smartwatches'] = Device.objects.filter(profile=profile, device_type='smartwatch').count()  # Fixed typo
+            context['others'] = Device.objects.filter(profile=profile, device_type='other').count()
 
-            context['delegation_count'] = DelegationGrant.objects.filter(profile=profile).count()
-            context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
-            context['estate_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
-            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
-            context['emergency_contacts_count'] = Contact.objects.filter(profile=profile,is_emergency_contact=True).count()
-            context['family_awareness_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
-            # OPTIONALS
+            # PROGRESS CALCULATION - FIXED KEYS
             keys = [
-                'accounts_count',
-                'contacts_count',
-                'devicess_count',
-                'documents_count',
-                'estates_count',
-                'family_family_knows_count',
-                'care_relations_count',
+                'accounts_count', 'contacts_count', 'devices_count',  # Fixed typos
+                'documents_count', 'estates_count', 'family_knows_count', 'care_relations_count'
             ]
             adjusted_values = []
             for key in keys:
                 value = context.get(key, 0) or 0
-                if value > 1:
-                    value += 1
                 adjusted_values.append(value)
-            total = sum(adjusted_values) or 1
-            context['progress'] = (total / len(keys)) * 100
-            context['remaining_tasks'] = len(keys) - total
+            total = sum(adjusted_values)
+            context['progress'] = min((total / len(keys)) * 100, 100) if keys else 0
+            context['remaining_tasks'] = max(len(keys) - total, 0)
             
             # PERMISSIONS CONTEXT
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()
             context['can_view'] = user.can_view_data()
+            
+            # ALERTS - FIXED NULL HANDLING
             context['alert_due'] = False
             context['alert_attention'] = False
             context['alert_due_year'] = False
             context['alert_attention_year'] = False
-            today = datetime.today().date()
             
+            today = datetime.today().date()
             review_dates = (AccountRelevanceReview.objects
-                            .exclude(next_review_due__isnull=True)
-                            .aggregate(
-                                soonest=Min('next_review_due'),
-                                farthest=Max('next_review_due')
-                            ))
-
+                           .filter(account__profile=profile)  # Added profile filter
+                           .exclude(next_review_due__isnull=True)
+                           .aggregate(soonest=Min('next_review_due'), farthest=Max('next_review_due')))
+            
             soonest_review = review_dates['soonest']
             farthest_review = review_dates['farthest']
             context['soonest'] = soonest_review
-
-            # THROWS ERROR IS ACCOUNT IS DELETED BACK TO ZERO ####
-            # context['first_delta'] = soonest_review - today
-            # NEEDS DEFAULT OR FIXED THROUGH OTHER SOLUTION ######
 
             if soonest_review:
                 first_delta = soonest_review - today
@@ -187,7 +170,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
         return context
 
-
 # ============================================================================
 # PROFILE VIEWS
 # ============================================================================
@@ -200,7 +182,6 @@ class ProfileDetailView(ViewAccessMixin, DetailView):
     def get_object(self, queryset=None):
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         return profile
-
 
 class ProfileUpdateView(FullAccessMixin, UpdateView):
     model = Profile
@@ -216,7 +197,6 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Profile updated successfully.')
         return super().form_valid(form)
-
 
 # ============================================================================
 # ACCOUNT VIEWS
@@ -235,12 +215,12 @@ class AccountListView(ViewAccessMixin, ListView):
             
             category_id = self.request.GET.get('account_category')
             if category_id:
-                queryset = queryset.filter(category_id=category_id)
+                queryset = queryset.filter(account_category=category_id)  # Fixed field name
             
             is_critical = self.request.GET.get('critical')
             if is_critical:
                 queryset = queryset.filter(is_critical=True)
-
+            
             return queryset.order_by('-created_at')
         except Profile.DoesNotExist:
             return Account.objects.none()
@@ -250,11 +230,10 @@ class AccountListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         try:
             profile = Profile.objects.get(user=self.request.user)
-            context['"account_name_or_provider"'] = Account.objects.filter(profile=profile)
+            context['accounts'] = Account.objects.filter(profile=profile)  # Fixed context key
         except Profile.DoesNotExist:
-            context['"account_name_or_provider"'] = Account.objects.none()
+            context['accounts'] = Account.objects.none()
         return context
-        #CHANGE FROM CATEGORIES to "account_name_or_provider"
 
 class AccountDetailView(ViewAccessMixin, DetailView):
     model = Account
@@ -266,7 +245,6 @@ class AccountDetailView(ViewAccessMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
         return context
-
 
 class AccountCreateView(FullAccessMixin, CreateView):
     model = Account
@@ -286,7 +264,6 @@ class AccountCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Digital account created successfully.')
         return super().form_valid(form)
 
-
 class AccountUpdateView(FullAccessMixin, UpdateView):
     model = Account
     form_class = AccountForm
@@ -303,7 +280,6 @@ class AccountUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Digital account updated successfully.')
         return super().form_valid(form)
 
-
 class AccountDeleteView(DeleteAccessMixin, DeleteView):
     model = Account
     template_name = 'dashboard/account_confirm_delete.html'
@@ -313,7 +289,6 @@ class AccountDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Account deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # ACCOUNT RELEVANCE REVIEW VIEWS
@@ -352,7 +327,6 @@ class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
                 pass
         return context
 
-
 class AccountRelevanceReviewDetailView(ViewAccessMixin, DetailView):
     model = AccountRelevanceReview
     template_name = 'dashboard/accountrelevancereview_detail.html'
@@ -363,7 +337,6 @@ class AccountRelevanceReviewDetailView(ViewAccessMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
         return context
-
 
 class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
     model = AccountRelevanceReview
@@ -384,7 +357,6 @@ class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
-
 class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
     model = AccountRelevanceReview
     form_class = AccountRelevanceReviewForm
@@ -403,7 +375,6 @@ class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
 
-
 class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
     model = AccountRelevanceReview
     template_name = 'dashboard/accountrelevancereview_confirm_delete.html'
@@ -415,7 +386,6 @@ class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
     
     def get_success_url(self):
         return reverse_lazy('dashboard:account_list')
-
 
 # ============================================================================
 # DEVICE VIEWS
@@ -439,7 +409,6 @@ class DeviceListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class DeviceDetailView(ViewAccessMixin, DetailView):
     model = Device
     template_name = 'dashboard/device_detail.html'
@@ -450,7 +419,6 @@ class DeviceDetailView(ViewAccessMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
         return context
-
 
 class DeviceCreateView(FullAccessMixin, CreateView):
     model = Device
@@ -465,7 +433,6 @@ class DeviceCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Device created successfully.')
         return super().form_valid(form)
 
-
 class DeviceUpdateView(FullAccessMixin, UpdateView):
     model = Device
     form_class = DeviceForm
@@ -477,7 +444,6 @@ class DeviceUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Device updated successfully.')
         return super().form_valid(form)
 
-
 class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     model = Device
     template_name = 'dashboard/device_confirm_delete.html'
@@ -487,7 +453,6 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Device deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # ESTATE DOCUMENT VIEWS
@@ -511,7 +476,6 @@ class EstateListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class EstateDetailView(ViewAccessMixin, DetailView):
     model = DigitalEstateDocument
     template_name = 'dashboard/estate_detail.html'
@@ -521,17 +485,7 @@ class EstateDetailView(ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
-        
-        # Get all delegation grants that include this estate document
-        estate_doc = self.object
-        delegations = DelegationGrant.objects.filter(
-            delegate_estate_documents=estate_doc
-        ).select_related('delegate_to', 'profile')
-        
-        context['delegations'] = delegations
-        
         return context
-
 
 class EstateCreateView(FullAccessMixin, CreateView):
     model = DigitalEstateDocument
@@ -551,7 +505,6 @@ class EstateCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Estate document created successfully.')
         return super().form_valid(form)
 
-
 class EstateUpdateView(FullAccessMixin, UpdateView):
     model = DigitalEstateDocument
     form_class = DigitalEstateDocumentForm
@@ -568,7 +521,6 @@ class EstateUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Estate document updated successfully.')
         return super().form_valid(form)
 
-
 class EstateDeleteView(DeleteAccessMixin, DeleteView):
     model = DigitalEstateDocument
     template_name = 'dashboard/estate_confirm_delete.html'
@@ -576,10 +528,8 @@ class EstateDeleteView(DeleteAccessMixin, DeleteView):
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
-        # The signal will handle cleanup of empty delegations
         messages.success(request, 'Estate document deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # FAMILY AWARENESS VIEWS (FamilyNeedsToKnowSection)
@@ -603,7 +553,6 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
     model = FamilyNeedsToKnowSection
     template_name = 'dashboard/familyawareness_detail.html'
@@ -614,7 +563,6 @@ class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
         return context
-
 
 class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
     model = FamilyNeedsToKnowSection
@@ -632,7 +580,6 @@ class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Family awareness section created successfully.')
         return super().form_valid(form)
 
-
 class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
     model = FamilyNeedsToKnowSection
     form_class = FamilyNeedsToKnowSectionForm
@@ -649,7 +596,6 @@ class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Family awareness section updated successfully.')
         return super().form_valid(form)
 
-
 class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
     model = FamilyNeedsToKnowSection
     template_name = 'dashboard/familyawareness_confirm_delete.html'
@@ -659,10 +605,7 @@ class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Family awareness section deleted successfully.')
         return super().delete(request, *args, **kwargs)
-   
-    def get_success_url(self):
-        return reverse_lazy('dashboard:familyawareness_list')
-    
+
 # ============================================================================
 # IMPORTANT DOCUMENT VIEWS
 # ============================================================================
@@ -685,7 +628,6 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class ImportantDocumentDetailView(ViewAccessMixin, DetailView):
     model = ImportantDocument
     template_name = 'dashboard/importantdocument_detail.html'
@@ -695,17 +637,7 @@ class ImportantDocumentDetailView(ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
-        
-        # Get all delegation grants that include this important document
-        important_doc = self.object
-        delegations = DelegationGrant.objects.filter(
-            delegate_important_documents=important_doc
-        ).select_related('delegate_to', 'profile')
-        
-        context['delegations'] = delegations
-        
         return context
-
 
 class ImportantDocumentCreateView(FullAccessMixin, CreateView):
     model = ImportantDocument
@@ -725,7 +657,6 @@ class ImportantDocumentCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Document created successfully.')
         return super().form_valid(form)
 
-
 class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
     model = ImportantDocument
     form_class = ImportantDocumentForm
@@ -742,7 +673,6 @@ class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Document updated successfully.')
         return super().form_valid(form)
 
-
 class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     model = ImportantDocument
     template_name = 'dashboard/importantdocument_confirm_delete.html'
@@ -750,10 +680,8 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     owner_field = 'profile__user'
     
     def delete(self, request, *args, **kwargs):
-        # The signal will handle cleanup of empty delegations
         messages.success(request, 'Document deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # CONTACT VIEWS
@@ -777,7 +705,6 @@ class ContactListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class ContactDetailView(ViewAccessMixin, DetailView):
     model = Contact
     template_name = 'dashboard/contact_detail.html'
@@ -791,18 +718,21 @@ class ContactDetailView(ViewAccessMixin, DetailView):
         contact = self.object
         
         # Get ALL documents assigned to this contact
-        estate_docs = DigitalEstateDocument.objects.filter(
-            delegated_to=contact
-        ).order_by('name_or_title')
-        
-        important_docs = ImportantDocument.objects.filter(
-            delegated_to=contact
-        ).order_by('name_or_title')
-        
+        estate_docs = DigitalEstateDocument.objects.filter(delegated_estate_to=contact).order_by('name_or_title')
+        important_docs = ImportantDocument.objects.filter(delegated_important_document_to=contact).order_by('name_or_title')
+        devices_listed = Device.objects.filter(delegated_device_to=contact).order_by('device_name')
+        accounts_listed = Account.objects.filter(delegated_account_to=contact).order_by('account_name_or_provider')
+
+
         context['delegated_estate_documents'] = estate_docs
         context['delegated_important_documents'] = important_docs
-        context['total_documents'] = estate_docs.count() + important_docs.count()
+        context['delegated_devices'] = devices_listed
+        context['delegated_accounts'] = accounts_listed
 
+        context['total_documents'] = estate_docs.count() + important_docs.count()
+        # context['total_devices'] = devices_listed.count()
+        # context['total_accounts'] = accounts_listed.count()
+        
         return context
 
 class ContactCreateView(FullAccessMixin, CreateView):
@@ -823,7 +753,6 @@ class ContactCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Contact created successfully.')
         return super().form_valid(form)
 
-
 class ContactUpdateView(FullAccessMixin, UpdateView):
     model = Contact
     form_class = ContactForm
@@ -840,7 +769,6 @@ class ContactUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Contact updated successfully.')
         return super().form_valid(form)
 
-
 class ContactDeleteView(DeleteAccessMixin, DeleteView):
     model = Contact
     template_name = 'dashboard/contact_confirm_delete.html'
@@ -850,7 +778,6 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Contact deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # CHECKUP VIEWS
@@ -874,7 +801,6 @@ class CheckupListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class CheckupCreateView(FullAccessMixin, CreateView):
     model = Checkup
     form_class = CheckupForm
@@ -889,7 +815,6 @@ class CheckupCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Checkup created successfully.')
         return super().form_valid(form)
 
-
 class CheckupUpdateView(FullAccessMixin, UpdateView):
     model = Checkup
     form_class = CheckupForm
@@ -901,7 +826,6 @@ class CheckupUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Checkup updated successfully.')
         return super().form_valid(form)
 
-
 class CheckupDeleteView(DeleteAccessMixin, DeleteView):
     model = Checkup
     template_name = 'dashboard/checkup_confirm_delete.html'
@@ -911,7 +835,6 @@ class CheckupDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Checkup deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 # ============================================================================
 # RECOVERY REQUEST VIEWS
@@ -935,7 +858,6 @@ class RecoveryRequestListView(ViewAccessMixin, ListView):
         context['can_modify'] = self.request.user.can_modify_data()
         return context
 
-
 class RecoveryRequestCreateView(FullAccessMixin, CreateView):
     model = RecoveryRequest
     form_class = RecoveryRequestForm
@@ -955,7 +877,6 @@ class RecoveryRequestCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Recovery request created successfully.')
         return super().form_valid(form)
 
-
 class RecoveryRequestUpdateView(FullAccessMixin, UpdateView):
     model = RecoveryRequest
     form_class = RecoveryRequestForm
@@ -972,7 +893,6 @@ class RecoveryRequestUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Recovery request updated successfully.')
         return super().form_valid(form)
 
-
 class RecoveryRequestDeleteView(DeleteAccessMixin, DeleteView):
     model = RecoveryRequest
     template_name = 'dashboard/recoveryrequest_confirm_delete.html'
@@ -982,7 +902,6 @@ class RecoveryRequestDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Recovery request deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
 
 class MainTemplateView(TemplateView):
     template_name = 'dashboard/main_template.html'

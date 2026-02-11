@@ -43,6 +43,67 @@ class Profile(models.Model):
         return f"{self.full_name} ({self.user})"
 
 
+class Contact(models.Model):
+    """
+    Contacts for estate planning
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='relation_contacts',
+        editable=False
+    )
+
+    CONTACTS_CHOICES = [
+        ('Spouse', 'Spouse'),
+        ('Mother', 'Mother'),
+        ('Father', 'Father'),
+        ('Sister', 'Sister'),
+        ('Brother', 'Brother'),
+        ('Daughter', 'Daughter'),
+        ('Son', 'Son'),
+        ('Mother-in-law', 'Mother-in-law'),
+        ('Father-in-law', 'Father-in-law'),
+        ('Sister-in-law', 'Sister-in-law'),
+        ('Brother-in-law', 'Brother-in-law'),
+        ('Daughter-in-law', 'Daughter-in-law'),
+        ('Son-in-Law', 'Son-in-Law'),
+        ('Cousin', 'Cousin'),
+        ('Other', 'Other'),
+    ]
+
+    contact_name = models.CharField(max_length=200, default="Enter name")
+    body = models.TextField(help_text="Emergency message content")
+    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
+    is_emergency_contact = models.BooleanField(default=False)
+    is_digital_executor = models.BooleanField(default=False)
+    is_caregiver = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'primary_contacts'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.contact_name} ({self.contact_relation})"
+    
+    def get_estate_documents_count(self):
+        """Count of estate documents delegated to this contact"""
+        return self.delegated_estate_documents.count()
+    
+    def get_important_documents_count(self):
+        """Count of important documents delegated to this contact"""
+        return self.delegated_important_documents.count()
+    
+    def get_total_documents_count(self):
+        """Total documents delegated to this contact"""
+        return self.get_estate_documents_count() + self.get_important_documents_count()
+
+
 class Account(models.Model):
     """
     Individual digital accounts (social media, email, banking, etc.)
@@ -85,11 +146,21 @@ class Account(models.Model):
         related_name='accounts',
         editable=False
     )
+
+    # DELEGATED TO CONTACT
+    delegated_account_to = models.ForeignKey(
+        Contact,
+        on_delete=models.PROTECT,
+        related_name='delegated_accounts',  # Fixed: unique related_name
+        help_text="Contact who has access to this account"
+    )
+
     account_category = models.CharField(
         max_length=200,
         choices=ACCOUNT_CATEGORIES,
-        default='email'
+        default='Email Account',
     ) 
+    
     account_name_or_provider = models.CharField(
         max_length=200, 
         help_text="Account name or service"
@@ -112,7 +183,7 @@ class Account(models.Model):
     keep_or_close_instruction = models.CharField(
         max_length=20,
         choices=INSTRUCTION_CHOICES,
-        default='other'
+        default='Other (See Notes)'  # Fixed: use actual choice value
     )
     notes_for_family = models.TextField(
         blank=True,
@@ -123,12 +194,10 @@ class Account(models.Model):
     
     class Meta:
         db_table = 'accounts'
-        ordering = ['-is_critical', 'account_name_or_provider']
+        ordering = ['-created_at', 'delegated_account_to', 'account_name_or_provider']  
         indexes = [
-            models.Index(fields=['profile', '-created_at']),
-            models.Index(fields=['account_category']),
+            models.Index(fields=['profile', 'delegated_account_to']),
         ]
-    
     def __str__(self):
         return f"{self.account_name_or_provider}" 
 
@@ -193,8 +262,17 @@ class Device(models.Model):
         related_name='devices',
         editable=False
     )
+
+    # DELEGATED TO CONTACT
+    delegated_device_to = models.ForeignKey(
+        Contact,
+        on_delete=models.PROTECT,
+        related_name='delegated_devices',  # Fixed: unique related_name
+        help_text="Contact who has access to this device"
+    )
+
     device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
-    name = models.CharField(max_length=200, help_text="Device name or model")
+    device_name = models.CharField(max_length=200, help_text="Device name or model")
     owner_label = models.CharField(
         max_length=100,
         blank=True,
@@ -221,70 +299,13 @@ class Device(models.Model):
     
     class Meta:
         db_table = 'devices'
-        ordering = ['device_type', 'name']
+        ordering = ['-created_at', 'delegated_device_to', 'device_name']  # Fixed: removed typo
+        indexes = [
+            models.Index(fields=['profile', 'delegated_device_to']),
+        ]
     
     def __str__(self):
-        return f"{self.name} ({self.device_type})"
-
-
-class Contact(models.Model):
-    """
-    Contacts for estate planning
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='relation_contacts',
-        editable=False
-    )
-    CONTACTS_CHOICES = [
-        ('Spouse', 'Spouse'),
-        ('Mother', 'Mother'),
-        ('Father', 'Father'),
-        ('Sister', 'Sister'),
-        ('Brother', 'Brother'),
-        ('Daughter', 'Daughter'),
-        ('Son', 'Son'),
-        ('Mother-in-law', 'Mother-in-law'),
-        ('Father-in-law', 'Father-in-law'),
-        ('Sister-in-law', 'Sister-in-law'),
-        ('Brother-in-law', 'Brother-in-law'),
-        ('Daughter-in-law', 'Daughter-in-law'),
-        ('Son-in-Law', 'Son-in-Law'),
-        ('Cousin', 'Cousin'),
-        ('Other', 'Other'),
-    ]
-
-    contact_name = models.CharField(max_length=200, default="Enter name")
-    body = models.TextField(help_text="Emergency message content")
-    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    address = models.TextField(blank=True)
-    is_emergency_contact = models.BooleanField(default=False)
-    is_digital_executor = models.BooleanField(default=False)
-    is_caregiver = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'primary_contacts'
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return f"{self.contact_name} ({self.contact_relation})"
-    
-    def get_estate_documents_count(self):
-        """Count of estate documents delegated to this contact"""
-        return self.delegated_estate_documents.count()
-    
-    def get_important_documents_count(self):
-        """Count of important documents delegated to this contact"""
-        return self.delegated_important_documents.count()
-    
-    def get_total_documents_count(self):
-        """Total documents delegated to this contact"""
-        return self.get_estate_documents_count() + self.get_important_documents_count()
+        return f"{self.device_name} ({self.device_type})"  # Fixed: use device_name not name
 
 
 class DigitalEstateDocument(models.Model):
@@ -319,17 +340,17 @@ class DigitalEstateDocument(models.Model):
     )
     
     # ONE-TO-ONE: Each estate document MUST be assigned to exactly one contact
-    delegated_to = models.ForeignKey(
+    delegated_estate_to = models.ForeignKey(
         Contact,
-        on_delete=models.PROTECT,  # Can't delete contact if they have documents
+        on_delete=models.PROTECT,
         related_name='delegated_estate_documents',
         help_text="Contact who has access to this document"
     )
     
-    estate_document = models.CharField(
+    estate_category = models.CharField(
         max_length=200,
         choices=PERSONAL_ESTATE_DOCUMENTS,
-        default='important_personal_documents',
+        default='Advance Directive / Living Will'  # Fixed: use actual choice value
     )
 
     name_or_title = models.CharField(
@@ -345,12 +366,24 @@ class DigitalEstateDocument(models.Model):
         help_text="Upload digital copy"
     )
 
-    overall_instructions = models.CharField(
+    estate_overall_instructions = models.CharField(
         max_length=500,
         blank=True,
         help_text="General instructions for family"
     )
-   
+
+    estate_physical_location = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Where physical document is stored"
+    )
+
+    estate_digital_location = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Where digital copy is stored"
+    )
+
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -360,13 +393,13 @@ class DigitalEstateDocument(models.Model):
 
     class Meta:
         db_table = 'digital_estate_documents'
-        ordering = ['delegated_to', 'name_or_title', '-created_at']
+        ordering = ['delegated_estate_to', 'estate_category']
         indexes = [
-            models.Index(fields=['profile', 'delegated_to']),
+            models.Index(fields=['profile', 'delegated_estate_to']),
         ]
     
     def __str__(self):
-        return f"{self.name_or_title} → {self.delegated_to.contact_name}"
+        return f"{self.name_or_title} → {self.delegated_estate_to.contact_name}"
 
 
 class ImportantDocument(models.Model):
@@ -381,9 +414,9 @@ class ImportantDocument(models.Model):
     )
     
     # ONE-TO-ONE: Each important document MUST be assigned to exactly one contact
-    delegated_to = models.ForeignKey(
+    delegated_important_document_to = models.ForeignKey(
         Contact,
-        on_delete=models.PROTECT,  # Can't delete contact if they have documents
+        on_delete=models.PROTECT,
         related_name='delegated_important_documents',
         help_text="Contact who has access to this document"
     )
@@ -462,13 +495,13 @@ class ImportantDocument(models.Model):
     
     class Meta:
         db_table = 'important_documents'
-        ordering = ['delegated_to', 'document_category']
+        ordering = ['delegated_important_document_to', 'document_category']
         indexes = [
-            models.Index(fields=['profile', 'delegated_to']),
+            models.Index(fields=['profile', 'delegated_important_document_to']),
         ]
     
     def __str__(self):
-        return f"{self.name_or_title} → {self.delegated_to.contact_name}"
+        return f"{self.name_or_title} → {self.delegated_important_document_to.contact_name}"
 
 
 class FamilyNeedsToKnowSection(models.Model):
@@ -589,7 +622,7 @@ class CareRelationship(models.Model):
     portal_role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
-        default='view-only',
+        default='View Only',  # Fixed: use actual choice value
         blank=True
     )
     notes = models.TextField(blank=True)
@@ -643,7 +676,7 @@ class RecoveryRequest(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='pending'
+        default='Pending'  # Fixed: use actual choice value
     )
     provider_ticket_number = models.CharField(max_length=100, blank=True)
     steps_taken = models.TextField(blank=True)

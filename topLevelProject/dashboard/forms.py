@@ -61,10 +61,55 @@ class ProfileForm(forms.ModelForm):
         )
 
 
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = [
+            'contact_relation',
+            'contact_name',
+            'email',
+            'phone',
+            'address',
+            'is_emergency_contact',
+            'is_digital_executor',
+            'is_caregiver',
+            'body',
+        ]
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                "Contact Information",
+                Field('contact_relation', css_class='select'),
+                Field('contact_name', css_class='textinput'),
+                Field('email', css_class='emailinput'),
+                Field('phone', css_class='textinput'),
+                Field('address', css_class='textarea'),
+                Div(
+                    Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
+                    Field('is_digital_executor', css_class='checkboxinput form-check-input'),
+                    Field('is_caregiver', css_class='checkboxinput form-check-input'),
+                    css_class='checkbox-group'
+                ),
+                Field('body', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save Contact', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = [
+            "delegated_account_to", # REQUIRED: Must assign to a contact
             "account_category",
             "account_name_or_provider",
             "website_url",
@@ -78,10 +123,25 @@ class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+    
+        # Make delegated_to required
+        self.fields['delegated_account_to'].required = True
+
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['delegated_account_to'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['delegated_account_to'].queryset = Contact.objects.none()
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
+            Fieldset(
+                'Account Assignment',
+                HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this account to a contact.</div>'),
+                Field('delegated_account_to', css_class='select'),
+            ),
             Fieldset(
                 'Account Details',
                 Field('account_category', css_class='select'),
@@ -147,8 +207,9 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = [
+            "delegated_device_to", # REQUIRED: Must assign to a contact
             "device_type",
-            "name",
+            "device_name",
             "owner_label",
             "location_description",
             "unlock_method_description",
@@ -157,14 +218,31 @@ class DeviceForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+
+        # Make delegated_to required
+        self.fields['delegated_device_to'].required = True
+
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['delegated_device_to'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['delegated_device_to'].queryset = Contact.objects.none()
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             Fieldset(
+                'Device Assignment',
+                HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this device to a contact.</div>'),
+                Field('delegated_device_to', css_class='select'),
+            ),
+            Fieldset(
                 'Device Information',
                 Field('device_type', css_class='select'),
-                Field('name', css_class='textinput'),
+                Field('device_name', css_class='textinput'),
                 Field('owner_label', css_class='textinput'),
                 Field('location_description', css_class='textinput'),
             ),
@@ -186,10 +264,12 @@ class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
         fields = [
-            "delegated_to",  # REQUIRED: Must assign to a contact
-            "estate_document",
+            "delegated_estate_to",  # REQUIRED: Must assign to a contact
+            "estate_category",
             "name_or_title",
-            "overall_instructions",
+            "estate_overall_instructions",
+            "estate_physical_location",
+            "estate_digital_location",
             "estate_file",
             'applies_on_death',
             'applies_on_incapacity',
@@ -205,14 +285,14 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         # Make delegated_to required
-        self.fields['delegated_to'].required = True
+        self.fields['delegated_estate_to'].required = True
         
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['delegated_to'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['delegated_estate_to'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['delegated_to'].queryset = Contact.objects.none()
+                self.fields['delegated_estate_to'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
@@ -220,17 +300,26 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             Fieldset(
                 'Document Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this document to a contact.</div>'),
-                Field('delegated_to', css_class='select'),
+                Field('delegated_estate_to', css_class='select'),
             ),
             Fieldset(
                 'Document Details',
                 Field('name_or_title', css_class='textinput'),
-                Field('estate_document', css_class='select'),
+                Field('estate_category', css_class='select'),
                 Field('estate_file', css_class='fileinput'),
-                Field('overall_instructions', css_class='textarea'),
+                Field('estate_overall_instructions', css_class='textarea'),
+            ),
+            Fieldset(
+                'Document Location',
+                Field('estate_file', css_class='fileinput'),
+                Field('estate_physical_location', css_class='textinput'),
+                Field('estate_digital_location', css_class='textinput'),
+            ),
+            Fieldset(
+                'Declarations',
                 Field('applies_on_death',css_class='checkboxinput form-check-input'),
                 Field('applies_on_incapacity',css_class='checkboxinput form-check-input'),
-                Field('applies_immediately',css_class='checkboxinput form-check-input')
+                Field('applies_immediately',css_class='checkboxinput form-check-input'),
             ),
             Div(
                 Submit('submit', 'Save Estate Document', css_class='btn btn-primary'),
@@ -285,50 +374,6 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             ),
         )
 
-
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = [
-            'contact_relation',
-            'contact_name',
-            'email',
-            'phone',
-            'address',
-            'is_emergency_contact',
-            'is_digital_executor',
-            'is_caregiver',
-            'body',
-        ]
-    
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-wrapper'
-        self.helper.layout = Layout(
-            Fieldset(
-                "Contact Information",
-                Field('contact_relation', css_class='select'),
-                Field('contact_name', css_class='textinput'),
-                Field('email', css_class='emailinput'),
-                Field('phone', css_class='textinput'),
-                Field('address', css_class='textarea'),
-                Div(
-                    Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
-                    Field('is_digital_executor', css_class='checkboxinput form-check-input'),
-                    Field('is_caregiver', css_class='checkboxinput form-check-input'),
-                    css_class='checkbox-group'
-                ),
-                Field('body', css_class='textarea'),
-            ),
-            Div(
-                Submit('submit', 'Save Contact', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
-        )
 
 
 class CheckupForm(forms.ModelForm):
@@ -458,7 +503,7 @@ class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
-            "delegated_to",  # REQUIRED: Must assign to a contact
+            "delegated_important_document_to",  # REQUIRED: Must assign to a contact
             "name_or_title",
             "document_category",
             "description",
@@ -482,14 +527,14 @@ class ImportantDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         # Make delegated_to required
-        self.fields['delegated_to'].required = True
+        self.fields['delegated_important_document_to'].required = True
         
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['delegated_to'].queryset = Contact.objects.filter(profile=profile)
+                self.fields['delegated_important_document_to'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
-                self.fields['delegated_to'].queryset = Contact.objects.none()
+                self.fields['delegated_important_document_to'].queryset = Contact.objects.none()
         
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
@@ -497,7 +542,7 @@ class ImportantDocumentForm(forms.ModelForm):
             Fieldset(
                 'Document Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this document to a contact.</div>'),
-                Field('delegated_to', css_class='select'),
+                Field('delegated_important_document_to', css_class='select'),
             ),
             Fieldset(
                 'Document',
