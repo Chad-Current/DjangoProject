@@ -69,7 +69,11 @@ class ContactForm(forms.ModelForm):
             'contact_name',
             'email',
             'phone',
-            'address',
+            'address_1',
+            'address_2',
+            'city',
+            'state',
+            'zipcode',
             'is_emergency_contact',
             'is_digital_executor',
             'is_caregiver',
@@ -89,27 +93,34 @@ class ContactForm(forms.ModelForm):
                 Field('contact_name', css_class='textinput'),
                 Field('email', css_class='emailinput'),
                 Field('phone', css_class='textinput'),
-                Field('address', css_class='textarea'),
-                Div(
-                    Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
-                    Field('is_digital_executor', css_class='checkboxinput form-check-input'),
-                    Field('is_caregiver', css_class='checkboxinput form-check-input'),
-                    css_class='checkbox-group'
-                ),
-                Field('body', css_class='textarea'),
             ),
+            Fieldset(
+                'Address',
+                Field('address_1', css_class='textinput'),
+                Field('address_2', css_class='textinput'),
+                Field('city', css_class='textinput'),
+                Field('state', css_class='textinput'),
+                Field('zipcode', css_class='textinput'),
+            ),
+            Div(
+                Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
+                Field('is_digital_executor', css_class='checkboxinput form-check-input'),
+                Field('is_caregiver', css_class='checkboxinput form-check-input'),
+                css_class='checkbox-group'
+            ),
+                Field('body', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Contact', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
                 css_class='button-group'
             ),
-        )
+        )    
 
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = [
-            "delegated_account_to", # REQUIRED: Must assign to a contact
+            "delegated_account_to",
             "account_category",
             "account_name_or_provider",
             "website_url",
@@ -119,6 +130,15 @@ class AccountForm(forms.ModelForm):
             "keep_or_close_instruction",
             "notes_for_family",
         ]
+        labels = {
+            "delegated_account_to":"Assign Account to",
+            "account_category":"Type of Account",
+            "account_name_or_provider":"Name or Provider",
+            "website_url":"Website URL",
+            "username_or_email":"Username or Email",
+            "credential_storage_location":"Crediential Storage Location",
+            'is_critical':"Mark as a Critical or important account"
+        }
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -207,7 +227,7 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = [
-            "delegated_device_to", # REQUIRED: Must assign to a contact
+            "delegated_device_to", 
             "device_type",
             "device_name",
             "owner_label",
@@ -216,7 +236,16 @@ class DeviceForm(forms.ModelForm):
             "used_for_2fa",
             "decommission_instruction",
         ]
-
+        labels = {
+            "delegated_device_to":"Assign Device To", 
+            "device_type":"Type of Device",
+            "device_name":"Name",
+            "owner_label":"Labeled as",
+            "location_description":"Typical Location of Device",
+            "unlock_method_description":"Unlock Method",
+            "used_for_2fa":"Used For Two Factor Authentication",
+            "decommission_instruction":"Decommission Instructions",
+        }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -250,7 +279,7 @@ class DeviceForm(forms.ModelForm):
                 'Security Information',
                 Field('unlock_method_description', css_class='textarea'),
                 Field('decommission_instruction', css_class='textarea'),
-                Field('used_for_2fa', css_class='checkboxinput form-check-input', wrapper_class='checkbox-wrapper'),
+                Field('used_for_2fa', css_class='checkboxinput form-check-input'),
             ),
             Div(
                 Submit('submit', 'Save Device', css_class='btn btn-primary'),
@@ -264,17 +293,31 @@ class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
         fields = [
-            "delegated_estate_to",  # REQUIRED: Must assign to a contact
+            "delegated_estate_to",  
             "estate_category",
             "name_or_title",
             "estate_overall_instructions",
             "estate_physical_location",
             "estate_digital_location",
             "estate_file",
-            'applies_on_death',
-            'applies_on_incapacity',
-            'applies_immediately',
+            "applies_on_death",
+            "applies_on_incapacity",
+            "applies_immediately",
         ]
+
+        labels = {
+            "delegated_estate_to":"Assign Document to",  
+            "estate_category":"Category",
+            "name_or_title":"Name or Title",
+            "estate_overall_instructions":"Instructions",
+            "estate_physical_location":"Physical Location",
+            "estate_digital_location":"Digital Location",
+            "estate_file":"File",
+            "applies_on_death":"Applied Upon Death",
+            "applies_on_incapacity":"Applied On Incapacitation",
+            "applies_immediately":"Applies Immeditately",           
+        }
+
         widgets = {
             'applies_on_death': forms.CheckboxInput(),  
             'applies_on_incapacity': forms.CheckboxInput(),
@@ -311,7 +354,6 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             ),
             Fieldset(
                 'Document Location',
-                Field('estate_file', css_class='fileinput'),
                 Field('estate_physical_location', css_class='textinput'),
                 Field('estate_digital_location', css_class='textinput'),
             ),
@@ -341,7 +383,15 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             "is_photos_or_files",
             "is_data_retention_preferences",
         ]
-
+        labels = {
+            "relation":"Who Needs To Be Informed",
+            "content":"What Do You Want To Tell Them",
+            "is_location_of_legal_will":"For Location Of Will?",
+            "is_password_manager":"Password Manager Information",
+            "is_social_media":"How To Handle Social Media Accounts",
+            "is_photos_or_files":"What To Do With Photos Or Files",
+            "is_data_retention_preferences":"How Long Do Wish To Retain Information",  
+        }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -503,7 +553,7 @@ class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
-            "delegated_important_document_to",  # REQUIRED: Must assign to a contact
+            "delegated_important_document_to", 
             "name_or_title",
             "document_category",
             "description",
@@ -511,10 +561,23 @@ class ImportantDocumentForm(forms.ModelForm):
             "digital_location",
             "important_file",
             "requires_legal_review",            
-            'applies_on_death',
-            'applies_on_incapacity',
-            'applies_immediately',
+            "applies_on_death",
+            "applies_on_incapacity",
+            "applies_immediately",
         ]
+        labels = {
+            "delegated_important_document_to":"Assign Document To", 
+            "name_or_title":"Name or Title",
+            "document_category":"Category",
+            "description":"Description",
+            "physical_location":"Physical Location",
+            "digital_location":"Other Digital Locations",
+            "important_file":"File",
+            "requires_legal_review":"Requires Professional Legal Review",            
+            "applies_on_death":"Applies On Death",
+            "applies_on_incapacity":"Applies On Incapacitation",
+            "applies_immediately":"Applies Immediately",   
+        }
         widgets = {
             'applies_on_death': forms.CheckboxInput(),  
             'applies_on_incapacity': forms.CheckboxInput(),

@@ -8,7 +8,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count, ProtectedError, Q
+from django.http import HttpResponseRedirect
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
@@ -775,8 +776,75 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
     success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        contact = self.object
+        
+        # Check for assigned documents
+        estate_docs = DigitalEstateDocument.objects.filter(
+            delegated_estate_to=contact
+        ).select_related('profile')
+        
+        important_docs = ImportantDocument.objects.filter(
+            delegated_important_document_to=contact
+        ).select_related('profile')
+        
+        # Add document information to context
+        context['estate_documents'] = estate_docs
+        context['important_documents'] = important_docs
+        context['total_documents'] = estate_docs.count() + important_docs.count()
+        context['has_documents'] = estate_docs.exists() or important_docs.exists()
+        
+        # Get other contacts for potential reassignment suggestions
+        if context['has_documents']:
+            other_contacts = Contact.objects.filter(
+                profile=contact.profile
+            ).exclude(id=contact.id).order_by('contact_name')
+            context['other_contacts'] = other_contacts
+            context['has_other_contacts'] = other_contacts.exists()
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        """Handle the delete request with proper error handling"""
+        self.object = self.get_object()
+        contact = self.object
+        
+        # Check if contact has documents before attempting deletion
+        estate_count = DigitalEstateDocument.objects.filter(delegated_estate_to=contact).count()
+        important_count = ImportantDocument.objects.filter(delegated_important_document_to=contact).count()
+        total_docs = estate_count + important_count
+        
+        if total_docs > 0:
+            # Contact has documents - cannot delete
+            messages.error(
+                request,
+                f'Cannot delete {contact.contact_name} because they have {total_docs} '
+                f'document(s) assigned to them ({estate_count} estate, {important_count} important). '
+                f'Please reassign these documents to another contact first.'
+            )
+            return HttpResponseRedirect(
+                reverse('dashboard:contact_detail', kwargs={'pk': contact.pk})
+            )
+        
+        # No documents - safe to delete
+        try:
+            return self.delete(request, *args, **kwargs)
+        except ProtectedError as e:
+            # This shouldn't happen since we checked above, but just in case
+            messages.error(
+                request,
+                f'Cannot delete {contact.contact_name} because they have documents assigned. '
+                'Please reassign the documents first.'
+            )
+            return HttpResponseRedirect(
+                reverse('dashboard:contact_detail', kwargs={'pk': contact.pk})
+            )
+    
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Contact deleted successfully.')
+        """Override delete to add success message"""
+        contact_name = self.object.contact_name
+        messages.success(request, f'Contact "{contact_name}" deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
 # ============================================================================

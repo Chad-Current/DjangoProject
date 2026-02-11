@@ -42,7 +42,7 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.user})"
 
-
+    
 class Contact(models.Model):
     """
     Contacts for estate planning
@@ -55,6 +55,7 @@ class Contact(models.Model):
     )
 
     CONTACTS_CHOICES = [
+        ('Self','Self'),
         ('Spouse', 'Spouse'),
         ('Mother', 'Mother'),
         ('Father', 'Father'),
@@ -72,12 +73,16 @@ class Contact(models.Model):
         ('Other', 'Other'),
     ]
 
-    contact_name = models.CharField(max_length=200, default="Enter name")
-    body = models.TextField(help_text="Emergency message content")
-    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
+    contact_name = models.CharField(max_length=200)
+    body = models.CharField(help_text="Emergency message content", blank=True)
+    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES, default='Self')
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    address = models.TextField(blank=True)
+    address_1 = models.CharField(blank=False)
+    address_2 = models.CharField(blank=True)
+    city = models.CharField(blank=False)
+    state = models.CharField(blank=False)
+    zipcode = models.IntegerField(blank=True)
     is_emergency_contact = models.BooleanField(default=False)
     is_digital_executor = models.BooleanField(default=False)
     is_caregiver = models.BooleanField(default=False)
@@ -109,33 +114,34 @@ class Account(models.Model):
     Individual digital accounts (social media, email, banking, etc.)
     """
     ACCOUNT_CATEGORIES = [
-        ('Email Account', 'Email Account'),
-        ('Social Media Account', 'Social Media Account'),
-        ('Cloud Storage Account', 'Cloud Storage Account'),
-        ('Streaming Media Account', 'Streaming Media Account'),
-        ('Ecommerce Marketplace Account', 'Ecommerce Marketplace Account'),
-        ('Online Banking Account', 'Online Banking Account'),
-        ('Neobank/Digital Bank Account', 'Neobank/Digital Bank Account'),
-        ('Brokerage/Investment Account', 'Brokerage/Investment Account'),
-        ('Cryptocurrency Exchange Account', 'Cryptocurrency Exchange Account'),
-        ('Payment Wallet Account', 'Payment Wallet Account'),
-        ('Payment Processor Account', 'Payment Processor Account'),
-        ('App Store Account', 'App Store Account'),
-        ('Gaming Platform Account', 'Gaming Platform Account'),
-        ('Forum/Community Account', 'Forum/Community Account'),
-        ('Education/Elearning Account', 'Education/Elearning Account'),
-        ('Subscription Account', 'Subscription Account'),
-        ('Government Portal Account', 'Government Portal Account'),
-        ('Utilities/Telecom Portal Account', 'Utilities/Telecom Portal Account'),
-        ('Health Portal Account', 'Health Portal Account'),
-        ('Smart Home/IoT Account', 'Smart Home/IoT Account'),
-        ('Travel Booking Account', 'Travel Booking Account'),
-        ('Password Manager Account', 'Password Manager Account'),
+        ('App Store Account', 'App Store'),
+        ('Brokerage/Investment Account', 'Brokerage/Investment'),
+        ('Cloud Storage Account', 'Cloud Storage'),
+        ('Cryptocurrency Exchange Account', 'Cryptocurrency Exchange'),
+        ('Ecommerce Marketplace Account', 'Ecommerce Marketplace'),
+        ('Education/Elearning Account', 'Education or Elearning'),
+        ('Email Account', 'Email'),
+        ('Forum/Community Account', 'Forum/Community'),
+        ('Gaming Platform Account', 'Gaming Platform'),
+        ('Government Portal Account', 'Government Portal'),
+        ('Health Portal Account', 'Health Portal'),
+        ('Neobank/Digital Bank Account', 'Neobank/Digital Bank'),
+        ('Online Banking Account', 'Online Banking'),
+        ('Password Manager Account', 'Password Manager'),
+        ('Payment Processor Account', 'Payment Processor'),
+        ('Payment Wallet Account', 'Payment Wallet'),
+        ('Smart Home/IoT Account', 'Smart Home/IoT'),
+        ('Social Media Account', 'Social Media'),
+        ('Streaming Media Account', 'Streaming Media'),
+        ('Subscription Account', 'Subscription'),
+        ('Travel Booking Account', 'Travel Booking'),
+        ('Utilities/Telecom Portal Account', 'Utilities or Telecom Portal'),
         ('Not Listed', 'Not Listed'),
     ]
+
     INSTRUCTION_CHOICES = [
-        ('Keep Active', 'Keep Active'),
         ('Close Account', 'Close Account'),
+        ('Keep Active', 'Keep Active'),
         ('Memorialize', 'Memorialize'),
         ('Other (See Notes)', 'Other (See Notes)'),
     ]
@@ -152,7 +158,7 @@ class Account(models.Model):
         Contact,
         on_delete=models.PROTECT,
         related_name='delegated_accounts',  # Fixed: unique related_name
-        help_text="Contact who has access to this account"
+        help_text="Contact who has access to this account",
     )
 
     account_category = models.CharField(
@@ -178,7 +184,6 @@ class Account(models.Model):
     )
     is_critical = models.BooleanField(
         default=False,
-        help_text="Mark as critical/important account"
     )
     keep_or_close_instruction = models.CharField(
         max_length=20,
@@ -248,11 +253,11 @@ class Device(models.Model):
     Physical devices (phones, computers, tablets, etc.)
     """
     DEVICE_TYPE_CHOICES = [
-        ('Phone', 'Phone'),
-        ('Tablet', 'Tablet'),
-        ('Laptop', 'Laptop'),
         ('Desktop', 'Desktop'),
+        ('Laptop', 'Laptop'),
+        ('Phone', 'Phone'),
         ('Smart Watch', 'Smart Watch'),
+        ('Tablet', 'Tablet'),
         ('Other', 'Other'),
     ]
     
@@ -268,7 +273,7 @@ class Device(models.Model):
         Contact,
         on_delete=models.PROTECT,
         related_name='delegated_devices',  # Fixed: unique related_name
-        help_text="Contact who has access to this device"
+        help_text="Contact who has access to this device",
     )
 
     device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES)
@@ -344,13 +349,13 @@ class DigitalEstateDocument(models.Model):
         Contact,
         on_delete=models.PROTECT,
         related_name='delegated_estate_documents',
-        help_text="Contact who has access to this document"
+        help_text="Contact who has access to this document",
     )
     
     estate_category = models.CharField(
         max_length=200,
         choices=PERSONAL_ESTATE_DOCUMENTS,
-        default='Advance Directive / Living Will'  # Fixed: use actual choice value
+        default='Advance Directive / Living Will' 
     )
 
     name_or_title = models.CharField(
@@ -422,30 +427,31 @@ class ImportantDocument(models.Model):
     )
 
     DOCUMENT_CATEGORY_CHOICES = [
-        ("Personal Identification", "Driver's license, passport, and other official IDs."),
-        ("Important Personal Documents", "Birth certificate, marriage certificate, and similar records."),
-        ("Social Security Information", "Social Security number and benefit details."),
-        ("Property Deeds and Titles", "Ownership records for homes, vehicles, or land."),
-        ("Safe Deposit Box Information", "Location, access instructions, and contents list."),
-        ("Medical Summary", "Includes allergies, medications, medical history, and specialists."),
+        ("Bank and Cash Accounts", "Checking, savings, and credit card details."),
+        ("Business Ownership Documents", "Operating agreements, partnership and ownership records."),
         ("Care Preferences and Providers", "In-home care, nursing home info, and care instructions."),
-        ("Health Insurance and Benefits", "Insurance policy details, Medicare/Medicaid info."),
+        ("Charitable Giving and Memberships", "Charitable plans, affiliations, and organizations."),
+        ("Cloud and Email Accounts", "Cloud storage, email accounts, and access credentials."),
         ("Dependents and Pet Care", "Dependent care needs and pet care instructions."),
         ("Funeral and Memorial Wishes", "Funeral, burial, or memorial preferences."),
-        ("Bank and Cash Accounts", "Checking, savings, and credit card details."),
-        ("Loans and Liabilities", "Debts, mortgages, and other financial obligations."),
-        ("Investments and Retirement", "Investment accounts, pensions, and annuities."),
+        ("Health Insurance and Benefits", "Insurance policy details, Medicare/Medicaid info."),
+        ("Important Personal Documents", "Birth certificate, marriage certificate, and similar records."),
         ("Income and Budgets", "Income sources, monthly bills, and recurring expenses."),
         ("Insurance Policies", "Life, disability, and long-term care policies."),
-        ("Tax and Financial Records", "Tax returns, property records, and valuation documents."),
-        ("Business Ownership Documents", "Operating agreements, partnership and ownership records."),
-        ("Charitable Giving and Memberships", "Charitable plans, affiliations, and organizations."),
-        ("Online Accounts and Passwords", "Online services, financial logins, and subscriptions."),
-        ("Cloud and Email Accounts", "Cloud storage, email accounts, and access credentials."),
-        ("Password Management", "Password manager info and recovery instructions."),
-        ("Social Media Accounts", "Profiles and legacy social media preferences."),
-        ("Personal Property and Valuables", "Inventory of personal valuables."),
+        ("Investments and Retirement", "Investment accounts, pensions, and annuities."),
+        ("Loans and Liabilities", "Debts, mortgages, and other financial obligations."),
+        ("Medical Summary", "Includes allergies, medications, medical history, and specialists."),
         ("Notes and Special Instructions", "Additional notes or specific personal guidance."),
+        ("Online Accounts and Passwords", "Online services, financial logins, and subscriptions."),
+        ("Password Management", "Password manager info and recovery instructions."),
+        ("Personal Identification", "Driver's license, passport, and other official IDs."),
+        ("Personal Property and Valuables", "Inventory of personal valuables."),
+        ("Property Deeds and Titles", "Ownership records for homes, vehicles, or land."),
+        ("Safe Deposit Box Information", "Location, access instructions, and contents list."),
+        ("Social Media Accounts", "Profiles and legacy social media preferences."),
+        ("Social Security Information", "Social Security number and benefit details."),
+        ("Tax and Financial Records", "Tax returns, property records, and valuation documents."),
+        ('Not Listed', 'Not Listed'),
     ]
 
     name_or_title = models.CharField(
@@ -459,7 +465,6 @@ class ImportantDocument(models.Model):
     document_category = models.CharField(
         max_length=50,
         choices=DOCUMENT_CATEGORY_CHOICES,
-        default='Important Personal Documents'
     )
 
     physical_location = models.CharField(
@@ -483,7 +488,6 @@ class ImportantDocument(models.Model):
 
     requires_legal_review = models.BooleanField(
         default=False,
-        help_text="Needs legal professional review"
     )
 
     applies_on_death = models.BooleanField(default=False)
@@ -513,6 +517,7 @@ class FamilyNeedsToKnowSection(models.Model):
         on_delete=models.CASCADE,
         related_name='family_relations',
     )
+
     content = models.TextField(help_text="What family needs to know")
     is_location_of_legal_will = models.BooleanField(default=False)
     is_password_manager = models.BooleanField(default=False)

@@ -330,6 +330,63 @@
             </div>
         </div>
 
+                    <div class="mt-4">
+                        <h5>Assigned Documents</h5>
+                        {% if total_documents > 0 %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                This contact has <strong>{{ total_documents }}</strong> document(s) assigned.
+                                You must reassign these documents before you can delete this contact.
+                            </div>
+
+                            {% if delegated_estate_documents %}
+                            <div class="mb-3">
+                                <h6>Estate Documents ({{ delegated_estate_documents.count }})</h6>
+                                <ul class="list-group">
+                                    {% for doc in delegated_estate_documents %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-contract text-primary"></i>
+                                            <a href="{% url 'dashboard:estate_detail' doc.pk %}">{{ doc.name_or_title }}</a>
+                                        </div>
+                                        {% if can_modify %}
+                                        <a href="{% url 'dashboard:estate_update' doc.pk %}" class="btn btn-sm btn-outline-primary">
+                                            Edit/Reassign
+                                        </a>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if delegated_important_documents %}
+                            <div class="mb-3">
+                                <h6>Important Documents ({{ delegated_important_documents.count }})</h6>
+                                <ul class="list-group">
+                                    {% for doc in delegated_important_documents %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-alt text-info"></i>
+                                            <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">{{ doc.name_or_title }}</a>
+                                        </div>
+                                        {% if can_modify %}
+                                        <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" class="btn btn-sm btn-outline-primary">
+                                            Edit/Reassign
+                                        </a>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">No documents assigned to this contact.</p>
+                        {% endif %}
+                    </div>
+
+
+
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
