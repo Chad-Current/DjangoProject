@@ -32,12 +32,12 @@
         </div>
 
         <!-- Summary Statistics -->
-        {% if delegated_estate_documents or delegated_important_documents %}
+        {% if delegated_estate_documents or delegated_important_documents or delegated_accounts or delegated_devices %}
         <div class="summary-stats">
             <div class="stat-item">
                 <div>
-                    <div class="stat-number">{{ total_documents|default:0 }}</div>
-                    <div class="stat-label">Total Documents</div>
+                    <div class="stat-number">{{ total_assignments|default:0 }}</div>
+                    <div class="stat-label">Total Assigned Items</div>
                 </div>
             </div>
             <div class="stat-item">

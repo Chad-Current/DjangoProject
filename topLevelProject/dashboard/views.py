@@ -730,7 +730,7 @@ class ContactDetailView(ViewAccessMixin, DetailView):
         context['delegated_devices'] = devices_listed
         context['delegated_accounts'] = accounts_listed
 
-        context['total_documents'] = estate_docs.count() + important_docs.count()
+        context['total_assignments'] = estate_docs.count() + important_docs.count() + devices_listed.count() + accounts_listed.count()
         # context['total_devices'] = devices_listed.count()
         # context['total_accounts'] = accounts_listed.count()
         
