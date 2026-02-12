@@ -1,0 +1,56 @@
+.collapsible-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  transition: all 0.2s ease;
+}
+
+.collapsible-header:hover {
+  opacity: 0.8;
+}
+
+.collapsible-header h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.collapse-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  color: #6b7280;
+  margin-left: 10px;
+}
+
+.collapsible-header[aria-expanded="false"] .collapse-icon {
+  transform: rotate(-90deg);
+}
+
+.collapsible-content {
+  transition: all 0.3s ease;
+}
+
+/* Ensure smooth collapse animation */
+.collapse:not(.show) {
+  display: none;
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+/* Add subtle animation to cards */
+.info-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.info-card:hover {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
