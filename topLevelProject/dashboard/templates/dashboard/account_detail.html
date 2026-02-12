@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <title>{{ account.name }} - Account Details</title>
+    <title>{{ account.account_name_or_provider }} - Account Details</title>
 </head>
 
 <body>
@@ -24,18 +24,18 @@
 {% include "dashboard/navblocks.html" %}
 
 <div class="main container py-4">
-        <!-- device Header -->
+        <!-- Account Header -->
         <div class="device-header">
-            <h1><i class="fas fa-file-alt"></i> {{ account.name_or_title }}</h1>
-            <div class="subtitle">Important account</div>
+            <h1><i class="fas fa-user-circle"></i> {{ account.account_name_or_provider }}</h1>
+            <div class="subtitle">Digital Account</div>
         </div>
 
         <div class="row">
-            <!-- Left Column: account Details -->
+            <!-- Left Column: Account Details -->
             <div class="col-lg-6">
-                <!-- account Information Card -->
+                <!-- Account Information Card -->
                 <div class="info-card">
-                    <h3><i class="fas fa-info-circle"></i> account Information</h3>
+                    <h3><i class="fas fa-info-circle"></i> Account Information</h3>
                     
                     <div class="info-row">
                         <div class="info-label">
@@ -46,37 +46,68 @@
                         </div>
                     </div>
 
-                    {% if account.account_name_or_provider %}
+                    {% if account.username_or_email %}
                     <div class="info-row">
                         <div class="info-label">
-                            <i class="fas fa-align-left"></i> Name or Provider
+                            <i class="fas fa-user"></i> Username/Email
                         </div>
                         <div class="info-value">
-                            {{ account.account_name_or_provider }}
+                            {{ account.username_or_email }}
                         </div>
                     </div>
                     {% endif %}
+
+                    {% if account.is_critical %}
+                    <div class="alert-box">
+                        <p>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            This is a critical account
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tasks"></i> Instruction
+                        </div>
+                        <div class="info-value">
+                            {{ account.get_keep_or_close_instruction_display }}
+                        </div>
+                    </div>
                </div>
 
-                <!-- Account Website Card -->
+                <!-- Account Access Card -->
                 <div class="info-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Account Access</h3>
                     
-                    {% if account.website_url %}
+                    {% if account.website_url or account.credential_storage_location %}
                         {% if account.website_url %}
                         <div class="mb-3">
                             <div class="location-badge">
+                                <i class="fas fa-globe"></i>
                                 <div>
                                     <strong>Website:</strong><br>
-                                    <h5>{{ account.website_url }}</h5>
+                                    <a href="{{ account.website_url }}" target="_blank" rel="noopener">{{ account.website_url }}</a>
                                 </div>
                             </div>
                         </div>
                         {% endif %}
 
+                        {% if account.credential_storage_location %}
+                        <div class="mb-3">
+                            <div class="location-badge">
+                                <i class="fas fa-key"></i>
+                                <div>
+                                    <strong>Password Storage:</strong><br>
+                                    {{ account.credential_storage_location }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     {% else %}
                         <div class="empty-state">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <p>No Website listed</p>
+                            <i class="fas fa-globe"></i>
+                            <p>No access information specified</p>
                         </div>
                     {% endif %}
                 </div>
@@ -91,7 +122,7 @@
                     <div class="contact-card">
                         <h5>
                             <i class="fas fa-user-circle"></i>
-                            <a href="{% url 'dashboard:account_detail' account.delegated_account_to.pk %}">
+                            <a href="{% url 'dashboard:contact_detail' account.delegated_account_to.pk %}">
                                 {{ account.delegated_account_to.contact_name }}
                             </a>
                         </h5>
@@ -117,31 +148,47 @@
                                 <a href="tel:{{ account.delegated_account_to.phone }}">{{ account.delegated_account_to.phone }}</a>
                             </div>
                             {% endif %}
+                        </div>
 
-                            {% if account.delegated_account_to.address %}
-                            <div class="contact-info-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>{{ account.delegated_account_to.address }}</span>
-                            </div>
+                        <!-- Contact Roles -->
+                        {% if account.delegated_account_to.is_emergency_contact or account.delegated_account_to.is_digital_executor or account.delegated_account_to.is_caregiver %}
+                        <div class="mt-2">
+                            {% if account.delegated_account_to.is_emergency_contact %}
+                            <span class="badge-role badge-emergency">
+                                <i class="fas fa-exclamation-triangle"></i> Emergency Contact
+                            </span>
+                            {% endif %}
+
+                            {% if account.delegated_account_to.is_digital_executor %}
+                            <span class="badge-role badge-executor">
+                                <i class="fas fa-gavel"></i> Digital Executor
+                            </span>
+                            {% endif %}
+
+                            {% if account.delegated_account_to.is_caregiver %}
+                            <span class="badge-role badge-caregiver">
+                                <i class="fas fa-hands-helping"></i> Caregiver
+                            </span>
                             {% endif %}
                         </div>
+                        {% endif %}
                     </div>
 
                     <div class="description-box">
                         <p>
                             <i class="fas fa-info-circle"></i>
-                            <strong>Note:</strong> This account is directly delegated to {{ account.delegated_account_to.contact_name }}. 
-                            They will have access to this account according to the conditions specified above.
+                            <strong>Note:</strong> This account is assigned to {{ account.delegated_account_to.contact_name }}. 
+                            They will have access to this account information.
                         </p>
                     </div>
                 </div>
 
-                <!-- Additional Instructions Card (if needed in future) -->
-                {% if account.credential_storage_location %}
+                <!-- Notes for Family Card -->
+                {% if account.notes_for_family %}
                 <div class="info-card">
-                    <h3><i class="fas fa-sticky-note"></i> Credential Storage Notes</h3>
+                    <h3><i class="fas fa-sticky-note"></i> Notes for Family</h3>
                     <div class="description-box">
-                        <p>{{ account.credential_storage_location|linebreaks }}</p>
+                        <p>{{ account.notes_for_family|linebreaks }}</p>
                     </div>
                 </div>
                 {% endif %}
@@ -165,19 +212,19 @@
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:account_update' account.pk %}" class="btn btn-edit btn-custom">
-                <i class="fas fa-edit"></i> Edit account
+            <a href="{% url 'dashboard:account_update' account.pk %}" class="btn-edit btn-custom">
+                <i class="fas fa-edit"></i> Edit Account
             </a>
-            <a href="{% url 'dashboard:account_delete' account.pk %}" class="btn btn-delete btn-custom">
-                <i class="fas fa-trash-alt"></i> Delete account
+            <a href="{% url 'dashboard:account_delete' account.pk %}" class="btn-delete btn-custom">
+                <i class="fas fa-trash-alt"></i> Delete Account
             </a>
-            <a href="{% url 'dashboard:account_list' %}" class="btn btn-back btn-custom">
+            <a href="{% url 'dashboard:account_list' %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to List
             </a>
         </div>
         {% else %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:account_list' %}" class="btn btn-back btn-custom">
+            <a href="{% url 'dashboard:account_list' %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to List
             </a>
         </div>
@@ -187,5 +234,8 @@
 
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
 </body>
 </html>

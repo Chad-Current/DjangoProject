@@ -29,7 +29,7 @@ input {
   width: 100%;
   height: 2.5em;
   border-radius: 20px;
-  text-indent: 1rem;
+  /* text-indent: 1rem; */
   font-size: var(--font-nm);
   border: 2px solid var(--sixty-percent);
 

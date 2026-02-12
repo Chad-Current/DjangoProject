@@ -18,11 +18,11 @@ urlpatterns = [
     path('accounts/<int:pk>/delete/', views.AccountDeleteView.as_view(), name='account_delete'),
     
     # Account Relevance Review
-    path('account-reviews/', views.AccountRelevanceReviewListView.as_view(), name='accountrelevancereview_list'),
-    path('account-reviews/new/', views.AccountRelevanceReviewCreateView.as_view(), name='accountrelevancereview_create'),
-    path('account-reviews/<int:pk>/', views.AccountRelevanceReviewDetailView.as_view(), name='accountrelevancereview_detail'),
-    path('account-reviews/<int:pk>/edit/', views.AccountRelevanceReviewUpdateView.as_view(), name='accountrelevancereview_update'),
-    path('account-reviews/<int:pk>/delete/', views.AccountRelevanceReviewDeleteView.as_view(), name='accountrelevancereview_delete'),
+    path('account-reviews/', views.RelevanceReviewListView.as_view(), name='relevancereview_list'),
+    path('account-reviews/new/', views.RelevanceReviewCreateView.as_view(), name='relevancereview_create'),
+    path('account-reviews/<int:pk>/', views.RelevanceReviewDetailView.as_view(), name='relevancereview_detail'),
+    path('account-reviews/<int:pk>/edit/', views.RelevanceReviewUpdateView.as_view(), name='relevancereview_update'),
+    path('account-reviews/<int:pk>/delete/', views.RelevanceReviewDeleteView.as_view(), name='relevancereview_delete'),
 
     # Contacts URLs
     path('contacts/', views.ContactListView.as_view(), name='contact_list'),

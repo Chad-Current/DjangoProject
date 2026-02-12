@@ -20,55 +20,55 @@
 
 <body>
     {% include "baseapp/navbar.html" %}
-    
+
     <div class="main">
         <div class="form-container">
             <div class="form-wrapper">
                 <h1 class="form-section-title">Login</h1>
-                
+
                 {% if messages %}
-                    {% for message in messages %}
-                        <div class="error">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+                  {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                      {{ message }}
+                    </p>
+                   {% endfor %}
                 {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
+                    <form method="post">
+                        {% csrf_token %}
 
-                    <div class="form-field">
-                        <label for="{{ form.username_or_email.id_for_label }}">Username or Email:</label>
-                        {{ form.username_or_email }}
-                        {% if form.username_or_email.errors %}
+                        <div class="form-field">
+                            <label for="{{ form.username_or_email.id_for_label }}">Username or Email:</label>
+                            {{ form.username_or_email }}
+                            {% if form.username_or_email.errors %}
                             <div class="error">{{ form.username_or_email.errors }}</div>
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="form-field">
-                        <label for="{{ form.password.id_for_label }}">Password:</label>
-                        {{ form.password }}
-                        {% if form.password.errors %}
+                        <div class="form-field">
+                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
                             <div class="error">{{ form.password.errors }}</div>
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="fgp">
-                        <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a>
-                    </div>
+                        <div class="fgp">
+                            <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a>
+                        </div>
 
-                    <div class="button-group">
-                        <button class="btn btn-primary" type="submit">Sign In</button>
-                    </div>
-                </form>
+                        <div class="button-group">
+                            <button class="btn btn-primary" type="submit">Sign In</button>
+                        </div>
+                    </form>
 
-                <div class="text-center">
-                    <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
-                </div>
+                    <div class="text-center">
+                        <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+                    </div>
             </div>
         </div>
     </div> <!-- END MAIN -->
-    
+
     {% include "baseapp/footer.html" %}
 
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>

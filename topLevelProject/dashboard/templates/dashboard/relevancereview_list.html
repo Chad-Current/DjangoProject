@@ -30,65 +30,57 @@
             <!-- Header Section -->
             <div class="page-header">
                 <div class="header-content">
-                    <h1 class="page-title">Estate Documents</h1>
-                    <p class="page-subtitle">Manage your estates documents</p>
+                    <h1 class="page-title">Reviews</h1>
+                    <p class="page-subtitle">Manage your upcoming reviews</p>
                 </div>
-                {% if can_modify %}
-                <div class="header-action">
-                    <a href="{% url 'dashboard:estate_create' %}" class="btn-add-contact">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add estate</span>
-                    </a>
-                </div>
-                {% endif %}
             </div>
 
             <!-- Content Section -->
             <div class="contacts-content">
-                {% if estates %}
+                {% if reviews %}
                 <!-- Desktop Table View -->
                 <div class="table-view d-none d-md-block">
                     <div class="table-responsive">
                         <table class="table contacts-table">
                             <thead>
                                 <tr>
-                                    <th>Document Category</th>
-                                    <th>Name / Title</th>
-                                    <th>Delegated to</th>
+                                    <th>Account | Devices | Documents</th>
+                                    <th>Review Date</th>
+                                    <th>Type</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for estate in estates %}
+                                {% for review in reviews %}
                                 <tr>
                                     <td>
                                         <div class="contact-name">
-                                            <i class="fas fa-file-alt contact-icon"></i>
-                                            <span>{{ estate.estate_category }}</span>
+                                            <i class="fas fa-user-circle contact-icon"></i>
+                                            <span>{{ review.review_date }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <span class="">
-                                            {{ estate.name_or_title }}
+                                            {{ review.next_review_due }}
                                         </span>
                                     </td>
                                     <td>
                                         <span class="">
-                                            {{ estate.delegated_estate_to }}
+                                            {{ review.reasoning }}
                                         </span>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="{% url 'dashboard:estate_detail' estate.pk %}"
+                                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
                                                 class="btn-action btn-edit" title="Edit contact">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             {% if can_modify %}
-                                            <a href="{% url 'dashboard:estate_update' estate.pk %}"
+                                            <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
                                                 class="btn-action btn-edit" title="Edit contact">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="{% url 'dashboard:estate_delete' estate.pk %}"
+                                            <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
                                                 class="btn-action btn-delete" title="Delete contact">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
@@ -160,6 +152,8 @@
             </div>
         </div>
     </div>
+
+    
 
     {% include "baseapp/footer.html" %}
 

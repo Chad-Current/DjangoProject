@@ -88,9 +88,9 @@
     text-decoration: underline;
 }
 
+
 /* Error Messages */
-.error,
-.messages {
+.error {
     background-color: #ffebee;
     border-left: 4px solid #d32f2f;
     color: #c62828;
@@ -135,7 +135,7 @@
         margin-top: 1.5rem;
         padding-top: 1.5rem;
     }
-    
+
     .fgp {
         text-align: center;
         margin-bottom: 1.25rem;
@@ -146,7 +146,7 @@
     .form-field {
         margin-bottom: 1.25rem;
     }
-    
+
     .text-center p {
         font-size: var(--font-sm);
     }
@@ -164,7 +164,8 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    min-height: calc(100vh - 200px); /* Adjust based on navbar/footer height */
+    min-height: calc(100vh - 200px);
+    /* Adjust based on navbar/footer height */
 }
 
 /* .login-form {

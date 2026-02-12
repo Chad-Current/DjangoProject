@@ -24,143 +24,138 @@
 <body>
     {% include "baseapp/navbar.html" %}
     {% include "dashboard/navblocks.html" %}
-    
+
     <div class="main">
 
-            <!-- Header Section -->
-            <div class="page-header">
-                <div class="header-content">
-                    <h1 class="page-title">Devices</h1>
-                    <p class="page-subtitle">Manage your Device information</p>
+        <!-- Header Section -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Devices</h1>
+                <p class="page-subtitle">Manage your Device information</p>
+            </div>
+            {% if can_modify %}
+            <div class="header-action">
+                <a href="{% url 'dashboard:device_create' %}" class="btn-add-contact">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Device</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Content Section -->
+        <div class="contacts-content">
+            {% if devices %}
+            <!-- Desktop Table View -->
+            <div class="table-view d-none d-md-block">
+                <div class="table-responsive">
+                    <table class="table contacts-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Name</th>
+                                <th>Assigned to</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device in devices %}
+                            <tr>
+                                <td>
+                                    <div class="contact-name">
+                                        <i class="fas fa-laptop contact-icon"></i>
+                                        <span>{{ device.device_type }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="">{{ device.device_name }}</span>
+                                </td>
+                                <td>
+                                    <span class="contact-info">{{ device.delegated_device_to|truncatechars:50 }}</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{% url 'dashboard:device_detail' device.pk %}"
+                                            class="btn-action btn-edit" title="Delete contact">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if can_modify %}
+                                        <a href="{% url 'dashboard:device_update' device.pk %}"
+                                            class="btn-action btn-edit" title="Edit contact">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'dashboard:device_delete' device.pk %}"
+                                            class="btn-action btn-delete" title="Delete contact">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                {% if can_modify %}
-                <div class="header-action">
-                    <a href="{% url 'dashboard:device_create' %}" class="btn-add-contact">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add Device</span>
-                    </a>
-                </div>
-                {% endif %}
             </div>
 
-            <!-- Content Section -->
-            <div class="contacts-content">
-                {% if devices %}
-                    <!-- Desktop Table View -->
-                    <div class="table-view d-none d-md-block">
-                        <div class="table-responsive">
-                            <table class="table contacts-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Information</th>
-                                        <th class="text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for device in devices %}
-                                    <tr>
-                                        <td>
-                                            <div class="contact-name">
-                                                <i class="fas fa-tablet-alt contact-icon"></i>
-                                                <span>{{ device.device_name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="">{{ device.device_type }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="contact-info">{{ device.location_description|truncatechars:50 }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <a href="{% url 'dashboard:device_detail' device.pk %}" 
-                                                   class="btn-action btn-edit" 
-                                                   title="Delete contact">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                {% if can_modify %}
-                                                <a href="{% url 'dashboard:device_update' device.pk %}" 
-                                                   class="btn-action btn-edit" 
-                                                   title="Edit contact">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="{% url 'dashboard:device_delete' device.pk %}" 
-                                                   class="btn-action btn-delete" 
-                                                   title="Delete contact">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+            <!-- Mobile Card View -->
+            <div class="card-view d-md-none">
+                {% for device in devices %}
+                <div class="contact-card">
+                    <div class="card-header-section">
+                        <div class="contact-avatar">
+                            <i class="fas fa-tablet-alt contact-icon"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3 class="contact-card-name">{{ device.name }}</h3>
+                            <span class="badge-relationship-mobile">{{ device.name }}</span>
                         </div>
                     </div>
 
-                    <!-- Mobile Card View -->
-                    <div class="card-view d-md-none">
-                        {% for device in devices %}
-                        <div class="contact-card">
-                            <div class="card-header-section">
-                                <div class="contact-avatar">
-                                    <i class="fas fa-tablet-alt contact-icon"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <h3 class="contact-card-name">{{ device.name }}</h3>
-                                    <span class="badge-relationship-mobile">{{ device.name }}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="card-body-section">
-                                <div class="info-label">Location</div>
-                                <p class="contact-info-text">{{ device.location_description|truncatechars:100 }}</p>
-                            </div>
-                            
-                            {% if can_modify %}
-                            <div class="card-actions">
-                                <a href="{% url 'dashboard:device_update' device.pk %}" 
-                                   class="btn-card-action btn-edit-card">
-                                    <i class="fas fa-edit"></i>
-                                    <span>Edit</span>
-                                </a>
-                                <a href="{% url 'dashboard:device_delete' device.pk %}" 
-                                   class="btn-card-action btn-delete-card">
-                                    <i class="fas fa-trash-alt"></i>
-                                    <span>Delete</span>
-                                </a>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
+                    <div class="card-body-section">
+                        <div class="info-label">Location</div>
+                        <p class="contact-info-text">{{ device.location_description|truncatechars:100 }}</p>
                     </div>
 
-                {% else %}
-                    <!-- Empty State -->
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="fas fa-address-book"></i>
-                        </div>
-                        <h2 class="empty-state-title">No Devices Yet</h2>
-                        <p class="empty-state-text">
-                            Start building your devices list by adding your first device.
-                        </p>
-                        {% if can_modify %}
-                        <a href="{% url 'dashboard:device_create' %}" class="btn-add-first">
-                            <i class="fas fa-plus-circle"></i>
-                            Add Your First Device
+                    {% if can_modify %}
+                    <div class="card-actions">
+                        <a href="{% url 'dashboard:device_update' device.pk %}" class="btn-card-action btn-edit-card">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit</span>
                         </a>
-                        {% endif %}
+                        <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn-card-action btn-delete-card">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Delete</span>
+                        </a>
                     </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-address-book"></i>
+                </div>
+                <h2 class="empty-state-title">No Devices Yet</h2>
+                <p class="empty-state-text">
+                    Start building your devices list by adding your first device.
+                </p>
+                {% if can_modify %}
+                <a href="{% url 'dashboard:device_create' %}" class="btn-add-first">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Your First Device
+                </a>
                 {% endif %}
             </div>
+            {% endif %}
+        </div>
     </div>
 
     {% include "baseapp/footer.html" %}
-    
+
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

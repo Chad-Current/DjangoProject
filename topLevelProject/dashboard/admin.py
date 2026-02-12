@@ -4,15 +4,15 @@ from django.db.models import Count, Q, F
 from .models import (
     Profile,
     Account,
-    AccountRelevanceReview,
     Device,
-    DigitalEstateDocument,
     Contact,
+    DigitalEstateDocument,
+    ImportantDocument,
     FamilyNeedsToKnowSection,
     Checkup,
     CareRelationship,
     RecoveryRequest,
-    ImportantDocument,
+    RelevanceReview,
 )
 
 
@@ -124,25 +124,6 @@ class AccountAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('profile', 'delegated_account_to')
 
 
-@admin.register(AccountRelevanceReview)
-class AccountRelevanceReviewAdmin(admin.ModelAdmin):
-    list_display = ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
-    list_filter = ('matters', 'review_date', 'next_review_due')
-    search_fields = ('account__account_name_or_provider', 'reviewer__username', 'reasoning')
-    readonly_fields = ('review_date', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Review Information', {
-            'fields': ('account', 'reviewer', 'matters', 'review_date', 'next_review_due')
-        }),
-        ('Details', {
-            'fields': ('reasoning',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
 
 
 @admin.register(Device)
@@ -337,6 +318,28 @@ class ImportantDocumentAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('profile', 'delegated_important_document_to')
+
+
+@admin.register(RelevanceReview)
+class RelevanceReview(admin.ModelAdmin):
+    list_display = ('account_review', 'reviewer', 'matters', 'review_date', 'next_review_due')
+    list_filter = ('matters', 'review_date', 'next_review_due')
+    search_fields = ('account_review__account_name_or_provider', 'reviewer__username', 'reasoning')
+    readonly_fields = ('review_date', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Review Information', {
+            'fields': ('account_review', 'reviewer', 'matters', 'review_date', 'next_review_due')
+        }),
+        ('Details', {
+            'fields': ('reasoning',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
 
 # Customize admin site header
 admin.site.site_header = "Digital Estate Planning Administration"

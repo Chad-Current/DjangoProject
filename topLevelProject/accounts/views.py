@@ -131,34 +131,6 @@ class LogoutView(LoginRequiredMixin, View):
         return self.get(request)
 
 
-# class DashboardView(LoginRequiredMixin, TemplateView):
-#     template_name = 'accounts/dashboard.html'
-#     login_url = '/accounts/login/'
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = self.request.user
-        
-#         context['user'] = user
-#         context['session_expires'] = self.request.session.get_expiry_date()
-#         context['can_modify'] = user.can_modify_data()
-#         context['can_view'] = user.can_view_data()
-#         context['has_paid'] = user.has_paid
-#         context['subscription_tier'] = user.subscription_tier
-#         context['tier_display'] = user.get_tier_display_name()
-        
-#         # Essentials specific
-#         if user.subscription_tier == 'essentials':
-#             context['is_edit_active'] = user.is_essentials_edit_active()
-#             context['days_remaining'] = user.days_until_essentials_expires()
-#             context['essentials_expires'] = user.essentials_expires
-        
-#         # Legacy specific
-#         if user.subscription_tier == 'legacy':
-#             context['legacy_granted'] = user.legacy_granted_date
-        
-#         return context
-
 
 class PaymentView(LoginRequiredMixin, View):
     """Handle payment selection and activation"""

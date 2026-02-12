@@ -27,13 +27,14 @@
 .page-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #1f2937;
+    color: var(--ten-percent);
     margin-bottom: 0.5rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: var(--title-font);
 }
 
 .page-subtitle {
     font-size: 1rem;
+    font-family: var(--main-font);
     color: #6b7280;
     margin: 0;
 }
@@ -51,8 +52,9 @@
     color: white;
     text-decoration: none;
     border-radius: 8px;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
     font-weight: 600;
-    font-size: 0.95rem;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
@@ -112,6 +114,8 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
     font-weight: 600;
     color: #1f2937;
 }
@@ -143,7 +147,9 @@
 
 .contact-info {
     color: #6b7280;
-    font-size: 0.95rem;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 600;
 }
 
 .action-buttons {
@@ -230,7 +236,8 @@
 }
 
 .contact-card-name {
-    font-size: 1.25rem;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
     font-weight: 700;
     color: #1f2937;
     margin: 0 0 0.5rem 0;
@@ -243,7 +250,8 @@
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     color: #1e40af;
     border-radius: 12px;
-    font-size: 0.813rem;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
     font-weight: 600;
 }
 
@@ -252,7 +260,8 @@
 }
 
 .info-label {
-    font-size: 0.75rem;
+    font-family: var(--main-font);
+    font-size: var(--font-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -262,7 +271,9 @@
 
 .contact-info-text {
     color: #374151;
-    font-size: 0.95rem;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 500;
     line-height: 1.6;
     margin: 0;
 }
@@ -283,8 +294,9 @@
     padding: 0.75rem;
     border-radius: 8px;
     text-decoration: none;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
     font-weight: 600;
-    font-size: 0.9rem;
     transition: all 0.2s ease;
 }
 

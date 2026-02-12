@@ -61,15 +61,18 @@
                         <tbody>
                             {% for document in documents %}
                             <tr>
-                                <td>
-                                    <span class="badge-relationship">{{ document.document_category }}</span>
+                                <td>                                    
+                                    <div class="contact-name">
+                                        <i class="fas fa-file-alt contact-icon"></i>
+                                    <span class="">{{ document.document_category }}</span>
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="contact-info">{{ document.name_or_title|truncatechars:50 }}</span>
                                 </td>
                                 <td>
                                     <span class="">
-                                        {{ document.delegated_to }}
+                                        {{ document.delegated_important_document_to }}
                                     </span>
                                 </td>
                                 <td>

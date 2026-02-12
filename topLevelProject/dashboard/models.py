@@ -207,47 +207,6 @@ class Account(models.Model):
         return f"{self.account_name_or_provider}" 
 
 
-class AccountRelevanceReview(models.Model):
-    """
-    Periodic reviews to determine if accounts still matter
-    """
-    account = models.ForeignKey(
-        Account,
-        on_delete=models.CASCADE,
-        related_name='relevance_reviews'
-    )
-    reviewer = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='account_reviews',
-        editable=False
-    )
-    matters = models.BooleanField(
-        default=True,
-        help_text="Does this account still matter?"
-    )
-    review_date = models.DateTimeField(auto_now_add=True)
-    reasoning = models.TextField(blank=True)
-    next_review_due = models.DateField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            if self.account.is_critical:
-                self.next_review_due = timezone.now().date() + timedelta(days=90)
-            else:
-                self.next_review_due = timezone.now().date() + timedelta(days=365)
-        super(AccountRelevanceReview, self).save(*args, **kwargs)
-            
-    class Meta:
-        db_table = 'account_relevance_reviews'
-        ordering = ['-review_date']
-    
-    def __str__(self):
-        return f"Review of {self.account.account_name_or_provider} on {self.review_date.date()}"
-
-
 class Device(models.Model):
     """
     Physical devices (phones, computers, tablets, etc.)
@@ -644,6 +603,7 @@ class CareRelationship(models.Model):
 
 
 class RecoveryRequest(models.Model):
+
     """
     Requests to recover accounts (for deceased or incapacitated users)
     """
@@ -696,3 +656,148 @@ class RecoveryRequest(models.Model):
     
     def __str__(self):
         return f"Recovery: {self.target_description} ({self.status})"
+    
+
+class RelevanceReview(models.Model):
+    """
+    Periodic reviews to determine if accounts, devices, estate documents, or important documents still matter.
+    Only ONE of the foreign keys should be set per review.
+    """
+    # Review target - only ONE should be set
+    account_review = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        related_name='account_reviews',
+        null=True,
+        blank=True
+    )
+    device_review = models.ForeignKey(
+        Device,
+        on_delete=models.CASCADE,
+        related_name='device_reviews',
+        null=True,
+        blank=True
+    )
+    estate_review = models.ForeignKey(
+        DigitalEstateDocument,
+        on_delete=models.CASCADE,
+        related_name='estate_reviews',
+        null=True,
+        blank=True
+    )
+    important_document_review = models.ForeignKey(
+        ImportantDocument,
+        on_delete=models.CASCADE,
+        related_name='important_document_reviews',
+        null=True,
+        blank=True
+    )
+    
+    # Review details
+    reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='relevance_reviews',
+        editable=False
+    )
+    
+    matters = models.BooleanField(
+        default=True,
+        help_text="Does this still matter?"
+    )
+    
+    review_date = models.DateTimeField(auto_now_add=True)
+    reasoning = models.TextField(blank=True, help_text="Why does this still matter or not?")
+    next_review_due = models.DateField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        """Ensure exactly one review target is set"""
+        from django.core.exceptions import ValidationError
+        
+        targets = [
+            self.account_review,
+            self.device_review,
+            self.estate_review,
+            self.important_document_review
+        ]
+        
+        # Count how many are set
+        set_count = sum(1 for target in targets if target is not None)
+        
+        if set_count == 0:
+            raise ValidationError("You must select one item to review (account, device, estate document, or important document).")
+        elif set_count > 1:
+            raise ValidationError("You can only review one item at a time.")
+
+    def save(self, *args, **kwargs):
+        """Set next review date based on item type and criticality"""
+        # Run validation
+        self.clean()
+        
+        if not self.pk:  # Only set on creation
+            # Default to 365 days
+            days_until_next = 365
+            
+            # Check if it's an Account and if it's critical
+            if self.account_review and self.account_review.is_critical:
+                days_until_next = 90
+            
+            self.next_review_due = timezone.now().date() + timedelta(days=days_until_next)
+        
+        super().save(*args, **kwargs)
+    
+    def get_reviewed_item(self):
+        """Return the item being reviewed"""
+        if self.account_review:
+            return self.account_review
+        elif self.device_review:
+            return self.device_review
+        elif self.estate_review:
+            return self.estate_review
+        elif self.important_document_review:
+            return self.important_document_review
+        return None
+    
+    def get_item_type(self):
+        """Return human-readable type of item being reviewed"""
+        if self.account_review:
+            return "Account"
+        elif self.device_review:
+            return "Device"
+        elif self.estate_review:
+            return "Estate Document"
+        elif self.important_document_review:
+            return "Important Document"
+        return "Unknown"
+    
+    def get_item_name(self):
+        """Return the name/title of the item being reviewed"""
+        item = self.get_reviewed_item()
+        if not item:
+            return "Unknown Item"
+        
+        if hasattr(item, 'account_name_or_provider'):
+            return item.account_name_or_provider
+        elif hasattr(item, 'device_name'):
+            return item.device_name
+        elif hasattr(item, 'name_or_title'):
+            return item.name_or_title
+        
+        return str(item)
+            
+    class Meta:
+        db_table = 'relevance_reviews'
+        ordering = ['-review_date']
+        indexes = [
+            models.Index(fields=['account_review']),
+            models.Index(fields=['device_review']),
+            models.Index(fields=['estate_review']),
+            models.Index(fields=['important_document_review']),
+            models.Index(fields=['next_review_due']),
+        ]
+    
+    def __str__(self):
+        return f"Review of {self.get_item_type()}: {self.get_item_name()} on {self.review_date.date()}"

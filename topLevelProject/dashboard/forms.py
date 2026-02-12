@@ -6,7 +6,7 @@ from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Butt
 from .models import (
     Profile,
     Account,
-    AccountRelevanceReview,
+    RelevanceReview,
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
@@ -178,45 +178,6 @@ class AccountForm(forms.ModelForm):
             ),
             Div(
                 Submit('submit', 'Save Account', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
-        )
-
-
-class AccountRelevanceReviewForm(forms.ModelForm):
-    class Meta:
-        model = AccountRelevanceReview
-        fields = [
-            "account",
-            "matters",
-            "reasoning",
-            "next_review_due",
-        ]
-        widgets = {
-            'next_review_due': forms.DateInput(attrs={'type': 'date'}),
-        }
-    
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        
-        if self.user:
-            try:
-                profile = Profile.objects.get(user=self.user)
-                self.fields['account'].queryset = Account.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                self.fields['account'].queryset = Account.objects.none()
-        
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-wrapper'
-        self.helper.layout = Layout(
-            Field('account', css_class='select'),
-            Field('matters', css_class='select'),
-            Field('next_review_due', css_class='dateinput'),
-            Field('reasoning', css_class='textarea'),
-            Div(
-                Submit('submit', 'Save Review', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
                 css_class='button-group'
             ),
@@ -630,3 +591,96 @@ class ImportantDocumentForm(forms.ModelForm):
             ),
         )
 
+
+class RelevanceReviewForm(forms.ModelForm):
+    class Meta:
+        model = RelevanceReview
+        fields = [
+            "account_review",
+            "device_review",
+            "estate_review",
+            "important_document_review",
+            "matters",
+            "reasoning",
+            "next_review_due",
+        ]
+        widgets = {
+            'next_review_due': forms.DateInput(attrs={'type': 'date'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                
+                # Filter querysets to only show items belonging to this user's profile
+                self.fields['account_review'].queryset = Account.objects.filter(profile=profile)
+                self.fields['device_review'].queryset = Device.objects.filter(profile=profile)
+                self.fields['estate_review'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
+                self.fields['important_document_review'].queryset = ImportantDocument.objects.filter(profile=profile)
+                
+                # Make all review fields optional (user picks one)
+                self.fields['account_review'].required = False
+                self.fields['device_review'].required = False
+                self.fields['estate_review'].required = False
+                self.fields['important_document_review'].required = False
+                
+            except Profile.DoesNotExist:
+                self.fields['account_review'].queryset = Account.objects.none()
+                self.fields['device_review'].queryset = Device.objects.none()
+                self.fields['estate_review'].queryset = DigitalEstateDocument.objects.none()
+                self.fields['important_document_review'].queryset = ImportantDocument.objects.none()
+        
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            HTML('''
+                <div class="alert alert-info mb-3">
+                    <strong>Select ONE item to review:</strong> Choose an account, device, estate document, or important document.
+                </div>
+            '''),
+            Fieldset(
+                'What Are You Reviewing?',
+                Field('account_review', css_class='select'),
+                Field('device_review', css_class='select'),
+                Field('estate_review', css_class='select'),
+                Field('important_document_review', css_class='select'),
+            ),
+            Fieldset(
+                'Review Details',
+                Field('matters', css_class='select'),
+                Field('next_review_due', css_class='dateinput'),
+                Field('reasoning', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save Review', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+    
+    def clean(self):
+        """Validate that exactly one review target is selected"""
+        cleaned_data = super().clean()
+        
+        account = cleaned_data.get('account_review')
+        device = cleaned_data.get('device_review')
+        estate = cleaned_data.get('estate_review')
+        important = cleaned_data.get('important_document_review')
+        
+        targets = [account, device, estate, important]
+        set_count = sum(1 for target in targets if target is not None)
+        
+        if set_count == 0:
+            raise forms.ValidationError(
+                "You must select exactly ONE item to review (account, device, estate document, or important document)."
+            )
+        elif set_count > 1:
+            raise forms.ValidationError(
+                "You can only review ONE item at a time. Please select only one option."
+            )
+        
+        return cleaned_data

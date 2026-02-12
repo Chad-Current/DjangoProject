@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
     <link
         href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
         rel="stylesheet">
@@ -72,10 +72,6 @@
             <div class="col-lg-5">
                 <!-- Contact Information Card -->
                 <div class="info-card">
-                    <!-- <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#contactInfo" aria-expanded="true" aria-controls="contactInfo">
-                        <i class="fas fa-chevron-down collapse-icon"></i>
-                    </div> -->
-                    
                     <div id="contactInfo" class="collapse show collapsible-content">
                         <div class="mt-3">
                             <h3><i class="fas fa-address-card"></i> Contact Information</h3>
@@ -124,10 +120,6 @@
 
                 <!-- Roles Card -->
                 <div class="info-card">
-                    <!-- <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#rolesInfo" aria-expanded="true" aria-controls="rolesInfo">
-                        <i class="fas fa-chevron-down collapse-icon"></i>
-                    </div> -->
-                    
                     <div id="rolesInfo" class="collapse show collapsible-content">
                         <div class="mt-3">
                             <h3><i class="fas fa-user-tag"></i> Roles & Responsibilities</h3>
@@ -198,13 +190,40 @@
                                     
                                     <div class="mt-2">
                                         <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
-                                        <span style="font-size: 0.9rem;">{{ doc.get_estate_document_display }}</span>
+                                        <span style="font-size: 0.9rem;">{{ doc.get_estate_category_display }}</span>
                                     </div>
 
-                                    {% if doc.overall_instructions %}
-                                    <div class="instructions-box">
+                                    {% if doc.estate_overall_instructions %}
+                                    <div class="instructions-box mt-3">
                                         <strong style="font-size: 0.9rem;">Instructions:</strong>
-                                        <p class="mt-1">{{ doc.overall_instructions }}</p>
+                                        <p class="mt-1">{{ doc.estate_overall_instructions }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Document Locations -->
+                                    {% if doc.estate_physical_location or doc.estate_digital_location or doc.estate_file %}
+                                    <div class="mt-3">
+                                        <strong style="font-size: 0.9rem; color: #6b7280;">Locations:</strong>
+                                        <div class="mt-2">
+                                            {% if doc.estate_physical_location %}
+                                            <span class="location-badge">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                Physical: {{ doc.estate_physical_location }}
+                                            </span>
+                                            {% endif %}
+                                            {% if doc.estate_digital_location %}
+                                            <span class="location-badge">
+                                                <i class="fas fa-cloud"></i>
+                                                Digital: {{ doc.estate_digital_location }}
+                                            </span>
+                                            {% endif %}
+                                            {% if doc.estate_file %}
+                                            <span class="location-badge">
+                                                <i class="fas fa-file-download"></i>
+                                                <a href="{{ doc.estate_file.url }}" target="_blank">Download File</a>
+                                            </span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                     {% endif %}
 
@@ -213,12 +232,6 @@
                                             <i class="fas fa-calendar"></i>
                                             Updated {{ doc.updated_at|date:"M d, Y" }}
                                         </div>
-                                        {% if doc.estate_file %}
-                                        <div class="document-meta-item">
-                                            <i class="fas fa-file-download" style="color: #10b981;"></i>
-                                            <a href="{{ doc.estate_file.url }}" target="_blank">Download File</a>
-                                        </div>
-                                        {% endif %}
                                         {% if can_modify %}
                                         <div class="document-meta-item">
                                             <a href="{% url 'dashboard:estate_update' doc.pk %}" class="text-primary">
@@ -346,7 +359,7 @@
                                     <h5>
                                         <i class="fas fa-{% if device.device_type == 'Phone' %}mobile-alt{% elif device.device_type == 'Laptop' %}laptop{% elif device.device_type == 'Tablet' %}tablet-alt{% elif device.device_type == 'Desktop' %}desktop{% elif device.device_type == 'Smart Watch' %}clock{% else %}microchip{% endif %}"></i>
                                         <a href="{% url 'dashboard:device_detail' device.pk %}">
-                                            {{ device.name }}
+                                            {{ device.device_name }}
                                         </a>
                                     </h5>
                                     
@@ -515,7 +528,7 @@
         </div>
 
         <!-- Deletion Warning Section -->
-        {% if total_documents > 0 %}
+        {% if total_assignments > 0 %}
         <div class="info-card mt-4" style="border-left: 4px solid #ef4444;">
             <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#deletionWarning" aria-expanded="true" aria-controls="deletionWarning">
                 <h5 class="text-danger mb-0">
@@ -527,7 +540,7 @@
             <div id="deletionWarning" class="collapse show collapsible-content">
                 <div class="alert alert-danger mb-0 mt-3">
                     <i class="fas fa-info-circle"></i>
-                    This contact has <strong>{{ total_documents }}</strong> item(s) assigned and cannot be deleted until all items are reassigned to another contact.
+                    This contact has <strong>{{ total_assignments }}</strong> item(s) assigned and cannot be deleted until all items are reassigned to another contact.
                 </div>
             </div>
         </div>
@@ -536,19 +549,19 @@
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn btn-edit btn-custom">
+            <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn-edit btn-custom">
                 <i class="fas fa-edit"></i> Edit Contact
             </a>
-            <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn btn-delete btn-custom">
+            <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn-delete btn-custom">
                 <i class="fas fa-trash-alt"></i> Delete Contact
             </a>
-            <a href="{% url 'dashboard:contact_list' %}" class="btn btn-back btn-custom">
+            <a href="{% url 'dashboard:contact_list' %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to List
             </a>
         </div>
         {% else %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:contact_list' %}" class="btn btn-back btn-custom">
+            <a href="{% url 'dashboard:contact_list' %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to List
             </a>
         </div>

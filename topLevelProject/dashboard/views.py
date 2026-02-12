@@ -1,15 +1,9 @@
-# ============================================================================
-# PART 7: DASHBOARD APP - ALL VIEWS - WITH M2M DELEGATE_DOCS - CORRECTED
-# ============================================================================
-
-# ============================================================================
-# dashboard/views.py
-# ============================================================================
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Count, ProtectedError, Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
@@ -22,7 +16,7 @@ from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
 from .models import (
     Profile,
     Account,
-    AccountRelevanceReview,
+    RelevanceReview,
     Device,
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
@@ -35,7 +29,7 @@ from .models import (
 from .forms import (
     ProfileForm,
     AccountForm,
-    AccountRelevanceReviewForm,
+    RelevanceReviewForm,
     DeviceForm,
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
@@ -68,7 +62,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['user'] = user
             context['profile'] = profile
             context['session_expires'] = self.request.session.get_expiry_date()
-            
+                    
             # ALL COUNTS - FIXED TO USE PROFILE FILTER
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
@@ -111,17 +105,17 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['others'] = Device.objects.filter(profile=profile, device_type='other').count()
 
             # PROGRESS CALCULATION - FIXED KEYS
-            keys = [
-                'accounts_count', 'contacts_count', 'devices_count',  # Fixed typos
-                'documents_count', 'estates_count', 'family_knows_count', 'care_relations_count'
-            ]
-            adjusted_values = []
-            for key in keys:
-                value = context.get(key, 0) or 0
-                adjusted_values.append(value)
-            total = sum(adjusted_values)
-            context['progress'] = min((total / len(keys)) * 100, 100) if keys else 0
-            context['remaining_tasks'] = max(len(keys) - total, 0)
+            # keys = [
+            #     'accounts_count', 'contacts_count', 'devices_count',  # Fixed typos
+            #     'documents_count', 'estates_count', 'family_knows_count', 'care_relations_count'
+            # ]
+            # adjusted_values = []
+            # for key in keys:
+            #     value = context.get(key, 0) or 0
+            #     adjusted_values.append(value)
+            # total = sum(adjusted_values)
+            # context['progress'] = min((total / len(keys)) * 100, 100) if keys else 0
+            # context['remaining_tasks'] = max(len(keys) - total, 0)
             
             # PERMISSIONS CONTEXT
             context['tier_display'] = user.get_tier_display_name()
@@ -135,28 +129,28 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['alert_attention_year'] = False
             
             today = datetime.today().date()
-            review_dates = (AccountRelevanceReview.objects
-                           .filter(account__profile=profile)  # Added profile filter
-                           .exclude(next_review_due__isnull=True)
-                           .aggregate(soonest=Min('next_review_due'), farthest=Max('next_review_due')))
+            # review_dates = (RelevanceReview.objects
+            #                .filter(account_review__profile=profile)  # Added profile filter
+            #                .exclude(next_review_due__isnull=True)
+            #                .aggregate(soonest=Min('next_review_due'), farthest=Max('next_review_due')))
             
-            soonest_review = review_dates['soonest']
-            farthest_review = review_dates['farthest']
-            context['soonest'] = soonest_review
+            # soonest_review = review_dates['soonest']
+            # farthest_review = review_dates['farthest']
+            # context['soonest'] = soonest_review
 
-            if soonest_review:
-                first_delta = soonest_review - today
-                if first_delta.days <= 0:
-                    context['alert_due'] = True
-                elif first_delta.days <= 7:
-                    context['alert_attention'] = True
+            # if soonest_review:
+            #     first_delta = soonest_review - today
+            #     if first_delta.days <= 0:
+            #         context['alert_due'] = True
+            #     elif first_delta.days <= 7:
+            #         context['alert_attention'] = True
 
-            if farthest_review:
-                last_delta = farthest_review - today
-                if last_delta.days <= 0:
-                    context['alert_due_year'] = True
-                elif last_delta.days <= 30:
-                    context['alert_attention_year'] = True
+            # if farthest_review:
+            #     last_delta = farthest_review - today
+            #     if last_delta.days <= 0:
+            #         context['alert_due_year'] = True
+            #     elif last_delta.days <= 30:
+            #         context['alert_attention_year'] = True
 
             if user.subscription_tier == 'essentials':
                 context['is_edit_active'] = user.is_essentials_edit_active()
@@ -290,103 +284,6 @@ class AccountDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Account deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
-# ============================================================================
-# ACCOUNT RELEVANCE REVIEW VIEWS
-# ============================================================================
-class AccountRelevanceReviewListView(ViewAccessMixin, ListView):
-    model = AccountRelevanceReview
-    template_name = 'dashboard/accountrelevancereview_list.html'
-    context_object_name = 'reviews'
-    owner_field = 'account__profile__user'
-    paginate_by = 20
-
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            qs = AccountRelevanceReview.objects.filter(account__profile=profile)
-            
-            account_id = self.request.GET.get('account')
-            if account_id:
-                qs = qs.filter(account_id=account_id)
-            
-            return qs.order_by('-review_date')
-        except Profile.DoesNotExist:
-            return AccountRelevanceReview.objects.none()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        account_id = self.request.GET.get('account')
-        if account_id:
-            try:
-                context['filtered_account'] = Account.objects.get(
-                    id=account_id,
-                    profile__user=self.request.user
-                )
-            except Account.DoesNotExist:
-                pass
-        return context
-
-class AccountRelevanceReviewDetailView(ViewAccessMixin, DetailView):
-    model = AccountRelevanceReview
-    template_name = 'dashboard/accountrelevancereview_detail.html'
-    context_object_name = 'review'
-    owner_field = 'account__profile__user'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-class AccountRelevanceReviewCreateView(FullAccessMixin, CreateView):
-    model = AccountRelevanceReview
-    form_class = AccountRelevanceReviewForm
-    template_name = 'dashboard/accountrelevancereview_form.html'
-    owner_field = 'account__profile__user'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        form.instance.reviewer = self.request.user
-        messages.success(self.request, 'Account review created successfully.')
-        return super().form_valid(form)
-    
-    def get_success_url(self):
-        return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
-
-class AccountRelevanceReviewUpdateView(FullAccessMixin, UpdateView):
-    model = AccountRelevanceReview
-    form_class = AccountRelevanceReviewForm
-    template_name = 'dashboard/accountrelevancereview_form.html'
-    owner_field = 'account__profile__user'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Account review updated successfully.')
-        return super().form_valid(form)
-    
-    def get_success_url(self):
-        return reverse_lazy('dashboard:account_detail', kwargs={'pk': self.object.account.pk})
-
-class AccountRelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
-    model = AccountRelevanceReview
-    template_name = 'dashboard/accountrelevancereview_confirm_delete.html'
-    owner_field = 'account__profile__user'
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Account review deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-    
-    def get_success_url(self):
-        return reverse_lazy('dashboard:account_list')
 
 # ============================================================================
 # DEVICE VIEWS
@@ -988,3 +885,281 @@ class RecoveryRequestDeleteView(DeleteAccessMixin, DeleteView):
 
 class MainTemplateView(TemplateView):
     template_name = 'dashboard/main_template.html'
+
+# ============================================================================
+# RELEVANCE REVIEW VIEWS
+# ============================================================================
+
+class RelevanceReviewListView(ViewAccessMixin, ListView):
+    model = RelevanceReview
+    template_name = 'dashboard/relevancereview_list.html'
+    context_object_name = 'reviews'
+    paginate_by = 20
+
+    def get_owner_field(self):
+        """Dynamic owner field based on review type"""
+        # We'll check this in get_queryset instead
+        return None
+
+    def get_queryset(self):
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            
+            # Get all reviews for items belonging to this profile
+            qs = RelevanceReview.objects.filter(
+                Q(account_review__profile=profile) |
+                Q(device_review__profile=profile) |
+                Q(estate_review__profile=profile) |
+                Q(important_document_review__profile=profile)
+            ).select_related(
+                'account_review',
+                'device_review', 
+                'estate_review',
+                'important_document_review',
+                'reviewer'
+            )
+            
+            # Filter by specific item type if requested
+            filter_type = self.request.GET.get('type')
+            item_id = self.request.GET.get('item_id')
+            
+            if filter_type == 'account' and item_id:
+                qs = qs.filter(account_review_id=item_id)
+            elif filter_type == 'device' and item_id:
+                qs = qs.filter(device_review_id=item_id)
+            elif filter_type == 'estate' and item_id:
+                qs = qs.filter(estate_review_id=item_id)
+            elif filter_type == 'important' and item_id:
+                qs = qs.filter(important_document_review_id=item_id)
+            
+            return qs.order_by('-review_date')
+        except Profile.DoesNotExist:
+            return RelevanceReview.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        
+        # Add filter information to context
+        filter_type = self.request.GET.get('type')
+        item_id = self.request.GET.get('item_id')
+        
+        if filter_type and item_id:
+            try:
+                if filter_type == 'account':
+                    context['filtered_item'] = Account.objects.get(
+                        id=item_id,
+                        profile__user=self.request.user
+                    )
+                    context['filtered_type'] = 'Account'
+                elif filter_type == 'device':
+                    context['filtered_item'] = Device.objects.get(
+                        id=item_id,
+                        profile__user=self.request.user
+                    )
+                    context['filtered_type'] = 'Device'
+                elif filter_type == 'estate':
+                    context['filtered_item'] = DigitalEstateDocument.objects.get(
+                        id=item_id,
+                        profile__user=self.request.user
+                    )
+                    context['filtered_type'] = 'Estate Document'
+                elif filter_type == 'important':
+                    context['filtered_item'] = ImportantDocument.objects.get(
+                        id=item_id,
+                        profile__user=self.request.user
+                    )
+                    context['filtered_type'] = 'Important Document'
+            except (Account.DoesNotExist, Device.DoesNotExist, 
+                    DigitalEstateDocument.DoesNotExist, ImportantDocument.DoesNotExist):
+                pass
+        
+        return context
+
+
+class RelevanceReviewDetailView(ViewAccessMixin, DetailView):
+    model = RelevanceReview
+    template_name = 'dashboard/relevancereview_detail.html'
+    context_object_name = 'review'
+
+    def get_object(self, queryset=None):
+        """Get review and verify ownership"""
+        obj = super().get_object(queryset)
+        
+        # Verify the review belongs to the user's profile
+        profile = Profile.objects.get(user=self.request.user)
+        item = obj.get_reviewed_item()
+        
+        if item and hasattr(item, 'profile') and item.profile != profile:
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied("You don't have permission to view this review.")
+        
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_modify'] = self.request.user.can_modify_data()
+        
+        # Add the reviewed item to context
+        review = self.object
+        context['reviewed_item'] = review.get_reviewed_item()
+        context['item_type'] = review.get_item_type()
+        context['item_name'] = review.get_item_name()
+        
+        return context
+
+
+class RelevanceReviewCreateView(FullAccessMixin, CreateView):
+    model = RelevanceReview
+    form_class = RelevanceReviewForm
+    template_name = 'dashboard/relevancereview_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        
+        # Pre-populate based on URL parameters
+        item_type = self.request.GET.get('type')
+        item_id = self.request.GET.get('item_id')
+        
+        if item_type and item_id:
+            kwargs['initial'] = {
+                'review_type': item_type,
+                'item_id': item_id
+            }
+        
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.reviewer = self.request.user
+        
+        # Determine the item type for success message
+        if form.instance.account_review:
+            item_name = form.instance.account_review.account_name_or_provider
+            item_type = "account"
+        elif form.instance.device_review:
+            item_name = form.instance.device_review.device_name
+            item_type = "device"
+        elif form.instance.estate_review:
+            item_name = form.instance.estate_review.name_or_title
+            item_type = "estate document"
+        elif form.instance.important_document_review:
+            item_name = form.instance.important_document_review.name_or_title
+            item_type = "important document"
+        else:
+            item_name = "item"
+            item_type = "item"
+        
+        messages.success(
+            self.request, 
+            f'Review created successfully for {item_type}: {item_name}.'
+        )
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """Redirect to the appropriate detail page based on review type"""
+        review = self.object
+        
+        if review.account_review:
+            return reverse_lazy('dashboard:account_detail', kwargs={'pk': review.account_review.pk})
+        elif review.device_review:
+            return reverse_lazy('dashboard:device_detail', kwargs={'pk': review.device_review.pk})
+        elif review.estate_review:
+            return reverse_lazy('dashboard:estate_detail', kwargs={'pk': review.estate_review.pk})
+        elif review.important_document_review:
+            return reverse_lazy('dashboard:importantdocument_detail', kwargs={'pk': review.important_document_review.pk})
+        
+        # Fallback
+        return reverse_lazy('dashboard:relevancereview_list')
+
+
+class RelevanceReviewUpdateView(FullAccessMixin, UpdateView):
+    model = RelevanceReview
+    form_class = RelevanceReviewForm
+    template_name = 'dashboard/relevancereview_form.html'
+
+    def get_object(self, queryset=None):
+        """Get review and verify ownership"""
+        obj = super().get_object(queryset)
+        
+        # Verify the review belongs to the user's profile
+        profile = Profile.objects.get(user=self.request.user)
+        item = obj.get_reviewed_item()
+        
+        if item and hasattr(item, 'profile') and item.profile != profile:
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied("You don't have permission to edit this review.")
+        
+        return obj
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        item_name = form.instance.get_item_name()
+        item_type = form.instance.get_item_type()
+        
+        messages.success(
+            self.request, 
+            f'Review updated successfully for {item_type}: {item_name}.'
+        )
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """Redirect to the appropriate detail page based on review type"""
+        review = self.object
+        
+        if review.account_review:
+            return reverse_lazy('dashboard:account_detail', kwargs={'pk': review.account_review.pk})
+        elif review.device_review:
+            return reverse_lazy('dashboard:device_detail', kwargs={'pk': review.device_review.pk})
+        elif review.estate_review:
+            return reverse_lazy('dashboard:estate_detail', kwargs={'pk': review.estate_review.pk})
+        elif review.important_document_review:
+            return reverse_lazy('dashboard:importantdocument_detail', kwargs={'pk': review.important_document_review.pk})
+        
+        # Fallback
+        return reverse_lazy('dashboard:relevancereview_list')
+
+
+class RelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
+    model = RelevanceReview
+    template_name = 'dashboard/relevancereview_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:relevancereview_list')
+
+    def get_object(self, queryset=None):
+        """Get review and verify ownership"""
+        obj = super().get_object(queryset)
+        
+        # Verify the review belongs to the user's profile
+        profile = Profile.objects.get(user=self.request.user)
+        item = obj.get_reviewed_item()
+        
+        if item and hasattr(item, 'profile') and item.profile != profile:
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied("You don't have permission to delete this review.")
+        
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        review = self.object
+        
+        context['reviewed_item'] = review.get_reviewed_item()
+        context['item_type'] = review.get_item_type()
+        context['item_name'] = review.get_item_name()
+        
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        review = self.get_object()
+        item_name = review.get_item_name()
+        item_type = review.get_item_type()
+        
+        messages.success(
+            request, 
+            f'Review deleted successfully for {item_type}: {item_name}.'
+        )
+        return super().delete(request, *args, **kwargs)

@@ -52,7 +52,6 @@
                             <table class="table contacts-table">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
                                         <th>Relationship</th>
                                         <th>Information</th>
                                         <th class="text-end">Actions</th>
@@ -62,13 +61,8 @@
                                     {% for family in familyawareness_objects %}
                                     <tr>
                                         <td>
-                                            <div class="contact-name">
-                                                <i class="fas fa-tablet-alt contact-icon"></i>
-                                                <span>{{ family.document }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge-relationship">{{ family.relation }}</span>
+                                            <i class="fa fa-users contact-icon"></i>
+                                            <span class="">{{ family.relation }}</span>
                                         </td>
                                         <td>
                                             <span class="contact-info">{{ family.content|truncatechars:50 }}</span>
