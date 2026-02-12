@@ -52,13 +52,13 @@
                     <div class="stat-label">Important Documents</div>
                 </div>
             </div>
-                        <div class="stat-item">
+            <div class="stat-item">
                 <div>
                     <div class="stat-number">{{ delegated_devices|length }}</div>
                     <div class="stat-label">Devices</div>
                 </div>
             </div>
-                        <div class="stat-item">
+            <div class="stat-item">
                 <div>
                     <div class="stat-number">{{ delegated_accounts|length }}</div>
                     <div class="stat-label">Accounts</div>
@@ -153,6 +153,7 @@
                 {% endif %}
             </div>
 
+
             <div class="col-lg-7">
                 <!-- Estate Documents -->
                 <div class="info-card">
@@ -183,30 +184,6 @@
                             </div>
                             {% endif %}
 
-                            <!-- Conditions -->
-                            {% if doc.applies_immediately or doc.applies_on_death or doc.applies_on_incapacity %}
-                            <div class="mt-3">
-                                <strong style="font-size: 0.9rem; color: #6b7280;">Applies:</strong>
-                                <div class="mt-2">
-                                    {% if doc.applies_immediately %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-bolt"></i> Immediately
-                                    </span>
-                                    {% endif %}
-                                    {% if doc.applies_on_death %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-star-of-life"></i> Upon Death
-                                    </span>
-                                    {% endif %}
-                                    {% if doc.applies_on_incapacity %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-hospital"></i> Upon Incapacity
-                                    </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endif %}
-
                             <div class="document-meta">
                                 <div class="document-meta-item">
                                     <i class="fas fa-calendar"></i>
@@ -216,6 +193,13 @@
                                 <div class="document-meta-item">
                                     <i class="fas fa-file-download" style="color: #10b981;"></i>
                                     <a href="{{ doc.estate_file.url }}" target="_blank">Download File</a>
+                                </div>
+                                {% endif %}
+                                {% if can_modify %}
+                                <div class="document-meta-item">
+                                    <a href="{% url 'dashboard:estate_update' doc.pk %}" class="text-primary">
+                                        <i class="fas fa-edit"></i> Edit/Reassign
+                                    </a>
                                 </div>
                                 {% endif %}
                             </div>
@@ -282,30 +266,6 @@
                             </div>
                             {% endif %}
 
-                            <!-- Conditions -->
-                            {% if doc.applies_immediately or doc.applies_on_death or doc.applies_on_incapacity %}
-                            <div class="mt-3">
-                                <strong style="font-size: 0.9rem; color: #6b7280;">Applies:</strong>
-                                <div class="mt-2">
-                                    {% if doc.applies_immediately %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-bolt"></i> Immediately
-                                    </span>
-                                    {% endif %}
-                                    {% if doc.applies_on_death %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-star-of-life"></i> Upon Death
-                                    </span>
-                                    {% endif %}
-                                    {% if doc.applies_on_incapacity %}
-                                    <span class="condition-badge">
-                                        <i class="fas fa-hospital"></i> Upon Incapacity
-                                    </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endif %}
-
                             <div class="document-meta">
                                 <div class="document-meta-item">
                                     <i class="fas fa-calendar"></i>
@@ -315,6 +275,13 @@
                                 <div class="document-meta-item" style="color: #dc2626;">
                                     <i class="fas fa-exclamation-triangle"></i>
                                     Requires Legal Review
+                                </div>
+                                {% endif %}
+                                {% if can_modify %}
+                                <div class="document-meta-item">
+                                    <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" class="text-primary">
+                                        <i class="fas fa-edit"></i> Edit/Reassign
+                                    </a>
                                 </div>
                                 {% endif %}
                             </div>
@@ -327,65 +294,191 @@
                         </div>
                     {% endif %}
                 </div>
+
+                <!-- Delegated Devices -->
+                <div class="info-card">
+                    <h3>
+                        <i class="fas fa-laptop"></i> Delegated Devices
+                        <span class="section-count">{{ delegated_devices|length }}</span>
+                    </h3>
+                    
+                    {% if delegated_devices %}
+                        {% for device in delegated_devices %}
+                        <div class="document-item" style="border-left: 4px solid #8b5cf6;">
+                            <h5>
+                                <i class="fas fa-{% if device.device_type == 'Phone' %}mobile-alt{% elif device.device_type == 'Laptop' %}laptop{% elif device.device_type == 'Tablet' %}tablet-alt{% elif device.device_type == 'Desktop' %}desktop{% elif device.device_type == 'Smart Watch' %}clock{% else %}microchip{% endif %}"></i>
+                                <a href="{% url 'dashboard:device_detail' device.pk %}">
+                                    {{ device.name }}
+                                </a>
+                            </h5>
+                            
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Type:</strong>
+                                <span style="font-size: 0.9rem;">{{ device.get_device_type_display }}</span>
+                            </div>
+
+                            {% if device.owner_label %}
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Owner Label:</strong>
+                                <span style="font-size: 0.9rem;">{{ device.owner_label }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if device.location_description %}
+                            <div class="mt-2">
+                                <span class="location-badge">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Location: {{ device.location_description }}
+                                </span>
+                            </div>
+                            {% endif %}
+
+                            {% if device.used_for_2fa %}
+                            <div class="mt-2">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-shield-alt"></i> Used for 2FA
+                                </span>
+                            </div>
+                            {% endif %}
+
+                            {% if device.unlock_method_description %}
+                            <div class="instructions-box mt-3">
+                                <strong style="font-size: 0.9rem;">Unlock Method:</strong>
+                                <p class="mt-1">{{ device.unlock_method_description }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if device.decommission_instruction %}
+                            <div class="instructions-box mt-3">
+                                <strong style="font-size: 0.9rem;">Decommission Instructions:</strong>
+                                <p class="mt-1">{{ device.decommission_instruction }}</p>
+                            </div>
+                            {% endif %}
+
+                            <div class="document-meta">
+                                <div class="document-meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    Updated {{ device.updated_at|date:"M d, Y" }}
+                                </div>
+                                {% if can_modify %}
+                                <div class="document-meta-item">
+                                    <a href="{% url 'dashboard:device_update' device.pk %}" class="text-primary">
+                                        <i class="fas fa-edit"></i> Edit/Reassign
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No devices delegated to this contact</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Delegated Accounts -->
+                <div class="info-card">
+                    <h3>
+                        <i class="fas fa-user-shield"></i> Delegated Accounts
+                        <span class="section-count">{{ delegated_accounts|length }}</span>
+                    </h3>
+                    
+                    {% if delegated_accounts %}
+                        {% for account in delegated_accounts %}
+                        <div class="document-item" style="border-left: 4px solid #0ea5e9;">
+                            <h5>
+                                <i class="fas fa-user-circle"></i>
+                                <a href="{% url 'dashboard:account_detail' account.pk %}">
+                                    {{ account.account_name_or_provider }}
+                                </a>
+                                {% if account.is_critical %}
+                                <span class="badge bg-danger ms-2">Critical</span>
+                                {% endif %}
+                            </h5>
+                            
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
+                                <span style="font-size: 0.9rem;">{{ account.get_account_category_display }}</span>
+                            </div>
+
+                            {% if account.username_or_email %}
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Username/Email:</strong>
+                                <span style="font-size: 0.9rem;">{{ account.username_or_email }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if account.website_url %}
+                            <div class="mt-2">
+                                <span class="location-badge">
+                                    <i class="fas fa-globe"></i>
+                                    <a href="{{ account.website_url }}" target="_blank" rel="noopener">{{ account.website_url|truncatechars:50 }}</a>
+                                </span>
+                            </div>
+                            {% endif %}
+
+                            {% if account.credential_storage_location %}
+                            <div class="mt-2">
+                                <span class="location-badge">
+                                    <i class="fas fa-key"></i>
+                                    Password: {{ account.credential_storage_location }}
+                                </span>
+                            </div>
+                            {% endif %}
+
+                            <div class="mt-2">
+                                <strong class="text-muted" style="font-size: 0.9rem;">Instruction:</strong>
+                                <span class="badge" style="background-color: #6366f1; color: white;">
+                                    {{ account.get_keep_or_close_instruction_display }}
+                                </span>
+                            </div>
+
+                            {% if account.notes_for_family %}
+                            <div class="instructions-box mt-3">
+                                <strong style="font-size: 0.9rem;">Notes for Family:</strong>
+                                <p class="mt-1">{{ account.notes_for_family }}</p>
+                            </div>
+                            {% endif %}
+
+                            <div class="document-meta">
+                                <div class="document-meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    Updated {{ account.updated_at|date:"M d, Y" }}
+                                </div>
+                                {% if can_modify %}
+                                <div class="document-meta-item">
+                                    <a href="{% url 'dashboard:account_update' account.pk %}" class="text-primary">
+                                        <i class="fas fa-edit"></i> Edit/Reassign
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No accounts delegated to this contact</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
-                    <div class="mt-4">
-                        <h5>Assigned Documents</h5>
-                        {% if total_documents > 0 %}
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i>
-                                This contact has <strong>{{ total_documents }}</strong> document(s) assigned.
-                                You must reassign these documents before you can delete this contact.
-                            </div>
-
-                            {% if delegated_estate_documents %}
-                            <div class="mb-3">
-                                <h6>Estate Documents ({{ delegated_estate_documents.count }})</h6>
-                                <ul class="list-group">
-                                    {% for doc in delegated_estate_documents %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <i class="fas fa-file-contract text-primary"></i>
-                                            <a href="{% url 'dashboard:estate_detail' doc.pk %}">{{ doc.name_or_title }}</a>
-                                        </div>
-                                        {% if can_modify %}
-                                        <a href="{% url 'dashboard:estate_update' doc.pk %}" class="btn btn-sm btn-outline-primary">
-                                            Edit/Reassign
-                                        </a>
-                                        {% endif %}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
-
-                            {% if delegated_important_documents %}
-                            <div class="mb-3">
-                                <h6>Important Documents ({{ delegated_important_documents.count }})</h6>
-                                <ul class="list-group">
-                                    {% for doc in delegated_important_documents %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <i class="fas fa-file-alt text-info"></i>
-                                            <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">{{ doc.name_or_title }}</a>
-                                        </div>
-                                        {% if can_modify %}
-                                        <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" class="btn btn-sm btn-outline-primary">
-                                            Edit/Reassign
-                                        </a>
-                                        {% endif %}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
-                        {% else %}
-                            <p class="text-muted">No documents assigned to this contact.</p>
-                        {% endif %}
-                    </div>
-
-
+        <!-- Deletion Warning Section -->
+        {% if total_documents > 0 %}
+        <div class="info-card mt-4" style="border-left: 4px solid #ef4444;">
+            <h5 class="text-danger">
+                <i class="fas fa-exclamation-triangle"></i> Deletion Protection
+            </h5>
+            <div class="alert alert-danger mb-0">
+                <i class="fas fa-info-circle"></i>
+                This contact has <strong>{{ total_documents }}</strong> item(s) assigned and cannot be deleted until all items are reassigned to another contact.
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Action Buttons -->
         {% if can_modify %}
@@ -408,6 +501,7 @@
         </div>
         {% endif %}
     </div>
+
 
     {% include "baseapp/footer.html" %}
 

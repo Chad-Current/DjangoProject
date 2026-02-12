@@ -60,6 +60,7 @@
                                 <tbody>
                                     {% for account in accounts %}
                                     <tr>
+
                                         <td>
                                             <div class="contact-name">
                                                 <i class="fas fa-user-circle contact-icon"></i>
@@ -67,13 +68,18 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-relationship">{{ account.account_category }}</span>
+                                            <span class="">{{ account.account_category }}</span>
                                         </td>
                                         <td>
-                                            <span class="contact-info">{{ account.provider|truncatechars:50 }}</span>
+                                            <span class="contact-info">{{ account.website_url|truncatechars:50 }}</span>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
+                                                <a href="{% url 'dashboard:account_detail' account.pk %}" 
+                                                   class="btn-action btn-edit" 
+                                                   title="Edit contact">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                                 {% if can_modify %}
                                                 <a href="{% url 'dashboard:account_update' account.pk %}" 
                                                    class="btn-action btn-edit" 
@@ -88,6 +94,7 @@
                                                 {% endif %}
                                             </div>
                                         </td>
+
                                     </tr>
                                     {% endfor %}
                                 </tbody>

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -22,101 +23,171 @@
 {% include "baseapp/navbar.html" %}
 {% include "dashboard/navblocks.html" %}
 
-<div class="main">
-    <div class="parent-row">
-        <div class="detail-view">
-            <div class="header-section">
-                <h1>{{ device.name }}</h1>
-                <h3>{{ device.device_type }}</h3>
+<div class="main container py-4">
+        <!-- device Header -->
+        <div class="device-header">
+            <h1><i class="fas fa-file-alt"></i> {{ device.name_or_title }}</h1>
+            <div class="subtitle">Important device</div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column: device Details -->
+            <div class="col-lg-6">
+                <!-- device Information Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Device Information</h3>
+                    
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tag"></i> Category
+                        </div>
+                        <div class="info-value">
+                            {{ device.get_device_type_display }}
+                        </div>
+                    </div>
+
+                    {% if device.owner_label %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-align-left"></i> Labeled as
+                        </div>
+                        <div class="info-value">
+                            {{ device.owner_label }}
+                        </div>
+                    </div>
+                    {% endif %}
+               </div>
+
+                <!-- device Locations Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Device Typical Location</h3>
+                    
+                    {% if device.location_description %}
+                        {% if device.location_description %}
+                        <div class="mb-3">
+                            <div class="location-badge">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <strong>Location:</strong><br>
+                                    <h5>{{ device.location_description }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>No locations specified for this device</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h3>Device Information</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Owner:</strong></div>
-                        <div class="col-md-9"><h5>{{ device.owner_label|default:"Not specified" }}</h5></div>
-                    </div>
+            <!-- Right Column: Delegated Contact -->
+            <div class="col-lg-6">
+                <!-- Delegated To Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-user-check"></i> Delegated To</h3>
                     
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Location:</strong></div>
-                        <div class="col-md-9">
-                            <h5>{{ device.location_description }}</h5>
-                       </div>
-                    </div>
-                    
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Unlock Method:</strong></div>
-                        <div class="col-md-9">
-                                <h5>{{ device.unlock_method_description }}</h5>
+                    <div class="contact-card">
+                        <h5>
+                            <i class="fas fa-user-circle"></i>
+                            <a href="{% url 'dashboard:device_detail' device.pk %}">
+                                {{ device.delegated_device_to.contact_name }}
                             </a>
+                        </h5>
+
+                        <div class="contact-info">
+                            {% if device.delegated_device_to.contact_relation %}
+                            <div class="contact-info-item">
+                                <i class="fas fa-heart"></i>
+                                <span>{{ device.delegated_device_to.get_contact_relation_display }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if device.delegated_device_to.email %}
+                            <div class="contact-info-item">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:{{ device.delegated_device_to.email }}">{{ device.delegated_device_to.email }}</a>
+                            </div>
+                            {% endif %}
+
+                            {% if device.delegated_device_to.phone %}
+                            <div class="contact-info-item">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:{{ device.delegated_device_to.phone }}">{{ device.delegated_device_to.phone }}</a>
+                            </div>
+                            {% endif %}
+
+                            {% if device.delegated_device_to.address %}
+                            <div class="contact-info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{ device.delegated_device_to.address }}</span>
+                            </div>
+                            {% endif %}
                         </div>
-                    </div>
-                    
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Has full disk encryption:</strong></div>
-                        <div class="col-md-9"><h5>{{ device.has_full_disk_encryption|yesno:"Yes,No" }}</h5></div>
-                    </div>
-                    
-                     <div class="row mb-2">
-                        <div class="col-md-3"><strong>Used for 2FA:</strong></div>
-                        <div class="col-md-9"><h5>{{ device.used_for_2fa|yesno:"Yes,No" }}</h5></div>
+
+                   </div>
+
+                    <div class="description-box">
+                        <p>
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> This device is directly delegated to {{ device.delegated_device_to.contact_name }}. 
+                            They will have access to this device according to the conditions specified above.
+                        </p>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h3>Estate Instructions</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Action After Death:</strong>
-                               <h5>{{ device.decommission_instruction}}</h5>
-                        </div>
-                    </div>
-                    
-              </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h3>Metadata</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Created:</strong></div>
-                        <div class="col-md-9"><h5>{{ device.created_at|date:"F d, Y g:i A" }}</h5></div>
-                    </div>
-                    
-                    <div class="row mb-2">
-                        <div class="col-md-3"><strong>Last Updated:</strong></div>
-                        <div class="col-md-9"><h5>{{ device.updated_at|date:"F d, Y g:i A" }}</h5></div>
+                <!-- Additional Instructions Card (if needed in future) -->
+                {% if device.decommission_instruction %}
+                <div class="info-card">
+                    <h3><i class="fas fa-sticky-note"></i> Decommission Notes</h3>
+                    <div class="description-box">
+                        <p>{{ device.decommission_instruction|linebreaks }}</p>
                     </div>
                 </div>
-            </div>
-
-
-            <div class="button-row">
-            <!-- <div class="action-buttons"> -->
-                {% if can_modify %}
-                <a href="{% url 'dashboard:device_update' device.pk %}">
-                    <button class="button">Edit Account</button>
-                </a>
-                <a href="{% url 'dashboard:device_delete' device.pk %}">
-                    <button class="button">Delete Account</button>
-                </a>
                 {% endif %}
-                <a href="{% url 'dashboard:device_list' %}">
-                    <button class="button">Back to Accounts</button>
-                </a>
-            <!-- </div> -->
             </div>
         </div>
+
+        <!-- Metadata Footer -->
+        <div class="metadata-footer">
+            <div class="row">
+                <div class="col-md-6 meta-item">
+                    <i class="fas fa-calendar-plus"></i>
+                    <strong>Created:</strong> {{ device.created_at|date:"F d, Y g:i A" }}
+                </div>
+                <div class="col-md-6 meta-item text-md-end">
+                    <i class="fas fa-calendar-check"></i>
+                    <strong>Last Updated:</strong> {{ device.updated_at|date:"F d, Y g:i A" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        {% if can_modify %}
+        <div class="action-buttons">
+            <a href="{% url 'dashboard:device_update' device.pk %}" class="btn btn-edit btn-custom">
+                <i class="fas fa-edit"></i> Edit device
+            </a>
+            <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn btn-delete btn-custom">
+                <i class="fas fa-trash-alt"></i> Delete device
+            </a>
+            <a href="{% url 'dashboard:device_list' %}" class="btn btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        {% else %}
+        <div class="action-buttons">
+            <a href="{% url 'dashboard:device_list' %}" class="btn btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        {% endif %}
     </div>
-</div>
+
+
 {% include "baseapp/footer.html" %}
 <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
 </body>

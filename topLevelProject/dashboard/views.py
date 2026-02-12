@@ -780,7 +780,7 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         contact = self.object
         
-        # Check for assigned documents
+        # Check for assigned documents, accounts or devices
         estate_docs = DigitalEstateDocument.objects.filter(
             delegated_estate_to=contact
         ).select_related('profile')
@@ -789,14 +789,27 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
             delegated_important_document_to=contact
         ).select_related('profile')
         
+        assigned_accounts = Account.objects.filter(
+            delegated_account_to=contact
+        ).select_related('profile')
+
+        assigned_devices = Device.objects.filter(
+            delegated_device_to=contact
+        ).select_related('profile')
+
+
         # Add document information to context
         context['estate_documents'] = estate_docs
         context['important_documents'] = important_docs
+        context['assigned_accounts'] = assigned_accounts
+        context['assigned_devices'] = assigned_devices
         context['total_documents'] = estate_docs.count() + important_docs.count()
-        context['has_documents'] = estate_docs.exists() or important_docs.exists()
+        context['total_accounts'] = assigned_accounts.count()
+        context['total_devices'] = assigned_devices.count()
+        context['has_assignments'] = estate_docs.exists() or important_docs.exists() or assigned_accounts.exists() or assigned_devices.exists()
         
         # Get other contacts for potential reassignment suggestions
-        if context['has_documents']:
+        if context['has_assignments']:
             other_contacts = Contact.objects.filter(
                 profile=contact.profile
             ).exclude(id=contact.id).order_by('contact_name')
@@ -813,15 +826,17 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
         # Check if contact has documents before attempting deletion
         estate_count = DigitalEstateDocument.objects.filter(delegated_estate_to=contact).count()
         important_count = ImportantDocument.objects.filter(delegated_important_document_to=contact).count()
-        total_docs = estate_count + important_count
+        account_count = Account.objects.filter(delegated_account_to=contact).count()
+        device_count = Device.objects.filter(delegated_device_to=contact).count()
+        total_resictions = estate_count + important_count + account_count + device_count
         
-        if total_docs > 0:
+        if total_resictions > 0:
             # Contact has documents - cannot delete
             messages.error(
                 request,
-                f'Cannot delete {contact.contact_name} because they have {total_docs} '
-                f'document(s) assigned to them ({estate_count} estate, {important_count} important). '
-                f'Please reassign these documents to another contact first.'
+                f'Cannot delete {contact.contact_name} because they have {total_resictions} '
+                f'document(s) assigned to them ({estate_count} estate, {important_count} important, {account_count} account, {device_count} device)'
+                f'Please reassign these to another contact first.'
             )
             return HttpResponseRedirect(
                 reverse('dashboard:contact_detail', kwargs={'pk': contact.pk})
