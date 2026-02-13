@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Count, ProtectedError, Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -890,18 +891,32 @@ class MainTemplateView(TemplateView):
 # RELEVANCE REVIEW VIEWS
 # ============================================================================
 
-class RelevanceReviewListView(ViewAccessMixin, ListView):
+# ============================================================================
+# RELEVANCE REVIEW VIEWS - CORRECTED
+# ============================================================================
+
+class RelevanceReviewListView(LoginRequiredMixin, ListView):
+    """
+    List all reviews for the current user's items.
+    NOTE: This view doesn't use ViewAccessMixin because RelevanceReview 
+    doesn't have a direct 'user' field - ownership is determined through 
+    the reviewed item's profile.
+    """
     model = RelevanceReview
     template_name = 'dashboard/relevancereview_list.html'
     context_object_name = 'reviews'
     paginate_by = 20
+    login_url = '/accounts/login/'
 
-    def get_owner_field(self):
-        """Dynamic owner field based on review type"""
-        # We'll check this in get_queryset instead
-        return None
+    def dispatch(self, request, *args, **kwargs):
+        """Check if user has paid before allowing access"""
+        user = request.user
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
+        """Get all reviews for items belonging to this user's profile"""
         try:
             profile = Profile.objects.get(user=self.request.user)
             
@@ -938,6 +953,8 @@ class RelevanceReviewListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Check if user can modify data
         context['can_modify'] = self.request.user.can_modify_data()
         
         # Add filter information to context
@@ -977,22 +994,41 @@ class RelevanceReviewListView(ViewAccessMixin, ListView):
         return context
 
 
-class RelevanceReviewDetailView(ViewAccessMixin, DetailView):
+class RelevanceReviewDetailView(LoginRequiredMixin, DetailView):
+    """
+    View details of a specific review.
+    NOTE: This view doesn't use ViewAccessMixin because RelevanceReview 
+    doesn't have a direct 'user' field.
+    """
     model = RelevanceReview
     template_name = 'dashboard/relevancereview_detail.html'
     context_object_name = 'review'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Check if user has paid before allowing access"""
+        user = request.user
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        """Get review and verify ownership"""
+        """Get review and verify ownership through the reviewed item"""
         obj = super().get_object(queryset)
         
         # Verify the review belongs to the user's profile
-        profile = Profile.objects.get(user=self.request.user)
-        item = obj.get_reviewed_item()
-        
-        if item and hasattr(item, 'profile') and item.profile != profile:
-            from django.core.exceptions import PermissionDenied
-            raise PermissionDenied("You don't have permission to view this review.")
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            item = obj.get_reviewed_item()
+            
+            if not item:
+                raise PermissionDenied("Invalid review - no item found.")
+            
+            if hasattr(item, 'profile') and item.profile != profile:
+                raise PermissionDenied("You don't have permission to view this review.")
+            
+        except Profile.DoesNotExist:
+            raise PermissionDenied("Profile not found.")
         
         return obj
 
@@ -1009,10 +1045,31 @@ class RelevanceReviewDetailView(ViewAccessMixin, DetailView):
         return context
 
 
-class RelevanceReviewCreateView(FullAccessMixin, CreateView):
+class RelevanceReviewCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a new review.
+    NOTE: Uses LoginRequiredMixin and manual permission check instead of 
+    FullAccessMixin because we need custom user filtering.
+    """
     model = RelevanceReview
     form_class = RelevanceReviewForm
     template_name = 'dashboard/relevancereview_form.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Check permissions before allowing access"""
+        user = request.user
+        
+        # Check if user has paid
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        
+        # Check if user can modify data
+        if not user.can_modify_data():
+            messages.error(request, "You don't have permission to create reviews.")
+            return redirect(reverse("dashboard:dashboard_home"))
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1073,22 +1130,49 @@ class RelevanceReviewCreateView(FullAccessMixin, CreateView):
         return reverse_lazy('dashboard:relevancereview_list')
 
 
-class RelevanceReviewUpdateView(FullAccessMixin, UpdateView):
+class RelevanceReviewUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Update an existing review.
+    NOTE: Uses LoginRequiredMixin and manual permission check instead of 
+    FullAccessMixin because we need custom ownership verification.
+    """
     model = RelevanceReview
     form_class = RelevanceReviewForm
     template_name = 'dashboard/relevancereview_form.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Check permissions before allowing access"""
+        user = request.user
+        
+        # Check if user has paid
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        
+        # Check if user can modify data
+        if not user.can_modify_data():
+            messages.error(request, "You don't have permission to edit reviews.")
+            return redirect(reverse("dashboard:dashboard_home"))
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        """Get review and verify ownership"""
+        """Get review and verify ownership through the reviewed item"""
         obj = super().get_object(queryset)
         
         # Verify the review belongs to the user's profile
-        profile = Profile.objects.get(user=self.request.user)
-        item = obj.get_reviewed_item()
-        
-        if item and hasattr(item, 'profile') and item.profile != profile:
-            from django.core.exceptions import PermissionDenied
-            raise PermissionDenied("You don't have permission to edit this review.")
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            item = obj.get_reviewed_item()
+            
+            if not item:
+                raise PermissionDenied("Invalid review - no item found.")
+            
+            if hasattr(item, 'profile') and item.profile != profile:
+                raise PermissionDenied("You don't have permission to edit this review.")
+            
+        except Profile.DoesNotExist:
+            raise PermissionDenied("Profile not found.")
         
         return obj
 
@@ -1124,22 +1208,49 @@ class RelevanceReviewUpdateView(FullAccessMixin, UpdateView):
         return reverse_lazy('dashboard:relevancereview_list')
 
 
-class RelevanceReviewDeleteView(DeleteAccessMixin, DeleteView):
+class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Delete a review.
+    NOTE: Uses LoginRequiredMixin and manual permission check instead of 
+    DeleteAccessMixin because we need custom ownership verification.
+    """
     model = RelevanceReview
     template_name = 'dashboard/relevancereview_confirm_delete.html'
     success_url = reverse_lazy('dashboard:relevancereview_list')
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Check permissions before allowing access"""
+        user = request.user
+        
+        # Check if user has paid
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        
+        # Check if user can delete data
+        if not user.can_delete_data():
+            messages.error(request, "You don't have permission to delete reviews.")
+            return redirect(reverse("dashboard:dashboard_home"))
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        """Get review and verify ownership"""
+        """Get review and verify ownership through the reviewed item"""
         obj = super().get_object(queryset)
         
         # Verify the review belongs to the user's profile
-        profile = Profile.objects.get(user=self.request.user)
-        item = obj.get_reviewed_item()
-        
-        if item and hasattr(item, 'profile') and item.profile != profile:
-            from django.core.exceptions import PermissionDenied
-            raise PermissionDenied("You don't have permission to delete this review.")
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            item = obj.get_reviewed_item()
+            
+            if not item:
+                raise PermissionDenied("Invalid review - no item found.")
+            
+            if hasattr(item, 'profile') and item.profile != profile:
+                raise PermissionDenied("You don't have permission to delete this review.")
+            
+        except Profile.DoesNotExist:
+            raise PermissionDenied("Profile not found.")
         
         return obj
 

@@ -9,8 +9,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <!-- <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css"> -->
-    <!-- <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css"> -->
     <link rel="stylesheet" href="{% static 'dashboard/css/listing.css' %}" type="text/css">
     <link
         href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
@@ -32,6 +30,12 @@
                 <div class="header-content">
                     <h1 class="page-title">Reviews</h1>
                     <p class="page-subtitle">Manage your upcoming reviews</p>
+                    {% if filtered_type %}
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-filter"></i> Showing reviews for: <strong>{{ filtered_type }}</strong> - {{ filtered_item }}
+                        <a href="{% url 'dashboard:relevancereview_list' %}" class="btn btn-sm btn-outline-secondary ms-2">Clear Filter</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -44,9 +48,11 @@
                         <table class="table contacts-table">
                             <thead>
                                 <tr>
-                                    <th>Account | Devices | Documents</th>
-                                    <th>Review Date</th>
+                                    <th>Item Reviewed</th>
                                     <th>Type</th>
+                                    <th>Review Date</th>
+                                    <th>Next Review Due</th>
+                                    <th>Matters</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
@@ -55,34 +61,48 @@
                                 <tr>
                                     <td>
                                         <div class="contact-name">
-                                            <i class="fas fa-user-circle contact-icon"></i>
-                                            <span>{{ review.review_date }}</span>
+                                            {% if review.get_item_type == "Account" %}
+                                                <i class="fas fa-user-lock contact-icon"></i>
+                                            {% elif review.get_item_type == "Device" %}
+                                                <i class="fas fa-laptop contact-icon"></i>
+                                            {% elif review.get_item_type == "Estate Document" %}
+                                                <i class="fas fa-file-contract contact-icon"></i>
+                                            {% elif review.get_item_type == "Important Document" %}
+                                                <i class="fas fa-file-alt contact-icon"></i>
+                                            {% else %}
+                                                <i class="fas fa-question-circle contact-icon"></i>
+                                            {% endif %}
+                                            <span>{{ review.get_item_name }}</span>
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="">
-                                            {{ review.next_review_due }}
+                                        <span class="badge bg-info">
+                                            {{ review.get_item_type }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="">
-                                            {{ review.reasoning }}
+                                        <span>
+                                            {{ review.review_date|date:"M d, Y" }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
+                                            {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if review.matters %}
+                                            <span class="badge bg-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
-                                                class="btn-action btn-edit" title="Edit contact">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            {% if can_modify %}
+                                           {% if can_modify %}
                                             <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
-                                                class="btn-action btn-edit" title="Edit contact">
+                                                class="btn-action btn-edit" title="Edit review">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
-                                                class="btn-action btn-delete" title="Delete contact">
-                                                <i class="fas fa-trash-alt"></i>
                                             </a>
                                             {% endif %}
                                         </div>
@@ -96,37 +116,58 @@
 
                 <!-- Mobile Card View -->
                 <div class="card-view d-md-none">
-                    {% for estate in estates %}
+                    {% for review in reviews %}
                     <div class="contact-card">
                         <div class="card-header-section">
                             <div class="contact-avatar">
-                                <i class="fas fa-user-circle"></i>
+                                {% if review.get_item_type == "Account" %}
+                                    <i class="fas fa-user-lock"></i>
+                                {% elif review.get_item_type == "Device" %}
+                                    <i class="fas fa-laptop"></i>
+                                {% elif review.get_item_type == "Estate Document" %}
+                                    <i class="fas fa-file-contract"></i>
+                                {% elif review.get_item_type == "Important Document" %}
+                                    <i class="fas fa-file-alt"></i>
+                                {% else %}
+                                    <i class="fas fa-question-circle"></i>
+                                {% endif %}
                             </div>
                             <div class="contact-details">
-                                <h3 class="contact-card-name">{{ estate.estate_name }}</h3>
-                                <span class="badge-relationship-mobile">{{ estate.estate_category }}</span>
+                                <h3 class="contact-card-name">{{ review.get_item_name }}</h3>
+                                <span class="badge-relationship-mobile">{{ review.get_item_type }}</span>
                             </div>
                         </div>
 
                         <div class="card-body-section">
-                            <div class="info-label">Information</div>
-                            <p class="contact-info-text">{{ estate.estate_provider|truncatechars:100 }}</p>
+                            <div class="info-row">
+                                <strong>Review Date:</strong> {{ review.review_date|date:"M d, Y" }}
+                            </div>
+                            <div class="info-row">
+                                <strong>Next Due:</strong> {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
+                            </div>
+                            <div class="info-row">
+                                <strong>Still Matters:</strong> 
+                                {% if review.matters %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">No</span>
+                                {% endif %}
+                            </div>
+                            {% if review.reasoning %}
+                            <div class="info-label mt-2">Reasoning</div>
+                            <p class="contact-info-text">{{ review.reasoning|truncatechars:100 }}</p>
+                            {% endif %}
                         </div>
 
-                        {% if can_modify %}
                         <div class="card-actions">
-                            <a href="{% url 'dashboard:estate_update' estate.pk %}"
+                            {% if can_modify %}
+                            <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
                                 class="btn-card-action btn-edit-card">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-eye"></i>
                                 <span>Edit</span>
                             </a>
-                            <a href="{% url 'dashboard:estate_delete' estate.pk %}"
-                                class="btn-card-action btn-delete-card">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Delete</span>
-                            </a>
+                            {% endif %}
                         </div>
-                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -135,16 +176,19 @@
                 <!-- Empty State -->
                 <div class="empty-state">
                     <div class="empty-state-icon">
-                        <i class="fas fa-address-book"></i>
+                        <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h2 class="empty-state-title">No Estate Documents Yet</h2>
+                    <h2 class="empty-state-title">No Reviews Yet</h2>
                     <p class="empty-state-text">
-                        Start building your estates list by adding your first estate.
+                        {% if filtered_type %}
+                            No reviews found for this {{ filtered_type|lower }}.
+                        {% else %}
+                            Start reviewing your accounts, devices, and documents to keep track of what still matters.
+                        {% endif %}
                     </p>
                     {% if can_modify %}
-                    <a href="{% url 'dashboard:estate_create' %}" class="btn-add-first">
-                        <!-- <i class="fas fa-plus-circle"></i> -->
-                        Add Your First estate
+                    <a href="{% url 'dashboard:relevancereview_create' %}" class="btn-add-first">
+                        Add Your First Review
                     </a>
                     {% endif %}
                 </div>
@@ -152,8 +196,6 @@
             </div>
         </div>
     </div>
-
-    
 
     {% include "baseapp/footer.html" %}
 
