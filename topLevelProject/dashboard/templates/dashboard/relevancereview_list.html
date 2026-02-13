@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/listing.css' %}" type="text/css">
+    <!-- <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css"> -->
     <link
         href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
         rel="stylesheet">
@@ -48,7 +49,7 @@
                         <table class="table contacts-table">
                             <thead>
                                 <tr>
-                                    <th>Item Reviewed</th>
+                                    <th>Item</th>
                                     <th>Type</th>
                                     <th>Review Date</th>
                                     <th>Next Review Due</th>
@@ -72,7 +73,9 @@
                                             {% else %}
                                                 <i class="fas fa-question-circle contact-icon"></i>
                                             {% endif %}
-                                            <span>{{ review.get_item_name }}</span>
+                                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}" class="item-name-link">
+                                                {{ review.get_item_name }}
+                                            </a>
                                         </div>
                                     </td>
                                     <td>
@@ -86,7 +89,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
+                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}fas fa-exclamation-triangle text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
                                             {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                                         </span>
                                     </td>
@@ -98,12 +101,20 @@
                                         {% endif %}
                                     </td>
                                     <td>
+                                        {% if can_modify %}
                                         <div class="action-buttons">
-                                           {% if can_modify %}
-                                            <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
+                                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
+                                                class="btn-action btn-view" title="View review">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <!-- <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
                                                 class="btn-action btn-edit" title="Edit review">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
+                                            </a> -->
+                                            <!-- <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
+                                                class="btn-action btn-delete" title="Delete review">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a> -->
                                             {% endif %}
                                         </div>
                                     </td>
@@ -118,7 +129,6 @@
                 <div class="card-view d-md-none">
                     {% for review in reviews %}
                     <div class="contact-card">
-                        <div class="card-header-section">
                             <div class="contact-avatar">
                                 {% if review.get_item_type == "Account" %}
                                     <i class="fas fa-user-lock"></i>
@@ -159,12 +169,22 @@
                             {% endif %}
                         </div>
 
-                        <div class="card-actions">
+                        <div class="card-actions" onclick="event.stopPropagation();">
+                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
+                                class="btn-custom btn-back">
+                                <i class="fas fa-eye"></i>
+                                <span>View</span>
+                            </a>
                             {% if can_modify %}
                             <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
-                                class="btn-card-action btn-edit-card">
-                                <i class="fas fa-eye"></i>
+                                class="btn-custom btn-edit">
+                                <i class="fas fa-edit"></i>
                                 <span>Edit</span>
+                            </a>
+                            <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
+                                class="btn-custom btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Delete</span>
                             </a>
                             {% endif %}
                         </div>

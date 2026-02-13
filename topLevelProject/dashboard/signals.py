@@ -1,5 +1,5 @@
 # dashboard/signals.py
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
@@ -11,16 +11,16 @@ from .models import Account, Device, RelevanceReview, Contact, DigitalEstateDocu
 # ============================================================================
 
 @receiver(pre_save, sender=Account)
-def track_is_critical_change(sender, instance, **kwargs):
-    """Track changes to is_critical field before saving."""
+def track_review_time_change_account(sender, instance, **kwargs):
+    """Track changes to review_time field before saving."""
     if instance.pk:
         try:
             old_instance = Account.objects.get(pk=instance.pk)
-            instance._old_is_critical = old_instance.is_critical
+            instance._old_review_time = old_instance.review_time
         except Account.DoesNotExist:
-            instance._old_is_critical = None
+            instance._old_review_time = None
     else:
-        instance._old_is_critical = None
+        instance._old_review_time = None
 
 
 @receiver(post_save, sender=Account)
@@ -30,93 +30,262 @@ def create_account_relevance_review(sender, instance, created, **kwargs):
     
     if created:
         # Create initial review when account is first created
+        # Use review_time from the instance to set next_review_due
+        if instance.review_time:
+            next_review = timezone.now().date() + timedelta(days=instance.review_time)
+        else:
+            next_review = timezone.now().date() + timedelta(days=365)
+        
         RelevanceReview.objects.create(
-            account_review=instance,  # FIXED: Changed from 'account' to 'account_review'
+            account_review=instance,
             reviewer=user,
             matters=True,
-            reasoning=f"Account: {instance.account_name_or_provider}"
+            reasoning=f"Account: {instance.account_name_or_provider}",
+            next_review_due=next_review
         )
     else:
-        # Check if is_critical status changed
-        old_is_critical = getattr(instance, '_old_is_critical', None)
+        # Check if review_time changed
+        old_review_time = getattr(instance, '_old_review_time', None)
         
-        if old_is_critical is not None and old_is_critical != instance.is_critical:
+        if old_review_time is not None and old_review_time != instance.review_time:
             try:
                 # Find the most recent review for this account
                 latest_review = RelevanceReview.objects.filter(
-                    account_review=instance  # FIXED: Changed from 'account' to 'account_review'
+                    account_review=instance
                 ).latest('review_date')
                 
-                # Update the existing review
-                if instance.is_critical:
-                    latest_review.reasoning = f"Account marked as critical - {latest_review.reasoning}"
-                    latest_review.next_review_due = timezone.now().date() + timedelta(days=90)
+                # Update the next review due date based on new review_time
+                if instance.review_time:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=instance.review_time)
+                    latest_review.reasoning = f"Review time updated to {instance.review_time} days - {latest_review.reasoning}"
                 else:
-                    latest_review.reasoning = f"Account unmarked as critical - {latest_review.reasoning}"
+                    # If review_time is 0 or None, set to 1 year default
                     latest_review.next_review_due = timezone.now().date() + timedelta(days=365)
+                    latest_review.reasoning = f"Review time cleared - {latest_review.reasoning}"
                 
                 latest_review.reviewer = user
                 latest_review.save()
                 
             except RelevanceReview.DoesNotExist:
                 # Fallback: if no review exists, create one
+                next_review = timezone.now().date() + timedelta(days=instance.review_time if instance.review_time else 365)
                 RelevanceReview.objects.create(
-                    account_review=instance,  # FIXED: Changed from 'account' to 'account_review'
+                    account_review=instance,
                     reviewer=user,
                     matters=True,
-                    reasoning=f"Critical status change: {instance.account_name_or_provider}"
+                    reasoning=f"Review time changed: {instance.account_name_or_provider}",
+                    next_review_due=next_review
                 )
 
 
 # ============================================================================
-# DEVICE SIGNALS (Optional - if you want auto-review for devices)
+# DEVICE SIGNALS
 # ============================================================================
+
+@receiver(pre_save, sender=Device)
+def track_review_time_change_device(sender, instance, **kwargs):
+    """Track changes to review_time field before saving."""
+    if instance.pk:
+        try:
+            old_instance = Device.objects.get(pk=instance.pk)
+            instance._old_review_time = old_instance.review_time
+        except Device.DoesNotExist:
+            instance._old_review_time = None
+    else:
+        instance._old_review_time = None
+
 
 @receiver(post_save, sender=Device)
 def create_device_relevance_review(sender, instance, created, **kwargs):
-    """Automatically create RelevanceReview when a device is created"""
+    """Automatically create or update RelevanceReview for devices"""
+    user = instance.profile.user
+    
     if created:
-        user = instance.profile.user
+        # Create initial review when device is first created
+        if instance.review_time:
+            next_review = timezone.now().date() + timedelta(days=instance.review_time)
+        else:
+            next_review = timezone.now().date() + timedelta(days=365)
+        
         RelevanceReview.objects.create(
             device_review=instance,
             reviewer=user,
             matters=True,
-            reasoning=f"Device: {instance.device_name}"
+            reasoning=f"Device: {instance.device_name}",
+            next_review_due=next_review
         )
+    else:
+        # Check if review_time changed
+        old_review_time = getattr(instance, '_old_review_time', None)
+        
+        if old_review_time is not None and old_review_time != instance.review_time:
+            try:
+                # Find the most recent review for this device
+                latest_review = RelevanceReview.objects.filter(
+                    device_review=instance
+                ).latest('review_date')
+                
+                # Update the next review due date
+                if instance.review_time:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=instance.review_time)
+                    latest_review.reasoning = f"Review time updated to {instance.review_time} days - {latest_review.reasoning}"
+                else:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=365)
+                    latest_review.reasoning = f"Review time cleared - {latest_review.reasoning}"
+                
+                latest_review.reviewer = user
+                latest_review.save()
+                
+            except RelevanceReview.DoesNotExist:
+                # Fallback: if no review exists, create one
+                next_review = timezone.now().date() + timedelta(days=instance.review_time if instance.review_time else 365)
+                RelevanceReview.objects.create(
+                    device_review=instance,
+                    reviewer=user,
+                    matters=True,
+                    reasoning=f"Review time changed: {instance.device_name}",
+                    next_review_due=next_review
+                )
 
 
 # ============================================================================
-# ESTATE DOCUMENT SIGNALS (Optional - if you want auto-review for estate docs)
+# ESTATE DOCUMENT SIGNALS
 # ============================================================================
+
+@receiver(pre_save, sender=DigitalEstateDocument)
+def track_review_time_change_estate(sender, instance, **kwargs):
+    """Track changes to review_time field before saving."""
+    if instance.pk:
+        try:
+            old_instance = DigitalEstateDocument.objects.get(pk=instance.pk)
+            instance._old_review_time = old_instance.review_time
+        except DigitalEstateDocument.DoesNotExist:
+            instance._old_review_time = None
+    else:
+        instance._old_review_time = None
+
 
 @receiver(post_save, sender=DigitalEstateDocument)
 def create_estate_relevance_review(sender, instance, created, **kwargs):
-    """Automatically create RelevanceReview when an estate document is created"""
+    """Automatically create or update RelevanceReview for estate documents"""
+    user = instance.profile.user
+    
     if created:
-        user = instance.profile.user
+        # Create initial review when estate document is first created
+        if instance.review_time:
+            next_review = timezone.now().date() + timedelta(days=instance.review_time)
+        else:
+            next_review = timezone.now().date() + timedelta(days=365)
+        
         RelevanceReview.objects.create(
             estate_review=instance,
             reviewer=user,
             matters=True,
-            reasoning=f"Estate document: {instance.name_or_title}"
+            reasoning=f"Estate Document: {instance.name_or_title}",
+            next_review_due=next_review
         )
+    else:
+        # Check if review_time changed
+        old_review_time = getattr(instance, '_old_review_time', None)
+        
+        if old_review_time is not None and old_review_time != instance.review_time:
+            try:
+                # Find the most recent review for this estate document
+                latest_review = RelevanceReview.objects.filter(
+                    estate_review=instance
+                ).latest('review_date')
+                
+                # Update the next review due date
+                if instance.review_time:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=instance.review_time)
+                    latest_review.reasoning = f"Review time updated to {instance.review_time} days - {latest_review.reasoning}"
+                else:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=365)
+                    latest_review.reasoning = f"Review time cleared - {latest_review.reasoning}"
+                
+                latest_review.reviewer = user
+                latest_review.save()
+                
+            except RelevanceReview.DoesNotExist:
+                # Fallback: if no review exists, create one
+                next_review = timezone.now().date() + timedelta(days=instance.review_time if instance.review_time else 365)
+                RelevanceReview.objects.create(
+                    estate_review=instance,
+                    reviewer=user,
+                    matters=True,
+                    reasoning=f"Review time changed: {instance.name_or_title}",
+                    next_review_due=next_review
+                )
 
 
 # ============================================================================
-# IMPORTANT DOCUMENT SIGNALS (Optional - if you want auto-review for important docs)
+# IMPORTANT DOCUMENT SIGNALS
 # ============================================================================
+
+@receiver(pre_save, sender=ImportantDocument)
+def track_review_time_change_important_doc(sender, instance, **kwargs):
+    """Track changes to review_time field before saving."""
+    if instance.pk:
+        try:
+            old_instance = ImportantDocument.objects.get(pk=instance.pk)
+            instance._old_review_time = old_instance.review_time
+        except ImportantDocument.DoesNotExist:
+            instance._old_review_time = None
+    else:
+        instance._old_review_time = None
+
 
 @receiver(post_save, sender=ImportantDocument)
-def create_important_document_relevance_review(sender, instance, created, **kwargs):
-    """Automatically create RelevanceReview when an important document is created"""
+def create_important_doc_relevance_review(sender, instance, created, **kwargs):
+    """Automatically create or update RelevanceReview for important documents"""
+    user = instance.profile.user
+    
     if created:
-        user = instance.profile.user
+        # Create initial review when important document is first created
+        if instance.review_time:
+            next_review = timezone.now().date() + timedelta(days=instance.review_time)
+        else:
+            next_review = timezone.now().date() + timedelta(days=365)
+        
         RelevanceReview.objects.create(
             important_document_review=instance,
             reviewer=user,
             matters=True,
-            reasoning=f"Important document: {instance.name_or_title}"
+            reasoning=f"Important Document: {instance.name_or_title}",
+            next_review_due=next_review
         )
+    else:
+        # Check if review_time changed
+        old_review_time = getattr(instance, '_old_review_time', None)
+        
+        if old_review_time is not None and old_review_time != instance.review_time:
+            try:
+                # Find the most recent review for this important document
+                latest_review = RelevanceReview.objects.filter(
+                    important_document_review=instance
+                ).latest('review_date')
+                
+                # Update the next review due date
+                if instance.review_time:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=instance.review_time)
+                    latest_review.reasoning = f"Review time updated to {instance.review_time} days - {latest_review.reasoning}"
+                else:
+                    latest_review.next_review_due = timezone.now().date() + timedelta(days=365)
+                    latest_review.reasoning = f"Review time cleared - {latest_review.reasoning}"
+                
+                latest_review.reviewer = user
+                latest_review.save()
+                
+            except RelevanceReview.DoesNotExist:
+                # Fallback: if no review exists, create one
+                next_review = timezone.now().date() + timedelta(days=instance.review_time if instance.review_time else 365)
+                RelevanceReview.objects.create(
+                    important_document_review=instance,
+                    reviewer=user,
+                    matters=True,
+                    reasoning=f"Review time changed: {instance.name_or_title}",
+                    next_review_due=next_review
+                )
 
 
 # ============================================================================

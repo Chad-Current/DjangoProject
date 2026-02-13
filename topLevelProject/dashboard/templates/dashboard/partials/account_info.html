@@ -1,0 +1,82 @@
+<!-- dashboard/templates/dashboard/partials/account_info.html -->
+<div class="info-group">
+    <label class="info-label">Account Name/Provider</label>
+    <p class="info-value">{{ item.account_name_or_provider }}</p>
+</div>
+
+<div class="info-group">
+    <label class="info-label">Account Category</label>
+    <p class="info-value">
+        <span class="badge bg-info">{{ item.account_category }}</span>
+    </p>
+</div>
+
+{% if item.username_or_email %}
+<div class="info-group">
+    <label class="info-label">Username/Email</label>
+    <p class="info-value">{{ item.username_or_email }}</p>
+</div>
+{% endif %}
+
+{% if item.website_url %}
+<div class="info-group">
+    <label class="info-label">Website URL</label>
+    <p class="info-value">
+        <a href="{{ item.website_url }}" target="_blank" rel="noopener">
+            {{ item.website_url }}
+            <i class="fas fa-external-link-alt ms-1"></i>
+        </a>
+    </p>
+</div>
+{% endif %}
+
+<div class="info-group">
+    <label class="info-label">Critical Account</label>
+    <p class="info-value">
+        {% if item.is_critical %}
+            <span class="badge bg-danger">
+                <i class="fas fa-exclamation-triangle me-1"></i>Critical
+            </span>
+        {% else %}
+            <span class="badge bg-secondary">Not Critical</span>
+        {% endif %}
+    </p>
+</div>
+
+<div class="info-group">
+    <label class="info-label">Delegated To</label>
+    <p class="info-value">
+        <i class="fas fa-user me-1"></i>
+        {{ item.delegated_account_to.contact_name }}
+        ({{ item.delegated_account_to.contact_relation }})
+    </p>
+</div>
+
+<div class="info-group">
+    <label class="info-label">Keep or Close Instruction</label>
+    <p class="info-value">
+        <span class="badge bg-secondary">{{ item.keep_or_close_instruction }}</span>
+    </p>
+</div>
+
+{% if item.credential_storage_location %}
+<div class="info-group">
+    <label class="info-label">Credential Storage</label>
+    <p class="info-value">{{ item.credential_storage_location }}</p>
+</div>
+{% endif %}
+
+{% if item.notes_for_family %}
+<div class="info-group">
+    <label class="info-label">Notes for Family</label>
+    <p class="info-value">{{ item.notes_for_family }}</p>
+</div>
+{% endif %}
+
+<div class="info-group mb-0">
+    <label class="info-label">Account Created</label>
+    <p class="info-value text-muted">
+        <i class="far fa-calendar me-1"></i>
+        {{ item.created_at|date:"F d, Y \a\t g:i A" }}
+    </p>
+</div>

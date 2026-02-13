@@ -1,0 +1,98 @@
+<!-- dashboard/templates/dashboard/partials/estate_info.html -->
+<div class="info-group">
+    <label class="info-label">Document Name/Title</label>
+    <p class="info-value">{{ item.name_or_title }}</p>
+</div>
+
+<div class="info-group">
+    <label class="info-label">Document Category</label>
+    <p class="info-value">
+        <span class="badge bg-info">{{ item.estate_category }}</span>
+    </p>
+</div>
+
+{% if item.estate_provider %}
+<div class="info-group">
+    <label class="info-label">Provider</label>
+    <p class="info-value">{{ item.estate_provider }}</p>
+</div>
+{% endif %}
+
+<div class="info-group">
+    <label class="info-label">Delegated To</label>
+    <p class="info-value">
+        <i class="fas fa-user me-1"></i>
+        {{ item.delegated_estate_to.contact_name }}
+        ({{ item.delegated_estate_to.contact_relation }})
+    </p>
+</div>
+
+{% if item.description %}
+<div class="info-group">
+    <label class="info-label">Description</label>
+    <p class="info-value">{{ item.description }}</p>
+</div>
+{% endif %}
+
+{% if item.physical_location %}
+<div class="info-group">
+    <label class="info-label">Physical Location</label>
+    <p class="info-value">
+        <i class="fas fa-map-marker-alt me-1"></i>
+        {{ item.physical_location }}
+    </p>
+</div>
+{% endif %}
+
+{% if item.digital_location %}
+<div class="info-group">
+    <label class="info-label">Digital Location</label>
+    <p class="info-value">
+        <i class="fas fa-cloud me-1"></i>
+        {{ item.digital_location }}
+    </p>
+</div>
+{% endif %}
+
+<div class="info-group">
+    <label class="info-label">Document Triggers</label>
+    <div class="d-flex flex-wrap gap-2">
+        {% if item.applies_on_death %}
+            <span class="badge bg-dark">
+                <i class="fas fa-cross me-1"></i>Applies on Death
+            </span>
+        {% endif %}
+        {% if item.applies_on_incapacity %}
+            <span class="badge bg-warning text-dark">
+                <i class="fas fa-user-injured me-1"></i>Applies on Incapacity
+            </span>
+        {% endif %}
+        {% if item.applies_immediately %}
+            <span class="badge bg-danger">
+                <i class="fas fa-bolt me-1"></i>Applies Immediately
+            </span>
+        {% endif %}
+        {% if not item.applies_on_death and not item.applies_on_incapacity and not item.applies_immediately %}
+            <span class="text-muted">No triggers set</span>
+        {% endif %}
+    </div>
+</div>
+
+{% if item.requires_legal_review %}
+<div class="info-group">
+    <label class="info-label">Legal Review</label>
+    <p class="info-value">
+        <span class="badge bg-danger">
+            <i class="fas fa-gavel me-1"></i>Requires Professional Legal Review
+        </span>
+    </p>
+</div>
+{% endif %}
+
+<div class="info-group mb-0">
+    <label class="info-label">Document Added</label>
+    <p class="info-value text-muted">
+        <i class="far fa-calendar me-1"></i>
+        {{ item.created_at|date:"F d, Y \a\t g:i A" }}
+    </p>
+</div>

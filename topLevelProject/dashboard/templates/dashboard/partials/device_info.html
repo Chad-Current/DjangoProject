@@ -1,0 +1,66 @@
+<!-- dashboard/templates/dashboard/partials/device_info.html -->
+<div class="info-group">
+    <label class="info-label">Device Name</label>
+    <p class="info-value">{{ item.device_name }}</p>
+</div>
+
+<div class="info-group">
+    <label class="info-label">Device Type</label>
+    <p class="info-value">
+        <span class="badge bg-info">{{ item.device_type }}</span>
+    </p>
+</div>
+
+{% if item.owner_label %}
+<div class="info-group">
+    <label class="info-label">Owner</label>
+    <p class="info-value">{{ item.owner_label }}</p>
+</div>
+{% endif %}
+
+{% if item.location_description %}
+<div class="info-group">
+    <label class="info-label">Location</label>
+    <p class="info-value">{{ item.location_description }}</p>
+</div>
+{% endif %}
+
+<div class="info-group">
+    <label class="info-label">Delegated To</label>
+    <p class="info-value">
+        <i class="fas fa-user me-1"></i>
+        {{ item.delegated_device_to.contact_name }}
+        ({{ item.delegated_device_to.contact_relation }})
+    </p>
+</div>
+
+{% if item.unlock_passcode_location %}
+<div class="info-group">
+    <label class="info-label">Passcode Location</label>
+    <p class="info-value">{{ item.unlock_passcode_location }}</p>
+</div>
+{% endif %}
+
+{% if item.keep_or_dispose_instruction %}
+<div class="info-group">
+    <label class="info-label">Keep or Dispose Instruction</label>
+    <p class="info-value">
+        <span class="badge bg-secondary">{{ item.keep_or_dispose_instruction }}</span>
+    </p>
+</div>
+{% endif %}
+
+{% if item.device_notes %}
+<div class="info-group">
+    <label class="info-label">Device Notes</label>
+    <p class="info-value">{{ item.device_notes }}</p>
+</div>
+{% endif %}
+
+<div class="info-group mb-0">
+    <label class="info-label">Device Added</label>
+    <p class="info-value text-muted">
+        <i class="far fa-calendar me-1"></i>
+        {{ item.created_at|date:"F d, Y \a\t g:i A" }}
+    </p>
+</div>

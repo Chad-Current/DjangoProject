@@ -1,9 +1,15 @@
 import json
+import logging
+from django.utils import timezone
+from datetime import timedelta
+from django.views import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Count, ProtectedError, Q
+from django.db.models import Count, ProtectedError, Q, F
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -40,7 +46,7 @@ from .forms import (
     RecoveryRequestForm,
     ImportantDocumentForm,
 )
-
+logger = logging.getLogger(__name__)
 # ============================================================================
 # DASHBOARD HOME
 # ============================================================================
@@ -285,6 +291,7 @@ class AccountDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Account deleted successfully.')
         return super().delete(request, *args, **kwargs)
+    
 
 # ============================================================================
 # DEVICE VIEWS
@@ -352,6 +359,7 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Device deleted successfully.')
         return super().delete(request, *args, **kwargs)
+  
 
 # ============================================================================
 # ESTATE DOCUMENT VIEWS
@@ -429,7 +437,7 @@ class EstateDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Estate document deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
+    
 # ============================================================================
 # FAMILY AWARENESS VIEWS (FamilyNeedsToKnowSection)
 # ============================================================================
@@ -581,7 +589,7 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Document deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
+    
 # ============================================================================
 # CONTACT VIEWS
 # ============================================================================
@@ -905,7 +913,7 @@ class RelevanceReviewListView(LoginRequiredMixin, ListView):
     model = RelevanceReview
     template_name = 'dashboard/relevancereview_list.html'
     context_object_name = 'reviews'
-    paginate_by = 20
+    paginate_by = 5
     login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
@@ -947,7 +955,7 @@ class RelevanceReviewListView(LoginRequiredMixin, ListView):
             elif filter_type == 'important' and item_id:
                 qs = qs.filter(important_document_review_id=item_id)
             
-            return qs.order_by('-review_date')
+            return qs.order_by(F('next_review_due').asc(nulls_last=True))
         except Profile.DoesNotExist:
             return RelevanceReview.objects.none()
 
@@ -1209,6 +1217,8 @@ class RelevanceReviewUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
+
+
     """
     Delete a review.
     NOTE: Uses LoginRequiredMixin and manual permission check instead of 
@@ -1265,6 +1275,7 @@ class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
     def delete(self, request, *args, **kwargs):
+
         review = self.get_object()
         item_name = review.get_item_name()
         item_type = review.get_item_type()
@@ -1274,3 +1285,164 @@ class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
             f'Review deleted successfully for {item_type}: {item_name}.'
         )
         return super().delete(request, *args, **kwargs)
+    
+class MarkItemReviewedView(LoginRequiredMixin, View):
+    """
+    Mark an item as reviewed by updating its updated_at timestamp.
+    This is called via AJAX from the review detail page.
+    """
+    login_url = '/accounts/login/'
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Check if user has paid before allowing access"""
+        user = request.user
+        if user.is_authenticated and not getattr(user, "has_paid", False):
+            return JsonResponse({
+                'success': False,
+                'error': 'Payment required to access this feature'
+            }, status=403)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, review_pk):
+        """
+        Handle POST request to mark item as reviewed.
+        
+        Args:
+            request: HttpRequest object
+            review_pk: Primary key of the RelevanceReview
+            
+        Returns:
+            JsonResponse with success status and updated timestamps
+        """
+        try:
+            # Get the review
+            try:
+                review = RelevanceReview.objects.select_related(
+                    'account_review',
+                    'device_review',
+                    'estate_review',
+                    'important_document_review'
+                ).get(pk=review_pk)
+            except RelevanceReview.DoesNotExist:
+                logger.error(f"Review not found: {review_pk}")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Review not found'
+                }, status=404)
+            
+            # Get user profile
+            try:
+                profile = Profile.objects.get(user=request.user)
+            except Profile.DoesNotExist:
+                logger.error(f"Profile not found for user: {request.user.username}")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Profile not found'
+                }, status=404)
+            
+            # Get the reviewed item
+            item = review.get_reviewed_item()
+            
+            if not item:
+                logger.error(f"No item found for review: {review_pk}")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid review - no item found'
+                }, status=404)
+            
+            # Check ownership
+            if hasattr(item, 'profile') and item.profile != profile:
+                logger.warning(f"Permission denied for user {request.user.username} on review {review_pk}")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Permission denied - you do not own this item'
+                }, status=403)
+            
+            # Check if user can modify data
+            if not request.user.can_modify_data():
+                logger.warning(f"User {request.user.username} lacks modify permission")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'You do not have permission to modify data'
+                }, status=403)
+            
+            # Update the item's updated_at timestamp
+            try:
+                item.updated_at = timezone.now()
+                item.save(update_fields=['updated_at'])
+                logger.info(f"Updated item {item.pk} updated_at timestamp")
+            except Exception as e:
+                logger.error(f"Error updating item timestamp: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Failed to update item timestamp'
+                }, status=500)
+            
+            # Update the review's next_review_due date
+            try:
+                days_until_next = self._calculate_next_review_days(review, item)
+                review.next_review_due = timezone.now().date() + timedelta(days=days_until_next)
+                review.save(update_fields=['next_review_due'])
+                logger.info(f"Updated review {review_pk} next_review_due to {review.next_review_due}")
+            except Exception as e:
+                logger.error(f"Error updating review due date: {str(e)}")
+                # Don't fail completely if we can't update review date
+                pass
+            
+            # Return success response with updated data
+            return JsonResponse({
+                'success': True,
+                'updated_at': item.updated_at.strftime('%B %d, %Y at %I:%M %p'),
+                'next_review_due': review.next_review_due.strftime('%B %d, %Y') if review.next_review_due else None,
+                'message': f'{review.get_item_type()} marked as reviewed!',
+                'item_type': review.get_item_type(),
+                'item_name': review.get_item_name()
+            })
+            
+        except Exception as e:
+            # Catch-all for any unexpected errors
+            logger.error(f"Unexpected error in MarkItemReviewedView: {str(e)}", exc_info=True)
+            return JsonResponse({
+                'success': False,
+                'error': 'An unexpected error occurred. Please try again.'
+            }, status=500)
+    
+    def _calculate_next_review_days(self, review, item):
+        """
+        Calculate the number of days until the next review is due.
+        
+        Args:
+            review: RelevanceReview instance
+            item: The actual item being reviewed (Account, Device, etc.)
+            
+        Returns:
+            int: Number of days until next review
+        """
+        # First, try to use the item's review_time if it exists
+        if hasattr(item, 'review_time') and item.review_time:
+            return item.review_time
+        
+        # Fallback logic for items without review_time
+        # You can customize this based on item type
+        if review.account_review:
+            # For accounts without review_time, use a default
+            return 180  # 6 months
+        elif review.device_review:
+            return 180  # 6 months for devices
+        elif review.estate_review:
+            return 365  # 1 year for estate documents
+        elif review.important_document_review:
+            return 365  # 1 year for important documents
+        
+        # Ultimate fallback
+        return 365
+    
+    def get(self, request, review_pk):
+        """
+        Handle GET requests by returning method not allowed.
+        This endpoint should only accept POST requests.
+        """
+        return JsonResponse({
+            'success': False,
+            'error': 'Method not allowed. Use POST to mark item as reviewed.'
+        }, status=405)

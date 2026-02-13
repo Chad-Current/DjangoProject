@@ -1,0 +1,610 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>{{ item_type }} Review - {{ item_name }}</title>
+</head>
+
+<body>
+{% include "baseapp/navbar.html" %}
+{% include "dashboard/navblocks.html" %}
+
+<div class="main container py-4">
+    <!-- Review Header -->
+    <div class="device-header">
+        <h1>
+            {% if item_type == "Account" %}
+                <i class="fas fa-user-lock"></i>
+            {% elif item_type == "Device" %}
+                <i class="fas fa-laptop"></i>
+            {% elif item_type == "Estate Document" %}
+                <i class="fas fa-file-contract"></i>
+            {% elif item_type == "Important Document" %}
+                <i class="fas fa-file-alt"></i>
+            {% endif %}
+            {{ item_name }}
+        </h1>
+        <div class="subtitle">{{ item_type }} Review</div>
+    </div>
+
+    <!-- Success Message Area (for AJAX response) -->
+    <div id="reviewMessage" class="alert alert-success alert-dismissible fade" role="alert" style="display: none;">
+        <i class="fas fa-check-circle me-2"></i>
+        <span id="messageText"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row">
+        <!-- Left Column: Item Being Reviewed -->
+        <div class="col-lg-6">
+            <!-- Item Information Card -->
+            <div class="info-card">
+                <h3>
+                    {% if item_type == "Account" %}
+                        <i class="fas fa-user-lock"></i> Account Information
+                    {% elif item_type == "Device" %}
+                        <i class="fas fa-laptop"></i> Device Information
+                    {% elif item_type == "Estate Document" %}
+                        <i class="fas fa-file-contract"></i> Estate Document Information
+                    {% elif item_type == "Important Document" %}
+                        <i class="fas fa-file-alt"></i> Important Document Information
+                    {% endif %}
+                </h3>
+                
+                {% if review.account_review %}
+                    {% with item=review.account_review %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tag"></i> Category
+                        </div>
+                        <div class="info-value">
+                            {{ item.get_account_category_display }}
+                        </div>
+                    </div>
+
+                    {% if item.username_or_email %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user"></i> Username/Email
+                        </div>
+                        <div class="info-value">
+                            {{ item.username_or_email }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if item.is_critical %}
+                    <div class="alert-box">
+                        <p>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            This is a critical account
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tasks"></i> Instruction
+                        </div>
+                        <div class="info-value">
+                            {{ item.get_keep_or_close_instruction_display }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-check"></i> Assigned To
+                        </div>
+                        <div class="info-value">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_account_to.pk %}">
+                                {{ item.delegated_account_to.contact_name }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                {% elif review.device_review %}
+                    {% with item=review.device_review %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-microchip"></i> Device Type
+                        </div>
+                        <div class="info-value">
+                            {{ item.get_device_type_display }}
+                        </div>
+                    </div>
+
+                    {% if item.owner_label %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user"></i> Owner
+                        </div>
+                        <div class="info-value">
+                            {{ item.owner_label }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if item.location_description %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-map-marker-alt"></i> Location
+                        </div>
+                        <div class="info-value">
+                            {{ item.location_description }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-check"></i> Assigned To
+                        </div>
+                        <div class="info-value">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_device_to.pk %}">
+                                {{ item.delegated_device_to.contact_name }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                {% elif review.estate_review %}
+                    {% with item=review.estate_review %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tag"></i> Category
+                        </div>
+                        <div class="info-value">
+                            {{ item.get_estate_category_display }}
+                        </div>
+                    </div>
+
+                    {% if item.estate_provider %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-building"></i> Provider
+                        </div>
+                        <div class="info-value">
+                            {{ item.estate_provider }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-check"></i> Assigned To
+                        </div>
+                        <div class="info-value">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_estate_to.pk %}">
+                                {{ item.delegated_estate_to.contact_name }}
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if item.applies_on_death or item.applies_on_incapacity or item.applies_immediately %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-bolt"></i> Triggers
+                        </div>
+                        <div class="info-value">
+                            {% if item.applies_on_death %}<span class="badge bg-dark me-1">On Death</span>{% endif %}
+                            {% if item.applies_on_incapacity %}<span class="badge bg-warning text-dark me-1">On Incapacity</span>{% endif %}
+                            {% if item.applies_immediately %}<span class="badge bg-danger me-1">Immediately</span>{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
+                {% elif review.important_document_review %}
+                    {% with item=review.important_document_review %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-tag"></i> Category
+                        </div>
+                        <div class="info-value">
+                            {{ item.get_document_category_display }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-check"></i> Assigned To
+                        </div>
+                        <div class="info-value">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_important_document_to.pk %}">
+                                {{ item.delegated_important_document_to.contact_name }}
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if item.applies_on_death or item.applies_on_incapacity or item.applies_immediately %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-bolt"></i> Triggers
+                        </div>
+                        <div class="info-value">
+                            {% if item.applies_on_death %}<span class="badge bg-dark me-1">On Death</span>{% endif %}
+                            {% if item.applies_on_incapacity %}<span class="badge bg-warning text-dark me-1">On Incapacity</span>{% endif %}
+                            {% if item.applies_immediately %}<span class="badge bg-danger me-1">Immediately</span>{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+
+            <!-- Item Access/Location Card (for accounts/devices/documents with locations) -->
+            {% if review.account_review %}
+                {% with item=review.account_review %}
+                {% if item.website_url or item.credential_storage_location %}
+                <div class="info-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Account Access</h3>
+                    
+                    {% if item.website_url %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <strong>Website:</strong><br>
+                                <a href="{{ item.website_url }}" target="_blank" rel="noopener">{{ item.website_url }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if item.credential_storage_location %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-key"></i>
+                            <div>
+                                <strong>Password Storage:</strong><br>
+                                {{ item.credential_storage_location }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+            {% elif review.device_review %}
+                {% with item=review.device_review %}
+                {% if item.unlock_passcode_location %}
+                <div class="info-card">
+                    <h3><i class="fas fa-key"></i> Device Access</h3>
+                    
+                    <div class="location-badge">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <strong>Passcode Location:</strong><br>
+                            {{ item.unlock_passcode_location }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+
+            {% elif review.estate_review %}
+                {% with item=review.estate_review %}
+                {% if item.physical_location or item.digital_location %}
+                <div class="info-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Document Locations</h3>
+                    
+                    {% if item.physical_location %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Physical Location:</strong><br>
+                                {{ item.physical_location }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if item.digital_location %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-cloud"></i>
+                            <div>
+                                <strong>Digital Location:</strong><br>
+                                {{ item.digital_location }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+            {% elif review.important_document_review %}
+                {% with item=review.important_document_review %}
+                {% if item.physical_location or item.digital_location %}
+                <div class="info-card">
+                    <h3><i class="fas fa-map-marked-alt"></i> Document Locations</h3>
+                    
+                    {% if item.physical_location %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Physical Location:</strong><br>
+                                {{ item.physical_location }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if item.digital_location %}
+                    <div class="mb-3">
+                        <div class="location-badge">
+                            <i class="fas fa-cloud"></i>
+                            <div>
+                                <strong>Digital Location:</strong><br>
+                                {{ item.digital_location }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Review Details -->
+        <div class="col-lg-6">
+            <!-- Review Status Card -->
+            <div class="info-card">
+                <h3><i class="fas fa-clipboard-check"></i> Review Status</h3>
+                
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="far fa-calendar-check"></i> Review Date
+                    </div>
+                    <div class="info-value">
+                        {{ review.review_date|date:"F d, Y g:i A" }}
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="far fa-clock"></i> Last Updated
+                    </div>
+                    <div class="info-value" id="lastUpdatedDisplay">
+                        <span id="lastUpdatedTime">{{ reviewed_item.updated_at|date:"F d, Y g:i A" }}</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-user-check"></i> Reviewer
+                    </div>
+                    <div class="info-value">
+                        {{ review.reviewer.get_full_name|default:review.reviewer.username }}
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-check-circle"></i> Still Matters?
+                    </div>
+                    <div class="info-value">
+                        {% if review.matters %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Yes
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-times-circle me-1"></i>No
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="far fa-calendar"></i> Next Review Due
+                    </div>
+                    <div class="info-value" id="nextReviewDisplay">
+                        {% if review.next_review_due %}
+                            {% now 'Y-m-d' as today %}
+                            {% if review.next_review_due|date:'Y-m-d' < today %}
+                                <span class="badge bg-danger" id="nextReviewDate">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    {{ review.next_review_due|date:"F d, Y" }} (Overdue)
+                                </span>
+                            {% elif review.next_review_due|date:'Y-m-d' == today %}
+                                <span class="badge bg-warning text-dark" id="nextReviewDate">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ review.next_review_due|date:"F d, Y" }} (Due Today)
+                                </span>
+                            {% else %}
+                                <span id="nextReviewDate">
+                                    {{ review.next_review_due|date:"F d, Y" }}
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted" id="nextReviewDate">Not set</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if can_modify %}
+                <div class="mt-3">
+                    <button id="markReviewedBtn" class="btn btn-success w-100" title="Mark this item as reviewed">
+                        <i class="fas fa-check-circle me-1"></i> Mark as Reviewed
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+      </div>
+    </div>
+
+
+
+    <!-- Action Buttons -->
+    {% if can_modify %}
+    <div class="action-buttons">
+        {% if review.account_review %}
+            <a href="{% url 'dashboard:account_detail' review.account_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Account
+            </a>
+        {% elif review.device_review %}
+            <a href="{% url 'dashboard:device_detail' review.device_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Device
+            </a>
+        {% elif review.estate_review %}
+            <a href="{% url 'dashboard:estate_detail' review.estate_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Document
+            </a>
+        {% elif review.important_document_review %}
+            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Document
+            </a>
+        {% endif %}
+        <a href="{% url 'dashboard:relevancereview_list' %}" class="btn-back btn-custom">
+            <i class="fas fa-list"></i> All Reviews
+        </a>
+    </div>
+    {% else %}
+    <div class="action-buttons">
+        {% if review.account_review %}
+            <a href="{% url 'dashboard:account_detail' review.account_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Account
+            </a>
+        {% elif review.device_review %}
+            <a href="{% url 'dashboard:device_detail' review.device_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Device
+            </a>
+        {% elif review.estate_review %}
+            <a href="{% url 'dashboard:estate_detail' review.estate_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Document
+            </a>
+        {% elif review.important_document_review %}
+            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.pk %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Back to Document
+            </a>
+        {% endif %}
+        <a href="{% url 'dashboard:relevancereview_list' %}" class="btn-back btn-custom">
+            <i class="fas fa-list"></i> All Reviews
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% include "baseapp/footer.html" %}
+<script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+<script>
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const markReviewedBtn = document.getElementById('markReviewedBtn');
+        
+        if (markReviewedBtn) {
+            markReviewedBtn.addEventListener('click', function() {
+                // Disable button to prevent double clicks
+                markReviewedBtn.disabled = true;
+                markReviewedBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                
+                // Make AJAX request
+                fetch("{% url 'dashboard:mark_item_reviewed' review.pk %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the Last Updated timestamp
+                        document.getElementById('lastUpdatedTime').textContent = data.updated_at;
+                        
+                        // Update the Next Review Due date if provided
+                        if (data.next_review_due) {
+                            const nextReviewDate = document.getElementById('nextReviewDate');
+                            if (nextReviewDate) {
+                                nextReviewDate.innerHTML = data.next_review_due;
+                                nextReviewDate.className = '';
+                            }
+                        }
+                        
+                        // Show success message
+                        const messageDiv = document.getElementById('reviewMessage');
+                        const messageText = document.getElementById('messageText');
+                        messageText.textContent = data.message;
+                        messageDiv.classList.add('show');
+                        messageDiv.style.display = 'block';
+                        
+                        // Update button
+                        markReviewedBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Reviewed!';
+                        markReviewedBtn.classList.add('btn-success');
+                        
+                        // Hide message after 5 seconds
+                        setTimeout(function() {
+                            messageDiv.classList.remove('show');
+                            setTimeout(function() {
+                                messageDiv.style.display = 'none';
+                            }, 150);
+                        }, 5000);
+                        
+                        // Reset button after 3 seconds
+                        setTimeout(function() {
+                            markReviewedBtn.disabled = false;
+                            markReviewedBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Mark as Reviewed';
+                        }, 3000);
+                        
+                    } else {
+                        // Show error message
+                        alert('Error: ' + data.error);
+                        markReviewedBtn.disabled = false;
+                        markReviewedBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Mark as Reviewed';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    markReviewedBtn.disabled = false;
+                    markReviewedBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Mark as Reviewed';
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

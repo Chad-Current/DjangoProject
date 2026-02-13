@@ -16,14 +16,14 @@ urlpatterns = [
     path('accounts/create/', views.AccountCreateView.as_view(), name='account_create'),
     path('accounts/<int:pk>/edit/', views.AccountUpdateView.as_view(), name='account_update'),
     path('accounts/<int:pk>/delete/', views.AccountDeleteView.as_view(), name='account_delete'),
-    
+  
     # Account Relevance Review
-    path('account-reviews/', views.RelevanceReviewListView.as_view(), name='relevancereview_list'),
-    path('account-reviews/new/', views.RelevanceReviewCreateView.as_view(), name='relevancereview_create'),
-    path('account-reviews/<int:pk>/', views.RelevanceReviewDetailView.as_view(), name='relevancereview_detail'),
-    path('account-reviews/<int:pk>/edit/', views.RelevanceReviewUpdateView.as_view(), name='relevancereview_update'),
-    path('account-reviews/<int:pk>/delete/', views.RelevanceReviewDeleteView.as_view(), name='relevancereview_delete'),
-
+    path('reviews/', views.RelevanceReviewListView.as_view(), name='relevancereview_list'),
+    path('reviews/new/', views.RelevanceReviewCreateView.as_view(), name='relevancereview_create'),
+    path('reviews/<int:pk>/', views.RelevanceReviewDetailView.as_view(), name='relevancereview_detail'),
+    path('reviews/<int:pk>/edit/', views.RelevanceReviewUpdateView.as_view(), name='relevancereview_update'),
+    path('reviews/<int:pk>/delete/', views.RelevanceReviewDeleteView.as_view(), name='relevancereview_delete'),
+    path('reviews/<int:review_pk>/mark-reviewed/', views.MarkItemReviewedView.as_view(), name='mark_item_reviewed'),    
     # Contacts URLs
     path('contacts/', views.ContactListView.as_view(), name='contact_list'),
     path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
@@ -44,7 +44,7 @@ urlpatterns = [
     path('devices/create/', views.DeviceCreateView.as_view(), name='device_create'),
     path('devices/<int:pk>/edit/', views.DeviceUpdateView.as_view(), name='device_update'),
     path('devices/<int:pk>/delete/', views.DeviceDeleteView.as_view(), name='device_delete'),
-    
+  
   # Family Awareness URLs
     path('familyawareness/', views.FamilyAwarenessListView.as_view(), name='familyawareness_list'),
     path('familyawareness/<int:pk>/', views.FamilyAwarenessDetailView.as_view(), name='familyawareness_detail'),
@@ -58,7 +58,7 @@ urlpatterns = [
     path('documents/create/', views.ImportantDocumentCreateView.as_view(), name='importantdocument_create'),
     path('documents/<int:pk>/edit/', views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<int:pk>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
-      
+   
     # Checkup URLs
     path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),
     path('checkups/create/', views.CheckupCreateView.as_view(), name='checkup_create'),

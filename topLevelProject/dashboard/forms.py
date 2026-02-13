@@ -126,7 +126,7 @@ class AccountForm(forms.ModelForm):
             "website_url",
             "username_or_email",
             "credential_storage_location",
-            "is_critical",
+            "review_time",
             "keep_or_close_instruction",
             "notes_for_family",
         ]
@@ -137,7 +137,7 @@ class AccountForm(forms.ModelForm):
             "website_url":"Website URL",
             "username_or_email":"Username or Email",
             "credential_storage_location":"Crediential Storage Location",
-            'is_critical':"Mark as a Critical or important account"
+            'review_time':"Review needed in"
         }
     
     def __init__(self, *args, **kwargs):
@@ -169,7 +169,7 @@ class AccountForm(forms.ModelForm):
                 Field('website_url', css_class='urlinput', placeholder="https://"),
                 Field('username_or_email', css_class='textinput'),
                 Field('credential_storage_location', css_class='textinput'),
-                Field('is_critical', css_class='checkboxinput form-check-input'),
+                Field('review_time', css_class='select'),
             ),
             Fieldset(
                 'Instructions for Family',
@@ -196,6 +196,7 @@ class DeviceForm(forms.ModelForm):
             "unlock_method_description",
             "used_for_2fa",
             "decommission_instruction",
+            "review_time"
         ]
         labels = {
             "delegated_device_to":"Assign Device To", 
@@ -206,6 +207,7 @@ class DeviceForm(forms.ModelForm):
             "unlock_method_description":"Unlock Method",
             "used_for_2fa":"Used For Two Factor Authentication",
             "decommission_instruction":"Decommission Instructions",
+            'review_time':"Review needed in"
         }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -241,6 +243,7 @@ class DeviceForm(forms.ModelForm):
                 Field('unlock_method_description', css_class='textarea'),
                 Field('decommission_instruction', css_class='textarea'),
                 Field('used_for_2fa', css_class='checkboxinput form-check-input'),
+                Field('review_time', css_class='select')
             ),
             Div(
                 Submit('submit', 'Save Device', css_class='btn btn-primary'),
@@ -264,6 +267,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
+            "review_time"
         ]
 
         labels = {
@@ -276,7 +280,8 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             "estate_file":"File",
             "applies_on_death":"Applied Upon Death",
             "applies_on_incapacity":"Applied On Incapacitation",
-            "applies_immediately":"Applies Immeditately",           
+            "applies_immediately":"Applies Immeditately",
+            'review_time':"Review needed in"           
         }
 
         widgets = {
@@ -320,6 +325,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             ),
             Fieldset(
                 'Declarations',
+                Field('review_time', css_class='select'),
                 Field('applies_on_death',css_class='checkboxinput form-check-input'),
                 Field('applies_on_incapacity',css_class='checkboxinput form-check-input'),
                 Field('applies_immediately',css_class='checkboxinput form-check-input'),
@@ -525,6 +531,7 @@ class ImportantDocumentForm(forms.ModelForm):
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
+            "review_time"
         ]
         labels = {
             "delegated_important_document_to":"Assign Document To", 
@@ -576,7 +583,8 @@ class ImportantDocumentForm(forms.ModelForm):
                 Field('requires_legal_review', css_class='checkboxinput form-check-input'),
                 Field('applies_on_death',css_class='checkboxinput form-check-input'),
                 Field('applies_on_incapacity',css_class='checkboxinput form-check-input'),
-                Field('applies_immediately',css_class='checkboxinput form-check-input')
+                Field('applies_immediately',css_class='checkboxinput form-check-input'),
+                Field('review_time', css_class='select')
             ),
             Fieldset(
                 'Document Location',

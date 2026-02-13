@@ -1,0 +1,174 @@
+   Taken from ReviewRelevance_detail.html
+   
+            <!-- Review History Card -->
+            <div class="info-card">
+                <h3><i class="fas fa-history"></i> Review History</h3>
+                
+                {% if review.account_review %}
+                    {% with reviews=review.account_review.account_reviews.all %}
+                        {% if reviews.count > 1 %}
+                            <div class="description-box mb-3">
+                                <p>
+                                    <i class="fas fa-info-circle"></i>
+                                    This {{ item_type|lower }} has been reviewed <strong>{{ reviews.count }}</strong> times.
+                                </p>
+                            </div>
+                            {% for past_review in reviews %}
+                                <div class="info-row {% if past_review.pk == review.pk %}alert-box{% endif %}">
+                                    <div class="info-label">
+                                        {% if past_review.pk == review.pk %}
+                                            <i class="fas fa-arrow-right"></i> Current
+                                        {% else %}
+                                            <i class="far fa-calendar"></i> Review {{ forloop.revcounter }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="info-value">
+                                        {{ past_review.review_date|date:"M d, Y" }}
+                                        {% if past_review.pk != review.pk %}
+                                            <a href="{% url 'dashboard:relevancereview_detail' past_review.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                                                View
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <p>This is the first review for this {{ item_type|lower }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% elif review.device_review %}
+                    {% with reviews=review.device_review.device_reviews.all %}
+                        {% if reviews.count > 1 %}
+                            <div class="description-box mb-3">
+                                <p>
+                                    <i class="fas fa-info-circle"></i>
+                                    This {{ item_type|lower }} has been reviewed <strong>{{ reviews.count }}</strong> times.
+                                </p>
+                            </div>
+                            {% for past_review in reviews %}
+                                <div class="info-row {% if past_review.pk == review.pk %}alert-box{% endif %}">
+                                    <div class="info-label">
+                                        {% if past_review.pk == review.pk %}
+                                            <i class="fas fa-arrow-right"></i> Current
+                                        {% else %}
+                                            <i class="far fa-calendar"></i> Review {{ forloop.revcounter }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="info-value">
+                                        {{ past_review.review_date|date:"M d, Y" }}
+                                        {% if past_review.pk != review.pk %}
+                                            <a href="{% url 'dashboard:relevancereview_detail' past_review.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                                                View
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <p>This is the first review for this {{ item_type|lower }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% elif review.estate_review %}
+                    {% with reviews=review.estate_review.estate_reviews.all %}
+                        {% if reviews.count > 1 %}
+                            <div class="description-box mb-3">
+                                <p>
+                                    <i class="fas fa-info-circle"></i>
+                                    This {{ item_type|lower }} has been reviewed <strong>{{ reviews.count }}</strong> times.
+                                </p>
+                            </div>
+                            {% for past_review in reviews %}
+                                <div class="info-row {% if past_review.pk == review.pk %}alert-box{% endif %}">
+                                    <div class="info-label">
+                                        {% if past_review.pk == review.pk %}
+                                            <i class="fas fa-arrow-right"></i> Current
+                                        {% else %}
+                                            <i class="far fa-calendar"></i> Review {{ forloop.revcounter }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="info-value">
+                                        {{ past_review.review_date|date:"M d, Y" }}
+                                        {% if past_review.pk != review.pk %}
+                                            <a href="{% url 'dashboard:relevancereview_detail' past_review.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                                                View
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <p>This is the first review for this {{ item_type|lower }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% elif review.important_document_review %}
+                    {% with reviews=review.important_document_review.important_document_reviews.all %}
+                        {% if reviews.count > 1 %}
+                            <div class="description-box mb-3">
+                                <p>
+                                    <i class="fas fa-info-circle"></i>
+                                    This {{ item_type|lower }} has been reviewed <strong>{{ reviews.count }}</strong> times.
+                                </p>
+                            </div>
+                            {% for past_review in reviews %}
+                                <div class="info-row {% if past_review.pk == review.pk %}alert-box{% endif %}">
+                                    <div class="info-label">
+                                        {% if past_review.pk == review.pk %}
+                                            <i class="fas fa-arrow-right"></i> Current
+                                        {% else %}
+                                            <i class="far fa-calendar"></i> Review {{ forloop.revcounter }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="info-value">
+                                        {{ past_review.review_date|date:"M d, Y" }}
+                                        {% if past_review.pk != review.pk %}
+                                            <a href="{% url 'dashboard:relevancereview_detail' past_review.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                                                View
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <p>This is the first review for this {{ item_type|lower }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+
+
+            <!-- Review Reasoning Card -->
+            {% if review.reasoning %}
+            <div class="info-card">
+                <h3><i class="fas fa-comment-alt"></i> Review Reasoning</h3>
+                <div class="description-box">
+                    <p>{{ review.reasoning|linebreaks }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+
+    <!-- Metadata Footer -->
+    <div class="metadata-footer">
+        <div class="row">
+            <div class="col-md-6 meta-item">
+                <i class="fas fa-calendar-plus"></i>
+                <strong>Review Created:</strong> {{ review.created_at|date:"F d, Y g:i A" }}
+            </div>
+            <div class="col-md-6 meta-item text-md-end">
+                <i class="fas fa-calendar-check"></i>
+                <strong>Review Updated:</strong> {{ review.updated_at|date:"F d, Y g:i A" }}
+            </div>
+        </div>
+    </div>

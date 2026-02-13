@@ -4,6 +4,14 @@ from django.core.validators import URLValidator
 from django.utils import timezone
 from datetime import timedelta
 
+DAY_CHOICES = [
+    (30,'30 Days (One Month)'),
+    (60, '60 Days (2 Months)'),
+    (90, '90 Days (3 Months)'),
+    (180, '180 Days (6 Months)'),
+    (365, '365 Days (1 Year)')
+]
+
 class Profile(models.Model):
     """
     User profile containing personal information for digital estate planning.
@@ -145,7 +153,7 @@ class Account(models.Model):
         ('Memorialize', 'Memorialize'),
         ('Other (See Notes)', 'Other (See Notes)'),
     ]
-    
+
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
@@ -182,9 +190,12 @@ class Account(models.Model):
         blank=True,
         help_text="Where password is stored (e.g., 1Password, LastPass)"
     )
-    is_critical = models.BooleanField(
-        default=False,
+   
+    review_time = models.PositiveSmallIntegerField(
+        choices=DAY_CHOICES,
+        default=30
     )
+
     keep_or_close_instruction = models.CharField(
         max_length=20,
         choices=INSTRUCTION_CHOICES,
@@ -211,6 +222,14 @@ class Device(models.Model):
     """
     Physical devices (phones, computers, tablets, etc.)
     """
+
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='devices',
+        editable=False
+    )
+
     DEVICE_TYPE_CHOICES = [
         ('Desktop', 'Desktop'),
         ('Laptop', 'Laptop'),
@@ -219,14 +238,6 @@ class Device(models.Model):
         ('Tablet', 'Tablet'),
         ('Other', 'Other'),
     ]
-    
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='devices',
-        editable=False
-    )
-
     # DELEGATED TO CONTACT
     delegated_device_to = models.ForeignKey(
         Contact,
@@ -258,6 +269,11 @@ class Device(models.Model):
         help_text="What to do with this device after death"
     )
     
+    review_time = models.PositiveSmallIntegerField(
+        choices=DAY_CHOICES,
+        default=30
+    )
+
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -295,7 +311,7 @@ class DigitalEstateDocument(models.Model):
             ("Will and Codicils", "Will and Codicils — Last Will and Testament and any amendments (codicils)."),
         ]),
     ]
-    
+
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
@@ -346,6 +362,11 @@ class DigitalEstateDocument(models.Model):
         max_length=500,
         blank=True,
         help_text="Where digital copy is stored"
+    )
+
+    review_time = models.PositiveSmallIntegerField(
+        choices=DAY_CHOICES,
+        default=30
     )
 
     created_at = models.DateTimeField(default=timezone.now)
@@ -453,6 +474,11 @@ class ImportantDocument(models.Model):
     applies_on_incapacity = models.BooleanField(default=False)
     applies_immediately = models.BooleanField(default=False)
 
+    review_time = models.PositiveSmallIntegerField(
+        choices=DAY_CHOICES,
+        default=30
+    )
+
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -504,13 +530,7 @@ class Checkup(models.Model):
         related_name='checkups',
         editable=False
     )
-    FREQUENCY_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('semi-annual', 'Semi-Annual'),
-        ('annual', 'Annual'),
-    ]
-    
+
     due_date = models.DateField()
     completed_at = models.DateTimeField(null=True, blank=True)
     completed_by = models.ForeignKey(
@@ -521,7 +541,7 @@ class Checkup(models.Model):
         related_name='completed_checkups',
         editable=False
     )
-    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
+    frequency = models.CharField(max_length=20, choices=DAY_CHOICES)
     summary = models.TextField(blank=True)
     
     all_accounts_reviewed = models.BooleanField(default=False)
@@ -732,22 +752,22 @@ class RelevanceReview(models.Model):
         elif set_count > 1:
             raise ValidationError("You can only review one item at a time.")
 
-    def save(self, *args, **kwargs):
-        """Set next review date based on item type and criticality"""
-        # Run validation
-        self.clean()
+    # def save(self, *args, **kwargs):
+    #     """Set next review date based on item type and criticality"""
+    #     # Run validation
+    #     self.clean()
         
-        if not self.pk:  # Only set on creation
-            # Default to 365 days
-            days_until_next = 365
+    #     if not self.pk:  # Only set on creation
+    #         # Default to 365 days
+    #         days_until_next = 365
             
-            # Check if it's an Account and if it's critical
-            if self.account_review and self.account_review.is_critical:
-                days_until_next = 90
+    #         # Check if it's an Account and if it's critical
+    #         if self.account_review and self.account_review.is_critical:
+    #             days_until_next = 90
             
-            self.next_review_due = timezone.now().date() + timedelta(days=days_until_next)
+    #         self.next_review_due = timezone.now().date() + timedelta(days=days_until_next)
         
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
     
     def get_reviewed_item(self):
         """Return the item being reviewed"""
@@ -790,7 +810,7 @@ class RelevanceReview(models.Model):
             
     class Meta:
         db_table = 'relevance_reviews'
-        ordering = ['-review_date']
+        ordering = ['-next_review_due','-review_date']
         indexes = [
             models.Index(fields=['account_review']),
             models.Index(fields=['device_review']),

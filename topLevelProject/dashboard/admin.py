@@ -45,18 +45,23 @@ class ContactAdmin(admin.ModelAdmin):
         'contact_name',
         'contact_relation',
         'email',
+        'address_1',
+        'address_2',
+        'city',
+        'state',
+        'zipcode',
         'phone',
         'is_emergency_contact',
         'is_digital_executor',
         'documents_count'
     )
     list_filter = ('contact_relation', 'is_emergency_contact', 'is_digital_executor', 'is_caregiver', 'created_at')
-    search_fields = ('contact_name', 'email', 'phone', 'profile__full_name')
+    search_fields = ('contact_name', 'email', 'phone', 'address_1','address_2','city','state','zipcode','profile__full_name')
     readonly_fields = ('profile', 'created_at', 'updated_at', 'documents_count_display')
     
     fieldsets = (
         ('Contact Information', {
-            'fields': ('profile', 'contact_name', 'contact_relation', 'email', 'phone', 'address')
+            'fields': ('profile', 'contact_name', 'contact_relation', 'email', 'phone', 'address_1','address_2','city','state','zipcode')
         }),
         ('Roles', {
             'fields': ('is_emergency_contact', 'is_digital_executor', 'is_caregiver')
@@ -99,20 +104,20 @@ class ContactAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('account_name_or_provider', 'account_category', 'delegated_account_to','is_critical', 'created_at')
-    list_filter = ('account_category', 'is_critical', 'keep_or_close_instruction', 'delegated_account_to','created_at')
+    list_display = ('account_name_or_provider', 'account_category', 'delegated_account_to','review_time', 'created_at')
+    list_filter = ('account_category', 'keep_or_close_instruction', 'delegated_account_to','created_at')
     search_fields = ('account_name_or_provider', 'username_or_email', 'profile__full_name','delegated_account_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Account Information', {
-            'fields': ('profile', 'account_name_or_provider', 'account_category', 'website_url', 'delegated_acccount_to')
+            'fields': ('profile', 'account_name_or_provider', 'account_category', 'website_url', 'delegated_account_to')
         }),
         ('Credentials', {
             'fields': ('username_or_email', 'credential_storage_location')
         }),
         ('Status & Instructions', {
-            'fields': ('is_critical', 'keep_or_close_instruction', 'notes_for_family')
+            'fields': ('review_time', 'keep_or_close_instruction', 'notes_for_family')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -124,18 +129,16 @@ class AccountAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('profile', 'delegated_account_to')
 
 
-
-
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('device_name', 'device_type', 'owner_label', 'used_for_2fa', 'delegated_device_to', 'created_at')
+    list_display = ('device_name', 'device_type', 'owner_label', 'used_for_2fa', 'delegated_device_to', 'created_at', 'review_time')
     list_filter = ('device_type', 'used_for_2fa', 'created_at', 'delegated_device_to')
     search_fields = ('device_name', 'owner_label', 'profile__full_name','delegated_device_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
     
     fieldsets = (
         ('Device Information', {
-            'fields': ('profile', 'device_type', 'device_name', 'owner_label', 'location_description', 'delegated_device_to')
+            'fields': ('profile', 'device_type', 'device_name', 'owner_label', 'location_description', 'delegated_device_to','review_time')
         }),
         ('Security', {
             'fields': ('unlock_method_description', 'used_for_2fa', 'decommission_instruction')
@@ -151,7 +154,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(DigitalEstateDocument)
 class DigitalEstateDocumentAdmin(admin.ModelAdmin):
-    list_display = ('name_or_title', 'estate_category', 'delegated_estate_to', 'profile', 'created_at')
+    list_display = ('name_or_title', 'estate_category', 'delegated_estate_to', 'profile', 'review_time','created_at')
     list_filter = ('estate_category', 'created_at', 'delegated_estate_to')
     search_fields = ('name_or_title', 'profile__full_name', 'estate_overall_instructions', 'delegated_estate_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
@@ -162,7 +165,7 @@ class DigitalEstateDocumentAdmin(admin.ModelAdmin):
             'description': 'Document must be assigned to a contact.'
         }),
         ('Document Information', {
-            'fields': ('estate_category', 'name_or_title', 'estate_file')
+            'fields': ('estate_category', 'name_or_title', 'estate_file','review_time')
         }),
         ('Instructions', {
             'fields': ('estate_overall_instructions',)
@@ -246,7 +249,7 @@ class CheckupAdmin(admin.ModelAdmin):
 
 @admin.register(CareRelationship)
 class CareRelationshipAdmin(admin.ModelAdmin):
-    list_display = ('contact_name', 'relationship_type', 'has_portal_access', 'portal_role', 'created_at')
+    list_display = ('contact_name', 'relationship_type', 'has_portal_access', 'portal_role','created_at')
     list_filter = ('relationship_type', 'has_portal_access', 'portal_role', 'created_at')
     search_fields = ('contact_name__contact_name', 'profile__full_name', 'notes')
     readonly_fields = ('profile', 'created_at', 'updated_at')
@@ -294,7 +297,7 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
 
 @admin.register(ImportantDocument)
 class ImportantDocumentAdmin(admin.ModelAdmin):
-    list_display = ('name_or_title', 'document_category', 'delegated_important_document_to', 'requires_legal_review', 'created_at')
+    list_display = ('name_or_title', 'document_category', 'delegated_important_document_to', 'requires_legal_review', 'review_time', 'created_at')
     list_filter = ('document_category', 'requires_legal_review', 'created_at', 'delegated_important_document_to')
     search_fields = ('name_or_title', 'description', 'profile__full_name', 'delegated_important_document_to__contact_name')
     readonly_fields = ('profile', 'created_at', 'updated_at')
@@ -305,7 +308,7 @@ class ImportantDocumentAdmin(admin.ModelAdmin):
             'description': 'Document must be assigned to a contact.'
         }),
         ('Document Information', {
-            'fields': ('name_or_title', 'document_category', 'description', 'requires_legal_review')
+            'fields': ('name_or_title', 'document_category', 'description', 'requires_legal_review','review_time')
         }),
         ('Locations', {
             'fields': ('physical_location', 'digital_location', 'important_file')
@@ -329,7 +332,7 @@ class RelevanceReview(admin.ModelAdmin):
     
     fieldsets = (
         ('Review Information', {
-            'fields': ('account_review', 'reviewer', 'matters', 'review_date', 'next_review_due')
+            'fields': ('account_review', 'matters', 'review_date', 'next_review_due')
         }),
         ('Details', {
             'fields': ('reasoning',)
