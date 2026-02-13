@@ -20,7 +20,7 @@
 .progress-circle-fill {
   stroke-dasharray: 534.07; /* 2 * π * r = 2 * 3.14159 * 85 */
   stroke-dashoffset: 534.07;
-  transition: stroke-dashoffset 1.5s ease, stroke 0.3s ease;
+  transition: stroke-dashoffset 1s ease, stroke 0.3s ease;
 }
 
 .progress-text {

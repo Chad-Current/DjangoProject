@@ -87,15 +87,6 @@
                     </div>
                     {% endif %}
 
-                    {% if item.is_critical %}
-                    <div class="alert-box">
-                        <p>
-                            <i class="fas fa-exclamation-triangle"></i>
-                            This is a critical account
-                        </p>
-                    </div>
-                    {% endif %}
-
                     <div class="info-row">
                         <div class="info-label">
                             <i class="fas fa-tasks"></i> Instruction
@@ -173,17 +164,6 @@
                         </div>
                     </div>
 
-                    {% if item.estate_provider %}
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-building"></i> Provider
-                        </div>
-                        <div class="info-value">
-                            {{ item.estate_provider }}
-                        </div>
-                    </div>
-                    {% endif %}
-
                     <div class="info-row">
                         <div class="info-label">
                             <i class="fas fa-user-check"></i> Assigned To
@@ -247,7 +227,7 @@
                 {% endif %}
             </div>
 
-            <!-- Item Access/Location Card (for accounts/devices/documents with locations) -->
+            <!-- Item Access/Location Card -->
             {% if review.account_review %}
                 {% with item=review.account_review %}
                 {% if item.website_url or item.credential_storage_location %}
@@ -283,15 +263,15 @@
 
             {% elif review.device_review %}
                 {% with item=review.device_review %}
-                {% if item.unlock_passcode_location %}
+                {% if item.unlock_method_description %}
                 <div class="info-card">
                     <h3><i class="fas fa-key"></i> Device Access</h3>
                     
                     <div class="location-badge">
                         <i class="fas fa-lock"></i>
                         <div>
-                            <strong>Passcode Location:</strong><br>
-                            {{ item.unlock_passcode_location }}
+                            <strong>Unlock Method:</strong><br>
+                            {{ item.unlock_method_description }}
                         </div>
                     </div>
                 </div>
@@ -300,29 +280,29 @@
 
             {% elif review.estate_review %}
                 {% with item=review.estate_review %}
-                {% if item.physical_location or item.digital_location %}
+                {% if item.estate_physical_location or item.estate_digital_location %}
                 <div class="info-card">
                     <h3><i class="fas fa-map-marked-alt"></i> Document Locations</h3>
                     
-                    {% if item.physical_location %}
+                    {% if item.estate_physical_location %}
                     <div class="mb-3">
                         <div class="location-badge">
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
                                 <strong>Physical Location:</strong><br>
-                                {{ item.physical_location }}
+                                {{ item.estate_physical_location }}
                             </div>
                         </div>
                     </div>
                     {% endif %}
 
-                    {% if item.digital_location %}
+                    {% if item.estate_digital_location %}
                     <div class="mb-3">
                         <div class="location-badge">
                             <i class="fas fa-cloud"></i>
                             <div>
                                 <strong>Digital Location:</strong><br>
-                                {{ item.digital_location }}
+                                {{ item.estate_digital_location }}
                             </div>
                         </div>
                     </div>
@@ -420,27 +400,30 @@
                     <div class="info-label">
                         <i class="far fa-calendar"></i> Next Review Due
                     </div>
-                    <div class="info-value" id="nextReviewDisplay">
-                        {% if review.next_review_due %}
-                            {% now 'Y-m-d' as today %}
-                            {% if review.next_review_due|date:'Y-m-d' < today %}
-                                <span class="badge bg-danger" id="nextReviewDate">
-                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                    {{ review.next_review_due|date:"F d, Y" }} (Overdue)
-                                </span>
-                            {% elif review.next_review_due|date:'Y-m-d' == today %}
-                                <span class="badge bg-warning text-dark" id="nextReviewDate">
-                                    <i class="fas fa-clock me-1"></i>
-                                    {{ review.next_review_due|date:"F d, Y" }} (Due Today)
-                                </span>
+                    <div class="info-value">
+                        <span id="nextReviewDateContainer">
+                            {% if review.next_review_due %}
+                                {% now 'Y-m-d' as today %}
+                                {% if review.next_review_due|date:'Y-m-d' < today %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        {{ review.next_review_due|date:"F d, Y" }} (Overdue)
+                                    </span>
+                                {% elif review.next_review_due|date:'Y-m-d' == today %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ review.next_review_due|date:"F d, Y" }} (Due Today)
+                                    </span>
+                                {% else %}
+                                    <span>
+                                        <i class="far fa-calendar me-1"></i>
+                                        {{ review.next_review_due|date:"F d, Y" }}
+                                    </span>
+                                {% endif %}
                             {% else %}
-                                <span id="nextReviewDate">
-                                    {{ review.next_review_due|date:"F d, Y" }}
-                                </span>
+                                <span class="text-muted">Not set</span>
                             {% endif %}
-                        {% else %}
-                            <span class="text-muted" id="nextReviewDate">Not set</span>
-                        {% endif %}
+                        </span>
                     </div>
                 </div>
 
@@ -452,11 +435,8 @@
                 </div>
                 {% endif %}
             </div>
-
-      </div>
+        </div>
     </div>
-
-
 
     <!-- Action Buttons -->
     {% if can_modify %}
@@ -557,10 +537,10 @@
                         
                         // Update the Next Review Due date if provided
                         if (data.next_review_due) {
-                            const nextReviewDate = document.getElementById('nextReviewDate');
-                            if (nextReviewDate) {
-                                nextReviewDate.innerHTML = data.next_review_due;
-                                nextReviewDate.className = '';
+                            const nextReviewContainer = document.getElementById('nextReviewDateContainer');
+                            if (nextReviewContainer) {
+                                // Replace with new date (will always be in the future, so no badge needed)
+                                nextReviewContainer.innerHTML = '<span><i class="far fa-calendar me-1"></i>' + data.next_review_due + '</span>';
                             }
                         }
                         

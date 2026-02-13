@@ -24,19 +24,20 @@
     <div class="main">
         <div class="parent">
             <div class="delete-view">
-                <h1>Delete Category</h1>
-                <p>Are you sure you want to delete "{{ object.name }}"?</p>
-
+                <p>Are you sure you want to delete ?</p>
+                <h3>{{ object.device_name }} </h3>
                 <form method="post">
                     {% csrf_token %}
                     <div class="button-row">
-                    <button type="submit" class="button">Yes, Delete</button>
+                    <button type="submit" class="button button-warning">Yes</button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+<div class="parent">
     <a href="{% url 'dashboard:device_list' %}">Cancel</a>
-    </div>
+</div>
     {% endblock %}
 
 

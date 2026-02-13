@@ -70,7 +70,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['profile'] = profile
             context['session_expires'] = self.request.session.get_expiry_date()
                     
-            # ALL COUNTS - FIXED TO USE PROFILE FILTER
+            # ALL COUNTS
             context['accounts_count'] = Account.objects.filter(profile=profile).count()
             context['devices_count'] = Device.objects.filter(profile=profile).count()
             context['contacts_count'] = Contact.objects.filter(profile=profile).count()
@@ -79,86 +79,53 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
             context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
             
-            # ACCOUNT CATEGORY COUNTS - FIXED TO USE PROFILE FILTER
-            context['app_store'] = Account.objects.filter(profile=profile, account_category='app_store').count()
-            context['cloud_storage'] = Account.objects.filter(profile=profile, account_category='cloud_storage').count()
-            context['email'] = Account.objects.filter(profile=profile, account_category='email').count()
-            context['education_elearning'] = Account.objects.filter(profile=profile, account_category='education_elearning').count()
-            context['forum_community'] = Account.objects.filter(profile=profile, account_category='forum_community').count()
-            context['gaming_platform'] = Account.objects.filter(profile=profile, account_category='gaming_platform').count()
-            context['social_media'] = Account.objects.filter(profile=profile, account_category='social_media').count()
-            context['subscription_saas'] = Account.objects.filter(profile=profile, account_category='subscription_saas').count()
-            context['streaming_media'] = Account.objects.filter(profile=profile, account_category='streaming_media').count()
-            context['ecommerce_marketplace'] = Account.objects.filter(profile=profile, account_category='ecommerce_marketplace').count()
-            context['online_financial'] = Account.objects.filter(
-                profile=profile,
-                account_category__in=['online_banking', 'neobank_digital_bank', 'brokerage_investment', 
-                                    'cryptocurrency_exchange', 'payment_wallet', 'payment_processor']
-            ).count()
-            context['government_portal'] = Account.objects.filter(profile=profile, account_category='government_portal').count()
-            context['health_portal'] = Account.objects.filter(profile=profile, account_category='health_portal').count()
-            context['smart_home_iot'] = Account.objects.filter(profile=profile, account_category='smart_home_iot').count()
-            context['travel_booking'] = Account.objects.filter(profile=profile, account_category='travel_booking').count()
-            context['password_manager'] = Account.objects.filter(profile=profile, account_category='password_manager').count()
-            context['utilities_telecom_portal'] = Account.objects.filter(profile=profile, account_category='utilities_telecom_portal').count()
-            context['not_listed'] = Account.objects.filter(profile=profile, account_category='not_listed').count()
+            # CALCULATE PROGRESS (Weighted scoring)
+            progress = self._calculate_progress(
+                accounts=context['accounts_count'],
+                devices=context['devices_count'],
+                contacts=context['contacts_count'],
+                estates=context['estates_count'],
+                documents=context['documents_count'],
+                family_knows=context['family_knows_count'],
+                care_relations=context['care_relations_count']
+            )
+            context['progress'] = progress
             
-            # DEVICE COUNTS - FIXED TO USE PROFILE FILTER
-            context['phones'] = Device.objects.filter(profile=profile, device_type='phone').count()
-            context['tablets'] = Device.objects.filter(profile=profile, device_type='tablet').count()
-            context['laptops'] = Device.objects.filter(profile=profile, device_type='laptop').count()
-            context['desktops'] = Device.objects.filter(profile=profile, device_type='desktop').count()
-            context['smartwatches'] = Device.objects.filter(profile=profile, device_type='smartwatch').count()  # Fixed typo
-            context['others'] = Device.objects.filter(profile=profile, device_type='other').count()
-
-            # PROGRESS CALCULATION - FIXED KEYS
-            # keys = [
-            #     'accounts_count', 'contacts_count', 'devices_count',  # Fixed typos
-            #     'documents_count', 'estates_count', 'family_knows_count', 'care_relations_count'
-            # ]
-            # adjusted_values = []
-            # for key in keys:
-            #     value = context.get(key, 0) or 0
-            #     adjusted_values.append(value)
-            # total = sum(adjusted_values)
-            # context['progress'] = min((total / len(keys)) * 100, 100) if keys else 0
-            # context['remaining_tasks'] = max(len(keys) - total, 0)
+            # CALCULATE REMAINING TASKS
+            remaining_tasks = self._calculate_remaining_tasks(
+                accounts=context['accounts_count'],
+                devices=context['devices_count'],
+                contacts=context['contacts_count'],
+                estates=context['estates_count'],
+                documents=context['documents_count'],
+                family_knows=context['family_knows_count'],
+                care_relations=context['care_relations_count']
+            )
+            context['remaining_tasks'] = remaining_tasks
+            
+            # ACCOUNT CATEGORY COUNTS
+            context['account_categories'] = self._get_account_categories(profile)
+            
+            # DEVICE TYPE COUNTS
+            context['device_types'] = {
+                'phones': Device.objects.filter(profile=profile, device_type='Phone').count(),
+                'tablets': Device.objects.filter(profile=profile, device_type='Tablet').count(),
+                'laptops': Device.objects.filter(profile=profile, device_type='Laptop').count(),
+                'desktops': Device.objects.filter(profile=profile, device_type='Desktop').count(),
+                'smartwatches': Device.objects.filter(profile=profile, device_type='Smart Watch').count(),
+                'others': Device.objects.filter(profile=profile, device_type='Other').count(),
+            }
+            
+            # REVIEW STATS
+            review_stats = self._get_review_stats(profile)
+            context.update(review_stats)
             
             # PERMISSIONS CONTEXT
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()
             context['can_view'] = user.can_view_data()
             
-            # ALERTS - FIXED NULL HANDLING
-            context['alert_due'] = False
-            context['alert_attention'] = False
-            context['alert_due_year'] = False
-            context['alert_attention_year'] = False
-            
-            today = datetime.today().date()
-            # review_dates = (RelevanceReview.objects
-            #                .filter(account_review__profile=profile)  # Added profile filter
-            #                .exclude(next_review_due__isnull=True)
-            #                .aggregate(soonest=Min('next_review_due'), farthest=Max('next_review_due')))
-            
-            # soonest_review = review_dates['soonest']
-            # farthest_review = review_dates['farthest']
-            # context['soonest'] = soonest_review
-
-            # if soonest_review:
-            #     first_delta = soonest_review - today
-            #     if first_delta.days <= 0:
-            #         context['alert_due'] = True
-            #     elif first_delta.days <= 7:
-            #         context['alert_attention'] = True
-
-            # if farthest_review:
-            #     last_delta = farthest_review - today
-            #     if last_delta.days <= 0:
-            #         context['alert_due_year'] = True
-            #     elif last_delta.days <= 30:
-            #         context['alert_attention_year'] = True
-
+            # SUBSCRIPTION INFO
             if user.subscription_tier == 'essentials':
                 context['is_edit_active'] = user.is_essentials_edit_active()
                 context['days_remaining'] = user.days_until_essentials_expires()
@@ -169,8 +136,113 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
         except Profile.DoesNotExist:
             context['profile'] = None
+            context['progress'] = 0
+            context['remaining_tasks'] = 7
 
         return context
+    
+    def _calculate_progress(self, **kwargs):
+        """
+        Calculate progress based on weighted completion criteria.
+        
+        Weights:
+        - Accounts: 25% (target: 10)
+        - Contacts: 20% (target: 5)
+        - Devices: 15% (target: 5)
+        - Estate Docs: 15% (target: 3)
+        - Important Docs: 15% (target: 5)
+        - Family Knows: 5% (target: 3)
+        - Care Relations: 5% (target: 1)
+        """
+        criteria = {
+            'accounts': {'weight': 0.25, 'target': 10},
+            'devices': {'weight': 0.15, 'target': 5},
+            'contacts': {'weight': 0.20, 'target': 5},
+            'estates': {'weight': 0.15, 'target': 3},
+            'documents': {'weight': 0.15, 'target': 5},
+            'family_knows': {'weight': 0.05, 'target': 3},
+            'care_relations': {'weight': 0.05, 'target': 1},
+        }
+        
+        total_progress = 0
+        
+        for key, config in criteria.items():
+            count = kwargs.get(key, 0)
+            target = config['target']
+            weight = config['weight']
+            
+            # Calculate progress for this item (capped at 100% per item)
+            item_progress = min(count / target, 1.0) * weight
+            total_progress += item_progress
+        
+        # Convert to percentage (0-100)
+        return round(total_progress * 100)
+    
+    def _calculate_remaining_tasks(self, **kwargs):
+        """Calculate how many major categories are not yet started."""
+        tasks = [
+            ('accounts', 1),
+            ('devices', 1),
+            ('contacts', 1),
+            ('estates', 1),
+            ('documents', 1),
+            ('family_knows', 1),
+            ('care_relations', 1),
+        ]
+        
+        remaining = 0
+        for key, threshold in tasks:
+            if kwargs.get(key, 0) < threshold:
+                remaining += 1
+        
+        return remaining
+    
+    def _get_account_categories(self, profile):
+        """Get account counts by category."""
+        from django.db.models import Count
+        
+        categories = Account.objects.filter(profile=profile).values('account_category').annotate(
+            count=Count('id')
+        ).order_by('-count')
+        
+        # Return as dictionary
+        return {cat['account_category']: cat['count'] for cat in categories}
+    
+    def _get_review_stats(self, profile):
+        """Get review statistics including next due date."""
+        from django.db.models import Min
+        from datetime import date
+        
+        # Get the soonest review date across all item types
+        review_dates = RelevanceReview.objects.filter(
+            Q(account_review__profile=profile) |
+            Q(device_review__profile=profile) |
+            Q(estate_review__profile=profile) |
+            Q(important_document_review__profile=profile)
+        ).exclude(next_review_due__isnull=True).aggregate(
+            soonest=Min('next_review_due')
+        )
+        
+        soonest_review = review_dates['soonest']
+        
+        stats = {
+            'soonest_review': soonest_review,
+            'first_delta': None,
+            'alert_due': False,
+            'alert_attention': False,
+        }
+        
+        if soonest_review:
+            today = date.today()
+            delta = soonest_review - today
+            stats['first_delta'] = delta
+            
+            if delta.days <= 0:
+                stats['alert_due'] = True
+            elif delta.days <= 7:
+                stats['alert_attention'] = True
+        
+        return stats
 
 # ============================================================================
 # PROFILE VIEWS

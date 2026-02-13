@@ -38,7 +38,9 @@
   align-items: center;
   justify-content: space-around;
   /* width: 100%; */
-  background-color: var(--purewhite-color);
+  box-shadow:
+    6px 6px 12px #02020214,
+    0 -1px 12px var(--purewhite-color);
   padding: 2em;
   border-radius: 20px;
 }

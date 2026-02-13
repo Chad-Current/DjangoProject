@@ -71,11 +71,15 @@ body {
 .hero-content {
     text-align: center;
     margin-bottom: 2.5rem;
+    * {
+        padding: 0;
+        margin: 0;
+    }
 }
 
 .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-family: var(--font-title);
+    font-size: var(--font-xxl);
     font-weight: 400;
     font-style: italic;
     background: var(--primary-gradient);

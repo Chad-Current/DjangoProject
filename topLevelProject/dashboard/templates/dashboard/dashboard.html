@@ -36,7 +36,6 @@
                 {% if user.subscription_tier == 'essentials'%}
                 <p>Your have untill {{ essentials_expires }} to input data!</p>
                 {% endif %}
-                <p>Your digital estate at a glance</p>
             </div>
 
             <!-- Stats Cards -->
@@ -88,7 +87,7 @@
                 <div class="progress-card" data-stat="progress">
                     <div>
                         <input type="hidden" id="progress-value" value="{{ progress|default:0 }}">
-                        {% include 'dashboard/progress-circle.html' %}
+                        {% include 'dashboard/partials/progress-circle.html' %}
                     </div>
                 </div>
 
@@ -101,6 +100,8 @@
 
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="{% static 'dashboard/js/progress.js' %}"></script>
+    <script src="{% static 'dashboard/js/bargraph.js' %}"></script>
+    <script src="{% static 'dashboard/js/charts.js' %}"></script>
     <script src="{% static 'dashboard/js/dashboard-charts.js' %}"></script>
     <script src="{% static 'dashboard/js/bargraph.js' %}"></script>
     <script>

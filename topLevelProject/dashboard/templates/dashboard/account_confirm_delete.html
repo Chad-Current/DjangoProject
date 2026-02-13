@@ -22,22 +22,22 @@
     {% include "dashboard/navblocks.html" %}
     {% block content %}
     <div class="main">
-        <!-- <div class="parent"> -->
+        <div class="parent">
             <div class="delete-view">
-                <h1>Are you sure you want to delete?</h1>
-                <!-- <h1>Delete Access Information</h1> -->
-                <h3>{{ account.account_name }}</h3>
-
+                <p>Are you sure you want to delete ?</p>
+                <h3>{{ account.account_name_or_provider }}</h3>
                 <form method="post">
                     {% csrf_token %}
                     <div class="button-row">
-                    <button type="submit" class="button">Yes, Delete</button>
+                    <button type="submit" class="button button-warning">YES</button>
                 </div>
             </form>
         </div>
-    <!-- </div> -->
-    <a href="{% url 'dashboard:account_list' %}">Cancel</a>
     </div>
+</div>
+<div class="parent">
+<a href="{% url 'dashboard:account_list' %}"><button class="button">Cancel</button></a>
+</div>
     {% endblock %}
 
 
