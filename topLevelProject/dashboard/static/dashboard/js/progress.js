@@ -43,7 +43,7 @@ function initializeProgressCircle() {
 }
 
 function animateProgress(circle, percentageText, targetProgress, circumference) {
-    const duration = 1000; // 1.5 seconds
+    const duration = 1000; // 1 second
     const startTime = performance.now();
     const startProgress = 0;
     

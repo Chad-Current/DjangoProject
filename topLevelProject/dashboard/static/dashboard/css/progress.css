@@ -1,9 +1,9 @@
 /* Progress Circle Styles */
 .progress-circle-container {
   position: relative;
-  /* display: inline-block; */
-  /* width: 200px;
-  height: 200px; */
+  display: inline-block;
+  width: 200px;
+  height: 200px;
 }
 
 .progress-circle {
@@ -14,7 +14,7 @@
 
 .progress-circle-bg {
   stroke: var(--background-color);
-  transition: stroke 0.3s ease;
+  transition: stroke 1.5s ease;
 }
 
 .progress-circle-fill {
@@ -44,7 +44,7 @@
 
 .progress-label {
   display: block;
-  font-size: var(--font-sm);
+  font-size: var(--font-xxl);
   font-family: var(--main-font);
   color: var(--text-color-dark);
   text-transform: uppercase;

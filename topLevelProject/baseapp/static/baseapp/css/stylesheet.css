@@ -63,6 +63,7 @@ body::-webkit-scrollbar-thumb {
   --background-color-dark: #16283b;
   --text-color: #ede7e3;
   --text-color-dark: #16283b;
+  --text-color-dark-muted: #16283b86;
   --sixty-percent: #62a2ce;
   /* Thirty + Sixty for Icon colors */
   --thirty-percent: #2d6a9c;

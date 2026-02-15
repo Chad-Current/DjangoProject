@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/listing.css' %}" type="text/css">
-    <!-- <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css"> -->
     <link
         href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
         rel="stylesheet">
@@ -49,7 +48,7 @@
                         <table class="table contacts-table">
                             <thead>
                                 <tr>
-                                    <th>Item</th>
+                                    <th>Item Reviewed</th>
                                     <th>Type</th>
                                     <th>Review Date</th>
                                     <th>Next Review Due</th>
@@ -73,9 +72,7 @@
                                             {% else %}
                                                 <i class="fas fa-question-circle contact-icon"></i>
                                             {% endif %}
-                                            <a href="{% url 'dashboard:relevancereview_detail' review.pk %}" class="item-name-link">
-                                                {{ review.get_item_name }}
-                                            </a>
+                                            <span>{{ review.get_item_name }}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -89,7 +86,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}fas fa-exclamation-triangle text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
+                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
                                             {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                                         </span>
                                     </td>
@@ -101,20 +98,20 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if can_modify %}
                                         <div class="action-buttons">
                                             <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
-                                                class="btn-action btn-view" title="View review">
+                                                class="btn-action btn-edit" title="View review">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <!-- <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
+                                            {% if can_modify %}
+                                            <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
                                                 class="btn-action btn-edit" title="Edit review">
                                                 <i class="fas fa-edit"></i>
-                                            </a> -->
-                                            <!-- <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
+                                            </a>
+                                            <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
                                                 class="btn-action btn-delete" title="Delete review">
                                                 <i class="fas fa-trash-alt"></i>
-                                            </a> -->
+                                            </a>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -129,6 +126,7 @@
                 <div class="card-view d-md-none">
                     {% for review in reviews %}
                     <div class="contact-card">
+                        <div class="card-header-section">
                             <div class="contact-avatar">
                                 {% if review.get_item_type == "Account" %}
                                     <i class="fas fa-user-lock"></i>
@@ -169,20 +167,20 @@
                             {% endif %}
                         </div>
 
-                        <div class="card-actions" onclick="event.stopPropagation();">
+                        <div class="card-actions">
                             <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
-                                class="btn-custom btn-back">
+                                class="btn-card-action btn-view-card">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </a>
                             {% if can_modify %}
-                            <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
-                                class="btn-custom btn-edit">
+                            <!-- <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
+                                class="btn-card-action btn-edit-card">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
-                            </a>
+                            </a> -->
                             <a href="{% url 'dashboard:relevancereview_delete' review.pk %}"
-                                class="btn-custom btn-delete">
+                                class="btn-card-action btn-delete-card">
                                 <i class="fas fa-trash-alt"></i>
                                 <span>Delete</span>
                             </a>
@@ -211,6 +209,77 @@
                         Add Your First Review
                     </a>
                     {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <div class="pagination-wrapper">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page -->
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.item_id %}&item_id={{ request.GET.item_id }}{% endif %}" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.item_id %}&item_id={{ request.GET.item_id }}{% endif %}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;&laquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;</span>
+                                </li>
+                            {% endif %}
+
+                            <!-- Page Numbers -->
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active" aria-current="page">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.item_id %}&item_id={{ request.GET.item_id }}{% endif %}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Next Page -->
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.item_id %}&item_id={{ request.GET.item_id }}{% endif %}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.item_id %}&item_id={{ request.GET.item_id }}{% endif %}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;&raquo;</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                    <!-- Page Info -->
+                    <div class="pagination-info text-center mt-2">
+                        <small class="text-muted">
+                            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} review{% if page_obj.paginator.count != 1 %}s{% endif %}
+                        </small>
+                    </div>
                 </div>
                 {% endif %}
             </div>

@@ -120,6 +120,25 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             review_stats = self._get_review_stats(profile)
             context.update(review_stats)
             
+            # UPCOMING REVIEWS (next 5 reviews)
+            upcoming_reviews = RelevanceReview.objects.filter(
+                Q(account_review__profile=profile) |
+                Q(device_review__profile=profile) |
+                Q(estate_review__profile=profile) |
+                Q(important_document_review__profile=profile)
+            ).exclude(
+                next_review_due__isnull=True
+            ).select_related(
+                'account_review',
+                'device_review',
+                'estate_review',
+                'important_document_review'
+            ).order_by('next_review_due')[:5]
+            
+            context['upcoming_reviews'] = upcoming_reviews
+            context['today'] = datetime.now().date()
+            context['week_from_now'] = datetime.now().date() + timedelta(days=7)
+            
             # PERMISSIONS CONTEXT
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify'] = user.can_modify_data()
@@ -138,6 +157,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['profile'] = None
             context['progress'] = 0
             context['remaining_tasks'] = 7
+            context['upcoming_reviews'] = []
 
         return context
     
@@ -971,10 +991,6 @@ class MainTemplateView(TemplateView):
 # RELEVANCE REVIEW VIEWS
 # ============================================================================
 
-# ============================================================================
-# RELEVANCE REVIEW VIEWS - CORRECTED
-# ============================================================================
-
 class RelevanceReviewListView(LoginRequiredMixin, ListView):
     """
     List all reviews for the current user's items.
@@ -1518,3 +1534,219 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
             'success': False,
             'error': 'Method not allowed. Use POST to mark item as reviewed.'
         }, status=405)
+    
+
+
+
+class TESTView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/test.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not getattr(user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        try:
+            profile = Profile.objects.get(user=user)
+            context['user'] = user
+            context['profile'] = profile
+            context['session_expires'] = self.request.session.get_expiry_date()
+                    
+            # ALL COUNTS
+            context['accounts_count'] = Account.objects.filter(profile=profile).count()
+            context['devices_count'] = Device.objects.filter(profile=profile).count()
+            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
+            context['estates_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
+            context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
+            context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
+            context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
+            
+            # CALCULATE PROGRESS (Weighted scoring)
+            progress = self._calculate_progress(
+                accounts=context['accounts_count'],
+                devices=context['devices_count'],
+                contacts=context['contacts_count'],
+                estates=context['estates_count'],
+                documents=context['documents_count'],
+                family_knows=context['family_knows_count'],
+                care_relations=context['care_relations_count']
+            )
+            context['progress'] = progress
+            
+            # CALCULATE REMAINING TASKS
+            remaining_tasks = self._calculate_remaining_tasks(
+                accounts=context['accounts_count'],
+                devices=context['devices_count'],
+                contacts=context['contacts_count'],
+                estates=context['estates_count'],
+                documents=context['documents_count'],
+                family_knows=context['family_knows_count'],
+                care_relations=context['care_relations_count']
+            )
+            context['remaining_tasks'] = remaining_tasks
+            
+            # ACCOUNT CATEGORY COUNTS
+            context['account_categories'] = self._get_account_categories(profile)
+            
+            # DEVICE TYPE COUNTS
+            context['device_types'] = {
+                'phones': Device.objects.filter(profile=profile, device_type='Phone').count(),
+                'tablets': Device.objects.filter(profile=profile, device_type='Tablet').count(),
+                'laptops': Device.objects.filter(profile=profile, device_type='Laptop').count(),
+                'desktops': Device.objects.filter(profile=profile, device_type='Desktop').count(),
+                'smartwatches': Device.objects.filter(profile=profile, device_type='Smart Watch').count(),
+                'others': Device.objects.filter(profile=profile, device_type='Other').count(),
+            }
+            
+            # REVIEW STATS
+            review_stats = self._get_review_stats(profile)
+            context.update(review_stats)
+            
+            upcoming_reviews = RelevanceReview.objects.filter(
+                Q(account_review__profile=profile) |
+                Q(device_review__profile=profile) |
+                Q(estate_review__profile=profile) |
+                Q(important_document_review__profile=profile)
+            ).exclude(
+                next_review_due__isnull=True
+            ).select_related(
+                'account_review',
+                'device_review',
+                'estate_review',
+                'important_document_review'
+            ).order_by('next_review_due')
+            
+            context['upcoming_reviews'] = upcoming_reviews
+            context['today'] = datetime.now().date()
+            context['week_from_now'] = datetime.now().date() + timedelta(days=7)
+            
+            # PERMISSIONS CONTEXT
+            context['tier_display'] = user.get_tier_display_name()
+            context['can_modify'] = user.can_modify_data()
+            context['can_view'] = user.can_view_data()
+            
+            # SUBSCRIPTION INFO
+            if user.subscription_tier == 'essentials':
+                context['is_edit_active'] = user.is_essentials_edit_active()
+                context['days_remaining'] = user.days_until_essentials_expires()
+                context['essentials_expires'] = user.essentials_expires
+
+            if user.subscription_tier == 'legacy':
+                context['legacy_granted'] = user.legacy_granted_date
+
+        except Profile.DoesNotExist:
+            context['profile'] = None
+            context['progress'] = 0
+            context['remaining_tasks'] = 7
+            context['upcoming_reviews'] = []
+
+        return context
+    
+    def _calculate_progress(self, **kwargs):
+        """
+        Calculate progress based on weighted completion criteria.
+        
+        Weights:
+        - Accounts: 25% (target: 10)
+        - Contacts: 20% (target: 5)
+        - Devices: 15% (target: 5)
+        - Estate Docs: 15% (target: 3)
+        - Important Docs: 15% (target: 5)
+        - Family Knows: 5% (target: 3)
+        - Care Relations: 5% (target: 1)
+        """
+        criteria = {
+            'accounts': {'weight': 0.25, 'target': 10},
+            'devices': {'weight': 0.15, 'target': 5},
+            'contacts': {'weight': 0.20, 'target': 5},
+            'estates': {'weight': 0.15, 'target': 3},
+            'documents': {'weight': 0.15, 'target': 5},
+            'family_knows': {'weight': 0.05, 'target': 3},
+            'care_relations': {'weight': 0.05, 'target': 1},
+        }
+        
+        total_progress = 0
+        
+        for key, config in criteria.items():
+            count = kwargs.get(key, 0)
+            target = config['target']
+            weight = config['weight']
+            
+            # Calculate progress for this item (capped at 100% per item)
+            item_progress = min(count / target, 1.0) * weight
+            total_progress += item_progress
+        
+        # Convert to percentage (0-100)
+        return round(total_progress * 100)
+    
+    def _calculate_remaining_tasks(self, **kwargs):
+        """Calculate how many major categories are not yet started."""
+        tasks = [
+            ('accounts', 1),
+            ('devices', 1),
+            ('contacts', 1),
+            ('estates', 1),
+            ('documents', 1),
+            ('family_knows', 1),
+            ('care_relations', 1),
+        ]
+        
+        remaining = 0
+        for key, threshold in tasks:
+            if kwargs.get(key, 0) < threshold:
+                remaining += 1
+        
+        return remaining
+    
+    def _get_account_categories(self, profile):
+        """Get account counts by category."""
+        from django.db.models import Count
+        
+        categories = Account.objects.filter(profile=profile).values('account_category').annotate(
+            count=Count('id')
+        ).order_by('-count')
+        
+        # Return as dictionary
+        return {cat['account_category']: cat['count'] for cat in categories}
+    
+    def _get_review_stats(self, profile):
+        """Get review statistics including next due date."""
+        from django.db.models import Min
+        from datetime import date
+        
+        # Get the soonest review date across all item types
+        review_dates = RelevanceReview.objects.filter(
+            Q(account_review__profile=profile) |
+            Q(device_review__profile=profile) |
+            Q(estate_review__profile=profile) |
+            Q(important_document_review__profile=profile)
+        ).exclude(next_review_due__isnull=True).aggregate(
+            soonest=Min('next_review_due')
+        )
+        
+        soonest_review = review_dates['soonest']
+        
+        stats = {
+            'soonest_review': soonest_review,
+            'first_delta': None,
+            'alert_due': False,
+            'alert_attention': False,
+        }
+        
+        if soonest_review:
+            today = date.today()
+            delta = soonest_review - today
+            stats['first_delta'] = delta
+            
+            if delta.days <= 0:
+                stats['alert_due'] = True
+            elif delta.days <= 7:
+                stats['alert_attention'] = True
+        
+        return stats

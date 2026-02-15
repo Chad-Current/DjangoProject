@@ -480,3 +480,96 @@
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
 }
+
+.pagination-wrapper {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #dce6f0;
+}
+
+.pagination {
+    gap: 0.25rem;
+}
+
+.page-item {
+    margin: 0;
+}
+
+.page-link {
+    font-family: var(--main-font);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--thirty-percent);
+    background-color: transparent;
+    border: 1px solid #dce6f0;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+    margin: 0 0.125rem;
+}
+
+.page-link:hover {
+    color: var(--ten-percent);
+    background-color: var(--background-color);
+    border-color: var(--sixty-percent);
+}
+
+.page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(98, 162, 206, 0.25);
+    z-index: 3;
+}
+
+.page-item.active .page-link {
+    color: var(--purewhite-color);
+    background-color: var(--thirty-percent);
+    border-color: var(--thirty-percent);
+}
+
+.page-item.disabled .page-link {
+    color: var(--sixty-percent);
+    background-color: transparent;
+    border-color: #dce6f0;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    margin-top: 1rem;
+}
+
+.pagination-info .text-muted {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-sm);
+    color: var(--thirty-percent);
+}
+
+/* Responsive Pagination */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .page-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.875rem;
+    }
+    
+    .pagination-wrapper {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-link {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.8rem;
+        margin: 0.1rem;
+    }
+    
+    /* Hide page numbers on very small screens, keep only prev/next */
+    .pagination .page-item:not(.active):not(:first-child):not(:nth-child(2)):not(:nth-last-child(2)):not(:last-child) {
+        display: none;
+    }
+}

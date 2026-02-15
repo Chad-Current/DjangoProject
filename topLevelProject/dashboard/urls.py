@@ -71,7 +71,7 @@ urlpatterns = [
     path('recovery-requests/<int:pk>/edit/', views.RecoveryRequestUpdateView.as_view(), name='recoveryrequest_update'),
     path('recovery-requests/<int:pk>/delete/', views.RecoveryRequestDeleteView.as_view(), name='recoveryrequest_delete'),
 
-    # Main Template URL
-    path('main-template/', views.MainTemplateView.as_view(), name="main_template")
+    # Main TEST Template URL
+    path('test/', views.TESTView.as_view(), name="test")
 ]
 
