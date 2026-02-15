@@ -22,11 +22,16 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = [
-            "full_name",
+            "first_name",
+            "last_name",
             "date_of_birth",
-            "primary_email",
-            "phone_number",
-            "notes",
+            "email",
+            "phone",
+            "address_1",
+            "address_2",
+            "city",
+            "state",
+            "zipcode",
             "has_digital_executor",
             "digital_executor_name",
             "digital_executor_contact",
@@ -42,11 +47,19 @@ class ProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Personal Information',
-                Field('full_name', css_class='textinput'),
+                Field('first_name', css_class='textinput'),
+                Field('last_name', css_class='textinput'),
                 Field('date_of_birth', css_class='dateinput'),
-                Field('primary_email', css_class='emailinput'),
-                Field('phone_number', css_class='textinput'),
-                Field('notes', css_class='textarea'),
+                Field('email', css_class='emailinput'),
+                Field('phone', css_class='textinput'),
+            ),
+            Fieldset(
+                'Address',
+                Field('address_1', css_class='textinput'),
+                Field('address_2', css_class='textinput'),
+                Field('city', css_class='textinput'),
+                Field('state', css_class='textinput'),
+                Field('zipcode', css_class='textinput'),
             ),
             Fieldset(
                 'Digital Executor Information',
@@ -66,7 +79,8 @@ class ContactForm(forms.ModelForm):
         model = Contact
         fields = [
             'contact_relation',
-            'contact_name',
+            'first_name',
+            'last_name',
             'email',
             'phone',
             'address_1',
@@ -90,7 +104,8 @@ class ContactForm(forms.ModelForm):
             Fieldset(
                 "Contact Information",
                 Field('contact_relation', css_class='select'),
-                Field('contact_name', css_class='textinput'),
+                Field('first_name', css_class='textinput'),
+                Field('last_name', css_class='textinput'),
                 Field('email', css_class='emailinput'),
                 Field('phone', css_class='textinput'),
             ),

@@ -56,8 +56,14 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
+        try:
+            profile = user.profile
+        except Profile.DoesNotExist:
+            profile = None
         if not getattr(user, "has_paid", False):
             return redirect(reverse("accounts:payment"))
+        elif getattr(user, "has_paid", True) and not profile:
+            return redirect(reverse("dashboard:profile_detail"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -281,7 +287,7 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
     model = Profile
     form_class = ProfileForm
     template_name = 'dashboard/profile_form.html'
-    success_url = reverse_lazy('dashboard:profile_detail')
+    success_url = reverse_lazy('dashboard:dashboard_home')
     owner_field = 'user'
     
     def get_object(self, queryset=None):

@@ -23,11 +23,16 @@ class Profile(models.Model):
         related_name='profile',
         editable=False
     )
-    full_name = models.CharField(max_length=200)
-    date_of_birth = models.DateField(null=True, blank=True)
-    primary_email = models.EmailField()
-    phone_number = models.CharField(max_length=20, blank=True)
-    notes = models.TextField(blank=True, help_text="Personal notes")
+    first_name = models.CharField(max_length=100, blank=False)
+    last_name = models.CharField(max_length=100, blank=False)
+    date_of_birth = models.DateField(blank=True, null=True)  # Fixed: added null=True
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    address_1 = models.CharField(max_length=50, blank=False)
+    address_2 = models.CharField(max_length=50, blank=True)
+    city = models.CharField(max_length=50, blank=False)
+    state = models.CharField(max_length=20, blank=False)
+    zipcode = models.IntegerField(blank=True, null=True)  # Fixed: added null=True
     
     # Digital Executor Information
     has_digital_executor = models.BooleanField(
@@ -48,7 +53,7 @@ class Profile(models.Model):
         ordering = ['user']
     
     def __str__(self):
-        return f"{self.full_name} ({self.user})"
+        return f"{self.first_name} ({self.user})"
 
     
 class Contact(models.Model):
@@ -81,16 +86,17 @@ class Contact(models.Model):
         ('Other', 'Other'),
     ]
 
-    contact_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=100, blank=False)
+    last_name = models.CharField(max_length=100, blank=False)
     body = models.CharField(max_length=1000, help_text="Emergency message content", blank=True)
-    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES, default='Self')
+    contact_relation = models.CharField(max_length=50, choices=CONTACTS_CHOICES)
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=20, blank=True)
     address_1 = models.CharField(max_length=50, blank=False)
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=20, blank=False)
-    zipcode = models.IntegerField(blank=True)
+    zipcode = models.IntegerField(blank=True, null=True)  # Fixed: added null=True
     is_emergency_contact = models.BooleanField(default=False)
     is_digital_executor = models.BooleanField(default=False)
     is_caregiver = models.BooleanField(default=False)
@@ -102,7 +108,7 @@ class Contact(models.Model):
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.contact_name} ({self.contact_relation})"
+        return f"{self.last_name}, {self.first_name} ({self.contact_relation})"
     
     def get_estate_documents_count(self):
         """Count of estate documents delegated to this contact"""
@@ -115,7 +121,6 @@ class Contact(models.Model):
     def get_total_documents_count(self):
         """Total documents delegated to this contact"""
         return self.get_estate_documents_count() + self.get_important_documents_count()
-
 
 class Account(models.Model):
     """

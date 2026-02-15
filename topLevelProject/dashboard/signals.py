@@ -3,7 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
-from .models import Account, Device, RelevanceReview, Contact, DigitalEstateDocument, ImportantDocument
+from .models import Account, Device, RelevanceReview, Contact, DigitalEstateDocument, ImportantDocument, Profile
 
 
 # ============================================================================
@@ -289,8 +289,58 @@ def create_important_doc_relevance_review(sender, instance, created, **kwargs):
 
 
 # ============================================================================
-# CONTACT PROTECTION SIGNALS
+# PROFILE AND CONTACT SIGNALS
 # ============================================================================
+
+@receiver(post_save, sender=Profile)
+def create_or_update_contact_from_profile(sender, instance, created, **kwargs):
+    """
+    Automatically create or update a 'Self' contact when a Profile is created or updated.
+    This contact mirrors the profile owner's information and serves as a 
+    reference point for the user in the contact system.
+    
+    :param sender: Profile model class
+    :param instance: The Profile instance being saved
+    :param created: Boolean indicating if this is a new Profile
+    :param kwargs: Additional keyword arguments
+    """
+    # Only proceed if Profile has required data
+    if not instance.first_name or not instance.last_name or not instance.address_1 or not instance.city or not instance.state:
+        return
+    
+    # Get or create the Self contact
+    self_contact, contact_created = Contact.objects.get_or_create(
+        profile=instance,
+        contact_relation='Self',
+        defaults={
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
+            'email': instance.email,
+            'phone': instance.phone,
+            'address_1': instance.address_1,
+            'address_2': instance.address_2 or '',
+            'city': instance.city,
+            'state': instance.state,
+            'zipcode': instance.zipcode or 0,
+            'is_emergency_contact': False,
+            'is_digital_executor': False,
+            'is_caregiver': False
+        }
+    )
+    
+    # If contact already exists, update it with current profile data
+    if not contact_created:
+        self_contact.first_name = instance.first_name
+        self_contact.last_name = instance.last_name
+        self_contact.email = instance.email
+        self_contact.phone = instance.phone
+        self_contact.address_1 = instance.address_1
+        self_contact.address_2 = instance.address_2 or ''
+        self_contact.city = instance.city
+        self_contact.state = instance.state
+        self_contact.zipcode = instance.zipcode or 0
+        self_contact.save()
+
 
 @receiver(pre_save, sender=Contact)
 def prevent_contact_deletion_with_documents(sender, instance, **kwargs):
