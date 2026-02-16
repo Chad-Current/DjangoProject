@@ -1,0 +1,281 @@
+{% extends 'recovery/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-shield me-2"></i>Review Recovery Request #{{ recovery_request.pk }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <!-- Request Information -->
+                <div class="info-section">
+                    <h5><i class="fas fa-info-circle me-2"></i>Request Information</h5>
+                    <div class="info-row">
+                        <span class="info-label">Request ID:</span>
+                        <span class="info-value">#{{ recovery_request.pk }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Current Status:</span>
+                        <span class="info-value">
+                            <span class="status-badge status-{{ recovery_request.status|lower|cut:' '|cut:'/' }}">
+                                {{ recovery_request.status }}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Submitted:</span>
+                        <span class="info-value">{{ recovery_request.created_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Requester Type:</span>
+                        <span class="info-value">
+                            {% if recovery_request.is_external_request %}
+                                <span class="badge bg-info">External Requester</span>
+                            {% else %}
+                                <span class="badge bg-success">Authenticated User</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Verified:</span>
+                        <span class="info-value">
+                            {% if recovery_request.is_verified %}
+                                <i class="fas fa-check-circle text-success"></i> Yes ({{ recovery_request.verified_at|date:"M d, Y" }})
+                            {% else %}
+                                <i class="fas fa-times-circle text-warning"></i> No
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Requester Details -->
+                <div class="info-section">
+                    <h5><i class="fas fa-user me-2"></i>Requester Details</h5>
+                    {% if recovery_request.requested_by_user %}
+                        <div class="info-row">
+                            <span class="info-label">User:</span>
+                            <span class="info-value">
+                                {{ recovery_request.requested_by_user.username }}
+                                ({{ recovery_request.requested_by_user.email }})
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="info-row">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">
+                                {{ recovery_request.requester_first_name }} {{ recovery_request.requester_last_name }}
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ recovery_request.requester_email }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">{{ recovery_request.requester_phone|default:"N/A" }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="info-row">
+                        <span class="info-label">Relationship:</span>
+                        <span class="info-value">{{ recovery_request.requester_relationship|default:"N/A" }}</span>
+                    </div>
+                </div>
+
+                <!-- Account Owner -->
+                <div class="info-section">
+                    <h5><i class="fas fa-user-shield me-2"></i>Account Owner</h5>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">
+                            {{ recovery_request.profile.first_name }} {{ recovery_request.profile.last_name }}
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ recovery_request.profile.email }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Reason:</span>
+                        <span class="info-value">
+                            <strong>{{ recovery_request.get_reason_display }}</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Request Details -->
+                <div class="info-section">
+                    <h5><i class="fas fa-clipboard-list me-2"></i>Request Details</h5>
+                    {% if recovery_request.target_account %}
+                    <div class="info-row">
+                        <span class="info-label">Specific Account:</span>
+                        <span class="info-value">{{ recovery_request.target_account }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="info-row">
+                        <span class="info-label">Description:</span>
+                        <span class="info-value">{{ recovery_request.target_description }}</span>
+                    </div>
+                    {% if recovery_request.additional_notes %}
+                    <div class="info-row">
+                        <span class="info-label">Additional Notes:</span>
+                        <span class="info-value">{{ recovery_request.additional_notes }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Documentation -->
+                <div class="info-section">
+                    <h5><i class="fas fa-paperclip me-2"></i>Uploaded Documentation</h5>
+                    {% if recovery_request.death_certificate %}
+                    <div class="mb-2">
+                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                        <a href="{{ recovery_request.death_certificate.url }}" target="_blank">
+                            Death Certificate
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.proof_of_relationship %}
+                    <div class="mb-2">
+                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                        <a href="{{ recovery_request.proof_of_relationship.url }}" target="_blank">
+                            Proof of Relationship
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.legal_authorization %}
+                    <div class="mb-2">
+                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                        <a href="{{ recovery_request.legal_authorization.url }}" target="_blank">
+                            Legal Authorization
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if not recovery_request.death_certificate and not recovery_request.proof_of_relationship and not recovery_request.legal_authorization %}
+                    <p class="text-muted mb-0">No documents uploaded</p>
+                    {% endif %}
+                </div>
+
+                <!-- Review Form -->
+                <div class="info-section">
+                    <h5><i class="fas fa-edit me-2"></i>Update Request</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger mt-1">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.provider_ticket_number.id_for_label }}" class="form-label">
+                                Provider Ticket Number
+                            </label>
+                            {{ form.provider_ticket_number }}
+                            {% if form.provider_ticket_number.errors %}
+                                <div class="text-danger mt-1">{{ form.provider_ticket_number.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.steps_taken.id_for_label }}" class="form-label">
+                                Steps Taken
+                            </label>
+                            {{ form.steps_taken }}
+                            {% if form.steps_taken.errors %}
+                                <div class="text-danger mt-1">{{ form.steps_taken.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.outcome_notes.id_for_label }}" class="form-label">
+                                Outcome Notes
+                            </label>
+                            {{ form.outcome_notes }}
+                            {% if form.outcome_notes.errors %}
+                                <div class="text-danger mt-1">{{ form.outcome_notes.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                These notes will be visible to the requester.
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Save Updates
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Review History -->
+                {% if recovery_request.reviewed_by %}
+                <div class="info-section">
+                    <h5><i class="fas fa-history me-2"></i>Review History</h5>
+                    <div class="info-row">
+                        <span class="info-label">Reviewed By:</span>
+                        <span class="info-value">{{ recovery_request.reviewed_by.username }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Reviewed At:</span>
+                        <span class="info-value">{{ recovery_request.reviewed_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Authorized Contacts -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Authorized Contacts</h5>
+            </div>
+            <div class="card-body">
+                {% if contacts %}
+                    <ul class="list-unstyled mb-0">
+                        {% for contact in contacts %}
+                        <li class="mb-3 pb-3 border-bottom">
+                            <strong>{{ contact.first_name }} {{ contact.last_name }}</strong><br>
+                            <small class="text-muted">{{ contact.contact_relation }}</small><br>
+                            {% if contact.is_digital_executor %}
+                                <span class="badge bg-primary mt-1">Digital Executor</span>
+                            {% endif %}
+                            {% if contact.is_emergency_contact %}
+                                <span class="badge bg-warning mt-1">Emergency Contact</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted mb-0">No authorized contacts found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'admin_recovery_dashboard' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    <a href="mailto:{{ recovery_request.get_requester_email }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-envelope me-2"></i>Email Requester
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

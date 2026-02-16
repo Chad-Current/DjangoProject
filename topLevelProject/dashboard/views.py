@@ -28,9 +28,6 @@ from .models import (
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
     Contact,
-    Checkup,
-    CareRelationship,
-    RecoveryRequest,
     ImportantDocument,
 )
 from .forms import (
@@ -41,9 +38,6 @@ from .forms import (
     DigitalEstateDocumentForm,
     FamilyNeedsToKnowSectionForm,
     ContactForm,
-    CheckupForm,
-    CareRelationshipForm,
-    RecoveryRequestForm,
     ImportantDocumentForm,
 )
 logger = logging.getLogger(__name__)
@@ -56,14 +50,19 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
+        
+        # Check payment first
+        if not getattr(user, "has_paid", False):
+            messages.warning(request, "Please complete payment to access your dashboard.")
+            return redirect(reverse("accounts:payment"))
+        
+        # Check for profile - redirect to creation if it doesn't exist
         try:
             profile = user.profile
         except Profile.DoesNotExist:
-            profile = None
-        if not getattr(user, "has_paid", False):
-            return redirect(reverse("accounts:payment"))
-        elif getattr(user, "has_paid", True) and not profile:
-            return redirect(reverse("dashboard:profile"))
+            messages.info(request, "Welcome! Let's set up your profile to get started.")
+            return redirect(reverse("dashboard:profile_create"))
+        
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -83,7 +82,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['estates_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
-            context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
             
             # CALCULATE PROGRESS (Weighted scoring)
             progress = self._calculate_progress(
@@ -93,7 +91,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 estates=context['estates_count'],
                 documents=context['documents_count'],
                 family_knows=context['family_knows_count'],
-                care_relations=context['care_relations_count']
             )
             context['progress'] = progress
             
@@ -105,7 +102,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 estates=context['estates_count'],
                 documents=context['documents_count'],
                 family_knows=context['family_knows_count'],
-                care_relations=context['care_relations_count']
             )
             context['remaining_tasks'] = remaining_tasks
             
@@ -158,14 +154,31 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 
             if user.subscription_tier == 'legacy':
                 context['legacy_granted'] = user.legacy_granted_date
+            
+            # ONBOARDING HINTS - show if profile is new and incomplete
+            context['show_onboarding'] = self._should_show_onboarding(context)
 
         except Profile.DoesNotExist:
-            context['profile'] = None
-            context['progress'] = 0
-            context['remaining_tasks'] = 7
-            context['upcoming_reviews'] = []
+            # This should never happen due to dispatch check, but just in case
+            messages.warning(self.request, "Profile not found. Please create your profile.")
+            return redirect(reverse("dashboard:profile_create"))
 
         return context
+    
+    def _should_show_onboarding(self, context):
+        """
+        Determine if onboarding hints should be shown.
+        Show if user has completed less than 3 of the 7 main categories.
+        """
+        completed_categories = sum([
+            1 if context.get('accounts_count', 0) > 0 else 0,
+            1 if context.get('devices_count', 0) > 0 else 0,
+            1 if context.get('contacts_count', 0) > 0 else 0,
+            1 if context.get('estates_count', 0) > 0 else 0,
+            1 if context.get('documents_count', 0) > 0 else 0,
+            1 if context.get('family_knows_count', 0) > 0 else 0,
+        ])
+        return completed_categories < 3
     
     def _calculate_progress(self, **kwargs):
         """
@@ -178,7 +191,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         - Estate Docs: 15% (target: 3)
         - Important Docs: 15% (target: 5)
         - Family Knows: 5% (target: 3)
-        - Care Relations: 5% (target: 1)
+        #Correct this later
         """
         criteria = {
             'accounts': {'weight': 0.25, 'target': 10},
@@ -187,7 +200,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             'estates': {'weight': 0.15, 'target': 3},
             'documents': {'weight': 0.15, 'target': 5},
             'family_knows': {'weight': 0.05, 'target': 3},
-            'care_relations': {'weight': 0.05, 'target': 1},
         }
         
         total_progress = 0
@@ -213,7 +225,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             ('estates', 1),
             ('documents', 1),
             ('family_knows', 1),
-            ('care_relations', 1),
         ]
         
         remaining = 0
@@ -270,9 +281,54 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         
         return stats
 
+
 # ============================================================================
 # PROFILE VIEWS
 # ============================================================================
+
+# KEEP ViewAccessMixin to allow user to change details even after expiration if not Legacy
+class ProfileCreateView(LoginRequiredMixin, CreateView):
+    """
+    Initial profile creation - only accessible to users without a profile.
+    """
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'dashboard/profile.html'
+    success_url = reverse_lazy('dashboard:dashboard_home')
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Ensure user has paid but doesn't already have a profile"""
+        user = request.user
+        
+        # Check payment status
+        if not getattr(user, "has_paid", False):
+            messages.warning(request, "Please complete payment to create your profile.")
+            return redirect(reverse("accounts:payment"))
+        
+        # Redirect if profile already exists
+        try:
+            profile = user.profile
+            messages.info(request, "You already have a profile. Use the edit page to make changes.")
+            return redirect(reverse('dashboard:profile_detail'))
+        except Profile.DoesNotExist:
+            pass  # No profile exists, continue with create
+        
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        """Attach the profile to the current user"""
+        form.instance.user = self.request.user
+        messages.success(self.request, '🎉 Welcome! Your profile has been created successfully.')
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_initial_setup'] = True
+        context['page_title'] = 'Create Your Profile'
+        context['submit_text'] = 'Create Profile & Continue'
+        return context
+
 class ProfileDetailView(ViewAccessMixin, DetailView):
     model = Profile
     template_name = 'dashboard/profile_detail.html'
@@ -298,6 +354,31 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Profile updated successfully.')
         return super().form_valid(form)
 
+class ProfileOnboardingView(LoginRequiredMixin, TemplateView):
+    """
+    Multi-step onboarding for new users
+    """
+    template_name = 'dashboard/onboarding.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not getattr(request.user, "has_paid", False):
+            return redirect(reverse("accounts:payment"))
+        
+        # Skip if already has profile
+        if hasattr(request.user, 'profile'):
+            return redirect(reverse('dashboard:dashboard_home'))
+        
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['steps'] = [
+            {'number': 1, 'title': 'Create Profile', 'url': 'dashboard:profile_create'},
+            {'number': 2, 'title': 'Add Contacts', 'url': 'dashboard:contact_create'},
+            {'number': 3, 'title': 'Add Accounts', 'url': 'dashboard:account_create'},
+        ]
+        return context
+    
 # ============================================================================
 # ACCOUNT VIEWS
 # ============================================================================
@@ -816,7 +897,7 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
         if context['has_assignments']:
             other_contacts = Contact.objects.filter(
                 profile=contact.profile
-            ).exclude(id=contact.id).order_by('contact_name')
+            ).exclude(id=contact.id).order_by('last_name')
             context['other_contacts'] = other_contacts
             context['has_other_contacts'] = other_contacts.exists()
         
@@ -866,132 +947,6 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
         messages.success(request, f'Contact "{contact_name}" deleted successfully.')
         return super().delete(request, *args, **kwargs)
 
-# ============================================================================
-# CHECKUP VIEWS
-# ============================================================================
-class CheckupListView(ViewAccessMixin, ListView):
-    model = Checkup
-    template_name = 'dashboard/checkup_list.html'
-    context_object_name = 'checkups'
-    owner_field = 'profile__user'
-    paginate_by = 20
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return Checkup.objects.filter(profile=profile).order_by('-due_date')
-        except Profile.DoesNotExist:
-            return Checkup.objects.none()
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-class CheckupCreateView(FullAccessMixin, CreateView):
-    model = Checkup
-    form_class = CheckupForm
-    template_name = 'dashboard/checkup_form.html'
-    success_url = reverse_lazy('dashboard:checkup_list')
-    owner_field = 'profile__user'
-    
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        form.instance.completed_by = self.request.user
-        messages.success(self.request, 'Checkup created successfully.')
-        return super().form_valid(form)
-
-class CheckupUpdateView(FullAccessMixin, UpdateView):
-    model = Checkup
-    form_class = CheckupForm
-    template_name = 'dashboard/checkup_form.html'
-    success_url = reverse_lazy('dashboard:checkup_list')
-    owner_field = 'profile__user'
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Checkup updated successfully.')
-        return super().form_valid(form)
-
-class CheckupDeleteView(DeleteAccessMixin, DeleteView):
-    model = Checkup
-    template_name = 'dashboard/checkup_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:checkup_list')
-    owner_field = 'profile__user'
-    
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Checkup deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-# ============================================================================
-# RECOVERY REQUEST VIEWS
-# ============================================================================
-class RecoveryRequestListView(ViewAccessMixin, ListView):
-    model = RecoveryRequest
-    template_name = 'dashboard/recoveryrequest_list.html'
-    context_object_name = 'requests'
-    owner_field = 'profile__user'
-    paginate_by = 20
-    
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return RecoveryRequest.objects.filter(profile=profile).order_by('-created_at')
-        except Profile.DoesNotExist:
-            return RecoveryRequest.objects.none()
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-class RecoveryRequestCreateView(FullAccessMixin, CreateView):
-    model = RecoveryRequest
-    form_class = RecoveryRequestForm
-    template_name = 'dashboard/recoveryrequest_form.html'
-    success_url = reverse_lazy('dashboard:recoveryrequest_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        form.instance.requested_by = self.request.user
-        messages.success(self.request, 'Recovery request created successfully.')
-        return super().form_valid(form)
-
-class RecoveryRequestUpdateView(FullAccessMixin, UpdateView):
-    model = RecoveryRequest
-    form_class = RecoveryRequestForm
-    template_name = 'dashboard/recoveryrequest_form.html'
-    success_url = reverse_lazy('dashboard:recoveryrequest_list')
-    owner_field = 'profile__user'
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def form_valid(self, form):
-        messages.success(self.request, 'Recovery request updated successfully.')
-        return super().form_valid(form)
-
-class RecoveryRequestDeleteView(DeleteAccessMixin, DeleteView):
-    model = RecoveryRequest
-    template_name = 'dashboard/recoveryrequest_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:recoveryrequest_list')
-    owner_field = 'profile__user'
-    
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Recovery request deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-class MainTemplateView(TemplateView):
-    template_name = 'dashboard/main_template.html'
 
 # ============================================================================
 # RELEVANCE REVIEW VIEWS
@@ -1380,6 +1335,7 @@ class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
         )
         return super().delete(request, *args, **kwargs)
     
+
 class MarkItemReviewedView(LoginRequiredMixin, View):
     """
     Mark an item as reviewed by updating its updated_at timestamp.
@@ -1544,215 +1500,9 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
 
 
 
-class TESTView(LoginRequiredMixin, TemplateView):
-    template_name = 'dashboard/test.html'
-    login_url = '/accounts/login/'
+class TestView(LoginRequiredMixin, CreateView):
 
-    def dispatch(self, request, *args, **kwargs):
-        user = request.user
-        if not getattr(user, "has_paid", False):
-            return redirect(reverse("accounts:payment"))
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-
-        try:
-            profile = Profile.objects.get(user=user)
-            context['user'] = user
-            context['profile'] = profile
-            context['session_expires'] = self.request.session.get_expiry_date()
-                    
-            # ALL COUNTS
-            context['accounts_count'] = Account.objects.filter(profile=profile).count()
-            context['devices_count'] = Device.objects.filter(profile=profile).count()
-            context['contacts_count'] = Contact.objects.filter(profile=profile).count()
-            context['estates_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
-            context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
-            context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
-            context['care_relations_count'] = CareRelationship.objects.filter(profile=profile).count()
-            
-            # CALCULATE PROGRESS (Weighted scoring)
-            progress = self._calculate_progress(
-                accounts=context['accounts_count'],
-                devices=context['devices_count'],
-                contacts=context['contacts_count'],
-                estates=context['estates_count'],
-                documents=context['documents_count'],
-                family_knows=context['family_knows_count'],
-                care_relations=context['care_relations_count']
-            )
-            context['progress'] = progress
-            
-            # CALCULATE REMAINING TASKS
-            remaining_tasks = self._calculate_remaining_tasks(
-                accounts=context['accounts_count'],
-                devices=context['devices_count'],
-                contacts=context['contacts_count'],
-                estates=context['estates_count'],
-                documents=context['documents_count'],
-                family_knows=context['family_knows_count'],
-                care_relations=context['care_relations_count']
-            )
-            context['remaining_tasks'] = remaining_tasks
-            
-            # ACCOUNT CATEGORY COUNTS
-            context['account_categories'] = self._get_account_categories(profile)
-            
-            # DEVICE TYPE COUNTS
-            context['device_types'] = {
-                'phones': Device.objects.filter(profile=profile, device_type='Phone').count(),
-                'tablets': Device.objects.filter(profile=profile, device_type='Tablet').count(),
-                'laptops': Device.objects.filter(profile=profile, device_type='Laptop').count(),
-                'desktops': Device.objects.filter(profile=profile, device_type='Desktop').count(),
-                'smartwatches': Device.objects.filter(profile=profile, device_type='Smart Watch').count(),
-                'others': Device.objects.filter(profile=profile, device_type='Other').count(),
-            }
-            
-            # REVIEW STATS
-            review_stats = self._get_review_stats(profile)
-            context.update(review_stats)
-            
-            upcoming_reviews = RelevanceReview.objects.filter(
-                Q(account_review__profile=profile) |
-                Q(device_review__profile=profile) |
-                Q(estate_review__profile=profile) |
-                Q(important_document_review__profile=profile)
-            ).exclude(
-                next_review_due__isnull=True
-            ).select_related(
-                'account_review',
-                'device_review',
-                'estate_review',
-                'important_document_review'
-            ).order_by('next_review_due')
-            
-            context['upcoming_reviews'] = upcoming_reviews
-            context['today'] = datetime.now().date()
-            context['week_from_now'] = datetime.now().date() + timedelta(days=7)
-            
-            # PERMISSIONS CONTEXT
-            context['tier_display'] = user.get_tier_display_name()
-            context['can_modify'] = user.can_modify_data()
-            context['can_view'] = user.can_view_data()
-            
-            # SUBSCRIPTION INFO
-            if user.subscription_tier == 'essentials':
-                context['is_edit_active'] = user.is_essentials_edit_active()
-                context['days_remaining'] = user.days_until_essentials_expires()
-                context['essentials_expires'] = user.essentials_expires
-
-            if user.subscription_tier == 'legacy':
-                context['legacy_granted'] = user.legacy_granted_date
-
-        except Profile.DoesNotExist:
-            context['profile'] = None
-            context['progress'] = 0
-            context['remaining_tasks'] = 7
-            context['upcoming_reviews'] = []
-
-        return context
-    
-    def _calculate_progress(self, **kwargs):
-        """
-        Calculate progress based on weighted completion criteria.
-        
-        Weights:
-        - Accounts: 25% (target: 10)
-        - Contacts: 20% (target: 5)
-        - Devices: 15% (target: 5)
-        - Estate Docs: 15% (target: 3)
-        - Important Docs: 15% (target: 5)
-        - Family Knows: 5% (target: 3)
-        - Care Relations: 5% (target: 1)
-        """
-        criteria = {
-            'accounts': {'weight': 0.25, 'target': 10},
-            'devices': {'weight': 0.15, 'target': 5},
-            'contacts': {'weight': 0.20, 'target': 5},
-            'estates': {'weight': 0.15, 'target': 3},
-            'documents': {'weight': 0.15, 'target': 5},
-            'family_knows': {'weight': 0.05, 'target': 3},
-            'care_relations': {'weight': 0.05, 'target': 1},
-        }
-        
-        total_progress = 0
-        
-        for key, config in criteria.items():
-            count = kwargs.get(key, 0)
-            target = config['target']
-            weight = config['weight']
-            
-            # Calculate progress for this item (capped at 100% per item)
-            item_progress = min(count / target, 1.0) * weight
-            total_progress += item_progress
-        
-        # Convert to percentage (0-100)
-        return round(total_progress * 100)
-    
-    def _calculate_remaining_tasks(self, **kwargs):
-        """Calculate how many major categories are not yet started."""
-        tasks = [
-            ('accounts', 1),
-            ('devices', 1),
-            ('contacts', 1),
-            ('estates', 1),
-            ('documents', 1),
-            ('family_knows', 1),
-            ('care_relations', 1),
-        ]
-        
-        remaining = 0
-        for key, threshold in tasks:
-            if kwargs.get(key, 0) < threshold:
-                remaining += 1
-        
-        return remaining
-    
-    def _get_account_categories(self, profile):
-        """Get account counts by category."""
-        from django.db.models import Count
-        
-        categories = Account.objects.filter(profile=profile).values('account_category').annotate(
-            count=Count('id')
-        ).order_by('-count')
-        
-        # Return as dictionary
-        return {cat['account_category']: cat['count'] for cat in categories}
-    
-    def _get_review_stats(self, profile):
-        """Get review statistics including next due date."""
-        from django.db.models import Min
-        from datetime import date
-        
-        # Get the soonest review date across all item types
-        review_dates = RelevanceReview.objects.filter(
-            Q(account_review__profile=profile) |
-            Q(device_review__profile=profile) |
-            Q(estate_review__profile=profile) |
-            Q(important_document_review__profile=profile)
-        ).exclude(next_review_due__isnull=True).aggregate(
-            soonest=Min('next_review_due')
-        )
-        
-        soonest_review = review_dates['soonest']
-        
-        stats = {
-            'soonest_review': soonest_review,
-            'first_delta': None,
-            'alert_due': False,
-            'alert_attention': False,
-        }
-        
-        if soonest_review:
-            today = date.today()
-            delta = soonest_review - today
-            stats['first_delta'] = delta
-            
-            if delta.days <= 0:
-                stats['alert_due'] = True
-            elif delta.days <= 7:
-                stats['alert_attention'] = True
-        
-        return stats
+    model = Profile
+    form_class = ProfileForm
+    template_name = "dashboard/profile_step_form.html"
+    success_url = reverse_lazy("dashboard:dahsboard_home") 

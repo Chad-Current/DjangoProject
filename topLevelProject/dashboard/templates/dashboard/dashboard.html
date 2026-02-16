@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/test.css' %}" type="text/css">
+    <!-- <link rel="stylesheet" href="{% static 'dashboard/css/test.css' %}" type="text/css"> -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,14 +25,13 @@
         <!-- Hero Section -->
         <div class="vault-hero">
             <h1>
-                {% if profile.full_name %}
-                    {{ profile.full_name }}'s Digital Vault
+                {% if profile.first_name or profile.last_name %}
+                    {{ profile.first_name }} {{ profile.last_name }}'s Digital Vault
                 {% else %}
                     Your Digital Vault 
                 {% endif %}
             </h1>
             <p class="subtitle">
-                <p>SUBTITLE</p>
                 {% if progress >= 100 %}
                     🔒 Fully Secured - Your digital legacy is protected
                 {% elif progress >= 70 %}

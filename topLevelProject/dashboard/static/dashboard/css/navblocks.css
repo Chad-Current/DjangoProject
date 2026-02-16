@@ -89,14 +89,14 @@
 /* Active state */
 .subnav-item.active,
 .subnav-item[aria-current="page"] {
-    background: linear-gradient(135deg, var(--sixty-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
+    background: linear-gradient(135deg, var(--ten-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .subnav-item.active:hover,
 .subnav-item[aria-current="page"]:hover {
-    background: linear-gradient(135deg, var(--sixty-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
+    background: linear-gradient(135deg, var(--ten-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
     color: #ffffff;
 }
 

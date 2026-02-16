@@ -1,0 +1,254 @@
+{% extends 'recovery/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-file-medical me-2"></i>Account Recovery Request</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Important:</strong> This form is for requesting access to accounts of deceased or incapacitated individuals. 
+                    You will need to provide documentation to support your request.
+                </div>
+
+                <form method="post" enctype="multipart/form-data" id="recoveryForm">
+                    {% csrf_token %}
+                    
+                    <!-- Account Owner Information -->
+                    <div class="info-section">
+                        <h5><i class="fas fa-user me-2"></i>Account Owner Information</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.deceased_user_email.id_for_label }}" class="form-label required-field">
+                                Email of Deceased/Incapacitated Account Owner
+                            </label>
+                            {{ form.deceased_user_email }}
+                            {% if form.deceased_user_email.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.deceased_user_email.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Enter the email address associated with the account owner's profile.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Your Information -->
+                    <div class="info-section">
+                        <h5><i class="fas fa-user-circle me-2"></i>Your Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.requester_first_name.id_for_label }}" class="form-label required-field">
+                                    First Name
+                                </label>
+                                {{ form.requester_first_name }}
+                                {% if form.requester_first_name.errors %}
+                                    <div class="text-danger mt-1">{{ form.requester_first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.requester_last_name.id_for_label }}" class="form-label required-field">
+                                    Last Name
+                                </label>
+                                {{ form.requester_last_name }}
+                                {% if form.requester_last_name.errors %}
+                                    <div class="text-danger mt-1">{{ form.requester_last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.requester_email.id_for_label }}" class="form-label required-field">
+                                    Your Email Address
+                                </label>
+                                {{ form.requester_email }}
+                                {% if form.requester_email.errors %}
+                                    <div class="text-danger mt-1">{{ form.requester_email.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    We'll send a verification link to this address.
+                                </small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.requester_phone.id_for_label }}" class="form-label">
+                                    Phone Number
+                                </label>
+                                {{ form.requester_phone }}
+                                {% if form.requester_phone.errors %}
+                                    <div class="text-danger mt-1">{{ form.requester_phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.requester_relationship.id_for_label }}" class="form-label required-field">
+                                Relationship to Account Owner
+                            </label>
+                            {{ form.requester_relationship }}
+                            {% if form.requester_relationship.errors %}
+                                <div class="text-danger mt-1">{{ form.requester_relationship.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                e.g., Spouse, Child, Executor, Power of Attorney
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Request Details -->
+                    <div class="info-section">
+                        <h5><i class="fas fa-clipboard-list me-2"></i>Request Details</h5>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.reason.id_for_label }}" class="form-label required-field">
+                                Reason for Request
+                            </label>
+                            {{ form.reason }}
+                            {% if form.reason.errors %}
+                                <div class="text-danger mt-1">{{ form.reason.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.target_description.id_for_label }}" class="form-label required-field">
+                                What do you need access to?
+                            </label>
+                            {{ form.target_description }}
+                            {% if form.target_description.errors %}
+                                <div class="text-danger mt-1">{{ form.target_description.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Please describe the specific accounts, documents, or information you need to access.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.additional_notes.id_for_label }}" class="form-label">
+                                Additional Information
+                            </label>
+                            {{ form.additional_notes }}
+                            {% if form.additional_notes.errors %}
+                                <div class="text-danger mt-1">{{ form.additional_notes.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Supporting Documentation -->
+                    <div class="info-section">
+                        <h5><i class="fas fa-file-upload me-2"></i>Supporting Documentation</h5>
+                        <p class="text-muted">
+                            Please upload documentation to support your request. This may include:
+                        </p>
+
+                        <div class="mb-3">
+                            <label class="form-label">Death Certificate or Medical Documentation</label>
+                            <div class="file-upload-label">
+                                {{ form.death_certificate }}
+                                <div class="mt-2">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
+                                    <small class="text-muted">PDF, JPG, PNG (Max 10MB)</small>
+                                </div>
+                            </div>
+                            {% if form.death_certificate.errors %}
+                                <div class="text-danger mt-1">{{ form.death_certificate.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Proof of Relationship</label>
+                            <div class="file-upload-label">
+                                {{ form.proof_of_relationship }}
+                                <div class="mt-2">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
+                                    <small class="text-muted">Marriage certificate, birth certificate, etc.</small>
+                                </div>
+                            </div>
+                            {% if form.proof_of_relationship.errors %}
+                                <div class="text-danger mt-1">{{ form.proof_of_relationship.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Legal Authorization</label>
+                            <div class="file-upload-label">
+                                {{ form.legal_authorization }}
+                                <div class="mt-2">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
+                                    <small class="text-muted">Power of attorney, executor papers, court order, etc.</small>
+                                </div>
+                            </div>
+                            {% if form.legal_authorization.errors %}
+                                <div class="text-danger mt-1">{{ form.legal_authorization.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="info-section">
+                        <div class="form-check">
+                            {{ form.accept_terms }}
+                            <label class="form-check-label required-field" for="{{ form.accept_terms.id_for_label }}">
+                                I certify that the information provided is accurate and I have legal authority to make this request
+                            </label>
+                            {% if form.accept_terms.errors %}
+                                <div class="text-danger mt-1">{{ form.accept_terms.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Recovery Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card">
+            <div class="card-body">
+                <h5><i class="fas fa-question-circle me-2"></i>Need Help?</h5>
+                <p>If you have questions about the recovery process or need assistance with this form, please contact our support team:</p>
+                <ul>
+                    <li>Email: support@digitalestate.com</li>
+                    <li>Phone: 1-800-XXX-XXXX</li>
+                    <li>Hours: Monday-Friday, 9AM-5PM EST</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="file"] {
+        display: none;
+    }
+</style>
+
+<script>
+    // File upload styling
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const label = this.closest('.file-upload-label');
+            if (this.files.length > 0) {
+                const fileName = this.files[0].name;
+                label.innerHTML = `
+                    <i class="fas fa-file-check fa-2x text-success"></i>
+                    <p class="mb-0 mt-2 text-success">${fileName}</p>
+                    <small class="text-muted">Click to change file</small>
+                `;
+                label.style.borderColor = '#28a745';
+                label.style.backgroundColor = '#d4edda';
+            }
+        });
+    });
+</script>
+{% endblock %}

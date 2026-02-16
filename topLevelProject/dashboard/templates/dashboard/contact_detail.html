@@ -28,7 +28,7 @@
    <div class="main container py-4">
         <!-- Contact Header -->
         <div class="delegation-header">
-            <h1><i class="fas fa-user-circle"></i> {{ contact.contact_name }}</h1>
+            <h1><i class="fas fa-user-circle"></i> {{ contact.first_name }} {{ contact.last_name }}</h1>
             <div class="subtitle">{{ contact.get_contact_relation_display|default:"Contact" }}</div>
         </div>
 

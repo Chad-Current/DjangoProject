@@ -1,0 +1,165 @@
+{% extends 'recovery/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Recovery Request Dashboard</h2>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-primary">{{ stats.total }}</h3>
+                <p class="text-muted mb-0">Total Requests</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-warning">{{ stats.pending }}</h3>
+                <p class="text-muted mb-0">Pending Verification</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-info">{{ stats.in_progress }}</h3>
+                <p class="text-muted mb-0">In Progress</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-success">{{ stats.completed }}</h3>
+                <p class="text-muted mb-0">Completed</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Reason</label>
+                <select name="reason" class="form-select">
+                    <option value="">All Reasons</option>
+                    {% for value, label in reason_choices %}
+                        <option value="{{ value }}" {% if reason_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Verified</label>
+                <select name="verified" class="form-select">
+                    <option value="">All</option>
+                    <option value="yes" {% if verified_filter == 'yes' %}selected{% endif %}>Verified</option>
+                    <option value="no" {% if verified_filter == 'no' %}selected{% endif %}>Not Verified</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Apply Filters
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Requests Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Recovery Requests</h5>
+    </div>
+    <div class="card-body">
+        {% if recovery_requests %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Requester</th>
+                            <th>Profile</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Verified</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in recovery_requests %}
+                        <tr>
+                            <td>
+                                <strong>#{{ request.pk }}</strong>
+                            </td>
+                            <td>
+                                {{ request.get_requester_name }}<br>
+                                <small class="text-muted">
+                                    {% if request.is_external_request %}
+                                        <i class="fas fa-globe"></i> External
+                                    {% else %}
+                                        <i class="fas fa-user-check"></i> Authenticated
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td>
+                                <strong>{{ request.profile.first_name }} {{ request.profile.last_name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ request.get_reason_display }}</span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ request.status|lower|cut:' '|cut:'/' }}">
+                                    {{ request.status }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% if request.is_verified %}
+                                    <i class="fas fa-check-circle text-success"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle text-warning"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ request.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'admin_review_recovery_request' pk=request.pk %}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                <h5>No Recovery Requests Found</h5>
+                <p class="text-muted">No requests match your current filters.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

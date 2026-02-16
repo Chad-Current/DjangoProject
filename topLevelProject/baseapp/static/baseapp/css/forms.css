@@ -25,8 +25,8 @@
     padding: 2rem;
     box-shadow: 0px 17px 30px var(--sixty-percent);
     border-radius: 20px;
-    /* width: 100%; */
-    max-width: 800px;
+    /* width: 80%; */
+    min-width: 1060px;
     background: var(--background-color);
 }
 
@@ -60,8 +60,8 @@ fieldset legend {
 }
 
 /* Form Fields */
-.form-wrapper > div,
-.form-wrapper > fieldset > div {
+.form-wrapper>div,
+.form-wrapper>fieldset>div {
     width: 100%;
     margin-bottom: 1.25rem;
 }
@@ -73,7 +73,7 @@ fieldset legend {
     font-weight: 700;
     color: var(--text-color-dark);
     display: block;
-    /* margin-bottom: 0.5rem; */
+    margin-bottom: 0.5rem;
 }
 
 /* Text Inputs */
@@ -95,6 +95,7 @@ fieldset legend {
     background: var(--background-color);
     transition: all 0.3s ease;
     box-sizing: border-box;
+    margin-bottom: 0.5rem;
 }
 
 .textinput:focus,
@@ -309,20 +310,147 @@ fieldset legend {
     background: var(--sixty-percent);
 }
 
-/* Error States */
+/* ===================================
+   ERROR STATES - COMPREHENSIVE
+   =================================== */
+
+/* Error messages - all variations */
 .error,
-.errorlist {
-    color: #d32f2f;
-    font-size: var(--font-sm);
-    margin-top: 0.25rem;
-    list-style: none;
-    padding: 0;
+.errors,
+.errorlist,
+.invalid-feedback,
+.alert-danger,
+div.error,
+span.error,
+p.error {
+    color: #d32f2f !important;
+    font-size: var(--font-sm) !important;
+    font-family: var(--main-font) !important;
+    font-weight: 500 !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
 }
 
+/* Error list styling */
+.errorlist,
+ul.errorlist {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 !important;
+}
+
+.errorlist li,
+ul.errorlist li {
+    color: #d32f2f !important;
+    font-size: var(--font-sm) !important;
+    font-family: var(--main-font) !important;
+    padding: 0.25rem 0 !important;
+    margin: 0 !important;
+}
+
+.errorlist li::before,
+ul.errorlist li::before {
+    content: "⚠ " !important;
+    margin-right: 0.25rem !important;
+}
+
+/* Text inside error messages */
+.error span,
+.error strong,
+.errorlist strong,
+.errorlist span,
+.invalid-feedback strong,
+.invalid-feedback span {
+    color: #d32f2f !important;
+    font-weight: 600 !important;
+}
+
+/* Non-field errors (form-level errors) */
+.errorlist.nonfield,
+ul.errorlist.nonfield,
+.alert.alert-danger,
+.non-field-errors {
+    background-color: #ffebee !important;
+    border: 1px solid #d32f2f !important;
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    color: #d32f2f !important;
+}
+
+/* Field-specific error styling */
+.has-error .textinput,
+.has-error .emailinput,
+.has-error .urlinput,
+.has-error .numberinput,
+.has-error .dateinput,
+.has-error .datetimeinput,
+.has-error .textarea,
+.has-error .select,
+.has-error .fileinput,
 .error input,
 .error textarea,
-.error select {
-    border-color: #d32f2f;
+.error select,
+input.is-invalid,
+textarea.is-invalid,
+select.is-invalid {
+    border-color: #d32f2f !important;
+    background-color: #ffebee !important;
+}
+
+/* Error focus states */
+.has-error .textinput:focus,
+.has-error .emailinput:focus,
+.has-error .urlinput:focus,
+.has-error .numberinput:focus,
+.has-error .dateinput:focus,
+.has-error .datetimeinput:focus,
+.has-error .textarea:focus,
+.has-error .select:focus,
+.error input:focus,
+.error textarea:focus,
+.error select:focus,
+input.is-invalid:focus,
+textarea.is-invalid:focus,
+select.is-invalid:focus {
+    outline: none !important;
+    border-color: #d32f2f !important;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15) !important;
+}
+
+/* Error labels */
+.has-error label,
+.error label {
+    color: #d32f2f !important;
+}
+
+/* Django's default error wrapper */
+.form-group.has-error,
+.form-row.has-error,
+div.has-error {
+    margin-bottom: 1.5rem;
+}
+
+/* Crispy forms specific error classes */
+.form-wrapper .invalid-feedback {
+    display: block !important;
+    margin-top: 0.5rem !important;
+}
+
+.form-wrapper .is-invalid {
+    border-color: #d32f2f !important;
+}
+
+/* Error summary at top of form */
+.alert-error,
+.alert-danger {
+    background-color: #ffebee !important;
+    border: 1px solid #d32f2f !important;
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    color: #d32f2f !important;
 }
 
 /* Required Fields Indicator */
@@ -340,11 +468,11 @@ label.requiredField::after {
     .form-wrapper {
         padding: 2.5rem;
     }
-    
+
     .checkbox-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .button-group {
         justify-content: flex-start;
     }
@@ -355,7 +483,7 @@ label.requiredField::after {
     .form-wrapper {
         padding: 3rem;
     }
-    
+
     .checkbox-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -366,27 +494,27 @@ label.requiredField::after {
     .form-container {
         padding: 0.5rem;
     }
-    
+
     .form-wrapper {
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0px 8px 20px var(--sixty-percent);
     }
-    
+
     fieldset legend,
     .form-section-title {
         font-size: var(--font-md);
     }
-    
+
     .button-group {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .btn {
         width: 100%;
     }
-    
+
     .checkbox-list {
         max-height: 200px;
     }
@@ -397,7 +525,7 @@ label.requiredField::after {
     .form-wrapper {
         padding: 1rem;
     }
-    
+
     .textinput,
     .emailinput,
     .urlinput,
@@ -408,12 +536,12 @@ label.requiredField::after {
         font-size: var(--font-sm);
         padding: 0.625rem 0.75rem;
     }
-    
+
     .textarea {
         min-height: 100px;
         font-size: var(--font-sm);
     }
-    
+
     .btn {
         padding: 0.625rem 1.5rem;
         font-size: var(--font-nm);
@@ -458,8 +586,34 @@ label.requiredField::after {
         box-shadow: none;
         padding: 0;
     }
-    
+
     .button-group {
         display: none;
     }
+}
+
+
+/* Universal fix - add to clean-forms.css */
+.form-wrapper.clean-layout .form-check {
+    display: block;
+}
+
+.form-wrapper.clean-layout .form-check input[type="checkbox"] {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.form-wrapper.clean-layout .form-check label {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+}
+
+.form-wrapper.clean-layout .form-check .form-text,
+.form-wrapper.clean-layout .form-check small,
+.form-wrapper.clean-layout .form-check .help-text-below {
+    display: block !important;
+    margin-top: 0.5rem;
+    margin-left: 0;
+    clear: both;
 }

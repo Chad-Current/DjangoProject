@@ -1,5 +1,7 @@
 # dashboard/forms.py
 from django import forms
+from datetime import timezone
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Button
@@ -11,9 +13,6 @@ from .models import (
     DigitalEstateDocument,
     FamilyNeedsToKnowSection,
     Contact,
-    Checkup,
-    CareRelationship,
-    RecoveryRequest,
     ImportantDocument,
 )
 
@@ -32,9 +31,6 @@ class ProfileForm(forms.ModelForm):
             "city",
             "state",
             "zipcode",
-            "has_digital_executor",
-            "digital_executor_name",
-            "digital_executor_contact",
         ]
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
@@ -60,12 +56,6 @@ class ProfileForm(forms.ModelForm):
                 Field('city', css_class='textinput'),
                 Field('state', css_class='textinput'),
                 Field('zipcode', css_class='textinput'),
-            ),
-            Fieldset(
-                'Digital Executor Information',
-                Field('has_digital_executor', css_class='checkboxinput form-check-input'),
-                Field('digital_executor_name', css_class='textinput'),
-                Field('digital_executor_contact', css_class='textinput'),
             ),
             Div(
                 Submit('submit', 'Save Profile', css_class='btn btn-primary'),
@@ -401,130 +391,6 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             ),
             Div(
                 Submit('submit', 'Save', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
-        )
-
-
-
-class CheckupForm(forms.ModelForm):
-    class Meta:
-        model = Checkup
-        fields = [
-            "frequency",
-            "due_date",
-            "completed_at",
-            "summary",
-            "all_accounts_reviewed",
-            "all_devices_reviewed",
-            "contacts_up_to_date",
-            "documents_up_to_date",
-        ]
-        widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
-            'completed_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-wrapper'
-        self.helper.layout = Layout(
-            Field('frequency', css_class='select'),
-            Field('due_date', css_class='dateinput'),
-            Field('completed_at', css_class='datetimeinput'),
-            Field('summary', css_class='textarea'),
-            Fieldset(
-                'Checkup Items',
-                Div(
-                    Field('all_accounts_reviewed', css_class='checkboxinput form-check-input'),
-                    Field('all_devices_reviewed', css_class='checkboxinput form-check-input'),
-                    Field('contacts_up_to_date', css_class='checkboxinput form-check-input'),
-                    Field('documents_up_to_date', css_class='checkboxinput form-check-input'),
-                    css_class='checkbox-grid'
-                ),
-            ),
-            Div(
-                Submit('submit', 'Save Checkup', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
-        )
-
-
-class CareRelationshipForm(forms.ModelForm):
-    class Meta:
-        model = CareRelationship
-        fields = [
-            "contact_name",
-            "relationship_type",
-            "has_portal_access",
-            "portal_role",
-            "notes",
-        ]
-    
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        
-        if self.user:
-            try:
-                profile = Profile.objects.get(user=self.user)
-                self.fields['contact_name'].queryset = Contact.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                self.fields['contact_name'].queryset = Contact.objects.none()
-        
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-wrapper'
-        self.helper.layout = Layout(
-            Field('contact_name', css_class='select'),
-            Field('relationship_type', css_class='select'),
-            Field('has_portal_access', css_class='checkboxinput form-check-input'),
-            Field('portal_role', css_class='select'),
-            Field('notes', css_class='textarea'),
-            Div(
-                Submit('submit', 'Save Care Relationship', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
-        )
-
-
-class RecoveryRequestForm(forms.ModelForm):
-    class Meta:
-        model = RecoveryRequest
-        fields = [
-            "target_account",
-            "target_description",
-            "status",
-            "provider_ticket_number",
-            "steps_taken",
-            "outcome_notes",
-        ]
-    
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        
-        if self.user:
-            try:
-                profile = Profile.objects.get(user=self.user)
-                self.fields['target_account'].queryset = Account.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                self.fields['target_account'].queryset = Account.objects.none()
-        
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-wrapper'
-        self.helper.layout = Layout(
-            Field('target_account', css_class='select'),
-            Field('target_description', css_class='textinput'),
-            Field('status', css_class='select'),
-            Field('provider_ticket_number', css_class='textinput'),
-            Field('steps_taken', css_class='textarea'),
-            Field('outcome_notes', css_class='textarea'),
-            Div(
-                Submit('submit', 'Save Recovery Request', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
                 css_class='button-group'
             ),

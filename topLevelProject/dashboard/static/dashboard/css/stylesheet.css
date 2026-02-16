@@ -1,4 +1,3 @@
-
 .form-row {
   display: flex;
   flex-direction: row;
@@ -181,4 +180,29 @@
       color: var(--sixty-percent);
     }
   }
+}
+
+.header-section {
+  max-width: 1060px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  /* padding:0.75em; */
+  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 50%, var(--ten-percent) 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  h1 {
+    font-family: var(--title-font);
+    font-weight: 700;
+    color: var(--text-color);
+  } 
+    p, strong {
+    font-family: var(--main-font);
+    font-weight: 400;
+    color: var(--text-color);
+    }
 }

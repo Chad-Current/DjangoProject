@@ -25,7 +25,7 @@ class Profile(models.Model):
     )
     first_name = models.CharField(max_length=100, blank=False)
     last_name = models.CharField(max_length=100, blank=False)
-    date_of_birth = models.DateField(blank=True, null=True)  # Fixed: added null=True
+    date_of_birth = models.DateField(blank=True, null=True)  
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=20, blank=True)
     address_1 = models.CharField(max_length=50, blank=False)
@@ -33,18 +33,6 @@ class Profile(models.Model):
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=20, blank=False)
     zipcode = models.IntegerField(blank=True, null=True)  # Fixed: added null=True
-    
-    # Digital Executor Information
-    has_digital_executor = models.BooleanField(
-        default=False,
-        help_text="Have you designated a digital executor?"
-    )
-    digital_executor_name = models.CharField(max_length=200, blank=True)
-    digital_executor_contact = models.CharField(
-        max_length=200,
-        blank=True,
-        help_text="Email or phone number"
-    )
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -121,6 +109,7 @@ class Contact(models.Model):
     def get_total_documents_count(self):
         """Total documents delegated to this contact"""
         return self.get_estate_documents_count() + self.get_important_documents_count()
+
 
 class Account(models.Model):
     """
@@ -389,7 +378,7 @@ class DigitalEstateDocument(models.Model):
         ]
     
     def __str__(self):
-        return f"{self.name_or_title} → {self.delegated_estate_to.contact_name}"
+        return f"{self.name_or_title} → {self.delegated_estate_to.first_name} {self.delegated_estate_to.last_name}"
 
 
 class ImportantDocument(models.Model):
@@ -495,7 +484,7 @@ class ImportantDocument(models.Model):
         ]
     
     def __str__(self):
-        return f"{self.name_or_title} → {self.delegated_important_document_to.contact_name}"
+        return f"{self.name_or_title} → {self.delegated_important_document_to.first_name} {self.delegated_important_document_to.last_name}"
 
 
 class FamilyNeedsToKnowSection(models.Model):
@@ -523,167 +512,10 @@ class FamilyNeedsToKnowSection(models.Model):
         
     def __str__(self):
         return f"{self.relation} - {self.content[:50]}"
-
-
-class Checkup(models.Model):
-    """
-    Scheduled checkups of digital estate information
-    """
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='checkups',
-        editable=False
-    )
-
-    due_date = models.DateField()
-    completed_at = models.DateTimeField(null=True, blank=True)
-    completed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='completed_checkups',
-        editable=False
-    )
-    frequency = models.CharField(max_length=20, choices=DAY_CHOICES)
-    summary = models.TextField(blank=True)
-    
-    all_accounts_reviewed = models.BooleanField(default=False)
-    all_devices_reviewed = models.BooleanField(default=False)
-    contacts_up_to_date = models.BooleanField(default=False)
-    documents_up_to_date = models.BooleanField(default=False)
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'checkups'
-        ordering = ['-due_date']
-    
-    def __str__(self):
-        status = "Completed" if self.completed_at else "Pending"
-        return f"Checkup - {self.due_date} ({status})"  
-    
-    def is_overdue(self):
-        if self.completed_at:
-            return False
-        return timezone.now().date() > self.due_date
-
-
-class CareRelationship(models.Model):
-    """
-    Relationships with caregivers or those providing care
-    """
-    RELATIONSHIP_CHOICES = [
-        ('Caregiver', 'Caregiver'),
-        ('Healthcare-proxy', 'Healthcare Proxy'),
-        ('Power-of-attorney', 'Power of Attorney'),
-        ('Trustee', 'Trustee'),
-        ('Other', 'Other'),
-    ]
-    
-    ROLE_CHOICES = [
-        ('View Only', 'View Only'),
-        ('Editor', 'Editor'),
-        ('Administrator', 'Administrator'),
-    ]
-    
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='care_relationships',
-        editable=False
-    )
-    contact_name = models.ForeignKey(
-        Contact,
-        on_delete=models.CASCADE,
-        related_name='care_relationships'
-    )
-    relationship_type = models.CharField(
-        max_length=30,
-        choices=RELATIONSHIP_CHOICES
-    )
-    has_portal_access = models.BooleanField(
-        default=False,
-        help_text="Has access to digital estate portal"
-    )
-    portal_role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default='View Only',  # Fixed: use actual choice value
-        blank=True
-    )
-    notes = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'care_relationships'
-        ordering = ['contact_name']
-    
-    def __str__(self):
-        return f"{self.contact_name} - {self.relationship_type}"
-
-
-class RecoveryRequest(models.Model):
-
-    """
-    Requests to recover accounts (for deceased or incapacitated users)
-    """
-    STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('In Progress', 'In Progress'),
-        ('Completed', 'Completed'),
-        ('Denied', 'Denied'),
-        ('Cancelled', 'Cancelled'),
-    ]
-    
-    profile = models.ForeignKey(
-        Profile,
-        on_delete=models.CASCADE,
-        related_name='recovery_requests',
-        editable=False
-    )
-    requested_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='recovery_requests_made',
-        editable=False
-    )
-    target_account = models.ForeignKey(
-        Account,
-        on_delete=models.CASCADE,
-        related_name='recovery_requests',
-        null=True,
-        blank=True
-    )
-    target_description = models.CharField(
-        max_length=500,
-        help_text="Description of account to recover"
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='Pending'  # Fixed: use actual choice value
-    )
-    provider_ticket_number = models.CharField(max_length=100, blank=True)
-    steps_taken = models.TextField(blank=True)
-    outcome_notes = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'recovery_requests'
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return f"Recovery: {self.target_description} ({self.status})"
-    
+ 
 
 class RelevanceReview(models.Model):
+
     """
     Periodic reviews to determine if accounts, devices, estate documents, or important documents still matter.
     Only ONE of the foreign keys should be set per review.
@@ -826,3 +658,5 @@ class RelevanceReview(models.Model):
     
     def __str__(self):
         return f"Review of {self.get_item_type()}: {self.get_item_name()} on {self.review_date.date()}"
+    
+

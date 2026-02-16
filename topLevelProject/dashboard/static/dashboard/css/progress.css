@@ -1,15 +1,115 @@
+/* dashboard/static/dashboard/css/vault-dashboard.css */
+/* Digital Estate Dashboard - Clean Light Theme */
+
+:root {
+  /* Light theme colors using existing palette */
+  --vault-gold: var(--accent-color);
+  --vault-gold-light: #ffb84d;
+  --vault-light: var(--background-color);
+  --vault-lighter: var(--purewhite-color);
+  --vault-blue: var(--sixty-percent);
+  --vault-accent: var(--thirty-percent);
+  --layer-core: var(--sixty-percent);
+  --layer-accounts: var(--thirty-percent);
+  --layer-assets: var(--accent-color);
+  --layer-legacy: var(--ten-percent);
+}
+
+/* Main Vault Container */
+.vault-dashboard {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Vault Hero Section */
+.vault-hero {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.vault-hero h1 {
+  font-family: var(--title-font);
+  font-size: var(--font-title-size);
+  font-weight: 700;
+  color: var(--ten-percent);
+  margin-bottom: 0.5rem;
+}
+
+.vault-hero .subtitle {
+  font-family: var(--main-font);
+  color: var(--thirty-percent);
+  font-size: var(--font-md);
+  font-weight: 300;
+}
+
+/* Main Vault Display */
+.vault-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Left Side - Progress Circle */
+.vault-visual {
+  /* background: rgba(231, 239, 247, 0.05); */
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.vault-visual::before {
+  content: none;
+}
+
+.vault-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.vault-title h2 {
+  font-family: var(--main-font);
+  font-size: var(--font-xl);
+  color: var(--ten-percent);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.vault-status {
+  font-family: var(--paragraph-font);
+  color: var(--thirty-percent);
+  font-size: var(--font-sm);
+  font-weight: 300;
+}
+
+/* Progress Circle Wrapper */
+.progress-circle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  margin: 2rem 0;
+}
+
 /* Progress Circle Styles */
 .progress-circle-container {
   position: relative;
   display: inline-block;
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
 }
 
 .progress-circle {
   width: 100%;
   height: 100%;
-  transform: rotate(0deg);
+  transform: rotate(-90deg);
 }
 
 .progress-circle-bg {
@@ -44,14 +144,14 @@
 
 .progress-label {
   display: block;
-  font-size: var(--font-xxl);
-  font-family: var(--main-font);
-  color: var(--text-color-dark);
+  font-size: var(--font-nm);
+  font-family: var(--title-font);
+  color: var(--text-color-dark-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Color variants based on progress */
+/* Color variants based on progress - Using progress.css color scheme */
 .progress-circle-container[data-progress-level="low"] .progress-circle-fill {
   stroke: #FF2B2B; /* Red */
 }
@@ -68,13 +168,472 @@
   stroke: #192EFF; /* Blue */
 }
 
-/* Responsive sizing */
-@media (max-width: 640px) {
-  /* .progress-circle-container {
+/* Central Progress Display (keeping for backwards compatibility) */
+.vault-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.vault-progress-display {
+  font-family: var(--main-font);
+  font-size: var(--font-xxl);
+  font-weight: 800;
+  color: var(--ten-percent);
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.vault-progress-label {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  color: var(--thirty-percent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* Right Side - Protection Layers */
+.protection-layers {
+  /* background: var(--purewhite-color); */
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
+}
+
+.protection-layers h3 {
+  font-family: var(--main-font);
+  color: var(--ten-percent);
+  font-size: var(--font-xl);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.layer {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: var(--background-color);
+  border-radius: 12px;
+  border-left: 4px solid var(--layer-core);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+
+.layer:hover {
+  background: #dce6f0;
+  transform: translateX(5px);
+}
+
+.layer.accounts {
+  border-left-color: var(--layer-accounts);
+}
+.layer.assets {
+  border-left-color: var(--layer-assets);
+}
+.layer.legacy {
+  border-left-color: var(--layer-legacy);
+}
+
+.layer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.layer-name {
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-color-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.layer-icon {
+  font-size: var(--font-lg);
+}
+
+.layer-status {
+  font-family: var(--main-font);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--ten-percent);
+}
+
+/* Strength Bar */
+.layer-strength {
+  width: 100%;
+  height: 8px;
+  background: #dce6f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.layer-strength-fill {
+  height: 100%;
+  background: var(--layer-core);
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.layer.accounts .layer-strength-fill {
+  background: var(--layer-accounts);
+}
+
+.layer.assets .layer-strength-fill {
+  background: var(--layer-assets);
+}
+
+.layer.legacy .layer-strength-fill {
+  background: var(--layer-legacy);
+}
+
+.layer-label {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  color: var(--thirty-percent);
+  display: flex;
+  justify-content: space-between;
+  font-weight: 300;
+}
+
+.layer-rating {
+  font-weight: 600;
+}
+
+.layer-rating.excellent {
+  color: var(--layer-core);
+}
+.layer-rating.strong {
+  color: var(--layer-accounts);
+}
+.layer-rating.moderate {
+  color: var(--layer-assets);
+}
+.layer-rating.weak {
+  color: var(--layer-legacy);
+}
+
+/* Security Log */
+.security-log {
+  background: rgba(231, 239, 247, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.security-log h3 {
+  font-family: var(--main-font);
+  color: var(--ten-percent);
+  font-size: var(--font-xl);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.log-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.log-entry {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--background-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.log-entry:hover {
+  background: #dce6f0;
+}
+
+.log-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.log-icon.success {
+  background: rgba(98, 162, 206, 0.15);
+  color: var(--thirty-percent);
+}
+
+.log-icon.warning {
+  background: rgba(255, 166, 43, 0.15);
+  color: var(--accent-color);
+}
+
+.log-icon.alert {
+  background: rgba(37, 78, 112, 0.15);
+  color: var(--ten-percent);
+}
+
+.log-content {
+  flex: 1;
+}
+
+.log-message {
+  font-family: var(--main-font);
+  color: var(--text-color-dark);
+  font-size: var(--font-nm);
+  margin-bottom: 0.25rem;
+  font-weight: 400;
+}
+
+.log-time {
+  font-family: var(--paragraph-font);
+  color: var(--thirty-percent);
+  font-size: var(--font-sm);
+  font-weight: 300;
+}
+
+/* Upcoming Reviews Section */
+.upcoming-reviews {
+  background: rgba(231, 239, 247, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.upcoming-reviews h3 {
+  font-family: var(--main-font);
+  color: var(--ten-percent);
+  font-size: var(--font-xl);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.review-item-link {
+  text-decoration: none;
+  display: block;
+  width: auto;
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--background-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.review-item-link:hover .review-item {
+  background: #dce6f0;
+  border-left-color: var(--sixty-percent);
+  transform: translateX(3px);
+}
+
+.review-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.review-icon {
+  width: 36px;
+  height: 36px;
+  /* border-radius: 8px; */
+  /* background: var(--sixty-percent);
+  color: var(--purewhite-color); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-nm);
+  flex-shrink: 0;
+}
+
+.review-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-name {
+  font-family: var(--main-font);
+  color: var(--text-color-dark);
+  font-size: var(--font-nm);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  color: var(--thirty-percent);
+  font-weight: 300;
+}
+
+.review-separator {
+  color: var(--sixty-percent);
+}
+
+.review-status {
+  flex-shrink: 0;
+}
+
+.status-badge {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.status-badge i {
+  font-size: 0.85em;
+}
+
+.status-badge.overdue {
+  background: rgba(37, 78, 112, 0.1);
+  color: var(--ten-percent);
+}
+
+.status-badge.warning {
+  background: rgba(255, 166, 43, 0.1);
+  color: var(--accent-color);
+}
+
+.status-badge.upcoming {
+  background: rgba(98, 162, 206, 0.1);
+  color: var(--thirty-percent);
+}
+
+.review-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dce6f0;
+  text-align: center;
+}
+
+.view-all-reviews {
+  font-family: var(--main-font);
+  color: var(--thirty-percent);
+  font-size: var(--font-nm);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.view-all-reviews:hover {
+  color: var(--ten-percent);
+}
+
+.view-all-reviews i {
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.view-all-reviews:hover i {
+  transform: translateX(3px);
+}
+
+.empty-reviews {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: var(--sixty-percent);
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.empty-message {
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin-bottom: 0.5rem;
+}
+
+.empty-hint {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  color: var(--thirty-percent);
+  font-weight: 300;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .vault-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .vault-dashboard {
+    padding: 1rem;
+  }
+
+  .vault-hero h1 {
+    font-size: 2rem;
+  }
+
+  .progress-circle-wrapper {
+    min-height: 200px;
+  }
+
+  .progress-circle-container {
     width: 160px;
     height: 160px;
-  } */
-  
+  }
+
+  .progress-percentage {
+    font-size: 2rem;
+  }
+
+  .progress-label {
+    font-size: var(--font-sm);
+  }
+}
+
+/* Responsive sizing from progress.css */
+@media (max-width: 640px) {
   .progress-percentage {
     font-size: var(--font-sm);
   }

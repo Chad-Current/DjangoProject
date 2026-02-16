@@ -7,7 +7,8 @@ urlpatterns = [
     path('dashboard/', views.DashboardHomeView.as_view(), name='dashboard_home'),
     
     # Profile URLs --- DONE
-    path('profile/', views.ProfileDetailView.as_view(), name='profile_detail'),
+    path('profile/', views.ProfileCreateView.as_view(), name='profile_create'),
+    path('profile/<int:pk>/', views.ProfileDetailView.as_view(), name='profile_detail'),
     path('profile/edit/', views.ProfileUpdateView.as_view(), name='profile_update'),
     
     # Account (Digital) URLs --- DONE
@@ -24,6 +25,7 @@ urlpatterns = [
     path('reviews/<int:pk>/edit/', views.RelevanceReviewUpdateView.as_view(), name='relevancereview_update'),
     path('reviews/<int:pk>/delete/', views.RelevanceReviewDeleteView.as_view(), name='relevancereview_delete'),
     path('reviews/<int:review_pk>/mark-reviewed/', views.MarkItemReviewedView.as_view(), name='mark_item_reviewed'),    
+    
     # Contacts URLs
     path('contacts/', views.ContactListView.as_view(), name='contact_list'),
     path('contacts/<int:pk>/', views.ContactDetailView.as_view(), name='contact_detail'),
@@ -58,20 +60,28 @@ urlpatterns = [
     path('documents/create/', views.ImportantDocumentCreateView.as_view(), name='importantdocument_create'),
     path('documents/<int:pk>/edit/', views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<int:pk>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
-   
-    # Checkup URLs
-    path('checkups/', views.CheckupListView.as_view(), name='checkup_list'),
-    path('checkups/create/', views.CheckupCreateView.as_view(), name='checkup_create'),
-    path('checkups/<int:pk>/edit/', views.CheckupUpdateView.as_view(), name='checkup_update'),
-    path('checkups/<int:pk>/delete/', views.CheckupDeleteView.as_view(), name='checkup_delete'),
+     
+   # Recovery Request URLs
+    # path('recovery/request/', views.external_recovery_request, name='external_recovery_request'),
+    # # Email verification
+    # path('recovery/verify/<str:token>/', views.verify_recovery_request, name='verify_recovery_request'),
+    # # Authenticated user recovery request
+    # path('recovery/submit/<int:profile_id>/', views.authenticated_recovery_request, name='authenticated_recovery_request'),
+    # # View recovery request status
+    # path('recovery/status/<int:pk>/', views.recovery_request_status, name='recovery_request_status'),
+    # # Admin review interface
+    # path('admin/recovery/review/<int:pk>/', views.admin_review_recovery_request, name='admin_review_recovery_request'),
+    # # List recovery requests (for authenticated users)
+    # path('recovery/my-requests/', views.my_recovery_requests, name='my_recovery_requests'),
+    # #Cancel Recovery
+    # path('recovery/cancel/<int:pk>/', views.cancel_recovery_request, name='cancel_recovery_request'),
+    # # Resend verification email
+    # path('recovery/resend-verification/<int:pk>/', views.resend_verification_email, name='resend_verification_email'),
+    # # Admin dashboard
+    # path('admin/recovery/dashboard/', views.admin_recovery_dashboard, name='admin_recovery_dashboard' ),
     
-    # Recovery Request URLs
-    path('recovery-requests/', views.RecoveryRequestListView.as_view(), name='recoveryrequest_list'),
-    path('recovery-requests/create/', views.RecoveryRequestCreateView.as_view(), name='recoveryrequest_create'),
-    path('recovery-requests/<int:pk>/edit/', views.RecoveryRequestUpdateView.as_view(), name='recoveryrequest_update'),
-    path('recovery-requests/<int:pk>/delete/', views.RecoveryRequestDeleteView.as_view(), name='recoveryrequest_delete'),
-
+    
     # Main TEST Template URL
-    path('test/', views.TESTView.as_view(), name="test")
+    path('test/', views.TestView.as_view(), name="test")
 ]
 

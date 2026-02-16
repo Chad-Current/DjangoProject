@@ -32,6 +32,8 @@ function initializeProgressCircle() {
         progressLevel = 'high';
     } else if (progressValue >= 40) {
         progressLevel = 'medium';
+    } else {
+        progressLevel = 'low';
     }
     
     container.setAttribute('data-progress-level', progressLevel);
@@ -94,7 +96,10 @@ function updateProgressCircle(newProgress) {
         progressLevel = 'high';
     } else if (newProgress >= 40) {
         progressLevel = 'medium';
+    } else {
+        progressLevel = 'low';
     }
+    
     
     container.setAttribute('data-progress-level', progressLevel);
     

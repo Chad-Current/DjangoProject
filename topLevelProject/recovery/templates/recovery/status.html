@@ -1,0 +1,190 @@
+{% extends 'recovery/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>Recovery Request #{{ recovery_request.pk }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <!-- Status Badge -->
+                <div class="text-center mb-4">
+                    <span class="status-badge status-{{ recovery_request.status|lower|cut:' '|cut:'/' }}">
+                        {{ recovery_request.status }}
+                    </span>
+                </div>
+
+                <!-- Request Timeline -->
+                <div class="info-section">
+                    <h5><i class="fas fa-clock me-2"></i>Timeline</h5>
+                    <div class="info-row">
+                        <span class="info-label">Submitted:</span>
+                        <span class="info-value">{{ recovery_request.created_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                    {% if recovery_request.verified_at %}
+                    <div class="info-row">
+                        <span class="info-label">Verified:</span>
+                        <span class="info-value">{{ recovery_request.verified_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.reviewed_at %}
+                    <div class="info-row">
+                        <span class="info-label">Reviewed:</span>
+                        <span class="info-value">{{ recovery_request.reviewed_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.completed_at %}
+                    <div class="info-row">
+                        <span class="info-label">Completed:</span>
+                        <span class="info-value">{{ recovery_request.completed_at|date:"F d, Y \a\t g:i A" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Requester Information -->
+                <div class="info-section">
+                    <h5><i class="fas fa-user me-2"></i>Requester Information</h5>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">{{ recovery_request.get_requester_name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ recovery_request.get_requester_email }}</span>
+                    </div>
+                    {% if recovery_request.requester_relationship %}
+                    <div class="info-row">
+                        <span class="info-label">Relationship:</span>
+                        <span class="info-value">{{ recovery_request.requester_relationship }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Account Owner Information -->
+                <div class="info-section">
+                    <h5><i class="fas fa-user-shield me-2"></i>Account Owner</h5>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">{{ recovery_request.profile.first_name }} {{ recovery_request.profile.last_name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Reason:</span>
+                        <span class="info-value">{{ recovery_request.get_reason_display }}</span>
+                    </div>
+                </div>
+
+                <!-- Request Details -->
+                <div class="info-section">
+                    <h5><i class="fas fa-info-circle me-2"></i>Request Details</h5>
+                    <div class="info-row">
+                        <span class="info-label">Target:</span>
+                        <span class="info-value">{{ recovery_request.target_description }}</span>
+                    </div>
+                    {% if recovery_request.additional_notes %}
+                    <div class="info-row">
+                        <span class="info-label">Notes:</span>
+                        <span class="info-value">{{ recovery_request.additional_notes }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Documentation -->
+                {% if recovery_request.death_certificate or recovery_request.proof_of_relationship or recovery_request.legal_authorization %}
+                <div class="info-section">
+                    <h5><i class="fas fa-paperclip me-2"></i>Uploaded Documentation</h5>
+                    {% if recovery_request.death_certificate %}
+                    <div class="info-row">
+                        <span class="info-label">Death Certificate:</span>
+                        <span class="info-value">
+                            <i class="fas fa-file-pdf text-danger"></i> Uploaded
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.proof_of_relationship %}
+                    <div class="info-row">
+                        <span class="info-label">Proof of Relationship:</span>
+                        <span class="info-value">
+                            <i class="fas fa-file-pdf text-danger"></i> Uploaded
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if recovery_request.legal_authorization %}
+                    <div class="info-row">
+                        <span class="info-label">Legal Authorization:</span>
+                        <span class="info-value">
+                            <i class="fas fa-file-pdf text-danger"></i> Uploaded
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Outcome Notes (if available) -->
+                {% if recovery_request.outcome_notes %}
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-comment-dots me-2"></i>Updates from our team:</h6>
+                    <p class="mb-0">{{ recovery_request.outcome_notes }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Status-specific messages -->
+                {% if recovery_request.status == 'Pending Verification' %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-envelope me-2"></i>
+                    <strong>Action Required:</strong> Please check your email ({{ recovery_request.get_requester_email }}) 
+                    and click the verification link to proceed with your request.
+                    <br><br>
+                    <a href="{% url 'resend_verification_email' pk=recovery_request.pk %}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-redo me-1"></i>Resend Verification Email
+                    </a>
+                </div>
+                {% elif recovery_request.status == 'Verified' %}
+                <div class="alert alert-info">
+                    <i class="fas fa-hourglass-half me-2"></i>
+                    Your request has been verified and is awaiting review by our team. We'll update you via email as soon as there's progress.
+                </div>
+                {% elif recovery_request.status == 'In Progress' %}
+                <div class="alert alert-primary">
+                    <i class="fas fa-spinner me-2"></i>
+                    Your request is currently being processed. Our team is working on your case and will contact you if additional information is needed.
+                </div>
+                {% elif recovery_request.status == 'Completed' %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Your recovery request has been completed. Check your email for details and next steps.
+                </div>
+                {% elif recovery_request.status == 'Denied' %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle me-2"></i>
+                    Unfortunately, your recovery request has been denied. Please review the outcome notes above or contact support for more information.
+                </div>
+                {% endif %}
+
+                <!-- Actions -->
+                {% if recovery_request.status in 'Pending Verification,Verified,In Progress' and user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{% url 'cancel_recovery_request' pk=recovery_request.pk %}" class="btn btn-outline-danger">
+                        <i class="fas fa-times me-2"></i>Cancel Request
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Help -->
+        <div class="card">
+            <div class="card-body">
+                <h5><i class="fas fa-life-ring me-2"></i>Need Assistance?</h5>
+                <p>If you have questions about your recovery request, please contact our support team:</p>
+                <p class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>support@digitalestate.com<br>
+                    <i class="fas fa-phone me-2"></i>1-800-XXX-XXXX
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

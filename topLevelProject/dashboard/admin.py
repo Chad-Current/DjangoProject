@@ -1,5 +1,7 @@
 # dashboard/admin.py
+from datetime import timezone
 from django.contrib import admin
+from django.utils.html import format_html
 from django.db.models import Count, Q, F
 from .models import (
     Profile,
@@ -9,17 +11,15 @@ from .models import (
     DigitalEstateDocument,
     ImportantDocument,
     FamilyNeedsToKnowSection,
-    Checkup,
-    CareRelationship,
-    RecoveryRequest,
     RelevanceReview,
+    
 )
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'user', 'email', 'has_digital_executor', 'created_at')
-    list_filter = ('has_digital_executor', 'created_at')
+    list_display = ('first_name', 'last_name', 'user', 'email', 'created_at')
+    list_filter = ('email','created_at')
     search_fields = ('first_name', 'last_name', 'user__username', 'email')
     readonly_fields = ('user', 'created_at', 'updated_at')
     
@@ -29,9 +29,6 @@ class ProfileAdmin(admin.ModelAdmin):
         }),
         ('Address', {
             'fields': ('address_1', 'address_2', 'city', 'state', 'zipcode')
-        }),
-        ('Digital Executor', {
-            'fields': ('has_digital_executor', 'digital_executor_name', 'digital_executor_contact')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -268,84 +265,6 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
         }),
     )
 
-
-@admin.register(Checkup)
-class CheckupAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'due_date', 'frequency', 'completed_at', 'completed_by', 'is_overdue')
-    list_filter = ('frequency', 'due_date', 'completed_at', 'created_at')
-    search_fields = ('profile__first_name', 'profile__last_name', 'summary')
-    readonly_fields = ('profile', 'completed_by', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Checkup Information', {
-            'fields': ('profile', 'due_date', 'frequency', 'completed_at', 'completed_by')
-        }),
-        ('Summary', {
-            'fields': ('summary',)
-        }),
-        ('Checklist', {
-            'fields': (
-                'all_accounts_reviewed',
-                'all_devices_reviewed',
-                'contacts_up_to_date',
-                'documents_up_to_date'
-            )
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
-@admin.register(CareRelationship)
-class CareRelationshipAdmin(admin.ModelAdmin):
-    list_display = ('contact_name', 'relationship_type', 'has_portal_access', 'portal_role', 'created_at')
-    list_filter = ('relationship_type', 'has_portal_access', 'portal_role', 'created_at')
-    search_fields = ('contact_name__first_name', 'contact_name__last_name', 'profile__first_name', 'profile__last_name', 'notes')
-    readonly_fields = ('profile', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Relationship Information', {
-            'fields': ('profile', 'contact_name', 'relationship_type')
-        }),
-        ('Portal Access', {
-            'fields': ('has_portal_access', 'portal_role')
-        }),
-        ('Notes', {
-            'fields': ('notes',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
-@admin.register(RecoveryRequest)
-class RecoveryRequestAdmin(admin.ModelAdmin):
-    list_display = ('target_description', 'requested_by', 'status', 'provider_ticket_number', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('target_description', 'profile__first_name', 'profile__last_name', 'requested_by__username', 'provider_ticket_number')
-    readonly_fields = ('profile', 'requested_by', 'created_at', 'updated_at')
-    
-    fieldsets = (
-        ('Request Information', {
-            'fields': ('profile', 'requested_by', 'target_account', 'target_description', 'status')
-        }),
-        ('Provider Information', {
-            'fields': ('provider_ticket_number',)
-        }),
-        ('Details', {
-            'fields': ('steps_taken', 'outcome_notes')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-
 @admin.register(RelevanceReview)
 class RelevanceReviewAdmin(admin.ModelAdmin):
     list_display = ('get_item_name', 'get_item_type', 'reviewer', 'matters', 'review_date', 'next_review_due')
@@ -386,7 +305,6 @@ class RelevanceReviewAdmin(admin.ModelAdmin):
         """Display the type of item being reviewed"""
         return obj.get_item_type()
     get_item_type.short_description = 'Type'
-
 
 # Customize admin site header
 admin.site.site_header = "Digital Estate Planning Administration"

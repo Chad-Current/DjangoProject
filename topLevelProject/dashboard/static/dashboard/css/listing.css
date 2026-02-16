@@ -2,7 +2,7 @@
 
 /* Container & Layout */
 .listing-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 2rem 1rem;
 }
@@ -121,8 +121,8 @@
 }
 
 .contact-icon {
-    font-size: 1.75rem;
-    color: #3b82f6;
+    font-size: var(--font-nm);
+    color: var(--ten-percent);
 }
 
 .badge-relationship {

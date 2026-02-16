@@ -12,7 +12,7 @@
 }
 
 .delegation-header {
-    background: linear-gradient(135deg, var(--sixty-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
+    background: linear-gradient(135deg, var(--ten-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
     color: var(--purewhite-color);
     padding: 2rem;
     border-radius: 12px;
