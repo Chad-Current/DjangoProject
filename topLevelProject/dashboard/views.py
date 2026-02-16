@@ -63,7 +63,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         if not getattr(user, "has_paid", False):
             return redirect(reverse("accounts:payment"))
         elif getattr(user, "has_paid", True) and not profile:
-            return redirect(reverse("dashboard:profile_detail"))
+            return redirect(reverse("dashboard:profile"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
