@@ -1,0 +1,220 @@
+/* ============================================================
+   DELETE CONFIRMATION — Refined Danger Aesthetic
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Layout ─────────────────────────────────────────────── */
+
+.delete-view-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 2rem 1rem;
+    animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+
+.delete-view {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--purewhite-color, #fff);
+    border-radius: 16px;
+    padding: 3rem 2.5rem 2.5rem;
+    max-width: 520px;
+    width: 100%;
+    box-shadow:
+        0 0 0 1px rgba(220, 38, 38, 0.08),
+        0 4px 6px -1px rgba(0, 0, 0, 0.06),
+        0 20px 40px -8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Top danger accent bar */
+.delete-view::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #dc2626, #f87171, #dc2626);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease infinite;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+
+/* ── Warning Icon ────────────────────────────────────────── */
+
+.delete-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    animation: pulse-ring 2s ease infinite;
+}
+
+@keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.15); }
+    50%       { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+
+.delete-view .delete-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #111;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.delete-view .delete-subtitle {
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin-bottom: 0;
+}
+
+/* ── Item Name Chip ─────────────────────────────────────── */
+
+.delete-item-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.6rem 1.1rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.delete-item-name i {
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+/* ── Warning Notice ─────────────────────────────────────── */
+
+.delete-warning-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    text-align: left;
+}
+
+.delete-warning-notice i {
+    color: #dc2626;
+    font-size: 0.9rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.delete-warning-notice p {
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-size: 0.8rem;
+    color: #991b1b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+.delete-actions {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.btn-confirm-delete {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    background: #dc2626;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    letter-spacing: 0.01em;
+}
+
+.btn-confirm-delete:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+}
+
+.btn-confirm-delete:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-cancel {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    background: transparent;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+    color: #111;
+}
+
+/* form inline so it flows with flex */
+.delete-actions form {
+    display: contents;
+}

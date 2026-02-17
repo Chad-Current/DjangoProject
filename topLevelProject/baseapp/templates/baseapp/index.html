@@ -1,12 +1,16 @@
+{% extends 'baseapp/base.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>Digital Estate Management & Family Access Planning</title>
-    <link rel="stylesheet" href="static/baseapp/css/index.css">
+
 </head>
 <body>
+    {% block main %}
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="container">
@@ -179,8 +183,8 @@
                     <div class="problem-icon">
                         <img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" alt="Time wasted">
                     </div>
-                    <h3>40+ Hours Wasted</h3>
-                    <p>Families spend an average of 40+ hours trying to recover digital assets and access accounts</p>
+                    <h3>100+ Hours Wasted</h3>
+                    <p>Families spend an average of 100+ hours trying to recover digital assets and access accounts</p>
                 </div>
                 
                 <div class="problem-card">
@@ -214,7 +218,7 @@
         <div class="container">
             <div class="section-header">
                 <h2>How It Works: Simple 3-Step Process</h2>
-                <p class="section-subtitle">Complete peace of mind in just 2-3 sessions over 2-4 weeks</p>
+                <p class="section-subtitle">Complete peace of mind in just a few hours</p>
             </div>
             
             <div class="steps-grid">
@@ -223,7 +227,7 @@
                         <img src="/static/baseapp/images/1.svg" alt="Step 1">
                     </div>
                     <h3>Discover</h3>
-                    <p>We find all your digital accounts—even the ones you forgot about. Banking, utilities, social media, subscriptions, and more.</p>
+                    <p>We help find all your digital accounts—even the ones you forgot about. Banking, utilities, social media, subscriptions, and more.</p>
                 </div>
                 
                 <div class="step-card">
@@ -231,7 +235,7 @@
                         <img src="/static/baseapp/images/2.svg" alt="Step 2">
                     </div>
                     <h3>Secure</h3>
-                    <p>We set up your personal encrypted vault with role-based access for your digital executor and family members, plus activation logic for different scenarios.</p>
+                    <p>Set up your personal encrypted vault with role-based access for your digital executor and family members, plus activation logic for different scenarios.</p>
                 </div>
                 
                 <div class="step-card">
@@ -359,5 +363,6 @@
         </div>
     </section>
 
+    {% endblock %}
 </body>
 </html>

@@ -298,29 +298,37 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
     login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        """Ensure user has paid but doesn't already have a profile"""
         user = request.user
         
-        # Check payment status
         if not getattr(user, "has_paid", False):
             messages.warning(request, "Please complete payment to create your profile.")
             return redirect(reverse("accounts:payment"))
         
-        # Redirect if profile already exists
         try:
             profile = user.profile
             messages.info(request, "You already have a profile. Use the edit page to make changes.")
             return redirect(reverse('dashboard:profile_detail'))
         except Profile.DoesNotExist:
-            pass  # No profile exists, continue with create
+            pass
         
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
-        """Attach the profile to the current user"""
         form.instance.user = self.request.user
         messages.success(self.request, '🎉 Welcome! Your profile has been created successfully.')
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_initial_setup'] = True
+        context['page_title'] = 'Create Your Profile'
+        context['submit_text'] = 'Create Profile & Continue'
+        context['steps'] = [
+            {'number': 1, 'title': 'Create Profile', 'url': 'dashboard:profile_create'},
+            {'number': 2, 'title': 'Add Contacts', 'url': 'dashboard:contact_create'},
+            {'number': 3, 'title': 'Add Accounts', 'url': 'dashboard:account_create'},
+        ]
+        return context
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -354,30 +362,6 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
         messages.success(self.request, 'Profile updated successfully.')
         return super().form_valid(form)
 
-class ProfileOnboardingView(LoginRequiredMixin, TemplateView):
-    """
-    Multi-step onboarding for new users
-    """
-    template_name = 'dashboard/onboarding.html'
-    
-    def dispatch(self, request, *args, **kwargs):
-        if not getattr(request.user, "has_paid", False):
-            return redirect(reverse("accounts:payment"))
-        
-        # Skip if already has profile
-        if hasattr(request.user, 'profile'):
-            return redirect(reverse('dashboard:dashboard_home'))
-        
-        return super().dispatch(request, *args, **kwargs)
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['steps'] = [
-            {'number': 1, 'title': 'Create Profile', 'url': 'dashboard:profile_create'},
-            {'number': 2, 'title': 'Add Contacts', 'url': 'dashboard:contact_create'},
-            {'number': 3, 'title': 'Add Accounts', 'url': 'dashboard:account_create'},
-        ]
-        return context
     
 # ============================================================================
 # ACCOUNT VIEWS
@@ -512,11 +496,17 @@ class DeviceCreateView(FullAccessMixin, CreateView):
     success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
+    def get_form_kwargs(self):          # ADD THIS
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
     def form_valid(self, form):
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         form.instance.profile = profile
         messages.success(self.request, 'Device created successfully.')
         return super().form_valid(form)
+
 
 class DeviceUpdateView(FullAccessMixin, UpdateView):
     model = Device
@@ -525,10 +515,15 @@ class DeviceUpdateView(FullAccessMixin, UpdateView):
     success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
+    def get_form_kwargs(self):          # ADD THIS
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
     def form_valid(self, form):
         messages.success(self.request, 'Device updated successfully.')
         return super().form_valid(form)
-
+    
 class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     model = Device
     template_name = 'dashboard/device_confirm_delete.html'

@@ -7,5 +7,5 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.forms import AuthenticationForm
 
 class Home(TemplateView):
-   template_name = "baseapp/base.html"
+   template_name = "baseapp/index.html"
 
