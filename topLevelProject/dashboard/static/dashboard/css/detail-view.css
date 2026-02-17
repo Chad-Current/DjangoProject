@@ -76,7 +76,7 @@
     min-width: 140px;
     display: flex;
     align-items: center;
-    margin-bottom: 0.25rem;
+    /* margin-bottom: 0.25rem; */
 }
 
 .info-label i {
@@ -90,6 +90,12 @@
     color: var(--text-color-dark);
     flex: 1;
     word-break: break-word;
+}
+
+.info-value a {
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 400;
 }
 
 .badge-role {

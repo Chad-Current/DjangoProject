@@ -102,7 +102,7 @@
                         </div>
                         <div class="info-value">
                             <a href="{% url 'dashboard:contact_detail' item.delegated_account_to.pk %}">
-                                {{ item.delegated_account_to.contact_name }}
+                                {{ item.delegated_account_to.first_name }} {{ item.delegated_account_to.last_name }}
                             </a>
                         </div>
                     </div>

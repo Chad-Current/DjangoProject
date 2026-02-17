@@ -123,7 +123,7 @@
                         <h5>
                             <i class="fas fa-user-circle"></i>
                             <a href="{% url 'dashboard:contact_detail' account.delegated_account_to.pk %}">
-                                {{ account.delegated_account_to.contact_name }}
+                                {{ account.delegated_account_to.first_name }} {{ account.delegated_account_to.last_name }}
                             </a>
                         </h5>
 

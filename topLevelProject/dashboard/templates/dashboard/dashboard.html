@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
-    <!-- <link rel="stylesheet" href="{% static 'dashboard/css/test.css' %}" type="text/css"> -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +45,7 @@
 
         <!-- Main Vault Container -->
         <div class="vault-container">
-            <!-- Left: Progress Circle -->
+            <!-- Left: Progress Circle + Information Log -->
             <div class="vault-visual">
                 <div class="vault-title">
                     <h2>Your Progress</h2>
@@ -74,14 +73,104 @@
                 </div>
 
                 <input type="hidden" id="progress-value" value="{{ progress|default:0 }}">
+
+                <!-- Information Log — sits directly below the progress circle -->
+                <div class="security-log">
+                    <h3><i class="fas fa-clipboard-list"></i> Information Log</h3>
+                    <div class="log-entries">
+                        {% if accounts_count > 0 %}
+                        <div class="log-entry">
+                            <div class="log-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-message">{{ accounts_count }} digital {% if accounts_count == 1 %}account{% else %}accounts{% endif %} secured</div>
+                                <div class="log-time">Active protection</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if devices_count > 0 %}
+                        <div class="log-entry">
+                            <div class="log-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-message">{{ devices_count }} {% if devices_count == 1 %}device{% else %}devices{% endif %} registered</div>
+                                <div class="log-time">Active protection</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if first_delta %}
+                        <div class="log-entry">
+                            <div class="log-icon {% if first_delta.days <= 7 %}alert{% elif first_delta.days <= 30 %}warning{% else %}success{% endif %}">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-message">
+                                    {% if first_delta.days <= 0 %}
+                                        Review overdue - action required
+                                    {% elif first_delta.days <= 7 %}
+                                        Review due in {{ first_delta.days }} {% if first_delta.days == 1 %}day{% else %}days{% endif %}
+                                    {% else %}
+                                        Next review in {{ first_delta.days }} days
+                                    {% endif %}
+                                </div>
+                                <div class="log-time">Scheduled Review</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if remaining_tasks > 0 %}
+                        <div class="log-entry">
+                            <div class="log-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-message">
+                                    {% if remaining_tasks >= 1 and accounts_count == 0 %}
+                                        Accounts Need Attention
+                                    {% elif remaining_tasks >= 1 and care_relations_count == 0 %}    
+                                        Care Relation Needs Attention                            
+                                    {% elif remaining_tasks >= 1 and contacts_count == 0 %}
+                                        Contacts Need Attention
+                                    {% elif remaining_tasks >= 1 and devices_count == 0 %}
+                                        Devices Need Attention
+                                    {% elif remaining_tasks >= 1 and documents_count == 0 %}
+                                        Important Documents Need Attention
+                                    {% elif remaining_tasks >= 1 and estates_count == 0 %}
+                                        Estate Documents Need Attention
+                                    {% elif remaining_tasks >= 1 and family_knows_count == 0 %}
+                                        Family Needs to Know Needs Attention 
+                                    {% endif %}
+                                </div>
+                                <div class="log-time">Security recommendation</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if progress >= 100 %}
+                        <div class="log-entry">
+                            <div class="log-icon success">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="log-content">
+                                <div class="log-message">Vault fully secured - all systems operational</div>
+                                <div class="log-time">Congratulations!</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
 
             <!-- Right: Protection Layers -->
             <div class="protection-layers">
                 <h3><i class="fas fa-shield-alt"></i> Protection Layers</h3>
 
-                <!-- Core Identity Layer -->
-                <div class="layer core">
+                <!-- Core Identity Layer — max 5, bar fills to 100% at 5 -->
+                <div class="layer legacy">
                     <div class="layer-header">
                         <div class="layer-name">
                             <i class="fas fa-user-circle"></i>
@@ -90,7 +179,8 @@
                         <div class="layer-status">{{ contacts_count }}/5</div>
                     </div>
                     <div class="layer-strength">
-                        <div class="layer-strength-fill" style="width: {% if contacts_count %}{% widthratio contacts_count 1 20 %}{% else %}0{% endif %}%"></div>
+                        {# widthratio: contacts_count * 100 / 5  — capped at 100 by CSS overflow:hidden #}
+                        <div class="layer-strength-fill" style="width: {% widthratio contacts_count 5 100 %}%"></div>
                     </div>
                     <div class="layer-label">
                         <span>Contacts & Profile</span>
@@ -100,7 +190,7 @@
                     </div>
                 </div>
 
-                <!-- Digital Accounts Layer -->
+                <!-- Digital Accounts Layer — max 10 -->
                 <div class="layer accounts">
                     <div class="layer-header">
                         <div class="layer-name">
@@ -110,7 +200,8 @@
                         <div class="layer-status">{{ accounts_count }}/10</div>
                     </div>
                     <div class="layer-strength">
-                        <div class="layer-strength-fill" style="width: {% if accounts_count %}{% widthratio accounts_count 1 10 %}{% else %}0{% endif %}%"></div>
+                        {# widthratio: accounts_count * 100 / 10 #}
+                        <div class="layer-strength-fill" style="width: {% widthratio accounts_count 10 100 %}%"></div>
                     </div>
                     <div class="layer-label">
                         <span>Online Accounts & Credentials</span>
@@ -120,7 +211,7 @@
                     </div>
                 </div>
 
-                <!-- Physical Assets Layer -->
+                <!-- Physical Assets Layer — max 5 -->
                 <div class="layer assets">
                     <div class="layer-header">
                         <div class="layer-name">
@@ -130,7 +221,8 @@
                         <div class="layer-status">{{ devices_count }}/5</div>
                     </div>
                     <div class="layer-strength">
-                        <div class="layer-strength-fill" style="width: {% if devices_count %}{% widthratio devices_count 1 20 %}{% else %}0{% endif %}%"></div>
+                        {# widthratio: devices_count * 100 / 5 #}
+                        <div class="layer-strength-fill" style="width: {% widthratio devices_count 5 100 %}%"></div>
                     </div>
                     <div class="layer-label">
                         <span>Devices & Hardware</span>
@@ -140,120 +232,74 @@
                     </div>
                 </div>
 
-                <!-- Legacy Documents Layer -->
-                <div class="layer legacy">
+                <!-- Estate Documents Layer — max 8, status shows real count (not doubled) -->
+                <div class="layer estate">
                     <div class="layer-header">
                         <div class="layer-name">
                             <i class="fas fa-file-contract"></i>
-                            Legacy Documents
+                            Estate Documents
                         </div>
-                        <div class="layer-status">{{ estates_count|add:documents_count }}/8</div>
+                        <div class="layer-status">{{ estates_count }}/8</div>
                     </div>
                     <div class="layer-strength">
-                        <div class="layer-strength-fill" style="width: {% with total=estates_count|add:documents_count %}{% if total %}{% widthratio total 1 12.5 %}{% else %}0{% endif %}{% endwith %}%"></div>
+                        {# widthratio: estates_count * 100 / 8 #}
+                        <div class="layer-strength-fill" style="width: {% widthratio estates_count 8 100 %}%"></div>
                     </div>
                     <div class="layer-label">
-                        <span>Estate & Important Documents</span>
-                        <span class="layer-rating {% if estates_count|add:documents_count >= 8 %}excellent{% elif estates_count|add:documents_count >= 5 %}strong{% elif estates_count|add:documents_count >= 2 %}moderate{% else %}weak{% endif %}">
-                            {% if estates_count|add:documents_count >= 8 %}EXCELLENT{% elif estates_count|add:documents_count >= 5 %}STRONG{% elif estates_count|add:documents_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
+                        <span>Estate Documents</span>
+                        <span class="layer-rating {% if estates_count >= 8 %}excellent{% elif estates_count >= 5 %}strong{% elif estates_count >= 2 %}moderate{% else %}weak{% endif %}">
+                            {% if estates_count >= 8 %}EXCELLENT{% elif estates_count >= 5 %}STRONG{% elif estates_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
                         </span>
                     </div>
                 </div>
+
+                <!-- Important Documents Layer — max 8, consistent use of documents_count -->
+                <div class="layer documents">
+                    <div class="layer-header">
+                        <div class="layer-name">
+                            <i class="fas fa-file-contract"></i>
+                            Additional Documents
+                        </div>
+                        <div class="layer-status">{{ documents_count }}/8</div>
+                    </div>
+                    <div class="layer-strength">
+                        {# widthratio: documents_count * 100 / 8 #}
+                        <div class="layer-strength-fill" style="width: {% widthratio documents_count 8 100 %}%"></div>
+                    </div>
+                    <div class="layer-label">
+                        <span>Important Documents</span>
+                        <span class="layer-rating {% if documents_count >= 8 %}excellent{% elif documents_count >= 5 %}strong{% elif documents_count >= 2 %}moderate{% else %}weak{% endif %}">
+                            {% if documents_count >= 8 %}EXCELLENT{% elif documents_count >= 5 %}STRONG{% elif documents_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Family Guidance — max 5; fixed typo in heading -->
+                <div class="layer family">
+                    <div class="layer-header">
+                        <div class="layer-name">
+                            <i class="fas fa-users"></i>
+                            Family Guidance
+                        </div>
+                        <div class="layer-status">{{ family_knows_count }}/5</div>
+                    </div>
+                    <div class="layer-strength">
+                        {# widthratio: family_knows_count * 100 / 5 #}
+                        <div class="layer-strength-fill" style="width: {% widthratio family_knows_count 5 100 %}%"></div>
+                    </div>
+                    <div class="layer-label">
+                        <span>Family Notes</span>
+                        <span class="layer-rating {% if family_knows_count >= 5 %}excellent{% elif family_knows_count >= 3 %}strong{% elif family_knows_count >= 1 %}moderate{% else %}weak{% endif %}">
+                            {% if family_knows_count >= 5 %}EXCELLENT{% elif family_knows_count >= 3 %}STRONG{% elif family_knows_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
+                        </span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Security Log & Upcoming Reviews -->
-        <div class="vault-container">
-            <div class="security-log">
-                <h3><i class="fas fa-clipboard-list"></i> Information Log</h3>
-                <div class="log-entries">
-                    {% if accounts_count > 0 %}
-                    <div class="log-entry">
-                        <div class="log-icon success">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">{{ accounts_count }} digital {% if accounts_count == 1 %}account{% else %}accounts{% endif %} secured</div>
-                            <div class="log-time">Active protection</div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if devices_count > 0 %}
-                    <div class="log-entry">
-                        <div class="log-icon success">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">{{ devices_count }} {% if devices_count == 1 %}device{% else %}devices{% endif %} registered</div>
-                            <div class="log-time">Active protection</div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if first_delta %}
-                    <div class="log-entry">
-                        <div class="log-icon {% if first_delta.days <= 7 %}alert{% elif first_delta.days <= 30 %}warning{% else %}success{% endif %}">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">
-                                {% if first_delta.days <= 0 %}
-                                    Review overdue - action required
-                                {% elif first_delta.days <= 7 %}
-                                    Review due in {{ first_delta.days }} {% if first_delta.days == 1 %}day{% else %}days{% endif %}
-                                {% else %}
-                                    Next review in {{ first_delta.days }} days
-                                {% endif %}
-                            </div>
-                            <div class="log-time">Scheduled maintenance</div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if remaining_tasks > 0 %}
-                    <div class="log-entry">
-                        <div class="log-icon warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">
-                                {% if remaining_tasks >= 1 and accounts_count == 0 %}
-                                    Accounts Need Attention
-                                {% elif remaining_tasks >= 1 and care_relations_count == 0 %}    
-                                    Care Relation Needs Attention                            
-                                {% elif remaining_tasks >= 1 and contacts_count == 0 %}
-                                    Contacts Need Attention
-                                {% elif remaining_tasks >= 1 and devices_count == 0 %}
-                                    Devices Needs Attention
-                                {% elif remaining_tasks >= 1 and documents_count == 0 %}
-                                    Important Documents Need Attention
-                                {% elif remaining_tasks >= 1 and estates_count == 0 %}
-                                    Estate Documents Need Attention
-                                {% elif remaining_tasks >= 1 and family_knows_count == 0 %}
-                                    Family Needs to Know Needs Attention 
-                                {% endif %}
-                            </div>
-                            <div class="log-time">Security recommendation</div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if progress >= 100 %}
-                    <div class="log-entry">
-                        <div class="log-icon success">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">Vault fully secured - all systems operational</div>
-                            <div class="log-time">Congratulations!</div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Upcoming Reviews Section -->
+        <!-- Upcoming Reviews — full width below the two-column section -->
+        <div class="vault-reviews-row">
             <div class="upcoming-reviews">
                 <h3><i class="fas fa-calendar-check"></i> Upcoming Reviews</h3>
                 {% if upcoming_reviews %}
@@ -323,7 +369,7 @@
 
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
     <script src="{% static 'dashboard/js/progress.js' %}"></script>
-        <script src="{% static 'dashboard/js/test.js' %}"></script>
+    <script src="{% static 'dashboard/js/vault-dashboard.js' %}"></script>
 </body>
 
 </html>

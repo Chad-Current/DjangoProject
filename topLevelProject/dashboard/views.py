@@ -199,7 +199,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             'contacts': {'weight': 0.20, 'target': 5},
             'estates': {'weight': 0.15, 'target': 3},
             'documents': {'weight': 0.15, 'target': 5},
-            'family_knows': {'weight': 0.05, 'target': 3},
+            'family_knows': {'weight': 0.05, 'target': 5},
         }
         
         total_progress = 0

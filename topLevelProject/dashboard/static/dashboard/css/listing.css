@@ -118,6 +118,11 @@
     font-size: var(--font-nm);
     font-weight: 600;
     color: #1f2937;
+    a {
+        font-size: var(--font-nm);
+        font-family: var(--main-font);
+        font-weight: 700;
+    }
 }
 
 .contact-icon {

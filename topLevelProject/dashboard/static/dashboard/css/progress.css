@@ -10,9 +10,16 @@
   --vault-blue: var(--sixty-percent);
   --vault-accent: var(--thirty-percent);
   --layer-core: var(--sixty-percent);
-  --layer-accounts: var(--thirty-percent);
-  --layer-assets: var(--accent-color);
-  --layer-legacy: var(--ten-percent);
+  --layer-subcore: var(--thirty-percent);
+  --layer-lastcore: var(--accent-color);
+
+  /* Per-layer fill colours — distinct for every row */
+  --fill-legacy:    #62a2ce;   /* Core Identity  — medium blue  */
+  --fill-accounts:  #254e70;   /* Digital Accounts — deep navy  */
+  --fill-assets:    #3a7ca5;   /* Physical Assets  — mid navy   */
+  --fill-estate:    #ffa62b;   /* Estate Docs      — amber      */
+  --fill-documents: #2d6a9c;   /* Additional Docs  — steel blue */
+  --fill-family:    #f4845f;   /* Family Guidance  — warm coral */
 }
 
 /* Main Vault Container */
@@ -55,7 +62,6 @@
 
 /* Left Side - Progress Circle */
 .vault-visual {
-  /* background: rgba(231, 239, 247, 0.05); */
   border-radius: 20px;
   padding: 3rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
@@ -118,7 +124,7 @@
 }
 
 .progress-circle-fill {
-  stroke-dasharray: 534.07; /* 2 * π * r = 2 * 3.14159 * 85 */
+  stroke-dasharray: 534.07; /* 2 * π * 85 */
   stroke-dashoffset: 534.07;
   transition: stroke-dashoffset 1s ease, stroke 0.3s ease;
 }
@@ -151,24 +157,24 @@
   letter-spacing: 0.05em;
 }
 
-/* Color variants based on progress - Using progress.css color scheme */
+/* ─── Progress circle fill colour by level ─────────────────────────────────── */
 .progress-circle-container[data-progress-level="low"] .progress-circle-fill {
-  stroke: #FF2B2B; /* Red */
+  stroke: #FF2B2B;  /* Red   — 0–39% */
 }
 
 .progress-circle-container[data-progress-level="medium"] .progress-circle-fill {
-  stroke: #FFCE19; /* Yellow */
+  stroke: #FFCE19;  /* Yellow — 40–69% */
 }
 
 .progress-circle-container[data-progress-level="high"] .progress-circle-fill {
-  stroke: #19FF5A; /* Green */
+  stroke: #19FF5A;  /* Green  — 70–99% */
 }
 
 .progress-circle-container[data-progress-level="complete"] .progress-circle-fill {
-  stroke: #192EFF; /* Blue */
+  stroke: #192EFF;  /* Blue   — 100% */
 }
 
-/* Central Progress Display (keeping for backwards compatibility) */
+/* ─── Central progress display (backwards compat) ─────────────────────────── */
 .vault-center {
   position: relative;
   z-index: 2;
@@ -193,9 +199,8 @@
   font-weight: 600;
 }
 
-/* Right Side - Protection Layers */
+/* ─── Right Side — Protection Layers ──────────────────────────────────────── */
 .protection-layers {
-  /* background: var(--purewhite-color); */
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
@@ -219,21 +224,18 @@
   cursor: pointer;
 }
 
-
 .layer:hover {
   background: #dce6f0;
   transform: translateX(5px);
 }
 
-.layer.accounts {
-  border-left-color: var(--layer-accounts);
-}
-.layer.assets {
-  border-left-color: var(--layer-assets);
-}
-.layer.legacy {
-  border-left-color: var(--layer-legacy);
-}
+/* ─── Left-border accent per layer ─────────────────────────────────────────── */
+.layer.legacy    { border-left-color: var(--fill-legacy); }
+.layer.accounts  { border-left-color: var(--fill-accounts); }
+.layer.assets    { border-left-color: var(--fill-assets); }
+.layer.estate    { border-left-color: var(--fill-estate); }
+.layer.documents { border-left-color: var(--fill-documents); }
+.layer.family    { border-left-color: var(--fill-family); }
 
 .layer-header {
   display: flex;
@@ -252,10 +254,6 @@
   gap: 0.5rem;
 }
 
-.layer-icon {
-  font-size: var(--font-lg);
-}
-
 .layer-status {
   font-family: var(--main-font);
   font-size: var(--font-lg);
@@ -263,34 +261,31 @@
   color: var(--ten-percent);
 }
 
-/* Strength Bar */
+/* ─── Strength bar track ─────────────────────────────────────────────────── */
 .layer-strength {
   width: 100%;
   height: 8px;
   background: #dce6f0;
   border-radius: 4px;
-  overflow: hidden;
+  overflow: hidden;  /* ensures fill never visually exceeds 100% */
   margin-bottom: 0.5rem;
 }
 
+/* ─── Default fill (fallback) ────────────────────────────────────────────── */
 .layer-strength-fill {
   height: 100%;
-  background: var(--layer-core);
   border-radius: 4px;
-  transition: width 1s ease;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--layer-core);  /* fallback */
 }
 
-.layer.accounts .layer-strength-fill {
-  background: var(--layer-accounts);
-}
-
-.layer.assets .layer-strength-fill {
-  background: var(--layer-assets);
-}
-
-.layer.legacy .layer-strength-fill {
-  background: var(--layer-legacy);
-}
+/* ─── Distinct fill colour per layer ────────────────────────────────────── */
+.layer.legacy    .layer-strength-fill { background: var(--fill-legacy); }
+.layer.accounts  .layer-strength-fill { background: var(--fill-accounts); }
+.layer.assets    .layer-strength-fill { background: var(--fill-assets); }
+.layer.estate    .layer-strength-fill { background: var(--fill-estate); }
+.layer.documents .layer-strength-fill { background: var(--fill-documents); }
+.layer.family    .layer-strength-fill { background: var(--fill-family); }
 
 .layer-label {
   font-family: var(--paragraph-font);
@@ -301,24 +296,50 @@
   font-weight: 300;
 }
 
-.layer-rating {
-  font-weight: 600;
+.layer-rating { font-weight: 600; }
+
+/* ─── Rating colours — matching their layer's accent ────────────────────── */
+.layer.legacy    .layer-rating.excellent,
+.layer.legacy    .layer-rating.strong    { color: var(--fill-legacy); }
+
+.layer.accounts  .layer-rating.excellent,
+.layer.accounts  .layer-rating.strong    { color: var(--fill-accounts); }
+
+.layer.assets    .layer-rating.excellent,
+.layer.assets    .layer-rating.strong    { color: var(--fill-assets); }
+
+.layer.estate    .layer-rating.excellent,
+.layer.estate    .layer-rating.strong    { color: var(--fill-estate); }
+
+.layer.documents .layer-rating.excellent,
+.layer.documents .layer-rating.strong    { color: var(--fill-documents); }
+
+.layer.family    .layer-rating.excellent,
+.layer.family    .layer-rating.strong    { color: var(--fill-family); }
+
+/* Moderate / Weak are always amber — a universal caution signal */
+.layer-rating.moderate { color: #ffa62b; }
+.layer-rating.weak     { color: #e05c3a; }
+
+
+/* ─── Upcoming Reviews full-width row ────────────────────────────────────── */
+.vault-reviews-row {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.layer-rating.excellent {
-  color: var(--layer-core);
-}
-.layer-rating.strong {
-  color: var(--layer-accounts);
-}
-.layer-rating.moderate {
-  color: var(--layer-assets);
-}
-.layer-rating.weak {
-  color: var(--layer-legacy);
+/* ─── Security Log ───────────────────────────────────────────────────────── */
+/* When nested inside .vault-visual the card chrome is already provided,
+   so we strip the extra shadow/background and just add a top separator. */
+.vault-visual .security-log {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  margin-top: 2rem;
+  border-top: 1px solid #dce6f0;
+  padding-top: 2rem;
 }
 
-/* Security Log */
 .security-log {
   background: rgba(231, 239, 247, 0.05);
   border-radius: 20px;
@@ -384,9 +405,7 @@
   color: var(--ten-percent);
 }
 
-.log-content {
-  flex: 1;
-}
+.log-content { flex: 1; }
 
 .log-message {
   font-family: var(--main-font);
@@ -403,12 +422,12 @@
   font-weight: 300;
 }
 
-/* Upcoming Reviews Section */
+/* ─── Upcoming Reviews ───────────────────────────────────────────────────── */
 .upcoming-reviews {
   background: rgba(231, 239, 247, 0.05);
   border-radius: 20px;
   padding: 2rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -463,9 +482,6 @@
 .review-icon {
   width: 36px;
   height: 36px;
-  /* border-radius: 8px; */
-  /* background: var(--sixty-percent);
-  color: var(--purewhite-color); */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,13 +515,9 @@
   font-weight: 300;
 }
 
-.review-separator {
-  color: var(--sixty-percent);
-}
+.review-separator { color: var(--sixty-percent); }
 
-.review-status {
-  flex-shrink: 0;
-}
+.review-status { flex-shrink: 0; }
 
 .status-badge {
   font-family: var(--main-font);
@@ -519,24 +531,11 @@
   white-space: nowrap;
 }
 
-.status-badge i {
-  font-size: 0.85em;
-}
+.status-badge i { font-size: 0.85em; }
 
-.status-badge.overdue {
-  background: rgba(37, 78, 112, 0.1);
-  color: var(--ten-percent);
-}
-
-.status-badge.warning {
-  background: rgba(255, 166, 43, 0.1);
-  color: var(--accent-color);
-}
-
-.status-badge.upcoming {
-  background: rgba(98, 162, 206, 0.1);
-  color: var(--thirty-percent);
-}
+.status-badge.overdue  { background: rgba(37,  78, 112, 0.1); color: var(--ten-percent); }
+.status-badge.warning  { background: rgba(255, 166, 43,  0.1); color: var(--accent-color); }
+.status-badge.upcoming { background: rgba(98,  162, 206, 0.1); color: var(--thirty-percent); }
 
 .review-footer {
   margin-top: 1.5rem;
@@ -557,18 +556,14 @@
   transition: all 0.3s ease;
 }
 
-.view-all-reviews:hover {
-  color: var(--ten-percent);
-}
+.view-all-reviews:hover { color: var(--ten-percent); }
 
 .view-all-reviews i {
   font-size: 0.8em;
   transition: transform 0.3s ease;
 }
 
-.view-all-reviews:hover i {
-  transform: translateX(3px);
-}
+.view-all-reviews:hover i { transform: translateX(3px); }
 
 .empty-reviews {
   text-align: center;
@@ -597,7 +592,7 @@
   font-weight: 300;
 }
 
-/* Responsive */
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 1200px) {
   .vault-container {
     grid-template-columns: 1fr;
@@ -606,39 +601,22 @@
 }
 
 @media (max-width: 768px) {
-  .vault-dashboard {
-    padding: 1rem;
-  }
+  .vault-dashboard { padding: 1rem; }
 
-  .vault-hero h1 {
-    font-size: 2rem;
-  }
+  .vault-hero h1 { font-size: 2rem; }
 
-  .progress-circle-wrapper {
-    min-height: 200px;
-  }
+  .progress-circle-wrapper { min-height: 200px; }
 
   .progress-circle-container {
     width: 160px;
     height: 160px;
   }
 
-  .progress-percentage {
-    font-size: 2rem;
-  }
-
-  .progress-label {
-    font-size: var(--font-sm);
-  }
+  .progress-percentage { font-size: 2rem; }
+  .progress-label      { font-size: var(--font-sm); }
 }
 
-/* Responsive sizing from progress.css */
 @media (max-width: 640px) {
-  .progress-percentage {
-    font-size: var(--font-sm);
-  }
-  
-  .progress-label {
-    font-size: var(--font-sm);
-  }
+  .progress-percentage { font-size: var(--font-sm); }
+  .progress-label      { font-size: var(--font-sm); }
 }
