@@ -130,7 +130,7 @@ class ExternalRecoveryRequestForm(forms.ModelForm):
         
         # NEED TO CHANGE FOR PRODUCTION LEVEL
         # verification_url = f"{settings.SITE_URL}{reverse('recovery:verify_recovery_request', kwargs={'token': instance.verification_token})}"
-        veriification_url = f"URL FOR Settings.SITE_URL"
+        verification_url = f"http://localhost:8000"
         subject = "Verify Your Account Recovery Request"
         message = f"""
 Dear {instance.requester_first_name} {instance.requester_last_name},

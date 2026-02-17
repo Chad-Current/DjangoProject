@@ -1,181 +1,363 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Estate Management & Family Access Planning</title>
+    <link rel="stylesheet" href="static/baseapp/css/index.css">
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="trust-badge">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M16.7 5.3L8.5 13.5L3.3 8.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Trusted by 500+ Families
+                    </div>
+                    <h1>Digital Estate Management & Family Access Planning</h1>
+                    <p class="hero-subtitle">
+                        A secure system that organizes your digital life, assigns responsibility, and ensures your family knows exactly what to do — without confusion, delay, or chaos.
+                    </p>
+                    <p class="hero-credential">
+                        <strong>Built on a structured, role-based system — not just a checklist.</strong>
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">Request Services</button>
+                        <button class="btn btn-secondary">Learn More</button>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
+                </div>
+            </div>
+        </div>
+    </section>
 
-{% block main %}
-<div class="main">
-  <div class="parent row col-gap-4">
-    <div class="parent-col flex-start">
-      <tag><img src="/static/baseapp/images/Checkmark.svg">Trusted by 500+ Families</tag>
-      <h1>
-        Digital Estate Prep for Families & Seniors
-      </h1>
-      <h5>
-        Give your family the gift of clarity. We organize your digital accounts, passwords, and important
-        documents making sure everything is secure and ready when it matters most.
-      </h5>
-      <div class="bg-pure bdr-round pd-0 mg-0">
-        <ul>
-          <li>How We Make Life Easier:</li>
-          <li>
-            <p>✓ Complete secure password vault</p>
-          </li>
-          <li>
-            <p>✓ All digital documents organized and accessible</p>
-          </li>
-          <li>
-            <p>✓ Clear instructions for your family</p>
-          </li>
-          <li>
-            <p>✓ Review access to stay current</p>
-          </li>
-        </ul>
-      </div>
-      <div class="button-row col-gap-4 mt-2">
-        <button class="button">Request Services</button>
-        <button class="button">Learn More</button>
-      </div>
-    </div>
-    <div class="parent">
-      <img src="/static/baseapp/images/coverphoto.svg" class="cover-img border-light">
-    </div>
-  </div> <!-- END PARENT HERE -->
+    <!-- MORE THAN PASSWORD STORAGE -->
+    <section class="value-proposition">
+        <div class="container">
+            <div class="section-header">
+                <h2>Your Family Doesn't Just Need Passwords.<br>They Need A Plan.</h2>
+                <p class="section-subtitle">Organization without delegation still creates confusion.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Who handles what</h3>
+                    <p>Clear role assignments for digital executor, caregivers, and emergency contacts</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Which accounts close vs stay active</h3>
+                    <p>Decommission instructions for each account — nothing left to guesswork</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>Who becomes digital executor</h3>
+                    <p>Formal contact designation with delegated access and authority</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>When documents apply</h3>
+                    <p>Legal documents tagged for death, incapacity, or immediate use</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Where devices and 2FA are located</h3>
+                    <p>Complete device inventory with physical locations and access methods</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>What needs review and when</h3>
+                    <p>Built-in relevance review cycles — nothing gets outdated or forgotten</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <div class="parent-col">
-    <div>
-      <h3>With Out A Plan, Your Family Faces These Challenges</h3>
-    </div>
-    <div class="parent-row col-gap-4">
-      <div class="card-info pd-1">
-        <img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" class="img-sm"/>
-        <h5>40+ Hours Wasted</h5>
-        <p>Families spend an average of 40+ hours trying to recover digital assets and access accounts</p>
-      </div>
-      <div class="card-info pd-1">
-        <img src="/static/baseapp/images/Payment-Recieve-7--Streamline-Plump.svg" class="img-sm"/>
-        <h5>Subscriptions Keep Charging</h5>
-        <p>Forgotten subscriptions drain hundreds or thousands of dollars after someone passes</p>
-      </div>
-      <div class="card-info pd-1">
-        <img src="/static/baseapp/images/Gallery-2--Streamline-Plump.svg" class="img-sm"/>
-        <h5>Memories Lost Forever</h5>
-        <p>Precious photos and videos locked in forgotten accounts disappear permanently</p>
-      </div>
-    </div>
-    <div class="parent-row flex-center flex-just-center w40 mt-4">
-      <h5>"When Mom passed, we spent 6 months trying to access her accounts. We never did find her investment
-        account login, and her digital photos are gone forever. I don't want my kids to go through that."</h5>
-      <p>— Sarah M., Des Moines</p>
-    </div>
-  </div> <!-- END PARENT COL -->
+    <!-- PLATFORM ARCHITECTURE -->
+    <section class="platform-architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2>A Complete Digital Estate Management System</h2>
+                <p class="section-subtitle">Five integrated modules that work together to provide clarity, control, and accountability</p>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-number">1</div>
+                    <h3>Identity & Profile</h3>
+                    <p class="module-desc">Personal details. Legal structure. Centralized ownership.</p>
+                    <ul class="module-features">
+                        <li>Complete profile management</li>
+                        <li>Legal name and identifiers</li>
+                        <li>Estate structure documentation</li>
+                    </ul>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-number">2</div>
+                    <h3>Role-Based Contacts</h3>
+                    <p class="module-desc">Emergency contacts. Digital executor. Caregiver. Delegated access.</p>
+                    <ul class="module-features">
+                        <li>Emergency contact hierarchy</li>
+                        <li>Digital executor assignment</li>
+                        <li>Caregiver coordination</li>
+                        <li>Delegated access tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-number">3</div>
+                    <h3>Digital Accounts & Devices</h3>
+                    <p class="module-desc">Banking. Email. Subscriptions. 2FA Devices.</p>
+                    <ul class="module-features">
+                        <li>Complete account inventory</li>
+                        <li>Device tracking with locations</li>
+                        <li>2FA backup methods</li>
+                        <li>Close vs preserve logic</li>
+                    </ul>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-number">4</div>
+                    <h3>Legal Documents</h3>
+                    <p class="module-desc">Healthcare directives. Financial POA. Trust documents. Wills.</p>
+                    <ul class="module-features">
+                        <li>Document categorization</li>
+                        <li>Death vs incapacity logic</li>
+                        <li>Immediate access items</li>
+                        <li>Secure encrypted storage</li>
+                    </ul>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-number">5</div>
+                    <h3>Relevance Reviews</h3>
+                    <p class="module-desc">Scheduled intervals. Lifecycle management. Nothing gets outdated.</p>
+                    <ul class="module-features">
+                        <li>Automated review scheduling</li>
+                        <li>Still matters? What changed?</li>
+                        <li>Built-in maintenance system</li>
+                        <li>Quarterly and annual cycles</li>
+                    </ul>
+                </div>
+                
+                <div class="module-card module-highlight">
+                    <div class="module-number">⚡</div>
+                    <h3>Three Activation Modes</h3>
+                    <p class="module-desc">Your documents activate when appropriate:</p>
+                    <ul class="activation-modes">
+                        <li><span class="mode-indicator immediate"></span><strong>Immediate:</strong> Available right now</li>
+                        <li><span class="mode-indicator incapacity"></span><strong>Incapacity:</strong> Healthcare, POA</li>
+                        <li><span class="mode-indicator death"></span><strong>Death:</strong> Estate settlement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <div class="parent-col">
-    <h2>How It Works: Simple 3-Step Process</h2>
-    <h5>Complete peace of mind in just 2-3 sessions over 2-4 weeks</h5>
-    <div class="parent-row col-gap-4">
-      <div class="card-info pd-1"><img src="/static/baseapp/images/1.svg" class="img-nm" />
-        <h2>Discover</h2>
-        <p>We find all your digital accounts—even the ones you forgot about. Banking, utilities, social media,
-          subscriptions, and more.</p>
-      </div>
-      <div class="card-info pd-1"><img src="/static/baseapp/images/2.svg" class="img-nm" />
-        <h2>Secure</h2>
-        <p>We set up your personal encrypted vault with a master password you control, plus secure family access
-          options.</p>
-      </div>
-      <div class="card-info pd-1"><img src="/static/baseapp/images/3.svg" class="img-nm" />
-        <h2>Organize</h2>
-        <p>We create your complete digital legacy plan with clear instructions, so your family knows exactly what to
-          do.</p>
-      </div>
-    </div>
-  </div>
+    <!-- PROBLEMS WITHOUT A PLAN -->
+    <section class="problems">
+        <div class="container">
+            <div class="section-header">
+                <h2>Without A Plan, Your Family Faces These Challenges</h2>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" alt="Time wasted">
+                    </div>
+                    <h3>40+ Hours Wasted</h3>
+                    <p>Families spend an average of 40+ hours trying to recover digital assets and access accounts</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <img src="/static/baseapp/images/Payment-Recieve-7--Streamline-Plump.svg" alt="Money lost">
+                    </div>
+                    <h3>Subscriptions Keep Charging</h3>
+                    <p>Forgotten subscriptions drain hundreds or thousands of dollars after someone passes</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <img src="/static/baseapp/images/Gallery-2--Streamline-Plump.svg" alt="Memories lost">
+                    </div>
+                    <h3>Memories Lost Forever</h3>
+                    <p>Precious photos and videos locked in forgotten accounts disappear permanently</p>
+                </div>
+            </div>
+            
+            <div class="testimonial-box">
+                <p class="testimonial-quote">
+                    "When Mom passed, we spent 6 months trying to access her accounts. We never did find her investment account login, and her digital photos are gone forever. I don't want my kids to go through that."
+                </p>
+                <p class="testimonial-author">— Sarah M., Des Moines</p>
+            </div>
+        </div>
+    </section>
 
-  <div class="parent">
-    <div class="parent-col">
-      <tag>For Adult Children</tag>
-      <h2>How to Start the Conversation with Your Parents</h2>
-      <h5>Talking about digital estate planning can feel awkward. Here's how to approach it with care:</h5>
-      <ul>
-        <li>
-          <strong>Frame it as a gift:</strong><span class="indented">"I want to make sure I can help you if
-            anything happens to your computer or phone.</span>
-        </li>
-        <li>
-          <strong>Share your own experience:</strong><span class="indented">"I just organized my own accounts and
-            it felt so good to have everything in one place."</span>
-        </li>
-        <li>
-          <strong>Offer to do it together:</strong><span class="indented">"Let's get you set up with help from
-            professionals—it'll give us both peace of mind."</span>
-        </li>
-      </ul>
-    </div> <!-- END PARENTLEFT-->
-    <div class="parent-col bg-pure bdr-round pd-2">
-      <h4>"I wish we'd done this sooner. When my dad had his stroke, we couldn't access anything. This service was
-        a lifesaver for our family."</h4>
-      <p>— Jennifer T., Des Moines</p>
-      <hr>
-      </hr>
-      <h3>Common Objections & Answers:</h3>
-      <ul>
-        <li>
-          <strong>"I'm not good with computers"</strong><span>We do all the technical work for you</span>
-        </li>
-        <li>
-          <strong>"This seems depressing"</strong><span>It's empowering—you stay in control</span>
-        </li>
-        <li>
-          <strong>"I don't have many accounts"</strong><span>Most people have 80-100+ digital accounts</span>
-        </li>
-      </ul>
-    </div> <!-- END PARENT-RIGHT -->
-  </div> <!-- END PARENT HERE-->
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works: Simple 3-Step Process</h2>
+                <p class="section-subtitle">Complete peace of mind in just 2-3 sessions over 2-4 weeks</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-image">
+                        <img src="/static/baseapp/images/1.svg" alt="Step 1">
+                    </div>
+                    <h3>Discover</h3>
+                    <p>We find all your digital accounts—even the ones you forgot about. Banking, utilities, social media, subscriptions, and more.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-image">
+                        <img src="/static/baseapp/images/2.svg" alt="Step 2">
+                    </div>
+                    <h3>Secure</h3>
+                    <p>We set up your personal encrypted vault with role-based access for your digital executor and family members, plus activation logic for different scenarios.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-image">
+                        <img src="/static/baseapp/images/3.svg" alt="Step 3">
+                    </div>
+                    <h3>Organize</h3>
+                    <p>We create your complete digital estate management plan with clear delegation, decommission instructions, and ongoing review cycles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- <div class="parent-col"> -->
-  <div class="parent-col">
-    <h2>Transparent, Affordable Pricing</h2>
-    <h5>One-time service • No monthly fees • Update anytime on your own</h5>
+    <!-- FOR ADULT CHILDREN -->
+    <section class="adult-children">
+        <div class="container">
+            <div class="two-column">
+                <div class="column-left">
+                    <div class="section-tag">For Adult Children</div>
+                    <h2>How to Start the Conversation with Your Parents</h2>
+                    <p class="intro-text">Talking about digital estate planning can feel awkward. Here's how to approach it with care:</p>
+                    
+                    <div class="conversation-tips">
+                        <div class="tip">
+                            <h4>Frame it as a gift:</h4>
+                            <p>"I want to make sure I can help you if anything happens to your computer or phone."</p>
+                        </div>
+                        
+                        <div class="tip">
+                            <h4>Share your own experience:</h4>
+                            <p>"I just organized my own accounts and it felt so good to have everything in one place."</p>
+                        </div>
+                        
+                        <div class="tip">
+                            <h4>Offer to do it together:</h4>
+                            <p>"Let's get you set up with help from professionals—it'll give us both peace of mind."</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column-right">
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote-large">
+                            "I wish we'd done this sooner. When my dad had his stroke, we couldn't access anything. This service was a lifesaver for our family."
+                        </p>
+                        <p class="testimonial-author">— Jennifer T., Des Moines</p>
+                    </div>
+                    
+                    <div class="objections-box">
+                        <h3>Common Objections & Answers:</h3>
+                        <div class="objection">
+                            <strong>"I'm not good with computers"</strong>
+                            <p>We do all the technical work for you</p>
+                        </div>
+                        <div class="objection">
+                            <strong>"This seems depressing"</strong>
+                            <p>It's empowering—you stay in control</p>
+                        </div>
+                        <div class="objection">
+                            <strong>"I don't have many accounts"</strong>
+                            <p>Most people have 80-100+ digital accounts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="parent row mt-4 col-gap-4">
-      <div class="card-info-price bdr-light">
-        <ul>
-          <li><strong>Essentials Package</strong></li>
-          <li>
-            <h1>$297<tiny>one-time</tiny>
-            </h1>
-          </li>
-          <li>✓ Accounts Directory</li>
-          <li>✓ Secure Vault Setup</li>
-          <li>✓ Password Organization</li>
-          <li>✓ Estate Profile</li>
-          <li>✓ Emergency Contacts & Delegations</li>
-          <li>✓ Device & Access Review</li>
-          <li><button class="button">Get Started</button></li>
-        </ul>
-      </div>
+    <!-- PRICING -->
+    <section class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Transparent, Affordable Pricing</h2>
+                <p class="section-subtitle">One-time service • No monthly fees • Update anytime on your own</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Foundation Plan</h3>
+                    <p class="plan-description">For individuals who want structure and clarity</p>
+                    <div class="price">
+                        <span class="price-amount">$297</span>
+                        <span class="price-period">one-time</span>
+                    </div>
+                    <ul class="features-list">
+                        <li>✓ Complete Estate Profile</li>
+                        <li>✓ Secure Encrypted Vault</li>
+                        <li>✓ Digital Accounts Inventory</li>
+                        <li>✓ Role-Based Contact Assignment</li>
+                        <li>✓ Emergency Contact Hierarchy</li>
+                        <li>✓ Device & 2FA Tracking</li>
+                        <li>✓ Decommission Instructions</li>
+                    </ul>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+                
+                <div class="pricing-card pricing-featured">
+                    <div class="featured-badge">Most Popular</div>
+                    <h3 class="plan-name">Family Continuity Plan</h3>
+                    <p class="plan-description">For households who want full delegation and lifecycle oversight</p>
+                    <div class="price">
+                        <span class="price-amount">$597</span>
+                        <span class="price-period">one-time</span>
+                    </div>
+                    <ul class="features-list">
+                        <li>✓ Everything in Foundation, Plus:</li>
+                        <li>✓ <strong>Role Assignment & Delegation Tracking</strong></li>
+                        <li>✓ <strong>Ongoing Review Cycles</strong></li>
+                        <li>✓ <strong>Incapacity vs Death Logic</strong></li>
+                        <li>✓ Document Digitization Service</li>
+                        <li>✓ Legal Document Categorization</li>
+                        <li>✓ Complete Digital Estate Instructions</li>
+                        <li>✓ Quarterly & Annual Maintenance Checkups</li>
+                    </ul>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <div class="card-info-price bdr-dark">
-        <ul>
-          <li>
-            <tag>Most Popular</tag>
-          </li>
-          <li><strong>Complete Legacy Package</strong></li>
-          <li>
-            <h1>$597<tiny>one-time</tiny>
-            </h1>
-          </li>
-          <li>✓ Everything in Essential, Plus:</li>
-          <li>✓ Document digitization service</li>
-          <li>✓ Family Legacy Folder Structure</li>
-          <li>✓ Complete Digital Will & Instructions</li>
-          <li>✓ Annual & Quarterly Checkups</li>
-          <li><button class="button">Get Started</button></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- </div> -->
-</div><!-- END MAIN HERE-->
+    <!-- CLOSING CTA -->
+    <section class="closing-cta">
+        <div class="container">
+            <h2 class="closing-headline">Your family doesn't need access.<br>They need direction.</h2>
+        </div>
+    </section>
 
-{% endblock %}
+</body>
+</html>
