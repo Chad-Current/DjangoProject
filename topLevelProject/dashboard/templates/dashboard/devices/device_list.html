@@ -1,61 +1,61 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends "dashboard/dashboard.html" %}
 {% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/listing.css' %}" type="text/css">
 {% endblock %}
-{% block title %}Accounts{% endblock %}
+{% block title %}Devices{% endblock %}
 
 {% block content %}
 <div class="main">
     <div class="page-header">
         <div class="header-content">
-            <h1 class="page-title">Accounts</h1>
-            <p class="page-subtitle">Manage your accounts information</p>
+            <h1 class="page-title">Devices</h1>
+            <p class="page-subtitle">Manage your Device information</p>
         </div>
         {% if can_modify %}
         <div class="header-action">
-            <a href="{% url 'dashboard:account_create' %}" class="btn-add-contact">
+            <a href="{% url 'dashboard:device_create' %}" class="btn-add-contact">
                 <i class="fas fa-plus-circle"></i>
-                <span>Add Account</span>
+                <span>Add Device</span>
             </a>
         </div>
         {% endif %}
     </div>
 
     <div class="contacts-content">
-        {% if accounts %}
+        {% if devices %}
         <div class="table-view d-none d-md-block">
             <div class="table-responsive">
                 <table class="table contacts-table">
                     <thead>
                         <tr>
                             <th>Category</th>
-                            <th>Provider</th>
+                            <th>Name</th>
                             <th>Assigned to</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for account in accounts %}
+                        {% for device in devices %}
                         <tr>
                             <td>
                                 <div class="contact-name">
-                                    <i class="fas fa-user-circle contact-icon"></i>
-                                    <span>{{ account.account_category }}</span>
+                                    <i class="fas fa-laptop contact-icon"></i>
+                                    <span>{{ device.device_type }}</span>
                                 </div>
                             </td>
-                            <td><span>{{ account.account_name_or_provider }}</span></td>
-                            <td><span class="contact-info">{{ account.delegated_account_to|truncatechars:50 }}</span></td>
+                            <td><span>{{ device.device_name }}</span></td>
+                            <td><span class="contact-info">{{ device.delegated_device_to|truncatechars:50 }}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{% url 'dashboard:account_detail' account.pk %}" class="btn-action btn-edit" title="View account">
+                                    <a href="{% url 'dashboard:device_detail' device.pk %}" class="btn-action btn-edit" title="View device">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     {% if can_modify %}
-                                    <a href="{% url 'dashboard:account_update' account.pk %}" class="btn-action btn-edit" title="Edit account">
+                                    <a href="{% url 'dashboard:device_update' device.pk %}" class="btn-action btn-edit" title="Edit device">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'dashboard:account_delete' account.pk %}" class="btn-action btn-delete" title="Delete account">
+                                    <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn-action btn-delete" title="Delete device">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                     {% endif %}
@@ -69,25 +69,25 @@
         </div>
 
         <div class="card-view d-md-none">
-            {% for account in accounts %}
+            {% for device in devices %}
             <div class="contact-card">
                 <div class="card-header-section">
-                    <div class="contact-avatar"><i class="fas fa-user-circle"></i></div>
+                    <div class="contact-avatar"><i class="fas fa-tablet-alt contact-icon"></i></div>
                     <div class="contact-details">
-                        <h3 class="contact-card-name">{{ account.account_name_or_provider }}</h3>
-                        <span class="badge-relationship-mobile">{{ account.account_category }}</span>
+                        <h3 class="contact-card-name">{{ device.device_name }}</h3>
+                        <span class="badge-relationship-mobile">{{ device.device_type }}</span>
                     </div>
                 </div>
                 <div class="card-body-section">
-                    <div class="info-label">Information</div>
-                    <p class="contact-info-text">{{ account.account_name_or_provider|truncatechars:100 }}</p>
+                    <div class="info-label">Location</div>
+                    <p class="contact-info-text">{{ device.location_description|truncatechars:100 }}</p>
                 </div>
                 {% if can_modify %}
                 <div class="card-actions">
-                    <a href="{% url 'dashboard:account_update' account.pk %}" class="btn-card-action btn-edit-card">
+                    <a href="{% url 'dashboard:device_update' device.pk %}" class="btn-card-action btn-edit-card">
                         <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
-                    <a href="{% url 'dashboard:account_delete' account.pk %}" class="btn-card-action btn-delete-card">
+                    <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn-card-action btn-delete-card">
                         <i class="fas fa-trash-alt"></i><span>Delete</span>
                     </a>
                 </div>
@@ -99,10 +99,12 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon"><i class="fas fa-address-book"></i></div>
-            <h2 class="empty-state-title">No Accounts Yet</h2>
-            <p class="empty-state-text">Start building your accounts list by adding your first account.</p>
+            <h2 class="empty-state-title">No Devices Yet</h2>
+            <p class="empty-state-text">Start building your devices list by adding your first device.</p>
             {% if can_modify %}
-            <a href="{% url 'dashboard:account_create' %}" class="btn-add-first">Add Your First Account</a>
+            <a href="{% url 'dashboard:device_create' %}" class="btn-add-first">
+                <i class="fas fa-plus-circle"></i> Add Your First Device
+            </a>
             {% endif %}
         </div>
         {% endif %}

@@ -131,7 +131,6 @@ class LogoutView(LoginRequiredMixin, View):
         return self.get(request)
 
 
-
 class PaymentView(LoginRequiredMixin, View):
     """Handle payment selection and activation"""
     template_name = 'accounts/payment.html'

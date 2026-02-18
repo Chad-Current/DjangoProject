@@ -3,118 +3,65 @@
 
 {% block ob_content %}
 
-<!-- Celebration header -->
-<div class="ob-page-header" style="text-align: center;">
-  <div style="
-    width: 72px; height: 72px;
-    background: var(--accent-color);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 1.25rem;
-    box-shadow: 0 6px 24px rgba(255,166,43,0.3);
-  ">🎉</div>
-  <div class="ob-eyebrow" style="text-align: center;">Setup Complete</div>
-  <h1 style="margin-bottom: 0.4rem;">You're all set.</h1>
-  <p>Your digital estate foundation is in place. Your family will thank you for this.</p>
+<div class="ob-page-header ob-complete-header">
+  <div class="ob-complete-trophy">🎉</div>
+  <div class="ob-eyebrow">All 6 Steps Complete</div>
+  <h1>You're all set.</h1>
+  <p>Your digital estate is documented. Your family will have everything they need when it matters most.</p>
 </div>
 
-<!-- Summary counts -->
-<div class="detail-view" style="margin-bottom: 1.75rem;">
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+<div class="ob-full-card">
 
-    <div style="text-align: center; padding: 1.5rem 1rem; background: var(--background-color); border-radius: 14px; border-left: 4px solid var(--sixty-percent);">
-      <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">👥</div>
-      <div style="font-family: var(--title-font); font-size: var(--font-xxl); font-weight: 700; color: var(--ten-percent); line-height: 1;">{{ progress.contacts }}</div>
-      <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 4px;">Contact{{ progress.contacts|pluralize }}</div>
+  <div class="ob-full-card-intro">
+    <h3>Your estate at a glance</h3>
+    <p>Here's a summary of everything you've added across all six steps.</p>
+  </div>
+
+  <div class="ob-count-grid">
+
+    <div class="ob-count-cell accent-blue">
+      <div class="ob-count-emoji">👥</div>
+      <div class="ob-count-number">{{ progress.contacts }}</div>
+      <div class="ob-count-label">Contact{{ progress.contacts|pluralize }}</div>
     </div>
 
-    <div style="text-align: center; padding: 1.5rem 1rem; background: var(--background-color); border-radius: 14px; border-left: 4px solid var(--thirty-percent);">
-      <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">🔐</div>
-      <div style="font-family: var(--title-font); font-size: var(--font-xxl); font-weight: 700; color: var(--ten-percent); line-height: 1;">{{ progress.accounts }}</div>
-      <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 4px;">Account{{ progress.accounts|pluralize }}</div>
+    <div class="ob-count-cell accent-navy">
+      <div class="ob-count-emoji">🔐</div>
+      <div class="ob-count-number">{{ progress.accounts }}</div>
+      <div class="ob-count-label">Account{{ progress.accounts|pluralize }}</div>
     </div>
 
-    <div style="text-align: center; padding: 1.5rem 1rem; background: var(--background-color); border-radius: 14px; border-left: 4px solid var(--accent-color);">
-      <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">💻</div>
-      <div style="font-family: var(--title-font); font-size: var(--font-xxl); font-weight: 700; color: var(--ten-percent); line-height: 1;">{{ progress.devices }}</div>
-      <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 4px;">Device{{ progress.devices|pluralize }}</div>
+    <div class="ob-count-cell accent-amber">
+      <div class="ob-count-emoji">💻</div>
+      <div class="ob-count-number">{{ progress.devices }}</div>
+      <div class="ob-count-label">Device{{ progress.devices|pluralize }}</div>
+    </div>
+
+    <div class="ob-count-cell accent-amber">
+      <div class="ob-count-emoji">📜</div>
+      <div class="ob-count-number">{{ progress.estates }}</div>
+      <div class="ob-count-label">Estate Doc{{ progress.estates|pluralize }}</div>
+    </div>
+
+    <div class="ob-count-cell accent-navy">
+      <div class="ob-count-emoji">📂</div>
+      <div class="ob-count-number">{{ progress.documents }}</div>
+      <div class="ob-count-label">Document{{ progress.documents|pluralize }}</div>
+    </div>
+
+    <div class="ob-count-cell accent-blue">
+      <div class="ob-count-emoji">💌</div>
+      <div class="ob-count-number">{{ progress.family_knows }}</div>
+      <div class="ob-count-label">Family Note{{ progress.family_knows|pluralize }}</div>
     </div>
 
   </div>
 
-  <!-- What's next -->
-  <h3 style="margin: 0 0 1rem; font-size: var(--font-xl);">What's next?</h3>
-
-  <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
-
-    <a href="{% url 'dashboard:estate_create' %}" style="
-      display: flex; align-items: center; gap: 14px;
-      padding: 1.1rem 1.25rem;
-      background: var(--background-color);
-      border-radius: 14px;
-      border-left: 4px solid var(--accent-color);
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      color: inherit;
-    " onmouseover="this.style.background='#dce6f0';this.style.transform='translateX(4px)'"
-       onmouseout="this.style.background='var(--background-color)';this.style.transform='none'">
-      <div style="width: 38px; height: 38px; background: rgba(255,166,43,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">📜</div>
-      <div style="flex: 1;">
-        <div style="font-family: var(--main-font); font-size: var(--font-nm); font-weight: 700; color: var(--text-color-dark);">Add Estate Documents</div>
-        <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 1px;">Wills, powers of attorney, advance directives</div>
-      </div>
-      <i class="fas fa-chevron-right" style="color: var(--sixty-percent); font-size: 0.85rem;"></i>
-    </a>
-
-    <a href="{% url 'dashboard:importantdocument_create' %}" style="
-      display: flex; align-items: center; gap: 14px;
-      padding: 1.1rem 1.25rem;
-      background: var(--background-color);
-      border-radius: 14px;
-      border-left: 4px solid var(--thirty-percent);
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      color: inherit;
-    " onmouseover="this.style.background='#dce6f0';this.style.transform='translateX(4px)'"
-       onmouseout="this.style.background='var(--background-color)';this.style.transform='none'">
-      <div style="width: 38px; height: 38px; background: rgba(45,106,156,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">📂</div>
-      <div style="flex: 1;">
-        <div style="font-family: var(--main-font); font-size: var(--font-nm); font-weight: 700; color: var(--text-color-dark);">Add Important Documents</div>
-        <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 1px;">Insurance, tax records, property deeds, IDs</div>
-      </div>
-      <i class="fas fa-chevron-right" style="color: var(--sixty-percent); font-size: 0.85rem;"></i>
-    </a>
-
-    <a href="{% url 'dashboard:familyawareness_create' %}" style="
-      display: flex; align-items: center; gap: 14px;
-      padding: 1.1rem 1.25rem;
-      background: var(--background-color);
-      border-radius: 14px;
-      border-left: 4px solid var(--sixty-percent);
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      color: inherit;
-    " onmouseover="this.style.background='#dce6f0';this.style.transform='translateX(4px)'"
-       onmouseout="this.style.background='var(--background-color)';this.style.transform='none'">
-      <div style="width: 38px; height: 38px; background: rgba(98,162,206,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">💬</div>
-      <div style="flex: 1;">
-        <div style="font-family: var(--main-font); font-size: var(--font-nm); font-weight: 700; color: var(--text-color-dark);">Family Awareness Sections</div>
-        <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 1px;">Write messages and instructions for loved ones</div>
-      </div>
-      <i class="fas fa-chevron-right" style="color: var(--sixty-percent); font-size: 0.85rem;"></i>
-    </a>
-
-  </div>
-
-  <!-- Primary CTA -->
-  <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+  <div class="ob-complete-cta">
     <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-accent" style="font-size: var(--font-md);">
       <i class="fas fa-home"></i> Go to My Dashboard
     </a>
-    <p style="margin: 0; font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent);">
-      You can always come back to add more — your plan grows with you.
-    </p>
+    <p>You can always come back to add more — your plan grows with you.</p>
   </div>
 
 </div>

@@ -369,7 +369,7 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
 # ============================================================================
 class AccountListView(ViewAccessMixin, ListView):
     model = Account
-    template_name = 'dashboard/account_list.html'
+    template_name = 'dashboard/accounts/account_list.html'
     context_object_name = 'accounts'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -403,7 +403,7 @@ class AccountListView(ViewAccessMixin, ListView):
 
 class AccountDetailView(ViewAccessMixin, DetailView):
     model = Account
-    template_name = 'dashboard/account_detail.html'
+    template_name = 'dashboard/accounts/account_detail.html'
     context_object_name = 'account'
     owner_field = 'profile__user'
     
@@ -415,7 +415,7 @@ class AccountDetailView(ViewAccessMixin, DetailView):
 class AccountCreateView(FullAccessMixin, CreateView):
     model = Account
     form_class = AccountForm
-    template_name = 'dashboard/account_form.html'
+    template_name = 'dashboard/accounts/account_form.html'
     success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
@@ -433,7 +433,7 @@ class AccountCreateView(FullAccessMixin, CreateView):
 class AccountUpdateView(FullAccessMixin, UpdateView):
     model = Account
     form_class = AccountForm
-    template_name = 'dashboard/account_form.html'
+    template_name = 'dashboard/accounts/account_form.html'
     success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
@@ -448,7 +448,7 @@ class AccountUpdateView(FullAccessMixin, UpdateView):
 
 class AccountDeleteView(DeleteAccessMixin, DeleteView):
     model = Account
-    template_name = 'dashboard/account_confirm_delete.html'
+    template_name = 'dashboard/accounts/account_confirm_delete.html'
     success_url = reverse_lazy('dashboard:account_list')
     owner_field = 'profile__user'
     
@@ -462,7 +462,7 @@ class AccountDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class DeviceListView(ViewAccessMixin, ListView):
     model = Device
-    template_name = 'dashboard/device_list.html'
+    template_name = 'dashboard/devices/device_list.html'
     context_object_name = 'devices'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -481,7 +481,7 @@ class DeviceListView(ViewAccessMixin, ListView):
 
 class DeviceDetailView(ViewAccessMixin, DetailView):
     model = Device
-    template_name = 'dashboard/device_detail.html'
+    template_name = 'dashboard/devices/device_detail.html'
     context_object_name = 'device'
     owner_field = 'profile__user'
     
@@ -493,7 +493,7 @@ class DeviceDetailView(ViewAccessMixin, DetailView):
 class DeviceCreateView(FullAccessMixin, CreateView):
     model = Device
     form_class = DeviceForm
-    template_name = 'dashboard/device_form.html'
+    template_name = 'dashboard/devices/device_form.html'
     success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
@@ -508,11 +508,10 @@ class DeviceCreateView(FullAccessMixin, CreateView):
         messages.success(self.request, 'Device created successfully.')
         return super().form_valid(form)
 
-
 class DeviceUpdateView(FullAccessMixin, UpdateView):
     model = Device
     form_class = DeviceForm
-    template_name = 'dashboard/device_form.html'
+    template_name = 'dashboard/devices/device_form.html'
     success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
@@ -527,7 +526,7 @@ class DeviceUpdateView(FullAccessMixin, UpdateView):
     
 class DeviceDeleteView(DeleteAccessMixin, DeleteView):
     model = Device
-    template_name = 'dashboard/device_confirm_delete.html'
+    template_name = 'dashboard/devices/device_confirm_delete.html'
     success_url = reverse_lazy('dashboard:device_list')
     owner_field = 'profile__user'
     
@@ -541,7 +540,7 @@ class DeviceDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class EstateListView(ViewAccessMixin, ListView):
     model = DigitalEstateDocument
-    template_name = 'dashboard/estate_list.html'
+    template_name = 'dashboard/estates/estate_list.html'
     context_object_name = 'estates'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -560,7 +559,7 @@ class EstateListView(ViewAccessMixin, ListView):
 
 class EstateDetailView(ViewAccessMixin, DetailView):
     model = DigitalEstateDocument
-    template_name = 'dashboard/estate_detail.html'
+    template_name = 'dashboard/estates/estate_detail.html'
     context_object_name = 'estate'
     owner_field = 'profile__user'
     
@@ -572,7 +571,7 @@ class EstateDetailView(ViewAccessMixin, DetailView):
 class EstateCreateView(FullAccessMixin, CreateView):
     model = DigitalEstateDocument
     form_class = DigitalEstateDocumentForm
-    template_name = 'dashboard/estate_form.html'
+    template_name = 'dashboard/estates/estate_form.html'
     success_url = reverse_lazy('dashboard:estate_list')
     owner_field = 'profile__user'
     
@@ -590,7 +589,7 @@ class EstateCreateView(FullAccessMixin, CreateView):
 class EstateUpdateView(FullAccessMixin, UpdateView):
     model = DigitalEstateDocument
     form_class = DigitalEstateDocumentForm
-    template_name = 'dashboard/estate_form.html'
+    template_name = 'dashboard/estates/estate_form.html'
     success_url = reverse_lazy('dashboard:estate_list')
     owner_field = 'profile__user'
     
@@ -605,7 +604,7 @@ class EstateUpdateView(FullAccessMixin, UpdateView):
 
 class EstateDeleteView(DeleteAccessMixin, DeleteView):
     model = DigitalEstateDocument
-    template_name = 'dashboard/estate_confirm_delete.html'
+    template_name = 'dashboard/estates/estate_confirm_delete.html'
     success_url = reverse_lazy('dashboard:estate_list')
     owner_field = 'profile__user'
     
@@ -618,7 +617,7 @@ class EstateDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class FamilyAwarenessListView(ViewAccessMixin, ListView):
     model = FamilyNeedsToKnowSection
-    template_name = 'dashboard/familyawareness_list.html'
+    template_name = 'dashboard/familyaware/familyawareness_list.html'
     context_object_name = 'familyawareness_objects'
     owner_field = 'relation__profile__user'
     paginate_by = 20
@@ -637,7 +636,7 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
 
 class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
     model = FamilyNeedsToKnowSection
-    template_name = 'dashboard/familyawareness_detail.html'
+    template_name = 'dashboard/familyaware/familyawareness_detail.html'
     context_object_name = 'familyawareness'
     owner_field = 'relation__profile__user'
     
@@ -649,7 +648,7 @@ class FamilyAwarenessDetailView(ViewAccessMixin, DetailView):
 class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
     model = FamilyNeedsToKnowSection
     form_class = FamilyNeedsToKnowSectionForm
-    template_name = 'dashboard/familyawareness_form.html'
+    template_name = 'dashboard/familyaware/familyawareness_form.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
     owner_field = 'relation__profile__user'
     
@@ -665,7 +664,7 @@ class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
 class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
     model = FamilyNeedsToKnowSection
     form_class = FamilyNeedsToKnowSectionForm
-    template_name = 'dashboard/familyawareness_form.html'
+    template_name = 'dashboard/familyaware/familyawareness_form.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
     owner_field = 'relation__profile__user'
     
@@ -680,7 +679,7 @@ class FamilyAwarenessUpdateView(FullAccessMixin, UpdateView):
 
 class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
     model = FamilyNeedsToKnowSection
-    template_name = 'dashboard/familyawareness_confirm_delete.html'
+    template_name = 'dashboard/familyaware/familyawareness_confirm_delete.html'
     success_url = reverse_lazy('dashboard:familyawareness_list')
     owner_field = 'relation__profile__user'
     
@@ -693,7 +692,7 @@ class FamilyAwarenessDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class ImportantDocumentListView(ViewAccessMixin, ListView):
     model = ImportantDocument
-    template_name = 'dashboard/importantdocument_list.html'
+    template_name = 'dashboard/importantdocuments/importantdocument_list.html'
     context_object_name = 'documents'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -712,7 +711,7 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
 
 class ImportantDocumentDetailView(ViewAccessMixin, DetailView):
     model = ImportantDocument
-    template_name = 'dashboard/importantdocument_detail.html'
+    template_name = 'dashboard/importantdocuments/importantdocument_detail.html'
     context_object_name = 'document'
     owner_field = 'profile__user'
     
@@ -724,7 +723,7 @@ class ImportantDocumentDetailView(ViewAccessMixin, DetailView):
 class ImportantDocumentCreateView(FullAccessMixin, CreateView):
     model = ImportantDocument
     form_class = ImportantDocumentForm
-    template_name = 'dashboard/importantdocument_form.html'
+    template_name = 'dashboard/importantdocuments/importantdocument_form.html'
     success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
@@ -742,7 +741,7 @@ class ImportantDocumentCreateView(FullAccessMixin, CreateView):
 class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
     model = ImportantDocument
     form_class = ImportantDocumentForm
-    template_name = 'dashboard/importantdocument_form.html'
+    template_name = 'dashboard/importantdocuments/importantdocument_form.html'
     success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
@@ -757,7 +756,7 @@ class ImportantDocumentUpdateView(FullAccessMixin, UpdateView):
 
 class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
     model = ImportantDocument
-    template_name = 'dashboard/importantdocument_confirm_delete.html'
+    template_name = 'dashboard/importantdocuments/importantdocument_confirm_delete.html'
     success_url = reverse_lazy('dashboard:importantdocument_list')
     owner_field = 'profile__user'
     
@@ -770,7 +769,7 @@ class ImportantDocumentDeleteView(DeleteAccessMixin, DeleteView):
 # ============================================================================
 class ContactListView(ViewAccessMixin, ListView):
     model = Contact
-    template_name = 'dashboard/contact_list.html'
+    template_name = 'dashboard/contacts/contact_list.html'
     context_object_name = 'contacts'
     owner_field = 'profile__user'
     paginate_by = 20
@@ -789,7 +788,7 @@ class ContactListView(ViewAccessMixin, ListView):
 
 class ContactDetailView(ViewAccessMixin, DetailView):
     model = Contact
-    template_name = 'dashboard/contact_detail.html'
+    template_name = 'dashboard/contacts/contact_detail.html'
     context_object_name = 'contact'
     owner_field = 'profile__user'
     
@@ -820,7 +819,7 @@ class ContactDetailView(ViewAccessMixin, DetailView):
 class ContactCreateView(FullAccessMixin, CreateView):
     model = Contact
     form_class = ContactForm
-    template_name = 'dashboard/contact_form.html'
+    template_name = 'dashboard/contacts/contact_form.html'
     success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
@@ -838,7 +837,7 @@ class ContactCreateView(FullAccessMixin, CreateView):
 class ContactUpdateView(FullAccessMixin, UpdateView):
     model = Contact
     form_class = ContactForm
-    template_name = 'dashboard/contact_form.html'
+    template_name = 'dashboard/contacts/contact_form.html'
     success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
@@ -853,7 +852,7 @@ class ContactUpdateView(FullAccessMixin, UpdateView):
 
 class ContactDeleteView(DeleteAccessMixin, DeleteView):
     model = Contact
-    template_name = 'dashboard/contact_confirm_delete.html'
+    template_name = 'dashboard/contacts/contact_confirm_delete.html'
     success_url = reverse_lazy('dashboard:contact_list')
     owner_field = 'profile__user'
     
@@ -1493,7 +1492,6 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
             'error': 'Method not allowed. Use POST to mark item as reviewed.'
         }, status=405)
     
-
 
 class OnboardingMixin(LoginRequiredMixin):
     """Shared mixin — enforces payment and profile requirements."""

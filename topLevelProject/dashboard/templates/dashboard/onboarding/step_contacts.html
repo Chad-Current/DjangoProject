@@ -3,9 +3,9 @@
 
 {% block ob_content %}
 <div class="ob-page-header">
-  <div class="ob-eyebrow">Step 1 of 3</div>
+  <div class="ob-eyebrow">Step 1 of 6</div>
   <h1>Who needs to know?</h1>
-  <p>Add the family members, executors, and caregivers who should be informed and given access after you're gone.</p>
+  <p>Add the family members, executors, advisors, and caregivers who should be informed and given access after you're gone.</p>
 </div>
 
 <div class="ob-body">
@@ -19,6 +19,7 @@
         Add a Contact
       </div>
 
+      <!-- Basic info -->
       <div class="ob-grid">
         <div class="ob-field">
           <label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>
@@ -60,26 +61,106 @@
         </div>
       </div>
 
-      <!-- Roles -->
-      <div style="margin-top: 1.2rem;">
-        <div class="ob-field">
-          <label>Roles <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+      <!-- ── ROLES ──────────────────────────────────────── -->
+      <div class="ob-roles-section">
+        <div class="ob-roles-header">
+          <label>Roles</label>
+          <span class="ob-roles-hint">Select all that apply — hover each for a description</span>
         </div>
-        <div class="ob-check-group" style="margin-top: 0.5rem;">
-          <label class="ob-check-row">
-            {{ form.is_emergency_contact }}
-            <span class="ob-check-label"><i class="fas fa-ambulance" style="color: var(--accent-color); margin-right: 5px;"></i>Emergency</span>
-          </label>
-          <label class="ob-check-row">
-            {{ form.is_digital_executor }}
-            <span class="ob-check-label"><i class="fas fa-gavel" style="color: var(--thirty-percent); margin-right: 5px;"></i>Executor</span>
-          </label>
-          <label class="ob-check-row">
-            {{ form.is_caregiver }}
-            <span class="ob-check-label"><i class="fas fa-hands-helping" style="color: var(--sixty-percent); margin-right: 5px;"></i>Caregiver</span>
-          </label>
+
+        <!-- Legal & Estate -->
+        <div class="ob-role-group">
+          <div class="ob-role-group-label">
+            <i class="fas fa-balance-scale"></i> Legal &amp; Estate
+          </div>
+          <div class="ob-check-group ob-check-group-4">
+            <label class="ob-check-row" title="Named executor/personal representative to administer overall estate and will.">
+              {{ form.is_legal_executor }}
+              <span class="ob-check-label">Legal Executor</span>
+            </label>
+            <label class="ob-check-row" title="Responsible for managing digital assets (accounts, passwords, online services) after death.">
+              {{ form.is_digital_executor }}
+              <span class="ob-check-label">Digital Executor</span>
+            </label>
+            <label class="ob-check-row" title="Manages trusts, distributions, and trust assets according to trust terms.">
+              {{ form.is_trustee }}
+              <span class="ob-check-label">Trustee</span>
+            </label>
+            <label class="ob-check-row" title="Attorney, accountant, or advisor to consult for legal/financial guidance.">
+              {{ form.is_professional_advisor }}
+              <span class="ob-check-label">Professional Advisor</span>
+            </label>
+          </div>
         </div>
-      </div>
+
+        <!-- Medical & Care -->
+        <div class="ob-role-group">
+          <div class="ob-role-group-label">
+            <i class="fas fa-heartbeat"></i> Medical &amp; Care
+          </div>
+          <div class="ob-check-group ob-check-group-4">
+            <label class="ob-check-row" title="Contact to notify and provide access during medical emergencies or sudden incapacity.">
+              {{ form.is_emergency_contact }}
+              <span class="ob-check-label">Emergency Contact</span>
+            </label>
+            <label class="ob-check-row" title="Makes medical decisions if you're unable to communicate (healthcare power of attorney).">
+              {{ form.is_healthcare_proxy }}
+              <span class="ob-check-label">Healthcare Proxy</span>
+            </label>
+            <label class="ob-check-row" title="Primary person providing or coordinating long-term care needs and health decisions.">
+              {{ form.is_caregiver }}
+              <span class="ob-check-label">Caregiver</span>
+            </label>
+            <label class="ob-check-row" title="Named legal guardian for minor children or dependent adults.">
+              {{ form.is_guardian_for_dependents }}
+              <span class="ob-check-label">Guardian</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Financial & Access -->
+        <div class="ob-role-group">
+          <div class="ob-role-group-label">
+            <i class="fas fa-dollar-sign"></i> Financial &amp; Access
+          </div>
+          <div class="ob-check-group ob-check-group-4">
+            <label class="ob-check-row" title="Authorized under financial power of attorney to handle money/bills if incapacitated.">
+              {{ form.is_financial_agent }}
+              <span class="ob-check-label">Financial Agent</span>
+            </label>
+            <label class="ob-check-row" title="Designated for platform-specific legacy access (e.g., Apple, Google, Facebook).">
+              {{ form.is_legacy_contact }}
+              <span class="ob-check-label">Legacy Contact</span>
+            </label>
+            <label class="ob-check-row" title="Delegated specific knowledge/info (e.g., account locations) but no action required.">
+              {{ form.is_knowledge_contact }}
+              <span class="ob-check-label">Knowledge Contact</span>
+            </label>
+            <label class="ob-check-row" title="Receives notifications and basic info but has no decision-making authority or tasks.">
+              {{ form.is_notification_only }}
+              <span class="ob-check-label">Notification Only</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Personal -->
+        <div class="ob-role-group ob-role-group-last">
+          <div class="ob-role-group-label">
+            <i class="fas fa-heart"></i> Personal
+          </div>
+          <div class="ob-check-group ob-check-group-4">
+            <label class="ob-check-row" title="Handles funeral, memorial service, and burial/cremation preferences.">
+              {{ form.is_memorial_contact }}
+              <span class="ob-check-label">Memorial Contact</span>
+            </label>
+            <label class="ob-check-row" title="Responsible for pet care, veterinary decisions, and related expenses.">
+              {{ form.is_pet_caregiver }}
+              <span class="ob-check-label">Pet Caregiver</span>
+            </label>
+          </div>
+        </div>
+
+      </div><!-- end ob-roles-section -->
 
       <div class="ob-actions">
         <button type="submit" class="ob-btn ob-btn-primary">
@@ -106,18 +187,32 @@
         <div class="ob-item">
           <div class="ob-item-icon">
             {% if contact.contact_relation == 'Spouse' %}💑
-            {% elif contact.contact_relation in 'Mother,Father' %}👪
-            {% elif contact.contact_relation in 'Son,Daughter' %}👶
+            {% elif contact.contact_relation == 'Mother' or contact.contact_relation == 'Father' %}👪
+            {% elif contact.contact_relation == 'Son' or contact.contact_relation == 'Daughter' %}👶
+            {% elif contact.contact_relation == 'Sister' or contact.contact_relation == 'Brother' %}🧑‍🤝‍🧑
             {% elif contact.contact_relation == 'Self' %}🪞
             {% else %}👤{% endif %}
           </div>
           <div class="ob-item-body">
             <div class="ob-item-name">{{ contact.first_name }} {{ contact.last_name }}</div>
             <div class="ob-item-sub">{{ contact.contact_relation }}{% if contact.email %} · {{ contact.email }}{% endif %}</div>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end;">
-            {% if contact.is_digital_executor %}<span class="ob-badge badge-navy">Executor</span>{% endif %}
-            {% if contact.is_emergency_contact %}<span class="ob-badge badge-amber">Emergency</span>{% endif %}
+            <!-- Role badges — show up to 3, then +N more -->
+            <div class="ob-role-badges">
+              {% if contact.is_legal_executor %}<span class="ob-badge badge-navy">Legal Exec</span>{% endif %}
+              {% if contact.is_digital_executor %}<span class="ob-badge badge-navy">Digital Exec</span>{% endif %}
+              {% if contact.is_trustee %}<span class="ob-badge badge-navy">Trustee</span>{% endif %}
+              {% if contact.is_healthcare_proxy %}<span class="ob-badge badge-blue">Healthcare</span>{% endif %}
+              {% if contact.is_financial_agent %}<span class="ob-badge badge-blue">Financial</span>{% endif %}
+              {% if contact.is_emergency_contact %}<span class="ob-badge badge-amber">Emergency</span>{% endif %}
+              {% if contact.is_caregiver %}<span class="ob-badge badge-blue">Caregiver</span>{% endif %}
+              {% if contact.is_guardian_for_dependents %}<span class="ob-badge badge-navy">Guardian</span>{% endif %}
+              {% if contact.is_memorial_contact %}<span class="ob-badge badge-blue">Memorial</span>{% endif %}
+              {% if contact.is_legacy_contact %}<span class="ob-badge badge-blue">Legacy</span>{% endif %}
+              {% if contact.is_pet_caregiver %}<span class="ob-badge badge-blue">Pets</span>{% endif %}
+              {% if contact.is_professional_advisor %}<span class="ob-badge badge-navy">Advisor</span>{% endif %}
+              {% if contact.is_knowledge_contact %}<span class="ob-badge badge-blue">Knowledge</span>{% endif %}
+              {% if contact.is_notification_only %}<span class="ob-badge badge-blue">Notify</span>{% endif %}
+            </div>
           </div>
         </div>
         {% endfor %}
@@ -142,4 +237,86 @@
   </div>
 
 </div>
+
+{# ── Extra styles scoped to this page ──────────────────────── #}
+<style>
+/* ── Role sections ───────────────────────────────────────── */
+.ob-roles-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--background-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.ob-roles-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.ob-roles-header label {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--ten-percent);
+}
+.ob-roles-hint {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: var(--thirty-percent);
+}
+
+.ob-role-group {
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--background-color);
+}
+.ob-role-group-last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ob-role-group-label {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--thirty-percent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.ob-role-group-label i {
+  color: var(--sixty-percent);
+  font-size: 0.85rem;
+}
+
+/* 4-column checkbox grid for roles */
+.ob-check-group-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Role badge strip inside the panel items */
+.ob-role-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+/* Tooltip via title attr — native, no JS needed */
+.ob-check-row[title] { cursor: help; }
+
+@media (max-width: 900px) {
+  .ob-check-group-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .ob-check-group-4 { grid-template-columns: 1fr; }
+}
+</style>
+
 {% endblock %}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Digital Estate Checklist is Ready</title>
+</head>
+<body style="margin:0; padding:0; background-color:#e7eff7; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#e7eff7;">
+    <tr>
+      <td style="padding:40px 16px 48px;">
+
+        <!-- ── PRE-HEADER TEXT (hidden preview in inbox) ────────────── -->
+        <span style="display:none; max-height:0; overflow:hidden; mso-hide:all;">
+          Your Digital Estate Readiness Checklist is attached — plus your next steps.
+        </span>
+
+        <!-- ── LOGO / WORDMARK ──────────────────────────────────────── -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+               style="max-width:600px; margin:0 auto 24px;">
+          <tr>
+            <td style="text-align:center; padding-bottom:4px;">
+              <span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                           font-size:22px; font-weight:700; color:#254e70;
+                           letter-spacing:-0.5px;">
+                Digital Estate Plan
+              </span>
+              <span style="font-size:22px; color:#ffa62b; font-weight:700;">.</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- ══════════════════════════════════════════════════════════
+             CARD
+        ═══════════════════════════════════════════════════════════ -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+               style="max-width:600px; margin:0 auto; background:#ffffff;
+                      border-radius:20px; overflow:hidden;
+                      box-shadow:0 8px 32px rgba(22,40,59,0.12);">
+
+          <!-- ── HERO — gradient header ──────────────────────────── -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#2d6a9c 0%,#254e70 100%);
+                       padding:40px 32px 36px; text-align:center;">
+              <div style="font-size:48px; line-height:1; margin-bottom:16px;">✅</div>
+              <h1 style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                         font-size:26px; font-weight:700; color:#ffffff;
+                         margin:0 0 10px; line-height:1.25;">
+                Your Checklist is Ready, {{ first_name }}!
+              </h1>
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:16px; color:rgba(231,239,247,0.85);
+                        margin:0; font-weight:300;">
+                {{ checklist_type }} Edition &nbsp;·&nbsp; Digital Estate Readiness Checklist
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── BODY ────────────────────────────────────────────── -->
+          <tr>
+            <td style="padding:36px 32px 28px;">
+
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:16px; color:#2d3748; line-height:1.65; margin:0 0 24px;">
+                You just took one of the most important steps you can take for your family.
+                This checklist gives you a clear, section-by-section roadmap to get organised —
+                starting today.
+              </p>
+
+              <!-- What's inside -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                     style="background:#f3f7fc; border-radius:12px; margin-bottom:28px;">
+                <tr>
+                  <td style="padding:24px 24px 20px;">
+                    <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                               font-size:14px; font-weight:700; color:#2d6a9c;
+                               text-transform:uppercase; letter-spacing:0.07em;
+                               margin:0 0 14px;">
+                      What's inside your checklist
+                    </p>
+                    <!-- Row helper: icon + text -->
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      {% for item in checklist_items %}
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">{{ item.icon }}</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0;
+                                   line-height:1.5;">
+                          <strong>{{ item.title }}</strong> — {{ item.description }}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">👥</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                          <strong>Key people</strong> — Executors, healthcare proxy, emergency contacts
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">🔐</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                          <strong>All accounts listed</strong> — Banking, email, social media, subscriptions
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">📜</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                          <strong>Core estate documents</strong> — Will, POA, advance directive, insurance
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">💻</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                          <strong>Devices inventoried</strong> — Phones, computers, 2FA and access info
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top; padding:4px 10px 4px 0;">
+                          <span style="font-size:16px;">💌</span>
+                        </td>
+                        <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                   font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                          <strong>Family guidance</strong> — Messages and instructions for loved ones
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Next steps -->
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:16px; font-weight:700; color:#254e70;
+                        margin:0 0 12px;">
+                Your next 5 minutes:
+              </p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                     style="margin-bottom:32px;">
+                {% for step in next_steps %}
+                <tr>
+                  <td width="32" style="vertical-align:top; padding:4px 10px 4px 0;">
+                    <span style="display:inline-block; width:24px; height:24px;
+                                 background:#ffa62b; border-radius:50%;
+                                 font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                 font-size:13px; font-weight:700; color:#16283b;
+                                 text-align:center; line-height:24px;">{{ forloop.counter }}</span>
+                  </td>
+                  <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                             font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                    {{ step }}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td width="32" style="vertical-align:top; padding:4px 10px 4px 0;">
+                    <span style="display:inline-block; width:24px; height:24px;
+                                 background:#ffa62b; border-radius:50%;
+                                 font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                 font-size:13px; font-weight:700; color:#16283b;
+                                 text-align:center; line-height:24px;">1</span>
+                  </td>
+                  <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                             font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                    Print the checklist (fits any binder)
+                  </td>
+                </tr>
+                <tr>
+                  <td width="32" style="vertical-align:top; padding:4px 10px 4px 0;">
+                    <span style="display:inline-block; width:24px; height:24px;
+                                 background:#ffa62b; border-radius:50%;
+                                 font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                 font-size:13px; font-weight:700; color:#16283b;
+                                 text-align:center; line-height:24px;">2</span>
+                  </td>
+                  <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                             font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                    Check off what you already have
+                  </td>
+                </tr>
+                <tr>
+                  <td width="32" style="vertical-align:top; padding:4px 10px 4px 0;">
+                    <span style="display:inline-block; width:24px; height:24px;
+                                 background:#ffa62b; border-radius:50%;
+                                 font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                 font-size:13px; font-weight:700; color:#16283b;
+                                 text-align:center; line-height:24px;">3</span>
+                  </td>
+                  <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                             font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                    Circle items where you need help
+                  </td>
+                </tr>
+                <tr>
+                  <td width="32" style="vertical-align:top; padding:4px 10px 4px 0;">
+                    <span style="display:inline-block; width:24px; height:24px;
+                                 background:#ffa62b; border-radius:50%;
+                                 font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                 font-size:13px; font-weight:700; color:#16283b;
+                                 text-align:center; line-height:24px;">4</span>
+                  </td>
+                  <td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                             font-size:15px; color:#2d3748; padding:4px 0; line-height:1.5;">
+                    <a href="{{ contact_url }}" style="color:#2d6a9c; text-decoration:none; font-weight:600;">
+                      Schedule your free review &rarr;
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- ── CTA BAND ─────────────────────────────────────────── -->
+          <tr>
+            <td style="background:#f3f7fc; padding:32px 32px 28px;
+                       border-top:1px solid #dce6f0; border-bottom:1px solid #dce6f0;">
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:16px; color:#254e70; font-weight:700;
+                        text-align:center; margin:0 0 6px;">
+                Ready to turn this checklist into a complete plan?
+              </p>
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:14px; color:#62a2ce; font-weight:300;
+                        text-align:center; margin:0 0 24px;">
+                Everything organised in one private, secure vault — accessible anytime.
+              </p>
+
+              <!-- Two CTA buttons side by side (stack on narrow clients) -->
+              <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="padding:0 8px 16px 0;">
+                    <a href="{{ site_url }}#pricing"
+                       style="display:inline-block; background:#254e70; color:#ffffff;
+                              font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                              font-size:15px; font-weight:700; text-decoration:none;
+                              padding:14px 28px; border-radius:50px;
+                              white-space:nowrap;">
+                      Essentials Plan<br>
+                      <span style="font-size:13px; font-weight:400; opacity:0.85;">
+                        {{ essentials_price }} one-time
+                      </span>
+                    </a>
+                  </td>
+                  <td style="padding:0 0 16px 8px;">
+                    <a href="{{ site_url }}#pricing"
+                       style="display:inline-block; background:#ffa62b; color:#16283b;
+                              font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                              font-size:15px; font-weight:700; text-decoration:none;
+                              padding:14px 28px; border-radius:50px;
+                              white-space:nowrap;">
+                      Legacy Plan &nbsp;⭐<br>
+                      <span style="font-size:13px; font-weight:400; opacity:0.75;">
+                        {{ legacy_price }} · Lifetime access
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Value props -->
+              <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0"
+                     style="margin-top:16px;">
+                <tr>
+                  <td style="text-align:center; padding:0 16px;">
+                    <span style="font-size:22px;">⚡</span>
+                    <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                               font-size:13px; font-weight:600; color:#254e70;
+                               margin:4px 0 0; white-space:nowrap;">
+                      ~90 min setup
+                    </p>
+                  </td>
+                  <td style="text-align:center; padding:0 16px;">
+                    <span style="font-size:22px;">🔒</span>
+                    <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                               font-size:13px; font-weight:600; color:#254e70;
+                               margin:4px 0 0; white-space:nowrap;">
+                      Encrypted vault
+                    </p>
+                  </td>
+                  <td style="text-align:center; padding:0 16px;">
+                    <span style="font-size:22px;">🔄</span>
+                    <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                               font-size:13px; font-weight:600; color:#254e70;
+                               margin:4px 0 0; white-space:nowrap;">
+                      Update anytime
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ───────────────────────────────────────────── -->
+          <tr>
+            <td style="padding:28px 32px 32px; text-align:center;">
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:14px; color:#62a2ce; margin:0 0 8px; line-height:1.6;">
+                Questions? <a href="mailto:hello@digitalestateplan.com"
+                              style="color:#2d6a9c; font-weight:600; text-decoration:none;">
+                  Reply to this email
+                </a> — we read every one.
+              </p>
+              <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+                        font-size:13px; color:#a0aec0; margin:0; line-height:1.6;">
+                Digital Estate Plan &nbsp;·&nbsp; Des Moines, IA<br>
+                <a href="{{ site_url }}" style="color:#a0aec0; text-decoration:none;">
+                  {{ site_url }}
+                </a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- end card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

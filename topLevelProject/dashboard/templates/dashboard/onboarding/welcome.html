@@ -5,72 +5,74 @@
 <div class="ob-page-header">
   <div class="ob-eyebrow">Getting Started</div>
   <h1>Let's build your digital estate plan.</h1>
-  <p>Walk through three short steps to document the people, accounts, and devices your family needs to know about.</p>
+  <p>Walk through six steps to document the people, accounts, devices, and documents your family needs to know about.</p>
 </div>
 
-<div class="detail-view" style="gap: 1.25rem; display: flex; flex-direction: column;">
+<div class="ob-full-card">
 
-  <h3 style="margin: 0 0 0.25rem;">What you'll set up</h3>
-  <p style="margin: 0 0 1.25rem; font-weight: 300;">Each step takes just a few minutes — and you can always come back to add more later.</p>
+  <div class="ob-full-card-intro">
+    <h3>What you'll set up</h3>
+    <p>Each step takes just a few minutes — and you can always come back to add more later.</p>
+  </div>
 
-  <!-- Step cards -->
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+  <div class="ob-step-grid">
 
-    <div style="
-      background: var(--background-color);
-      border-radius: 14px;
-      padding: 1.4rem;
-      border-left: 4px solid var(--sixty-percent);
-      transition: transform 0.2s;
-    " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
-      <div style="font-size: 1.6rem; margin-bottom: 0.75rem;">👥</div>
-      <h4 style="margin: 0 0 0.35rem; font-size: var(--font-md);">Step 1 — Contacts</h4>
-      <p style="margin: 0; font-size: var(--font-sm); font-weight: 300;">Name the family members, executors, and caregivers who should have access and information.</p>
-      <p style="margin: 0.75rem 0 0; font-size: var(--font-sm); color: var(--sixty-percent); font-family: var(--main-font); font-weight: 600;">~3 min</p>
+    <div class="ob-step-card step-1">
+      <div class="ob-step-emoji">👥</div>
+      <h4>Step 1 — Contacts</h4>
+      <p>Family, executors, and caregivers who should have access.</p>
+      <div class="ob-step-time">~3 min</div>
     </div>
 
-    <div style="
-      background: var(--background-color);
-      border-radius: 14px;
-      padding: 1.4rem;
-      border-left: 4px solid var(--thirty-percent);
-      transition: transform 0.2s;
-    " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
-      <div style="font-size: 1.6rem; margin-bottom: 0.75rem;">🔐</div>
-      <h4 style="margin: 0 0 0.35rem; font-size: var(--font-md);">Step 2 — Accounts</h4>
-      <p style="margin: 0; font-size: var(--font-sm); font-weight: 300;">Catalog your email, banking, social media, and subscriptions — no passwords needed.</p>
-      <p style="margin: 0.75rem 0 0; font-size: var(--font-sm); color: var(--sixty-percent); font-family: var(--main-font); font-weight: 600;">~5 min</p>
+    <div class="ob-step-card step-2">
+      <div class="ob-step-emoji">🔐</div>
+      <h4>Step 2 — Accounts</h4>
+      <p>Email, banking, social media, subscriptions — no passwords needed.</p>
+      <div class="ob-step-time">~5 min</div>
     </div>
 
-    <div style="
-      background: var(--background-color);
-      border-radius: 14px;
-      padding: 1.4rem;
-      border-left: 4px solid var(--accent-color);
-      transition: transform 0.2s;
-    " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
-      <div style="font-size: 1.6rem; margin-bottom: 0.75rem;">💻</div>
-      <h4 style="margin: 0 0 0.35rem; font-size: var(--font-md);">Step 3 — Devices</h4>
-      <p style="margin: 0; font-size: var(--font-sm); font-weight: 300;">Document your phones, laptops, and tablets — where they live and what should happen to each.</p>
-      <p style="margin: 0.75rem 0 0; font-size: var(--font-sm); color: var(--sixty-percent); font-family: var(--main-font); font-weight: 600;">~3 min</p>
+    <div class="ob-step-card step-3">
+      <div class="ob-step-emoji">💻</div>
+      <h4>Step 3 — Devices</h4>
+      <p>Phones, laptops, tablets — where they live and what to do with each.</p>
+      <div class="ob-step-time">~3 min</div>
+    </div>
+
+    <div class="ob-step-card step-4">
+      <div class="ob-step-emoji">📜</div>
+      <h4>Step 4 — Estate Docs</h4>
+      <p>Wills, powers of attorney, healthcare directives, and trusts.</p>
+      <div class="ob-step-time">~5 min</div>
+    </div>
+
+    <div class="ob-step-card step-5">
+      <div class="ob-step-emoji">📂</div>
+      <h4>Step 5 — Documents</h4>
+      <p>Insurance, tax records, property deeds, IDs, and medical records.</p>
+      <div class="ob-step-time">~5 min</div>
+    </div>
+
+    <div class="ob-step-card step-6">
+      <div class="ob-step-emoji">💌</div>
+      <h4>Step 6 — Family Notes</h4>
+      <p>Personal messages, wishes, and guidance for the people you love.</p>
+      <div class="ob-step-time">~5 min</div>
     </div>
 
   </div>
 
-  <!-- CTAs -->
-  <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+  <div class="ob-welcome-cta">
     <a href="{% url 'dashboard:onboarding_contacts' %}" class="ob-btn ob-btn-accent" style="font-size: var(--font-md);">
       <i class="fas fa-play"></i> Start Setup
     </a>
     <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost">
       I'll do this later
     </a>
+    <p class="ob-welcome-privacy">
+      <i class="fas fa-lock"></i>
+      Only visible to you and those you authorize.
+    </p>
   </div>
-
-  <p style="margin: 0; font-size: var(--font-sm); font-weight: 300;">
-    <i class="fas fa-lock" style="color: var(--sixty-percent); margin-right: 5px;"></i>
-    Everything you enter is only visible to you and those you authorize.
-  </p>
 
 </div>
 {% endblock %}

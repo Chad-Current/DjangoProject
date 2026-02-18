@@ -81,13 +81,39 @@ class ContactForm(forms.ModelForm):
             'is_emergency_contact',
             'is_digital_executor',
             'is_caregiver',
-            'body',
+            'is_legal_executor',
+            'is_trustee',
+            'is_financial_agent',
+            'is_healthcare_proxy',
+            'is_guardian_for_dependents',
+            'is_pet_caregiver',
+            'is_memorial_contact',
+            'is_legacy_contact',
+            'is_professional_advisor',
+            'is_notification_only',
+            'is_knowledge_contact',
         ]
-    
+        labels = {
+            'is_emergency_contact': 'Emergency Contact',
+            'is_digital_executor': 'Digital Account Executor',
+            'is_caregiver': 'Caregiver',
+            'is_legal_executor': 'Legal Executor',
+            'is_trustee': 'Trustee',
+            'is_financial_agent': 'Financial Agent',
+            'is_healthcare_proxy': 'Healthcare Proxy',
+            'is_guardian_for_dependents': 'Guardian for Dependents',
+            'is_pet_caregiver': 'Pet Caregiver',
+            'is_memorial_contact': 'Memorial Contact',
+            'is_legacy_contact': 'Legacy Contact',
+            'is_professional_advisor': 'Professional Advisor',
+            'is_notification_only': 'Notification Only',
+            'is_knowledge_contact': 'Information Knowledge Only',
+        }
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
@@ -111,15 +137,27 @@ class ContactForm(forms.ModelForm):
                 Field('is_emergency_contact', css_class='checkboxinput form-check-input'),
                 Field('is_digital_executor', css_class='checkboxinput form-check-input'),
                 Field('is_caregiver', css_class='checkboxinput form-check-input'),
+                Field('is_legal_executor', css_class='checkboxinput form-check-input'),
+                Field('is_trustee', css_class='checkboxinput form-check-input'),
+                Field('is_financial_agent', css_class='checkboxinput form-check-input'),
+                Field('is_healthcare_proxy', css_class='checkboxinput form-check-input'),
+                Field('is_guardian_for_dependents', css_class='checkboxinput form-check-input'),
+                Field('is_pet_caregiver', css_class='checkboxinput form-check-input'),
+                Field('is_memorial_contact', css_class='checkboxinput form-check-input'),
+                Field('is_legacy_contact', css_class='checkboxinput form-check-input'),
+                Field('is_professional_advisor', css_class='checkboxinput form-check-input'),
+                Field('is_notification_only', css_class='checkboxinput form-check-input'),
+                Field('is_knowledge_contact', css_class='checkboxinput form-check-input'),
                 css_class='checkbox-group'
             ),
-                Field('body', css_class='textarea'),
+            Field('body', css_class='textarea'),
             Div(
                 Submit('submit', 'Save Contact', css_class='btn btn-primary'),
                 Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
                 css_class='button-group'
             ),
-        )    
+        )
+
 
 class AccountForm(forms.ModelForm):
     class Meta:
@@ -136,19 +174,19 @@ class AccountForm(forms.ModelForm):
             "notes_for_family",
         ]
         labels = {
-            "delegated_account_to":"Assign Account to",
-            "account_category":"Type of Account",
-            "account_name_or_provider":"Name or Provider",
-            "website_url":"Website URL",
-            "username_or_email":"Username or Email",
-            "credential_storage_location":"Crediential Storage Location",
-            'review_time':"Review needed in"
+            "delegated_account_to": "Assign Account to",
+            "account_category": "Type of Account",
+            "account_name_or_provider": "Name or Provider",
+            "website_url": "Website URL",
+            "username_or_email": "Username or Email",
+            "credential_storage_location": "Credential Storage Location",
+            'review_time': "Review needed in ",
         }
-    
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-    
+
         # Make delegated_to required
         self.fields['delegated_account_to'].required = True
 
@@ -174,12 +212,15 @@ class AccountForm(forms.ModelForm):
                 Field('website_url', css_class='urlinput', placeholder="https://"),
                 Field('username_or_email', css_class='textinput'),
                 Field('credential_storage_location', css_class='textinput'),
-                Field('review_time', css_class='select'),
             ),
             Fieldset(
                 'Instructions for Family',
                 Field('keep_or_close_instruction', css_class='select'),
                 Field('notes_for_family', css_class='textarea'),
+            ),
+            Fieldset(
+                'Review Requirements',
+                Field('review_time', css_class='select'),
             ),
             Div(
                 Submit('submit', 'Save Account', css_class='btn btn-primary'),
@@ -193,7 +234,7 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = [
-            "delegated_device_to", 
+            "delegated_device_to",
             "device_type",
             "device_name",
             "owner_label",
@@ -201,19 +242,20 @@ class DeviceForm(forms.ModelForm):
             "unlock_method_description",
             "used_for_2fa",
             "decommission_instruction",
-            "review_time"
+            "review_time",
         ]
         labels = {
-            "delegated_device_to":"Assign Device To", 
-            "device_type":"Type of Device",
-            "device_name":"Name",
-            "owner_label":"Labeled as",
-            "location_description":"Typical Location of Device",
-            "unlock_method_description":"Unlock Method",
-            "used_for_2fa":"Used For Two Factor Authentication",
-            "decommission_instruction":"Decommission Instructions",
-            'review_time':"Review needed in"
+            "delegated_device_to": "Assign Device To",
+            "device_type": "Type of Device",
+            "device_name": "Name",
+            "owner_label": "Labeled as",
+            "location_description": "Typical Location of Device",
+            "unlock_method_description": "Unlock Method",
+            "used_for_2fa": "Used For Two Factor Authentication",
+            "decommission_instruction": "Decommission Instructions",
+            'review_time': "Review needed in",
         }
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -248,7 +290,10 @@ class DeviceForm(forms.ModelForm):
                 Field('unlock_method_description', css_class='textarea'),
                 Field('decommission_instruction', css_class='textarea'),
                 Field('used_for_2fa', css_class='checkboxinput form-check-input'),
-                Field('review_time', css_class='select')
+            ),
+            Fieldset(
+                'Review Requirements',
+                Field('review_time', css_class='select'),
             ),
             Div(
                 Submit('submit', 'Save Device', css_class='btn btn-primary'),
@@ -262,7 +307,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
         fields = [
-            "delegated_estate_to",  
+            "delegated_estate_to",
             "estate_category",
             "name_or_title",
             "estate_overall_instructions",
@@ -272,68 +317,81 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
-            "review_time"
+            "review_time",
         ]
-
         labels = {
-            "delegated_estate_to":"Assign Document to",  
-            "estate_category":"Category",
-            "name_or_title":"Name or Title",
-            "estate_overall_instructions":"Instructions",
-            "estate_physical_location":"Physical Location",
-            "estate_digital_location":"Digital Location",
-            "estate_file":"File",
-            "applies_on_death":"Applied Upon Death",
-            "applies_on_incapacity":"Applied On Incapacitation",
-            "applies_immediately":"Applies Immeditately",
-            'review_time':"Review needed in"           
+            "delegated_estate_to": "Assign Document to",
+            "estate_category": "Category",
+            "name_or_title": "Name or Title",
+            "estate_overall_instructions": "Instructions",
+            "estate_physical_location": "Physical Location",
+            "estate_digital_location": "Digital Location",
+            "estate_file": "Upload File",
+            "applies_on_death": "Applies Upon Death",
+            "applies_on_incapacity": "Applies On Incapacitation",
+            "applies_immediately": "Applies Immediately",
+            'review_time': "Review needed in",
+        }
+        widgets = {
+            'applies_on_death': forms.CheckboxInput(),
+            'applies_on_incapacity': forms.CheckboxInput(),
+            'applies_immediately': forms.CheckboxInput(),
         }
 
-        widgets = {
-            'applies_on_death': forms.CheckboxInput(),  
-            'applies_on_incapacity': forms.CheckboxInput(),
-            'applies_immediately': forms.CheckboxInput()
-        }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         # Make delegated_to required
         self.fields['delegated_estate_to'].required = True
-        
+
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
                 self.fields['delegated_estate_to'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
                 self.fields['delegated_estate_to'].queryset = Contact.objects.none()
-        
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
+        self.helper.form_show_errors = False
         self.helper.layout = Layout(
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             Fieldset(
-                'Document Assignment',
+                'Estate Document Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this document to a contact.</div>'),
                 Field('delegated_estate_to', css_class='select'),
             ),
             Fieldset(
-                'Document Details',
+                'Estate Document Details',
                 Field('name_or_title', css_class='textinput'),
                 Field('estate_category', css_class='select'),
                 Field('estate_file', css_class='fileinput'),
                 Field('estate_overall_instructions', css_class='textarea'),
             ),
             Fieldset(
-                'Document Location',
+                'Estate Document Location',
                 Field('estate_physical_location', css_class='textinput'),
                 Field('estate_digital_location', css_class='textinput'),
             ),
             Fieldset(
-                'Declarations',
+                'Review Requirements',
                 Field('review_time', css_class='select'),
-                Field('applies_on_death',css_class='checkboxinput form-check-input'),
-                Field('applies_on_incapacity',css_class='checkboxinput form-check-input'),
-                Field('applies_immediately',css_class='checkboxinput form-check-input'),
+            ),
+            Fieldset(
+                'Declarations',
+                HTML('<div class="alert alert-warning"><strong>Required:</strong> At least one declaration must be selected.</div>'),
+                Field('applies_on_death', css_class='checkboxinput form-check-input'),
+                Field('applies_on_incapacity', css_class='checkboxinput form-check-input'),
+                Field('applies_immediately', css_class='checkboxinput form-check-input'),
             ),
             Div(
                 Submit('submit', 'Save Estate Document', css_class='btn btn-primary'),
@@ -341,6 +399,18 @@ class DigitalEstateDocumentForm(forms.ModelForm):
                 css_class='button-group'
             ),
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        applies_on_death = cleaned_data.get('applies_on_death')
+        applies_on_incapacity = cleaned_data.get('applies_on_incapacity')
+        applies_immediately = cleaned_data.get('applies_immediately')
+
+        if not any([applies_on_death, applies_on_incapacity, applies_immediately]):
+            raise forms.ValidationError(
+                "Please select at least one declaration"
+            )
+        return cleaned_data
 
 
 class FamilyNeedsToKnowSectionForm(forms.ModelForm):
@@ -356,25 +426,26 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             "is_data_retention_preferences",
         ]
         labels = {
-            "relation":"Who Needs To Be Informed",
-            "content":"What Do You Want To Tell Them",
-            "is_location_of_legal_will":"For Location Of Will?",
-            "is_password_manager":"Password Manager Information",
-            "is_social_media":"How To Handle Social Media Accounts",
-            "is_photos_or_files":"What To Do With Photos Or Files",
-            "is_data_retention_preferences":"How Long Do Wish To Retain Information",  
+            "relation": "Who Needs To Be Informed",
+            "content": "What Do You Want To Tell Them",
+            "is_location_of_legal_will": "For Location Of Will?",
+            "is_password_manager": "Password Manager Information",
+            "is_social_media": "How To Handle Social Media Accounts",
+            "is_photos_or_files": "What To Do With Photos Or Files",
+            "is_data_retention_preferences": "How Long Do You Wish To Retain Information",
         }
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
                 self.fields['relation'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
                 self.fields['relation'].queryset = Contact.objects.none()
-        
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
@@ -401,74 +472,90 @@ class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
         fields = [
-            "delegated_important_document_to", 
+            "delegated_important_document_to",
             "name_or_title",
             "document_category",
             "description",
             "physical_location",
             "digital_location",
             "important_file",
-            "requires_legal_review",            
+            "requires_legal_review",
             "applies_on_death",
             "applies_on_incapacity",
             "applies_immediately",
-            "review_time"
+            "review_time",
         ]
         labels = {
-            "delegated_important_document_to":"Assign Document To", 
-            "name_or_title":"Name or Title",
-            "document_category":"Category",
-            "description":"Description",
-            "physical_location":"Physical Location",
-            "digital_location":"Other Digital Locations",
-            "important_file":"File",
-            "requires_legal_review":"Requires Professional Legal Review",            
-            "applies_on_death":"Applies On Death",
-            "applies_on_incapacity":"Applies On Incapacitation",
-            "applies_immediately":"Applies Immediately",   
+            "delegated_important_document_to": "Assign Document To",
+            "name_or_title": "Name or Title",
+            "document_category": "Category",
+            "description": "Description",
+            "physical_location": "Physical Location",
+            "digital_location": "Other Digital Locations",
+            "important_file": "Upload File",
+            "requires_legal_review": "Requires Professional Legal Review",
+            "applies_on_death": "Applies On Death",
+            "applies_on_incapacity": "Applies On Incapacitation",
+            "applies_immediately": "Applies Immediately",
         }
         widgets = {
-            'applies_on_death': forms.CheckboxInput(),  
+            'applies_on_death': forms.CheckboxInput(),
             'applies_on_incapacity': forms.CheckboxInput(),
-            'applies_immediately': forms.CheckboxInput()
+            'applies_immediately': forms.CheckboxInput(),
         }
 
-    
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         # Make delegated_to required
         self.fields['delegated_important_document_to'].required = True
-        
+
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
                 self.fields['delegated_important_document_to'].queryset = Contact.objects.filter(profile=profile)
             except Profile.DoesNotExist:
                 self.fields['delegated_important_document_to'].queryset = Contact.objects.none()
-        
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
+        self.helper.form_show_errors = False
         self.helper.layout = Layout(
+                HTML('''
+                    {% if form.non_field_errors %}
+                    <ul class="errorlist nonfield">
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                '''),
             Fieldset(
-                'Document Assignment',
+                'Important Document Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this document to a contact.</div>'),
                 Field('delegated_important_document_to', css_class='select'),
             ),
             Fieldset(
-                'Document',
+                'Important Document',
                 Field('name_or_title', css_class='textinput'),
                 Field('document_category', css_class='select'),
                 Field('description', css_class='textarea'),
                 Field('requires_legal_review', css_class='checkboxinput form-check-input'),
-                Field('applies_on_death',css_class='checkboxinput form-check-input'),
-                Field('applies_on_incapacity',css_class='checkboxinput form-check-input'),
-                Field('applies_immediately',css_class='checkboxinput form-check-input'),
-                Field('review_time', css_class='select')
             ),
             Fieldset(
-                'Document Location',
+                'Review Requirements',
+                Field('review_time', css_class='select'),
+            ),
+            Fieldset(
+                'Declarations',
+                HTML('<div class="alert alert-warning"><strong>Required:</strong> At least one declaration must be selected.</div>'),
+                Field('applies_on_death', css_class='checkboxinput form-check-input'),
+                Field('applies_on_incapacity', css_class='checkboxinput form-check-input'),
+                Field('applies_immediately', css_class='checkboxinput form-check-input'),
+            ),
+            Fieldset(
+                'Important Document Location',
                 Field('important_file', css_class='fileinput'),
                 Field('physical_location', css_class='textinput'),
                 Field('digital_location', css_class='textinput'),
@@ -479,6 +566,18 @@ class ImportantDocumentForm(forms.ModelForm):
                 css_class='button-group'
             ),
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        applies_on_death = cleaned_data.get('applies_on_death')
+        applies_on_incapacity = cleaned_data.get('applies_on_incapacity')
+        applies_immediately = cleaned_data.get('applies_immediately')
+
+        if not any([applies_on_death, applies_on_incapacity, applies_immediately]):
+            raise forms.ValidationError(
+                "Please select at least one declaration"
+            )
+        return cleaned_data
 
 
 class RelevanceReviewForm(forms.ModelForm):
@@ -496,33 +595,33 @@ class RelevanceReviewForm(forms.ModelForm):
         widgets = {
             'next_review_due': forms.DateInput(attrs={'type': 'date'}),
         }
-    
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                
+
                 # Filter querysets to only show items belonging to this user's profile
                 self.fields['account_review'].queryset = Account.objects.filter(profile=profile)
                 self.fields['device_review'].queryset = Device.objects.filter(profile=profile)
                 self.fields['estate_review'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
                 self.fields['important_document_review'].queryset = ImportantDocument.objects.filter(profile=profile)
-                
+
                 # Make all review fields optional (user picks one)
                 self.fields['account_review'].required = False
                 self.fields['device_review'].required = False
                 self.fields['estate_review'].required = False
                 self.fields['important_document_review'].required = False
-                
+
             except Profile.DoesNotExist:
                 self.fields['account_review'].queryset = Account.objects.none()
                 self.fields['device_review'].queryset = Device.objects.none()
                 self.fields['estate_review'].queryset = DigitalEstateDocument.objects.none()
                 self.fields['important_document_review'].queryset = ImportantDocument.objects.none()
-        
+
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
@@ -550,19 +649,19 @@ class RelevanceReviewForm(forms.ModelForm):
                 css_class='button-group'
             ),
         )
-    
+
     def clean(self):
         """Validate that exactly one review target is selected"""
         cleaned_data = super().clean()
-        
+
         account = cleaned_data.get('account_review')
         device = cleaned_data.get('device_review')
         estate = cleaned_data.get('estate_review')
         important = cleaned_data.get('important_document_review')
-        
+
         targets = [account, device, estate, important]
         set_count = sum(1 for target in targets if target is not None)
-        
+
         if set_count == 0:
             raise forms.ValidationError(
                 "You must select exactly ONE item to review (account, device, estate document, or important document)."
@@ -571,5 +670,5 @@ class RelevanceReviewForm(forms.ModelForm):
             raise forms.ValidationError(
                 "You can only review ONE item at a time. Please select only one option."
             )
-        
+
         return cleaned_data

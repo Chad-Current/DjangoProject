@@ -84,10 +84,63 @@ class Contact(models.Model):
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=20, blank=False)
-    zipcode = models.IntegerField(blank=True, null=True)  # Fixed: added null=True
-    is_emergency_contact = models.BooleanField(default=False)
-    is_digital_executor = models.BooleanField(default=False)
-    is_caregiver = models.BooleanField(default=False)
+    zipcode = models.IntegerField(blank=True, null=True)  
+    is_emergency_contact = models.BooleanField(
+        default=False,
+        help_text="Contact to notify and provide access during medical emergencies or sudden incapacity."
+    )
+    is_digital_executor = models.BooleanField(
+        default=False,
+        help_text="Responsible for managing digital assets (accounts, passwords, online services) after death."
+    )
+    is_caregiver = models.BooleanField(
+        default=False,
+        help_text="Primary person providing or coordinating long-term care needs and health decisions."
+    )
+    is_legal_executor = models.BooleanField(
+        default=False,
+        help_text="Named executor/personal representative to administer overall estate and will."
+    )
+    is_trustee = models.BooleanField(
+        default=False,
+        help_text="Manages trusts, distributions, and trust assets according to trust terms."
+    )
+    is_financial_agent = models.BooleanField(
+        default=False,
+        help_text="Authorized under financial power of attorney to handle money/bills if incapacitated."
+    )
+    is_healthcare_proxy = models.BooleanField(
+        default=False,
+        help_text="Makes medical decisions if you're unable to communicate (healthcare power of attorney)."
+    )
+    is_guardian_for_dependents = models.BooleanField(
+        default=False,
+        help_text="Named legal guardian for minor children or dependent adults."
+    )
+    is_pet_caregiver = models.BooleanField(
+        default=False,
+        help_text="Responsible for pet care, veterinary decisions, and related expenses."
+    )
+    is_memorial_contact = models.BooleanField(
+        default=False,
+        help_text="Handles funeral, memorial service, and burial/cremation preferences."
+    )
+    is_legacy_contact = models.BooleanField(
+        default=False,
+        help_text="Designated for platform-specific legacy access (e.g., Apple, Google, Facebook)."
+    )
+    is_professional_advisor = models.BooleanField(
+        default=False,
+        help_text="Attorney, accountant, or advisor to consult for legal/financial guidance."
+    )
+    is_notification_only = models.BooleanField(
+        default=False,
+        help_text="Receives notifications and basic info but has no decision-making authority or tasks."
+    )
+    is_knowledge_contact = models.BooleanField(
+        default=False,
+        help_text="Delegated specific knowledge/info (e.g., account locations) but no action required."
+    )
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -173,7 +226,7 @@ class Account(models.Model):
         max_length=200, 
         help_text="Account name or service"
     )
-    website_url = models.URLField(blank=True, validators=[URLValidator()])
+    website_url = models.URLField(blank=True, validators=[URLValidator()], help_text='Format must use https://www.example.com to validate, leave blank if unsure')
     username_or_email = models.CharField(
         max_length=200,
         blank=True,
@@ -187,13 +240,14 @@ class Account(models.Model):
    
     review_time = models.PositiveSmallIntegerField(
         choices=DAY_CHOICES,
-        default=30
+        default=30,
+        help_text='How often would you like to review this item (Email Notification will be sent)'
     )
 
     keep_or_close_instruction = models.CharField(
         max_length=20,
         choices=INSTRUCTION_CHOICES,
-        default='Other (See Notes)'  # Fixed: use actual choice value
+        default='Keep Active'  # Fixed: use actual choice value
     )
     notes_for_family = models.TextField(
         blank=True,
@@ -265,7 +319,8 @@ class Device(models.Model):
     
     review_time = models.PositiveSmallIntegerField(
         choices=DAY_CHOICES,
-        default=30
+        default=30,
+        help_text='How often would you like to review this item (Email Notification will be sent)'
     )
 
     created_at = models.DateTimeField(default=timezone.now)
@@ -360,7 +415,8 @@ class DigitalEstateDocument(models.Model):
 
     review_time = models.PositiveSmallIntegerField(
         choices=DAY_CHOICES,
-        default=30
+        default=30,
+        help_text='How often would you like to review this item (Email Notification will be sent)'
     )
 
     created_at = models.DateTimeField(default=timezone.now)
@@ -470,7 +526,8 @@ class ImportantDocument(models.Model):
 
     review_time = models.PositiveSmallIntegerField(
         choices=DAY_CHOICES,
-        default=30
+        default=30,
+        help_text='How often would you like to review this item (Email Notification will be sent)'
     )
 
     created_at = models.DateTimeField(default=timezone.now)

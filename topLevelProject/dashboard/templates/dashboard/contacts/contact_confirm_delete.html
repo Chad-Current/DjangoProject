@@ -1,0 +1,162 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}Delete Contact{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="main">
+    <div class="delete-view-wrapper">
+        <div class="delete-view">
+
+            {% if has_assignments %}
+
+                <!-- Warning icon -->
+                <div class="delete-icon">
+                    <i class="fas fa-user-lock" style="color: #dc2626;"></i>
+                </div>
+
+                <!-- Heading -->
+                <h2 class="delete-title">Cannot Delete Contact</h2>
+                <p class="delete-subtitle">This contact has assigned items that must be reassigned first</p>
+
+                <!-- Item name chip -->
+                <div class="delete-item-name">
+                    <i class="fas fa-user"></i>
+                    {{ contact.first_name }} {{ contact.last_name }}
+                </div>
+
+                <!-- Warning notice -->
+                <div class="delete-warning-notice">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>
+                        <strong>{{ total_assignments }} item(s)</strong> are currently assigned to this contact.
+                        Please reassign them to another contact before deleting.
+                    </p>
+                </div>
+
+                <!-- Assigned items -->
+                <div style="width:100%; text-align:left;">
+
+                    {% if estate_documents %}
+                    <p style="font-size:0.8rem; font-weight:600; color:#6b7280; margin-bottom:0.4rem;">
+                        Estate Documents ({{ estate_documents.count }})
+                    </p>
+                    <ul style="list-style:none; padding:0; margin-bottom:1rem;">
+                        {% for doc in estate_documents %}
+                        <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
+                            <span><i class="fas fa-file-contract" style="color:#6b7280; margin-right:0.4rem;"></i>{{ doc.name_or_title }}</span>
+                            <a href="{% url 'dashboard:estate_update' doc.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    {% if important_documents %}
+                    <p style="font-size:0.8rem; font-weight:600; color:#6b7280; margin-bottom:0.4rem;">
+                        Important Documents ({{ important_documents.count }})
+                    </p>
+                    <ul style="list-style:none; padding:0; margin-bottom:1rem;">
+                        {% for doc in important_documents %}
+                        <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
+                            <span><i class="fas fa-file-alt" style="color:#6b7280; margin-right:0.4rem;"></i>{{ doc.name_or_title }}</span>
+                            <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    {% if assigned_accounts %}
+                    <p style="font-size:0.8rem; font-weight:600; color:#6b7280; margin-bottom:0.4rem;">
+                        Accounts ({{ assigned_accounts.count }})
+                    </p>
+                    <ul style="list-style:none; padding:0; margin-bottom:1rem;">
+                        {% for assign in assigned_accounts %}
+                        <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
+                            <span><i class="fas fa-globe" style="color:#6b7280; margin-right:0.4rem;"></i>{{ assign.account_name_or_provider }}</span>
+                            <a href="{% url 'dashboard:account_update' assign.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    {% if assigned_devices %}
+                    <p style="font-size:0.8rem; font-weight:600; color:#6b7280; margin-bottom:0.4rem;">
+                        Devices ({{ assigned_devices.count }})
+                    </p>
+                    <ul style="list-style:none; padding:0; margin-bottom:1rem;">
+                        {% for device in assigned_devices %}
+                        <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
+                            <span><i class="fas fa-laptop" style="color:#6b7280; margin-right:0.4rem;"></i>{{ device.device_name }}</span>
+                            <a href="{% url 'dashboard:device_update' device.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    {% if not has_other_contacts %}
+                    <div class="delete-warning-notice" style="margin-bottom:1.5rem;">
+                        <i class="fas fa-users-slash"></i>
+                        <p><strong>No other contacts available.</strong> You'll need to create a new contact before you can reassign these items.</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- Action buttons -->
+                <div class="delete-actions">
+                    <a href="{% url 'dashboard:contact_list' %}" class="btn-cancel">
+                        <i class="fas fa-arrow-left"></i> Back to Contacts
+                    </a>
+                    {% if not has_other_contacts %}
+                    <a href="{% url 'dashboard:contact_create' %}" class="btn-confirm-delete" style="background:#2563eb; text-decoration:none;">
+                        <i class="fas fa-user-plus"></i> Create New Contact
+                    </a>
+                    {% endif %}
+                </div>
+
+            {% else %}
+
+                <!-- Warning icon -->
+                <div class="delete-icon">
+                    <i class="fas fa-trash-alt" style="color: #dc2626;"></i>
+                </div>
+
+                <!-- Heading -->
+                <h2 class="delete-title">Delete Contact?</h2>
+                <p class="delete-subtitle">You are about to permanently remove</p>
+
+                <!-- Item name chip -->
+                <div class="delete-item-name">
+                    <i class="fas fa-user"></i>
+                    {{ contact.first_name }} {{ contact.last_name }}
+                    <span style="font-weight:400; color:#9ca3af;">— {{ contact.contact_relation }}</span>
+                </div>
+
+                <!-- Warning notice -->
+                <div class="delete-warning-notice">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>This action cannot be undone. All data associated with this contact will be permanently deleted.</p>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="delete-actions">
+                    <a href="{% url 'dashboard:contact_detail' contact.pk %}" class="btn-cancel">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-confirm-delete">
+                            <i class="fas fa-trash-alt"></i> Yes, Delete
+                        </button>
+                    </form>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

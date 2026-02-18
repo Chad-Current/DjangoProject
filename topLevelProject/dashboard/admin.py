@@ -50,9 +50,34 @@ class ContactAdmin(admin.ModelAdmin):
         'is_emergency_contact',
         'is_digital_executor',
         'is_caregiver',
-        'documents_count'
+        'is_legal_executor',
+        'is_trustee',
+        'is_financial_agent',
+        'is_healthcare_proxy',
+        'is_guardian_for_dependents',
+        'is_pet_caregiver',
+        'is_memorial_contact',
+        'is_legacy_contact',
+        'is_professional_advisor',
+        'is_notification_only',
+        'is_knowledge_contact',
     )
-    list_filter = ('contact_relation', 'is_emergency_contact', 'is_digital_executor', 'is_caregiver', 'created_at')
+    list_filter = ('contact_relation', 
+                   'is_emergency_contact', 
+                   'is_digital_executor', 
+                   'is_caregiver',
+                   'is_legal_executor',
+                   'is_trustee',
+                   'is_financial_agent',
+                   'is_healthcare_proxy',
+                   'is_guardian_for_dependents',
+                   'is_pet_caregiver',
+                   'is_memorial_contact',
+                   'is_legacy_contact',
+                   'is_professional_advisor',
+                   'is_notification_only',
+                   'is_knowledge_contact', 
+                   'created_at')
     search_fields = ('first_name', 'last_name', 'email', 'phone', 'address_1', 'address_2', 'city', 'state', 'profile__first_name', 'profile__last_name')
     readonly_fields = ('profile', 'created_at', 'updated_at', 'documents_count_display')
     
@@ -64,7 +89,21 @@ class ContactAdmin(admin.ModelAdmin):
             'fields': ('address_1', 'address_2', 'city', 'state', 'zipcode')
         }),
         ('Roles', {
-            'fields': ('is_emergency_contact', 'is_digital_executor', 'is_caregiver')
+            'fields': ('is_emergency_contact',
+                       'is_digital_executor', 
+                       'is_caregiver',
+                       'is_legal_executor',
+                       'is_trustee',
+                       'is_financial_agent',
+                       'is_healthcare_proxy',
+                       'is_guardian_for_dependents',
+                       'is_pet_caregiver',
+                       'is_memorial_contact',
+                       'is_legacy_contact',
+                       'is_professional_advisor',
+                       'is_notification_only',
+                       'is_knowledge_contact',
+                       )
         }),
         ('Document Assignment', {
             'fields': ('documents_count_display',),

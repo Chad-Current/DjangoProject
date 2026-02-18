@@ -17,16 +17,10 @@ urlpatterns = [
     path('password-reset/done/', views.password_reset_done_view, name='password_reset_done'),
     path('password-reset/confirm/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
     path('password-reset/complete/', views.password_reset_complete_view, name='password_reset_complete'),
-]
-#Orginal Working Copy
-# from django.urls import path
-# from .views import *
-# app_name = "accounts"
 
-# urlpatterns = [
-#     path('register/', RegisterView.as_view(), name='register'),
-#     path('login/', LoginView.as_view(), name='login'),
-#     path('logout/', LogoutView.as_view(), name='logout'),
-#     path('dashboard/', DashboardView.as_view(), name='dashboard'),
-#     path('paymentview/',PaymentView.as_view(), name='payment_page')
-# ]
+    # Checklist Download
+    # path('checklist/', views.checklist_download_view, name='checklist_download'),
+    # path('checklist/thankyou/', views.checklist_thankyou_view, name='checklist_thankyou'),
+    # path('checklist/download/', views.checklist_file_view, name='checklist_file'),
+
+]

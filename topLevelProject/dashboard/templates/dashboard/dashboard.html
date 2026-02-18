@@ -4,13 +4,18 @@
 {% block title %}Your Digital Vault{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/progress.css' %}" type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block navigation %}
+{% include 'dashboard/navblocks.html'%}
 {% endblock %}
 
 {% block content %}
+
 <div class="vault-dashboard">
     <!-- Hero Section -->
     <div class="vault-hero">
@@ -300,7 +305,10 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
+
+
 
 {% block extra_js %}
     <script src="{% static 'dashboard/js/progress.js' %}"></script>

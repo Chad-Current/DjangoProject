@@ -1,7 +1,7 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends "dashboard/dashboard.html" %}
 {% load static %}
 
-{% block title %}Delete Device{% endblock %}
+{% block title %}Delete Estate Document{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}" type="text/css">
 {% endblock %}
@@ -17,28 +17,28 @@
             </div>
 
             <!-- Heading -->
-            <h2 class="delete-title">Delete Device?</h2>
+            <h2 class="delete-title">Delete Estate Document?</h2>
             <p class="delete-subtitle">You are about to permanently remove</p>
 
             <!-- Item name chip -->
             <div class="delete-item-name">
-                <i class="fas fa-laptop"></i>
-                {{ object.device_name }}
+                <i class="fas fa-file-contract"></i>
+                {{ object.name_or_title }}
             </div>
 
             <!-- Warning notice -->
             <div class="delete-warning-notice">
                 <i class="fas fa-exclamation-triangle"></i>
-                {% if object.used_for_2fa %}
-                <p>This device is used for <strong>two-factor authentication</strong>. Deleting it may affect access to linked accounts. This action cannot be undone.</p>
+                {% if object.estate_file %}
+                <p>This document has an <strong>uploaded file attached</strong> that will also be permanently removed. This action cannot be undone.</p>
                 {% else %}
-                <p>This action cannot be undone. All data associated with this device will be permanently deleted.</p>
+                <p>This action cannot be undone. All data associated with this estate document will be permanently deleted.</p>
                 {% endif %}
             </div>
 
             <!-- Action buttons -->
             <div class="delete-actions">
-                <a href="{% url 'dashboard:device_detail' object.pk %}" class="btn-cancel">
+                <a href="{% url 'dashboard:estate_detail' object.pk %}" class="btn-cancel">
                     <i class="fas fa-arrow-left"></i> Cancel
                 </a>
                 <form method="post">

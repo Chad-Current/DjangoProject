@@ -3,7 +3,7 @@
 
 {% block ob_content %}
 <div class="ob-page-header">
-  <div class="ob-eyebrow">Step 3 of 3</div>
+  <div class="ob-eyebrow">Step 3 of 6</div>
   <h1>Your physical devices.</h1>
   <p>Record the phones, laptops, and tablets your family should know about — where they're kept and what to do with each one.</p>
 </div>
@@ -87,8 +87,8 @@
           <i class="fas fa-plus"></i> Add Device
         </button>
         <div class="ob-spacer"></div>
-        <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-accent">
-          Finish Setup <i class="fas fa-check"></i>
+        <a href="{% url 'dashboard:onboarding_estate' %}" class="ob-btn ob-btn-accent">
+          Continue to Step 4 <i class="fas fa-arrow-right"></i>
         </a>
       </div>
     </div>
@@ -145,8 +145,8 @@
       </ul>
     </div>
 
-    <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-blue ob-btn-full">
-      Finish Setup <i class="fas fa-check"></i>
+    <a href="{% url 'dashboard:onboarding_estate' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Continue → Estate Docs <i class="fas fa-arrow-right"></i>
     </a>
   </div>
 

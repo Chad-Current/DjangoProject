@@ -202,3 +202,7 @@ USE_TZ = True
 
 # DEVELOPMENT
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# DEVELOPMENT change for Production
+SITE_URL    = 'localhost:8000'
+CONTACT_URL = 'localhost/contact/'
