@@ -1,0 +1,154 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+{% block title %}Step 3 — Add Your Devices{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 3 of 3</div>
+  <h1>Your physical devices.</h1>
+  <p>Record the phones, laptops, and tablets your family should know about — where they're kept and what to do with each one.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-laptop"></i></div>
+        Add a Device
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field">
+          <label for="{{ form.device_name.id_for_label }}">Device Name / Model <span class="req">*</span></label>
+          {{ form.device_name }}
+          <span class="ob-hint">e.g. iPhone 15 Pro, MacBook Pro 2022</span>
+          {% if form.device_name.errors %}<ul class="errorlist">{% for e in form.device_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.device_type.id_for_label }}">Device Type <span class="req">*</span></label>
+          {{ form.device_type }}
+          {% if form.device_type.errors %}<ul class="errorlist">{% for e in form.device_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.delegated_device_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
+          {{ form.delegated_device_to }}
+          <span class="ob-hint">Who should handle this device?</span>
+          {% if form.delegated_device_to.errors %}<ul class="errorlist">{% for e in form.delegated_device_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.owner_label.id_for_label }}">Label</label>
+          {{ form.owner_label }}
+          <span class="ob-hint">e.g. "Mom's iPhone", "Work Laptop"</span>
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.location_description.id_for_label }}">Where is it kept?</label>
+          {{ form.location_description }}
+          <span class="ob-hint">e.g. "Bedroom nightstand drawer", "Home office desk"</span>
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.unlock_method_description.id_for_label }}">How to Unlock</label>
+          {{ form.unlock_method_description }}
+          <span class="ob-hint">Don't include actual PINs — describe where to find them, e.g. "6-digit PIN stored in 1Password"</span>
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.decommission_instruction.id_for_label }}">What to Do With This Device</label>
+          {{ form.decommission_instruction }}
+          <span class="ob-hint">e.g. "Wipe and give to daughter", "Factory reset and donate to charity"</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          {{ form.review_time }}
+        </div>
+      </div>
+
+      <!-- 2FA checkbox -->
+      <div style="margin-top: 1.1rem;">
+        <label class="ob-check-row" style="max-width: 380px;">
+          {{ form.used_for_2fa }}
+          <div>
+            <div class="ob-check-label">
+              <i class="fas fa-key" style="color: var(--accent-color); margin-right: 6px;"></i>
+              Used for Two-Factor Authentication (2FA)
+            </div>
+            <div style="font-family: var(--paragraph-font); font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); margin-top: 2px;">
+              This device receives login verification codes
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="ob-actions">
+        <a href="{% url 'dashboard:onboarding_accounts' %}" class="ob-btn ob-btn-ghost">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Device
+        </button>
+        <div class="ob-spacer"></div>
+        <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-accent">
+          Finish Setup <i class="fas fa-check"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Devices ({{ devices.count }})</div>
+
+      {% if devices %}
+      <div class="ob-items">
+        {% for device in devices %}
+        <div class="ob-item">
+          <div class="ob-item-icon">
+            {% if device.device_type == 'Phone' %}📱
+            {% elif device.device_type == 'Laptop' %}💻
+            {% elif device.device_type == 'Desktop' %}🖥️
+            {% elif device.device_type == 'Tablet' %}📲
+            {% elif device.device_type == 'Smart Watch' %}⌚
+            {% else %}📦{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ device.device_name }}</div>
+            <div class="ob-item-sub">
+              {{ device.device_type }}
+              {% if device.used_for_2fa %}
+                <span style="color: var(--accent-color);"> · 🔑 2FA</span>
+              {% endif %}
+            </div>
+          </div>
+          {% if device.owner_label %}
+          <span class="ob-badge badge-blue">{{ device.owner_label|truncatechars:12 }}</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-laptop"></i></div>
+        <p>No devices yet.<br>Add your first device above.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> Don't forget</div>
+      <ul>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Your primary phone</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Home or work computer</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Tablet or iPad</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Smartwatch (especially if used for payments)</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Any device used to receive 2FA codes</li>
+      </ul>
+    </div>
+
+    <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Finish Setup <i class="fas fa-check"></i>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

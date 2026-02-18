@@ -1,0 +1,134 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+
+{% block title %}Step 2 — Add Your Accounts{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 2 of 3</div>
+  <h1>Your digital accounts.</h1>
+  <p>Add the online accounts your family should know about — email, banking, social media, and more. No passwords needed.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-plus-circle"></i></div>
+        Add an Account
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field">
+          <label for="{{ form.account_name_or_provider.id_for_label }}">Provider <span class="req">*</span></label>
+          {{ form.account_name_or_provider }}
+          <span class="ob-hint">e.g. Gmail, Chase Bank, Netflix</span>
+          {% if form.account_name_or_provider.errors %}<ul class="errorlist">{% for e in form.account_name_or_provider.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.account_category.id_for_label }}">Category <span class="req">*</span></label>
+          {{ form.account_category }}
+          {% if form.account_category.errors %}<ul class="errorlist">{% for e in form.account_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.delegated_account_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
+          {{ form.delegated_account_to }}
+          <span class="ob-hint">Who should handle this account?</span>
+          {% if form.delegated_account_to.errors %}<ul class="errorlist">{% for e in form.delegated_account_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.keep_or_close_instruction.id_for_label }}">Instruction <span class="req">*</span></label>
+          {{ form.keep_or_close_instruction }}
+          {% if form.keep_or_close_instruction.errors %}<ul class="errorlist">{% for e in form.keep_or_close_instruction.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.username_or_email.id_for_label }}">Username / Login Email</label>
+          {{ form.username_or_email }}
+          <span class="ob-hint">No passwords — just the login identifier</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.website_url.id_for_label }}">Website URL</label>
+          {{ form.website_url }}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.credential_storage_location.id_for_label }}">Password Storage Location</label>
+          {{ form.credential_storage_location }}
+          <span class="ob-hint">e.g. "1Password - Work Logins folder", "Sticky note in office drawer"</span>
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.notes_for_family.id_for_label }}">Notes for Family</label>
+          {{ form.notes_for_family }}
+          <span class="ob-hint">Any special instructions about this account</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          {{ form.review_time }}
+          <span class="ob-hint">How often should this be reviewed?</span>
+        </div>
+      </div>
+
+      <div class="ob-actions">
+        <a href="{% url 'dashboard:onboarding_contacts' %}" class="ob-btn ob-btn-ghost">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Account
+        </button>
+        <div class="ob-spacer"></div>
+        <a href="{% url 'dashboard:onboarding_devices' %}" class="ob-btn ob-btn-accent">
+          Continue to Devices <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Accounts ({{ accounts.count }})</div>
+
+      {% if accounts %}
+      <div class="ob-items">
+        {% for account in accounts %}
+        <div class="ob-item">
+          <div class="ob-item-icon">
+            {% if 'Email' in account.account_category %}📧
+            {% elif 'Bank' in account.account_category or 'Brokerage' in account.account_category %}🏦
+            {% elif 'Social' in account.account_category %}💬
+            {% elif 'Stream' in account.account_category %}🎬
+            {% elif 'Crypto' in account.account_category %}₿
+            {% elif 'Gaming' in account.account_category %}🎮
+            {% elif 'Password' in account.account_category %}🔑
+            {% else %}🔐{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ account.account_name_or_provider }}</div>
+            <div class="ob-item-sub">{{ account.get_account_category_display }}</div>
+          </div>
+          <span class="ob-badge {% if account.keep_or_close_instruction == 'Close Account' %}badge-navy{% elif account.keep_or_close_instruction == 'Keep Active' %}badge-blue{% else %}badge-amber{% endif %}">
+            {% if account.keep_or_close_instruction == 'Close Account' %}Close
+            {% elif account.keep_or_close_instruction == 'Keep Active' %}Keep
+            {% else %}Other{% endif %}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-lock"></i></div>
+        <p>No accounts yet.<br>Add your first account above.</p>
+      </div>
+      {% endif %}
+    </div>
+
+
+
+    <a href="{% url 'dashboard:onboarding_devices' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Continue → Devices <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

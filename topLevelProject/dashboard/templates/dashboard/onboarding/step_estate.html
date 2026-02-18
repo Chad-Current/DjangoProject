@@ -1,0 +1,150 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+{% block title %}Step 4 — Add Estate Documents{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 4 of 6</div>
+  <h1>Your estate documents.</h1>
+  <p>Record the legal documents that govern your wishes — wills, powers of attorney, healthcare directives. These are the most critical documents your family will need.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-file-contract"></i></div>
+        Add an Estate Document
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field ob-full">
+          <label for="{{ form.name_or_title.id_for_label }}">Document Name <span class="req">*</span></label>
+          {{ form.name_or_title }}
+          <span class="ob-hint">e.g. "Last Will and Testament", "Healthcare Power of Attorney"</span>
+          {% if form.name_or_title.errors %}<ul class="errorlist">{% for e in form.name_or_title.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.estate_category.id_for_label }}">Document Type <span class="req">*</span></label>
+          {{ form.estate_category }}
+          {% if form.estate_category.errors %}<ul class="errorlist">{% for e in form.estate_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.delegated_estate_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
+          {{ form.delegated_estate_to }}
+          <span class="ob-hint">Who holds or manages this document?</span>
+          {% if form.delegated_estate_to.errors %}<ul class="errorlist">{% for e in form.delegated_estate_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.estate_physical_location.id_for_label }}">Physical Location</label>
+          {{ form.estate_physical_location }}
+          <span class="ob-hint">e.g. "Safe deposit box at Chase Bank", "Filing cabinet in office"</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.estate_digital_location.id_for_label }}">Digital Location</label>
+          {{ form.estate_digital_location }}
+          <span class="ob-hint">e.g. "Google Drive / Legal folder", "1Password secure note"</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          {{ form.review_time }}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.estate_overall_instructions.id_for_label }}">Instructions for Family</label>
+          {{ form.estate_overall_instructions }}
+          <span class="ob-hint">Any guidance your family needs when handling this document</span>
+        </div>
+      </div>
+
+      <!-- When this document applies -->
+      <div style="margin-top: 1.2rem;">
+        <div class="ob-field">
+          <label>When does this apply? <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+        </div>
+        <div class="ob-check-group" style="margin-top: 0.5rem;">
+          <label class="ob-check-row">
+            {{ form.applies_on_death }}
+            <span class="ob-check-label"><i class="fas fa-moon" style="color: var(--ten-percent); margin-right: 5px;"></i>On Death</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.applies_on_incapacity }}
+            <span class="ob-check-label"><i class="fas fa-hospital" style="color: var(--thirty-percent); margin-right: 5px;"></i>On Incapacity</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.applies_immediately }}
+            <span class="ob-check-label"><i class="fas fa-bolt" style="color: var(--accent-color); margin-right: 5px;"></i>Immediately</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ob-actions">
+        <a href="{% url 'dashboard:onboarding_devices' %}" class="ob-btn ob-btn-ghost">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Document
+        </button>
+        <div class="ob-spacer"></div>
+        <a href="{% url 'dashboard:onboarding_documents' %}" class="ob-btn ob-btn-accent">
+          Continue to Step 5 <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Estate Docs ({{ estates.count }})</div>
+
+      {% if estates %}
+      <div class="ob-items">
+        {% for doc in estates %}
+        <div class="ob-item" style="border-left-color: var(--accent-color);">
+          <div class="ob-item-icon" style="background: rgba(255,166,43,0.12);">
+            {% if 'Will' in doc.estate_category or 'Will' in doc.name_or_title %}📜
+            {% elif 'Healthcare' in doc.estate_category or 'Directive' in doc.estate_category %}🏥
+            {% elif 'Power' in doc.estate_category %}⚖️
+            {% elif 'Trust' in doc.estate_category %}🏛️
+            {% elif 'Executor' in doc.estate_category %}👤
+            {% else %}📋{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ doc.name_or_title }}</div>
+            <div class="ob-item-sub">{{ doc.estate_category|truncatechars:32 }}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end;">
+            {% if doc.applies_on_death %}<span class="ob-badge badge-navy">Death</span>{% endif %}
+            {% if doc.applies_on_incapacity %}<span class="ob-badge badge-blue">Incapacity</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-file-contract"></i></div>
+        <p>No estate documents yet.<br>Add your will or first legal document.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> Key documents to include</div>
+      <ul>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Last Will and Testament</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Advance Directive / Living Will</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Durable Power of Attorney (Financial)</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Healthcare Power of Attorney</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Trust documents (if applicable)</li>
+      </ul>
+    </div>
+
+    <a href="{% url 'dashboard:onboarding_documents' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Continue → Important Docs <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

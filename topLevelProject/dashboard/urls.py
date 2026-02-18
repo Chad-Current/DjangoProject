@@ -60,28 +60,15 @@ urlpatterns = [
     path('documents/create/', views.ImportantDocumentCreateView.as_view(), name='importantdocument_create'),
     path('documents/<int:pk>/edit/', views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<int:pk>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
-     
-   # Recovery Request URLs
-    # path('recovery/request/', views.external_recovery_request, name='external_recovery_request'),
-    # # Email verification
-    # path('recovery/verify/<str:token>/', views.verify_recovery_request, name='verify_recovery_request'),
-    # # Authenticated user recovery request
-    # path('recovery/submit/<int:profile_id>/', views.authenticated_recovery_request, name='authenticated_recovery_request'),
-    # # View recovery request status
-    # path('recovery/status/<int:pk>/', views.recovery_request_status, name='recovery_request_status'),
-    # # Admin review interface
-    # path('admin/recovery/review/<int:pk>/', views.admin_review_recovery_request, name='admin_review_recovery_request'),
-    # # List recovery requests (for authenticated users)
-    # path('recovery/my-requests/', views.my_recovery_requests, name='my_recovery_requests'),
-    # #Cancel Recovery
-    # path('recovery/cancel/<int:pk>/', views.cancel_recovery_request, name='cancel_recovery_request'),
-    # # Resend verification email
-    # path('recovery/resend-verification/<int:pk>/', views.resend_verification_email, name='resend_verification_email'),
-    # # Admin dashboard
-    # path('admin/recovery/dashboard/', views.admin_recovery_dashboard, name='admin_recovery_dashboard' ),
     
-    
-    # Main TEST Template URL
-    path('test/', views.TestView.as_view(), name="test")
-]
+    # Onboarding URLs 
+    path('onboarding/', views.OnboardingWelcomeView.as_view(), name='onboarding_welcome'),
+    path('onboarding/contacts/', views.OnboardingContactView.as_view(), name='onboarding_contacts'),
+    path('onboarding/accounts/', views.OnboardingAccountView.as_view(), name='onboarding_accounts'),
+    path('onboarding/devices/', views.OnboardingDeviceView.as_view(), name='onboarding_devices'),
+    path('onboarding/estate/',    views.OnboardingEstateView.as_view(),     name='onboarding_estate'),
+    path('onboarding/documents/', views.OnboardingDocumentsView.as_view(), name='onboarding_documents'),
+    path('onboarding/family/',    views.OnboardingFamilyView.as_view(),     name='onboarding_family'),
+    path('onboarding/complete/', views.OnboardingCompleteView.as_view(), name='onboarding_complete'),
+ ]
 

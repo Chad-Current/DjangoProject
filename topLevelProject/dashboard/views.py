@@ -315,8 +315,9 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, '🎉 Welcome! Your profile has been created successfully.')
-        return super().form_valid(form)
+        messages.success(self.request, '🎉 Profile created! Let\'s set up your estate plan.')
+        response = super().form_valid(form)
+        return redirect(reverse('dashboard:onboarding_welcome'))
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1494,10 +1495,235 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
     
 
 
+class OnboardingMixin(LoginRequiredMixin):
+    """Shared mixin — enforces payment and profile requirements."""
+    login_url = '/accounts/login/'
 
-class TestView(LoginRequiredMixin, CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not getattr(user, "has_paid", False):
+            messages.warning(request, "Please complete payment to access setup.")
+            return redirect(reverse("accounts:payment"))
+        try:
+            _ = user.profile
+        except Exception:
+            return redirect(reverse("dashboard:profile_create"))
+        return super().dispatch(request, *args, **kwargs)
 
-    model = Profile
-    form_class = ProfileForm
-    template_name = "dashboard/profile_step_form.html"
-    success_url = reverse_lazy("dashboard:dahsboard_home") 
+    def get_onboarding_progress(self):
+        """Return counts for all 6 steps for the step rail and complete page."""
+        user = self.request.user
+        try:
+            profile = user.profile
+            return {
+                'contacts':    Contact.objects.filter(profile=profile).exclude(contact_relation='Self').count(),
+                'accounts':    Account.objects.filter(profile=profile).count(),
+                'devices':     Device.objects.filter(profile=profile).count(),
+                'estates':     DigitalEstateDocument.objects.filter(profile=profile).count(),
+                'documents':   ImportantDocument.objects.filter(profile=profile).count(),
+                'family_knows': FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count(),
+            }
+        except Exception:
+            return {
+                'contacts': 0, 'accounts': 0, 'devices': 0,
+                'estates': 0, 'documents': 0, 'family_knows': 0,
+            }
+
+
+# ── Step 0: Welcome ──────────────────────────────────────────────────────────
+
+class OnboardingWelcomeView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/welcome.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['progress'] = self.get_onboarding_progress()
+        context['step'] = 0
+        context['total_steps'] = 6
+        return context
+
+
+# ── Step 1: Contacts ─────────────────────────────────────────────────────────
+
+class OnboardingContactView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['contacts'] = Contact.objects.filter(profile=profile).exclude(contact_relation='Self').order_by('last_name')
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = ContactForm(user=self.request.user)
+        context['step'] = 1
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = ContactForm(request.POST, user=request.user)
+        if form.is_valid():
+            contact = form.save(commit=False)
+            contact.profile = profile
+            contact.save()
+            messages.success(request, f'Contact "{contact.first_name} {contact.last_name}" added!')
+            return redirect(reverse('dashboard:onboarding_contacts'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Step 2: Accounts ─────────────────────────────────────────────────────────
+
+class OnboardingAccountView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_accounts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['accounts'] = Account.objects.filter(profile=profile).order_by('-created_at')[:10]
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = AccountForm(user=self.request.user)
+        context['step'] = 2
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = AccountForm(request.POST, user=request.user)
+        if form.is_valid():
+            account = form.save(commit=False)
+            account.profile = profile
+            account.save()
+            messages.success(request, f'Account "{account.account_name_or_provider}" added!')
+            return redirect(reverse('dashboard:onboarding_accounts'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Step 3: Devices ──────────────────────────────────────────────────────────
+
+class OnboardingDeviceView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_devices.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['devices'] = Device.objects.filter(profile=profile).order_by('-created_at')[:10]
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = DeviceForm(user=self.request.user)
+        context['step'] = 3
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = DeviceForm(request.POST, user=request.user)
+        if form.is_valid():
+            device = form.save(commit=False)
+            device.profile = profile
+            device.save()
+            messages.success(request, f'Device "{device.device_name}" added!')
+            return redirect(reverse('dashboard:onboarding_devices'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Step 4: Estate Documents ─────────────────────────────────────────────────
+
+class OnboardingEstateView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_estate.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['estates'] = DigitalEstateDocument.objects.filter(profile=profile).order_by('-created_at')[:10]
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = DigitalEstateDocumentForm(user=self.request.user)
+        context['step'] = 4
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = DigitalEstateDocumentForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            doc = form.save(commit=False)
+            doc.profile = profile
+            doc.save()
+            messages.success(request, f'Estate document "{doc.name_or_title}" added!')
+            return redirect(reverse('dashboard:onboarding_estate'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Step 5: Important Documents ──────────────────────────────────────────────
+
+class OnboardingDocumentsView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_documents.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['documents'] = ImportantDocument.objects.filter(profile=profile).order_by('-created_at')[:10]
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = ImportantDocumentForm(user=self.request.user)
+        context['step'] = 5
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = ImportantDocumentForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            doc = form.save(commit=False)
+            doc.profile = profile
+            doc.save()
+            messages.success(request, f'Document "{doc.name_or_title}" added!')
+            return redirect(reverse('dashboard:onboarding_documents'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Step 6: Family Awareness ─────────────────────────────────────────────────
+
+class OnboardingFamilyView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/step_family.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile
+        context['family_notes'] = FamilyNeedsToKnowSection.objects.filter(
+            relation__profile=profile
+        ).select_related('relation').order_by('-created_at')[:10]
+        context['progress'] = self.get_onboarding_progress()
+        context['form'] = FamilyNeedsToKnowSectionForm(user=self.request.user)
+        context['step'] = 6
+        context['total_steps'] = 6
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = FamilyNeedsToKnowSectionForm(request.POST, user=request.user)
+        if form.is_valid():
+            note = form.save()
+            messages.success(request, f'Note for "{note.relation.first_name} {note.relation.last_name}" added!')
+            return redirect(reverse('dashboard:onboarding_family'))
+        context = self.get_context_data()
+        context['form'] = form
+        return self.render_to_response(context)
+
+
+# ── Complete ──────────────────────────────────────────────────────────────────
+
+class OnboardingCompleteView(OnboardingMixin, TemplateView):
+    template_name = 'dashboard/onboarding/complete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['progress'] = self.get_onboarding_progress()
+        context['step'] = 7
+        context['total_steps'] = 6
+        return context

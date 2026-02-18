@@ -1,0 +1,145 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+{% block title %}Step 1 — Add Your Contacts{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 1 of 3</div>
+  <h1>Who needs to know?</h1>
+  <p>Add the family members, executors, and caregivers who should be informed and given access after you're gone.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-user-plus"></i></div>
+        Add a Contact
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field">
+          <label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.last_name.id_for_label }}">Last Name <span class="req">*</span></label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.contact_relation.id_for_label }}">Relationship <span class="req">*</span></label>
+          {{ form.contact_relation }}
+          {% if form.contact_relation.errors %}<ul class="errorlist">{% for e in form.contact_relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.email.id_for_label }}">Email Address</label>
+          {{ form.email }}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+          {{ form.phone }}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.address_1.id_for_label }}">Street Address <span class="req">*</span></label>
+          {{ form.address_1 }}
+          {% if form.address_1.errors %}<ul class="errorlist">{% for e in form.address_1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.city.id_for_label }}">City <span class="req">*</span></label>
+          {{ form.city }}
+          {% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.state.id_for_label }}">State <span class="req">*</span></label>
+          {{ form.state }}
+          {% if form.state.errors %}<ul class="errorlist">{% for e in form.state.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+
+      <!-- Roles -->
+      <div style="margin-top: 1.2rem;">
+        <div class="ob-field">
+          <label>Roles <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+        </div>
+        <div class="ob-check-group" style="margin-top: 0.5rem;">
+          <label class="ob-check-row">
+            {{ form.is_emergency_contact }}
+            <span class="ob-check-label"><i class="fas fa-ambulance" style="color: var(--accent-color); margin-right: 5px;"></i>Emergency</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_digital_executor }}
+            <span class="ob-check-label"><i class="fas fa-gavel" style="color: var(--thirty-percent); margin-right: 5px;"></i>Executor</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_caregiver }}
+            <span class="ob-check-label"><i class="fas fa-hands-helping" style="color: var(--sixty-percent); margin-right: 5px;"></i>Caregiver</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ob-actions">
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Contact
+        </button>
+        <div class="ob-spacer"></div>
+        {% if contacts.count > 0 %}
+        <a href="{% url 'dashboard:onboarding_accounts' %}" class="ob-btn ob-btn-accent">
+          Continue to Accounts <i class="fas fa-arrow-right"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Contacts ({{ contacts.count }})</div>
+
+      {% if contacts %}
+      <div class="ob-items">
+        {% for contact in contacts %}
+        <div class="ob-item">
+          <div class="ob-item-icon">
+            {% if contact.contact_relation == 'Spouse' %}💑
+            {% elif contact.contact_relation in 'Mother,Father' %}👪
+            {% elif contact.contact_relation in 'Son,Daughter' %}👶
+            {% elif contact.contact_relation == 'Self' %}🪞
+            {% else %}👤{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ contact.first_name }} {{ contact.last_name }}</div>
+            <div class="ob-item-sub">{{ contact.contact_relation }}{% if contact.email %} · {{ contact.email }}{% endif %}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end;">
+            {% if contact.is_digital_executor %}<span class="ob-badge badge-navy">Executor</span>{% endif %}
+            {% if contact.is_emergency_contact %}<span class="ob-badge badge-amber">Emergency</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-users"></i></div>
+        <p>No contacts yet.<br>Add your first contact to continue.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if contacts.count > 0 %}
+    <a href="{% url 'dashboard:onboarding_accounts' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Continue → Accounts <i class="fas fa-arrow-right"></i>
+    </a>
+    {% else %}
+    <p style="font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); text-align: center; margin: 0;">
+      <i class="fas fa-info-circle" style="margin-right: 5px;"></i>Add at least one contact to unlock Step 2.
+    </p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

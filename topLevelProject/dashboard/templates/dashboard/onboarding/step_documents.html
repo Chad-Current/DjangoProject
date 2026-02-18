@@ -1,0 +1,151 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+{% block title %}Step 5 — Add Important Documents{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 5 of 6</div>
+  <h1>Your important documents.</h1>
+  <p>Catalog the financial, medical, and personal records your family will need to locate — insurance policies, bank details, property deeds, identification, and more.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-folder-open"></i></div>
+        Add an Important Document
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field ob-full">
+          <label for="{{ form.name_or_title.id_for_label }}">Document Name <span class="req">*</span></label>
+          {{ form.name_or_title }}
+          <span class="ob-hint">e.g. "Term Life Insurance Policy", "Vehicle Title — 2021 Honda CRV"</span>
+          {% if form.name_or_title.errors %}<ul class="errorlist">{% for e in form.name_or_title.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.document_category.id_for_label }}">Category <span class="req">*</span></label>
+          {{ form.document_category }}
+          {% if form.document_category.errors %}<ul class="errorlist">{% for e in form.document_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.delegated_important_document_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
+          {{ form.delegated_important_document_to }}
+          <span class="ob-hint">Who should access this document?</span>
+          {% if form.delegated_important_document_to.errors %}<ul class="errorlist">{% for e in form.delegated_important_document_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.description.id_for_label }}">Description</label>
+          {{ form.description }}
+          <span class="ob-hint">Brief note about what this document covers</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.physical_location.id_for_label }}">Physical Location</label>
+          {{ form.physical_location }}
+          <span class="ob-hint">e.g. "Fireproof safe in master bedroom closet"</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.digital_location.id_for_label }}">Digital Location</label>
+          {{ form.digital_location }}
+          <span class="ob-hint">e.g. "Dropbox / Important Docs folder"</span>
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          {{ form.review_time }}
+        </div>
+      </div>
+
+      <!-- When this document applies + legal review -->
+      <div style="margin-top: 1.2rem;">
+        <div class="ob-field">
+          <label>When does this apply? <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+        </div>
+        <div class="ob-check-group" style="margin-top: 0.5rem;">
+          <label class="ob-check-row">
+            {{ form.applies_on_death }}
+            <span class="ob-check-label"><i class="fas fa-moon" style="color: var(--ten-percent); margin-right: 5px;"></i>On Death</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.applies_on_incapacity }}
+            <span class="ob-check-label"><i class="fas fa-hospital" style="color: var(--thirty-percent); margin-right: 5px;"></i>On Incapacity</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.requires_legal_review }}
+            <span class="ob-check-label"><i class="fas fa-gavel" style="color: var(--accent-color); margin-right: 5px;"></i>Legal Review Needed</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ob-actions">
+        <a href="{% url 'dashboard:onboarding_estate' %}" class="ob-btn ob-btn-ghost">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Document
+        </button>
+        <div class="ob-spacer"></div>
+        <a href="{% url 'dashboard:onboarding_family' %}" class="ob-btn ob-btn-accent">
+          Continue to Step 6 <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Documents ({{ documents.count }})</div>
+
+      {% if documents %}
+      <div class="ob-items">
+        {% for doc in documents %}
+        <div class="ob-item" style="border-left-color: var(--thirty-percent);">
+          <div class="ob-item-icon" style="background: rgba(45,106,156,0.1);">
+            {% if 'Insurance' in doc.document_category %}🛡️
+            {% elif 'Tax' in doc.document_category or 'Financial' in doc.document_category %}💰
+            {% elif 'Medical' in doc.document_category or 'Health' in doc.document_category %}🏥
+            {% elif 'Property' in doc.document_category or 'Deed' in doc.document_category %}🏠
+            {% elif 'Social Security' in doc.document_category or 'Identification' in doc.document_category %}🪪
+            {% elif 'Bank' in doc.document_category %}🏦
+            {% else %}📂{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ doc.name_or_title }}</div>
+            <div class="ob-item-sub">{{ doc.document_category|truncatechars:32 }}</div>
+          </div>
+          {% if doc.requires_legal_review %}
+          <span class="ob-badge badge-amber">Legal</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-folder-open"></i></div>
+        <p>No documents yet.<br>Add your first important document above.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> Common documents to add</div>
+      <ul>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Life insurance policy</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Bank &amp; investment accounts</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Property deeds &amp; vehicle titles</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Passport &amp; Social Security card</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Tax returns (last 3 years)</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Medical records &amp; prescriptions</li>
+      </ul>
+    </div>
+
+    <a href="{% url 'dashboard:onboarding_family' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Continue → Family Notes <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

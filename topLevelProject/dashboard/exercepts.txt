@@ -172,3 +172,25 @@
             </div>
         </div>
     </div>
+
+
+
+    SPLIT ISSUE OF STEP ACCOUNTS REMOVED
+        <!-- Suggestions -->
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> Common accounts to add</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.25rem;">
+        {% for s in "Gmail,iCloud,Facebook,LinkedIn,Netflix,Spotify,Chase,PayPal,Amazon,Apple ID,Twitter/X,Instagram"|split:"," %}
+        <span style="
+          font-family: var(--main-font);
+          font-size: var(--font-sm);
+          font-weight: 600;
+          padding: 3px 11px;
+          background: var(--purewhite-color);
+          border-radius: 20px;
+          color: var(--thirty-percent);
+          border: 1px solid rgba(255,166,43,0.25);
+        ">{{ s }}</span>
+        {% endfor %}
+      </div>
+    </div>

@@ -1,0 +1,135 @@
+{% extends "dashboard/onboarding/base_onboarding.html" %}
+{% block title %}Step 6 — Family Awareness{% endblock %}
+
+{% block ob_content %}
+<div class="ob-page-header">
+  <div class="ob-eyebrow">Step 6 of 6</div>
+  <h1>Leave guidance for your family.</h1>
+  <p>Write notes, wishes, and instructions for the people you love. These sections help your family understand what you want and what they need to know when the time comes.</p>
+</div>
+
+<div class="ob-body">
+
+  <!-- ── FORM ─────────────────────────────────────── -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-heart"></i></div>
+        Add a Family Note
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field ob-full">
+          <label for="{{ form.relation.id_for_label }}">For Contact <span class="req">*</span></label>
+          {{ form.relation }}
+          <span class="ob-hint">Which contact should receive this note or guidance?</span>
+          {% if form.relation.errors %}<ul class="errorlist">{% for e in form.relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.content.id_for_label }}">Message / Instructions <span class="req">*</span></label>
+          {{ form.content }}
+          <span class="ob-hint">Write your wishes, instructions, or anything important this person should know</span>
+          {% if form.content.errors %}<ul class="errorlist">{% for e in form.content.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+
+      <!-- Topic flags -->
+      <div style="margin-top: 1.2rem;">
+        <div class="ob-field">
+          <label>This note covers <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem;">
+          <label class="ob-check-row">
+            {{ form.is_location_of_legal_will }}
+            <span class="ob-check-label"><i class="fas fa-scroll" style="color: var(--ten-percent); margin-right: 5px;"></i>Location of Legal Will</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_password_manager }}
+            <span class="ob-check-label"><i class="fas fa-key" style="color: var(--accent-color); margin-right: 5px;"></i>Password Manager Info</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_social_media }}
+            <span class="ob-check-label"><i class="fas fa-share-alt" style="color: var(--sixty-percent); margin-right: 5px;"></i>Social Media Wishes</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_photos_or_files }}
+            <span class="ob-check-label"><i class="fas fa-images" style="color: var(--thirty-percent); margin-right: 5px;"></i>Photos &amp; Files</span>
+          </label>
+          <label class="ob-check-row">
+            {{ form.is_data_retention_preferences }}
+            <span class="ob-check-label"><i class="fas fa-database" style="color: var(--ten-percent); margin-right: 5px;"></i>Data Retention Wishes</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="ob-actions">
+        <a href="{% url 'dashboard:onboarding_documents' %}" class="ob-btn ob-btn-ghost">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <button type="submit" class="ob-btn ob-btn-primary">
+          <i class="fas fa-plus"></i> Add Note
+        </button>
+        <div class="ob-spacer"></div>
+        <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-accent">
+          Finish Setup <i class="fas fa-check"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── PANEL ─────────────────────────────────────── -->
+  <div class="ob-panel">
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">Added Notes ({{ family_notes.count }})</div>
+
+      {% if family_notes %}
+      <div class="ob-items">
+        {% for note in family_notes %}
+        <div class="ob-item" style="border-left-color: var(--sixty-percent);">
+          <div class="ob-item-icon" style="background: rgba(98,162,206,0.12);">
+            {% if note.is_location_of_legal_will %}📜
+            {% elif note.is_password_manager %}🔑
+            {% elif note.is_social_media %}💬
+            {% elif note.is_photos_or_files %}🖼️
+            {% else %}💌{% endif %}
+          </div>
+          <div class="ob-item-body">
+            <div class="ob-item-name">{{ note.relation.first_name }} {{ note.relation.last_name }}</div>
+            <div class="ob-item-sub">{{ note.content|truncatechars:40 }}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end;">
+            {% if note.is_location_of_legal_will %}<span class="ob-badge badge-navy">Will</span>{% endif %}
+            {% if note.is_password_manager %}<span class="ob-badge badge-amber">Passwords</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon"><i class="fas fa-heart"></i></div>
+        <p>No notes yet.<br>Leave your first message for your family.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Prompt ideas -->
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> What to write about</div>
+      <ul>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Where your will and important papers are kept</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>How to access your password manager</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>What you want done with social media profiles</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Where cherished photos and files are stored</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>Funeral or memorial wishes</li>
+        <li><i class="fas fa-check" style="color: var(--sixty-percent); margin-right: 7px; width: 12px;"></i>A personal message to loved ones</li>
+      </ul>
+    </div>
+
+    <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-blue ob-btn-full">
+      Finish Setup <i class="fas fa-check"></i>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
