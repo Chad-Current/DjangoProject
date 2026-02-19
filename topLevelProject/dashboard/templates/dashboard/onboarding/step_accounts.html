@@ -1,8 +1,10 @@
 {% extends "dashboard/onboarding/base_onboarding.html" %}
-
+{% load static %}
 
 {% block title %}Step 2 — Add Your Accounts{% endblock %}
+{% block extra_css %}
 
+{% endblock %}
 
 {% block ob_content %}
 <div class="ob-page-header">
@@ -17,8 +19,6 @@
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post">
     {% csrf_token %}
-
-    {# ── Non-field errors (e.g. form.clean() ValidationError) ── #}
     {% if form.non_field_errors %}
     <ul class="errorlist nonfield">
       {% for error in form.non_field_errors %}

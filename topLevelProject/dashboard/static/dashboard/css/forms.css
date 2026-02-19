@@ -1,24 +1,534 @@
-/* ─────────────────────────────────────────────────────────────────────
-   ADD TO forms.css  (or a dedicated patch file loaded after forms.css)
+/* ═══════════════════════════════════════════════════════════════════
+   forms.css — Mobile-first form styles for Digital Estate Plan
+   Built entirely on the project's CSS design tokens.
+   Load after baseapp/css/stylesheet.css and dashboard/css/stylesheet.css
+   ═══════════════════════════════════════════════════════════════════ */
 
-   Fixes: base dashboard stylesheet sets  li { display: flex }
-   which overrides .errorlist li and breaks the ⚠ icon layout.
-   The !important here is intentional — it's a reset against a
-   global selector that should never have applied to error lists.
-   ───────────────────────────────────────────────────────────────────── */
 
-/* Override the global  li { display: flex }  from the dashboard stylesheet */
+/* ── Crispy forms asterisk — hide the default required star ─────── */
+.asteriskField { display: none; }
+
+
+/* ══════════════════════════════════════════════
+   PAGE LAYOUT
+   Full-viewport centering for standalone forms
+   ══════════════════════════════════════════════ */
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 1.25rem 1rem 3rem;
+  background: var(--background-color);
+}
+
+
+/* ══════════════════════════════════════════════
+   FORM CARD
+   White card matching .modify-form / .detail-view
+   ══════════════════════════════════════════════ */
+
+.form-wrapper {
+  width: 100%;
+  max-width: 780px;
+  background: var(--purewhite-color);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(22, 40, 59, 0.10);
+  overflow: hidden;
+  padding: 2em;
+}
+
+/* Gradient header banner — mirrors .header-section */
+.form-wrapper-header {
+  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 100%);
+  padding: 1.75rem 1.25rem 1.5rem;
+}
+
+.form-wrapper-header h1,
+.form-wrapper-header h2 {
+  font-family: var(--title-font);
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+.form-wrapper-header p {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: rgba(231, 239, 247, 0.75);
+  margin: 0;
+}
+
+/* Inner body */
+.form-wrapper-body {
+  padding: 1.5rem 1.25rem;
+}
+
+/* Compact login card variant */
+.loginform-wrapper {
+  width: 100%;
+  max-width: 440px;
+  background: var(--purewhite-color);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(22, 40, 59, 0.10);
+  overflow: hidden;
+  padding: 2em;
+}
+
+.loginform-wrapper .form-wrapper-body {
+  padding: 1.5rem 1.25rem;
+}
+
+
+/* ══════════════════════════════════════════════
+   FIELDSETS & SECTION TITLES
+   ══════════════════════════════════════════════ */
+
+fieldset {
+  border: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  width: 100%;
+}
+
+fieldset legend,
+.form-section-title {
+  display: block;
+  width: 100%;
+  font-family: var(--title-font);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--ten-percent);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--background-color);
+}
+
+fieldset legend::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1em;
+  background: var(--accent-color);
+  border-radius: 2px;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+  margin-top: -2px;
+}
+
+
+/* ══════════════════════════════════════════════
+   FORM FIELDS
+   ══════════════════════════════════════════════ */
+
+.form-wrapper > div,
+.form-wrapper > fieldset > div,
+.form-wrapper-body > div,
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+/* Labels */
+.form-wrapper label,
+.form-wrapper-body label,
+.form-group label {
+  display: block;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--ten-percent);
+  margin-bottom: 0.4rem;
+}
+
+label.requiredField::after {
+  content: " *";
+  color: red;
+}
+
+/* ── Text inputs ───────────────────────────────────────────────── */
+.textinput,
+.emailinput,
+.urlinput,
+.numberinput,
+.dateinput,
+.datetimeinput,
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="password"],
+input[type="tel"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 500;
+  color: var(--text-color-dark);
+  background: var(--background-color);
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-bottom: 0.25rem;
+}
+
+.textinput:focus,
+.emailinput:focus,
+.urlinput:focus,
+.numberinput:focus,
+.dateinput:focus,
+.datetimeinput:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus {
+  outline: none;
+  border-color: var(--thirty-percent);
+  box-shadow: 0 0 0 3px rgba(45, 106, 156, 0.1);
+  background: var(--purewhite-color);
+}
+
+::placeholder {
+  color: rgba(45, 106, 156, 0.35);
+  opacity: 1;
+}
+
+/* ── Textarea ──────────────────────────────────────────────────── */
+.textarea,
+textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 110px;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 500;
+  color: var(--text-color-dark);
+  background: var(--background-color);
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  resize: vertical;
+  line-height: 1.55;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  margin-bottom: 0.25rem;
+}
+
+.textarea:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--thirty-percent);
+  box-shadow: 0 0 0 3px rgba(45, 106, 156, 0.1);
+  background: var(--purewhite-color);
+}
+
+/* ── Select ────────────────────────────────────────────────────── */
+.select,
+select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 2.4rem 0.7rem 0.9rem;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 500;
+  color: var(--text-color-dark);
+  background-color: var(--background-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232d6a9c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  margin-bottom: 0.25rem;
+}
+
+.select:focus,
+select:focus {
+  outline: none;
+  border-color: var(--thirty-percent);
+  box-shadow: 0 0 0 3px rgba(45, 106, 156, 0.1);
+  background-color: var(--purewhite-color);
+}
+
+/* ── File input ────────────────────────────────────────────────── */
+.fileinput,
+input[type="file"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  border: 1.5px dashed #dce6f0;
+  border-radius: 10px;
+  background: var(--background-color);
+}
+
+/* ── Help text ─────────────────────────────────────────────────── */
+.helptext,
+.field-help-text,
+#id_content_helptext,
+small.helptext,
+.form-text {
+  display: block;
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: var(--thirty-percent);
+  margin-top: 0.25rem;
+}
+
+
+/* ══════════════════════════════════════════════
+   CHECKBOXES
+   ══════════════════════════════════════════════ */
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--background-color);
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.form-check:hover {
+  border-color: var(--sixty-percent);
+  background: rgba(98, 162, 206, 0.06);
+}
+
+.checkboxinput,
+.form-check-input,
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid #dce6f0;
+  border-radius: 6px;
+  background: var(--purewhite-color);
+  cursor: pointer;
+  position: relative;
+  margin: 1px 0 0;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.checkboxinput:hover,
+.form-check-input:hover,
+input[type="checkbox"]:hover {
+  border-color: var(--thirty-percent);
+}
+
+.checkboxinput:checked,
+.form-check-input:checked,
+input[type="checkbox"]:checked {
+  background: var(--thirty-percent);
+  border-color: var(--thirty-percent);
+}
+
+.checkboxinput:checked::after,
+.form-check-input:checked::after,
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--purewhite-color);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.form-check-label,
+.form-check label {
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 600;
+  color: var(--text-color-dark);
+  cursor: pointer;
+  line-height: 1.35;
+  padding-top: 1px;
+}
+
+/* Help text inside a check row */
+.form-check .helptext,
+.form-check .form-text,
+.form-check small {
+  margin-top: 3px;
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: var(--thirty-percent);
+}
+
+/* Wrappers */
+.checkbox-wrapper,
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  background: var(--background-color);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.checkbox-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+
+/* ══════════════════════════════════════════════
+   BUTTONS — pill style matching .cancel / .ob-btn
+   ══════════════════════════════════════════════ */
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--background-color);
+}
+
+.btn,
+button[type="submit"],
+input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 700;
+  border-radius: 2em;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.2s;
+  box-shadow: 4px 4px 10px rgba(2, 2, 2, 0.08), 0 -1px 8px var(--purewhite-color);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.btn:active,
+button[type="submit"]:active,
+input[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+/* Default submit = navy primary */
+button[type="submit"],
+input[type="submit"],
+.btn-primary {
+  background: var(--ten-percent);
+  color: var(--text-color);
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+.btn-primary:hover {
+  background: var(--thirty-percent);
+  color: var(--text-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 78, 112, 0.22);
+}
+
+.btn-accent {
+  background: var(--accent-color);
+  color: var(--text-color-dark);
+}
+.btn-accent:hover {
+  background: #e8921a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 166, 43, 0.28);
+}
+
+.btn-secondary {
+  background: var(--purewhite-color);
+  color: var(--thirty-percent);
+  border: 1.5px solid #dce6f0;
+  box-shadow: none;
+}
+.btn-secondary:hover {
+  border-color: var(--thirty-percent);
+  background: var(--background-color);
+  color: var(--ten-percent);
+}
+
+
+/* ══════════════════════════════════════════════
+   ERROR STATES
+   ══════════════════════════════════════════════ */
+
+/* ── Fix: dashboard base stylesheet sets li { display: flex } which
+       overrides .errorlist li. These rules restore correct rendering.
+       !important is intentional — resetting a too-broad global selector. ── */
 .errorlist li,
 ul.errorlist li {
   display: block !important;
   flex-direction: unset !important;
   align-items: unset !important;
   justify-content: unset !important;
+  padding: 0 !important;
   white-space: normal !important;
-  padding: 0 !important;           /* remove the 0.5rem padding from the global li rule */
 }
 
-/* Re-apply the intended error styles cleanly */
+.errorlist,
+ul.errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 0.35rem 0 0;
+}
+
 .errorlist li,
 .invalid-feedback {
   font-family: var(--main-font);
@@ -27,13 +537,229 @@ ul.errorlist li {
   color: #c0392b;
 }
 
-.errorlist li::before {
-  content: "⚠ ";
+.errorlist li::before { content: "⚠ "; }
+
+/* Non-field error banner */
+.errorlist.nonfield,
+ul.errorlist.nonfield,
+.non-field-errors,
+.alert-danger,
+.alert-error {
+  background: rgba(192, 57, 43, 0.07);
+  border: 1.5px solid rgba(192, 57, 43, 0.25);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
 }
 
-/* Non-field error banner — same override needed */
-.errorlist.nonfield li,
-ul.errorlist.nonfield li {
+/* ── Error summary banner (inside ob-form-card) ── */
+.ob-error-summary {
+  background: rgba(192, 57, 43, 0.06);
+  border: 1.5px solid rgba(192, 57, 43, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ob-error-summary-title {
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 700;
+  color: #c0392b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.ob-error-summary-title i {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.ob-error-summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Each item in the summary list must also override the global li rule */
+.ob-error-summary-list li {
   display: block !important;
-  padding: 0 !important;
+  flex-direction: unset !important;
+  align-items: unset !important;
+  padding: 2px 0 !important;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: #922b21;
+  white-space: normal !important;
+}
+
+/* ── Field-level error — red border on the input ── */
+.has-error .textinput,
+.has-error .emailinput,
+.has-error .urlinput,
+.has-error .numberinput,
+.has-error .dateinput,
+.has-error .datetimeinput,
+.has-error .textarea,
+.has-error .select,
+.has-error input,
+.has-error textarea,
+.has-error select,
+input.is-invalid,
+textarea.is-invalid,
+select.is-invalid {
+  border-color: #c0392b;
+  background: rgba(192, 57, 43, 0.04);
+}
+
+.has-error .textinput:focus,
+.has-error input:focus,
+.has-error textarea:focus,
+.has-error select:focus,
+input.is-invalid:focus,
+textarea.is-invalid:focus,
+select.is-invalid:focus {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+}
+
+/* Red label on error fields */
+.has-error label,
+.error label { color: #c0392b; }
+
+
+/* ══════════════════════════════════════════════
+   FLASH MESSAGES
+   ══════════════════════════════════════════════ */
+span strong {
+  font-size: var(--font-nm);
+  font-family: var(--main-font);
+  font-weight: 500;
+  color: red;
+}
+.messages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: 10px;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.message-success {
+  background: rgba(98, 162, 206, 0.1);
+  border: 1px solid rgba(98, 162, 206, 0.25);
+  color: var(--thirty-percent);
+}
+
+.message-warning {
+  background: rgba(255, 166, 43, 0.1);
+  border: 1px solid rgba(255, 166, 43, 0.25);
+  color: #7a4a00;
+}
+
+.message-error {
+  background: rgba(192, 57, 43, 0.07);
+  border: 1.5px solid rgba(192, 57, 43, 0.25);
+  color: #c0392b;
+}
+
+
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY
+   ══════════════════════════════════════════════ */
+
+*:focus-visible {
+  outline: 2px solid var(--thirty-percent);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE — tablet 600px+
+   ══════════════════════════════════════════════ */
+
+@media (min-width: 600px) {
+  .form-container {
+    padding: 2rem 1.5rem 4rem;
+    justify-content: center;
+  }
+
+  .form-wrapper-header {
+    padding: 2rem 2.25rem 1.75rem;
+  }
+
+  .form-wrapper-body {
+    padding: 2rem 2.25rem;
+  }
+
+  .loginform-wrapper .form-wrapper-body {
+    padding: 1.75rem 2rem;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .button-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn,
+  button[type="submit"],
+  input[type="submit"] {
+    width: auto;
+    min-width: 160px;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE — desktop 900px+
+   ══════════════════════════════════════════════ */
+
+@media (min-width: 900px) {
+  .form-container {
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   PRINT
+   ══════════════════════════════════════════════ */
+
+@media print {
+  .form-wrapper { box-shadow: none; }
+  .button-group { display: none; }
 }
