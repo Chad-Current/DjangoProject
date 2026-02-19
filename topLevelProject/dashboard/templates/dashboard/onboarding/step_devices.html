@@ -13,6 +13,14 @@
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post">
     {% csrf_token %}
+
+    {# ── Non-field errors ── #}
+    {% if form.non_field_errors %}
+      <ul class="errorlist nonfield">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-laptop"></i></div>
@@ -20,47 +28,61 @@
       </div>
 
       <div class="ob-grid">
+
         <div class="ob-field">
           <label for="{{ form.device_name.id_for_label }}">Device Name / Model <span class="req">*</span></label>
           {{ form.device_name }}
           <span class="ob-hint">e.g. iPhone 15 Pro, MacBook Pro 2022</span>
           {% if form.device_name.errors %}<ul class="errorlist">{% for e in form.device_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.device_type.id_for_label }}">Device Type <span class="req">*</span></label>
           {{ form.device_type }}
           {% if form.device_type.errors %}<ul class="errorlist">{% for e in form.device_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.delegated_device_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
           {{ form.delegated_device_to }}
           <span class="ob-hint">Who should handle this device?</span>
           {% if form.delegated_device_to.errors %}<ul class="errorlist">{% for e in form.delegated_device_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.owner_label.id_for_label }}">Label</label>
           {{ form.owner_label }}
           <span class="ob-hint">e.g. "Mom's iPhone", "Work Laptop"</span>
+          {% if form.owner_label.errors %}<ul class="errorlist">{% for e in form.owner_label.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field ob-full">
           <label for="{{ form.location_description.id_for_label }}">Where is it kept?</label>
           {{ form.location_description }}
           <span class="ob-hint">e.g. "Bedroom nightstand drawer", "Home office desk"</span>
+          {% if form.location_description.errors %}<ul class="errorlist">{% for e in form.location_description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field ob-full">
           <label for="{{ form.unlock_method_description.id_for_label }}">How to Unlock</label>
           {{ form.unlock_method_description }}
           <span class="ob-hint">Don't include actual PINs — describe where to find them, e.g. "6-digit PIN stored in 1Password"</span>
+          {% if form.unlock_method_description.errors %}<ul class="errorlist">{% for e in form.unlock_method_description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field ob-full">
           <label for="{{ form.decommission_instruction.id_for_label }}">What to Do With This Device</label>
           {{ form.decommission_instruction }}
           <span class="ob-hint">e.g. "Wipe and give to daughter", "Factory reset and donate to charity"</span>
+          {% if form.decommission_instruction.errors %}<ul class="errorlist">{% for e in form.decommission_instruction.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
           {{ form.review_time }}
+          {% if form.review_time.errors %}<ul class="errorlist">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
       </div>
 
       <!-- 2FA checkbox -->
@@ -77,6 +99,9 @@
             </div>
           </div>
         </label>
+        {% if form.used_for_2fa.errors %}
+          <ul class="errorlist">{% for e in form.used_for_2fa.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
       </div>
 
       <div class="ob-actions">

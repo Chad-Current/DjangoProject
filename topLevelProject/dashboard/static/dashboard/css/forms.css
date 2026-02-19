@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────────────────────────────
+   ADD TO forms.css  (or a dedicated patch file loaded after forms.css)
+
+   Fixes: base dashboard stylesheet sets  li { display: flex }
+   which overrides .errorlist li and breaks the ⚠ icon layout.
+   The !important here is intentional — it's a reset against a
+   global selector that should never have applied to error lists.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Override the global  li { display: flex }  from the dashboard stylesheet */
+.errorlist li,
+ul.errorlist li {
+  display: block !important;
+  flex-direction: unset !important;
+  align-items: unset !important;
+  justify-content: unset !important;
+  white-space: normal !important;
+  padding: 0 !important;           /* remove the 0.5rem padding from the global li rule */
+}
+
+/* Re-apply the intended error styles cleanly */
+.errorlist li,
+.invalid-feedback {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: #c0392b;
+}
+
+.errorlist li::before {
+  content: "⚠ ";
+}
+
+/* Non-field error banner — same override needed */
+.errorlist.nonfield li,
+ul.errorlist.nonfield li {
+  display: block !important;
+  padding: 0 !important;
+}

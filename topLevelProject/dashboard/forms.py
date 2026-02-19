@@ -200,6 +200,15 @@ class AccountForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             Fieldset(
                 'Account Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this account to a contact.</div>'),
@@ -273,6 +282,15 @@ class DeviceForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             Fieldset(
                 'Device Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this device to a contact.</div>'),
@@ -449,6 +467,15 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             HTML('<h2 class="form-section-title">Family Awareness</h2>'),
             Field('relation', css_class='select', placeholder='Tied to who?'),
             Field('content', css_class='textarea'),
@@ -626,9 +653,13 @@ class RelevanceReviewForm(forms.ModelForm):
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
             HTML('''
-                <div class="alert alert-info mb-3">
-                    <strong>Select ONE item to review:</strong> Choose an account, device, estate document, or important document.
-                </div>
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             '''),
             Fieldset(
                 'What Are You Reviewing?',

@@ -13,6 +13,14 @@
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post">
     {% csrf_token %}
+
+    {# ── Non-field errors ── #}
+    {% if form.non_field_errors %}
+      <ul class="errorlist nonfield">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-heart"></i></div>
@@ -20,18 +28,21 @@
       </div>
 
       <div class="ob-grid">
+
         <div class="ob-field ob-full">
           <label for="{{ form.relation.id_for_label }}">For Contact <span class="req">*</span></label>
           {{ form.relation }}
           <span class="ob-hint">Which contact should receive this note or guidance?</span>
           {% if form.relation.errors %}<ul class="errorlist">{% for e in form.relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field ob-full">
           <label for="{{ form.content.id_for_label }}">Message / Instructions <span class="req">*</span></label>
           {{ form.content }}
           <span class="ob-hint">Write your wishes, instructions, or anything important this person should know</span>
           {% if form.content.errors %}<ul class="errorlist">{% for e in form.content.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
       </div>
 
       <!-- Topic flags -->
@@ -61,6 +72,12 @@
             <span class="ob-check-label"><i class="fas fa-database" style="color: var(--ten-percent); margin-right: 5px;"></i>Data Retention Wishes</span>
           </label>
         </div>
+        {# Error blocks for each topic flag checkbox #}
+        {% if form.is_location_of_legal_will.errors %}<ul class="errorlist">{% for e in form.is_location_of_legal_will.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_password_manager.errors %}<ul class="errorlist">{% for e in form.is_password_manager.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_social_media.errors %}<ul class="errorlist">{% for e in form.is_social_media.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_photos_or_files.errors %}<ul class="errorlist">{% for e in form.is_photos_or_files.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_data_retention_preferences.errors %}<ul class="errorlist">{% for e in form.is_data_retention_preferences.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
       </div>
 
       <div class="ob-actions">
@@ -113,7 +130,6 @@
       {% endif %}
     </div>
 
-    <!-- Prompt ideas -->
     <div class="ob-tip">
       <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> What to write about</div>
       <ul>

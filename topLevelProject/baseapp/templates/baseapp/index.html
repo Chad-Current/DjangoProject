@@ -10,7 +10,7 @@
 
 </head>
 <body>
-    {% block main %}
+    {% block content %}
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="container">
@@ -31,7 +31,7 @@
                     </p>
                     <div class="hero-buttons">
                         <button class="btn btn-primary">Request Information</button>
-                        <button class="btn btn-secondary">Download Guide</button>
+                        <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Guide</a>
                     </div>
                 </div>
                 <div class="hero-right">

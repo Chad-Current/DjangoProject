@@ -13,6 +13,13 @@
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post">
     {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <ul class="errorlist nonfield">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-file-contract"></i></div>
@@ -20,48 +27,60 @@
       </div>
 
       <div class="ob-grid">
+
         <div class="ob-field ob-full">
           <label for="{{ form.name_or_title.id_for_label }}">Document Name <span class="req">*</span></label>
           {{ form.name_or_title }}
           <span class="ob-hint">e.g. "Last Will and Testament", "Healthcare Power of Attorney"</span>
           {% if form.name_or_title.errors %}<ul class="errorlist">{% for e in form.name_or_title.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.estate_category.id_for_label }}">Document Type <span class="req">*</span></label>
           {{ form.estate_category }}
           {% if form.estate_category.errors %}<ul class="errorlist">{% for e in form.estate_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.delegated_estate_to.id_for_label }}">Assign to Contact <span class="req">*</span></label>
           {{ form.delegated_estate_to }}
           <span class="ob-hint">Who holds or manages this document?</span>
           {% if form.delegated_estate_to.errors %}<ul class="errorlist">{% for e in form.delegated_estate_to.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.estate_physical_location.id_for_label }}">Physical Location</label>
           {{ form.estate_physical_location }}
           <span class="ob-hint">e.g. "Safe deposit box at Chase Bank", "Filing cabinet in office"</span>
+          {% if form.estate_physical_location.errors %}<ul class="errorlist">{% for e in form.estate_physical_location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.estate_digital_location.id_for_label }}">Digital Location</label>
           {{ form.estate_digital_location }}
           <span class="ob-hint">e.g. "Google Drive / Legal folder", "1Password secure note"</span>
+          {% if form.estate_digital_location.errors %}<ul class="errorlist">{% for e in form.estate_digital_location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
           {{ form.review_time }}
+          {% if form.review_time.errors %}<ul class="errorlist">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field ob-full">
           <label for="{{ form.estate_overall_instructions.id_for_label }}">Instructions for Family</label>
           {{ form.estate_overall_instructions }}
           <span class="ob-hint">Any guidance your family needs when handling this document</span>
+          {% if form.estate_overall_instructions.errors %}<ul class="errorlist">{% for e in form.estate_overall_instructions.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
       </div>
 
       <!-- When this document applies -->
       <div style="margin-top: 1.2rem;">
         <div class="ob-field">
-          <label>When does this apply? <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+          <label>When does this apply? <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select at least one)</span></label>
         </div>
         <div class="ob-check-group" style="margin-top: 0.5rem;">
           <label class="ob-check-row">
@@ -77,6 +96,10 @@
             <span class="ob-check-label"><i class="fas fa-bolt" style="color: var(--accent-color); margin-right: 5px;"></i>Immediately</span>
           </label>
         </div>
+        {# Inline field errors for each declaration checkbox #}
+        {% if form.applies_on_death.errors %}<ul class="errorlist">{% for e in form.applies_on_death.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.applies_on_incapacity.errors %}<ul class="errorlist">{% for e in form.applies_on_incapacity.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.applies_immediately.errors %}<ul class="errorlist">{% for e in form.applies_immediately.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
       </div>
 
       <div class="ob-actions">

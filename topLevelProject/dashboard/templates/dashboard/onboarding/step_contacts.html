@@ -13,52 +13,76 @@
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post">
     {% csrf_token %}
+
+    {# ── Non-field errors ── #}
+    {% if form.non_field_errors %}
+      <ul class="errorlist nonfield">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-user-plus"></i></div>
         Add a Contact
       </div>
 
-      <!-- Basic info -->
       <div class="ob-grid">
+
         <div class="ob-field">
           <label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>
           {{ form.first_name }}
           {% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.last_name.id_for_label }}">Last Name <span class="req">*</span></label>
           {{ form.last_name }}
           {% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.contact_relation.id_for_label }}">Relationship <span class="req">*</span></label>
           {{ form.contact_relation }}
           {% if form.contact_relation.errors %}<ul class="errorlist">{% for e in form.contact_relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.email.id_for_label }}">Email Address</label>
           {{ form.email }}
+          {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.phone.id_for_label }}">Phone Number</label>
           {{ form.phone }}
+          {% if form.phone.errors %}<ul class="errorlist">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.address_1.id_for_label }}">Street Address <span class="req">*</span></label>
           {{ form.address_1 }}
           {% if form.address_1.errors %}<ul class="errorlist">{% for e in form.address_1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
+        <div class="ob-field">
+          <label for="{{ form.address_2.id_for_label }}">Address Line 2</label>
+          {{ form.address_2 }}
+          {% if form.address_2.errors %}<ul class="errorlist">{% for e in form.address_2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
         <div class="ob-field">
           <label for="{{ form.city.id_for_label }}">City <span class="req">*</span></label>
           {{ form.city }}
           {% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
         <div class="ob-field">
           <label for="{{ form.state.id_for_label }}">State <span class="req">*</span></label>
           {{ form.state }}
           {% if form.state.errors %}<ul class="errorlist">{% for e in form.state.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
         </div>
+
       </div>
 
       <!-- ── ROLES ──────────────────────────────────────── -->
@@ -196,7 +220,6 @@
           <div class="ob-item-body">
             <div class="ob-item-name">{{ contact.first_name }} {{ contact.last_name }}</div>
             <div class="ob-item-sub">{{ contact.contact_relation }}{% if contact.email %} · {{ contact.email }}{% endif %}</div>
-            <!-- Role badges — show up to 3, then +N more -->
             <div class="ob-role-badges">
               {% if contact.is_legal_executor %}<span class="ob-badge badge-navy">Legal Exec</span>{% endif %}
               {% if contact.is_digital_executor %}<span class="ob-badge badge-navy">Digital Exec</span>{% endif %}
@@ -237,86 +260,5 @@
   </div>
 
 </div>
-
-{# ── Extra styles scoped to this page ──────────────────────── #}
-<style>
-/* ── Role sections ───────────────────────────────────────── */
-.ob-roles-section {
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--background-color);
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.ob-roles-header {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-.ob-roles-header label {
-  font-family: var(--main-font);
-  font-size: var(--font-sm);
-  font-weight: 700;
-  color: var(--ten-percent);
-}
-.ob-roles-hint {
-  font-family: var(--paragraph-font);
-  font-size: var(--font-sm);
-  font-weight: 300;
-  color: var(--thirty-percent);
-}
-
-.ob-role-group {
-  padding-bottom: 1.1rem;
-  border-bottom: 1px solid var(--background-color);
-}
-.ob-role-group-last {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.ob-role-group-label {
-  font-family: var(--main-font);
-  font-size: var(--font-sm);
-  font-weight: 700;
-  color: var(--thirty-percent);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 0.6rem;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.ob-role-group-label i {
-  color: var(--sixty-percent);
-  font-size: 0.85rem;
-}
-
-/* 4-column checkbox grid for roles */
-.ob-check-group-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-/* Role badge strip inside the panel items */
-.ob-role-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 5px;
-}
-
-/* Tooltip via title attr — native, no JS needed */
-.ob-check-row[title] { cursor: help; }
-
-@media (max-width: 900px) {
-  .ob-check-group-4 { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 500px) {
-  .ob-check-group-4 { grid-template-columns: 1fr; }
-}
-</style>
 
 {% endblock %}

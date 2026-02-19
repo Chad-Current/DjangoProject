@@ -1,0 +1,91 @@
+{% extends "baseapp/base.html" %}
+{% block title %}Get the Free Checklist — Digital Estate Plan{% endblock %}
+
+{% block content %}
+    <!-- Flash messages -->
+    
+    <div class="form-container">
+      <div class="form-wrapper" style="max-width:520px;">
+        
+    {% if messages %}
+    <div class="" style="padding-bottom:0;">
+      <ul class="messages-list" style="margin:0;">
+        {% for message in messages %}
+          <li class="message {% if message.tags == 'error' %}message-error{% elif message.tags == 'success' %}message-success{% else %}message-warning{% endif %}">
+            {{ message }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Header -->
+    <div class="form-wrapper-header" style="text-align:center;">
+      <h2 style="margin:0 0 0.35rem;color:var(--text-color);">Get Your Free Checklist</h2>
+      <p style="color:rgba(231,239,247,0.75);margin:0;font-size:var(--font-sm);">
+        We'll email you the
+        <strong style="color:var(--purewhite-color);font-size:var(--font-sm);font-weight:600;">
+          Digital Estate Readiness Checklist
+        </strong>
+        — 9 sections to help you and your family stay organised.
+      </p>
+    </div>
+
+
+
+    <!-- Form body -->
+    <div class="form-wrapper-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- First name -->
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">
+            First name
+            <span style="font-weight:300;color:var(--sixty-percent);font-size:var(--font-sm);">(optional)</span>
+          </label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}
+            <ul class="errorlist">
+              {% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}" class="requiredField">
+            Email address
+          </label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <ul class="errorlist">
+              {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <!-- Submit -->
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">
+            Send Me the Checklist
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Footer reassurance -->
+    <div style="padding:0 1.25rem 1.75rem;text-align:center;">
+      <p style="font-size:var(--font-sm);color:var(--thirty-percent);font-weight:300;margin-bottom:0.4rem;">
+        No account required &nbsp;·&nbsp; We won't spam you.
+      </p>
+      <p style="font-size:var(--font-sm);margin:0;">
+        Already have an account?
+        <a href="{% url 'accounts:login' %}" style="font-size:var(--font-sm);">Sign in</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

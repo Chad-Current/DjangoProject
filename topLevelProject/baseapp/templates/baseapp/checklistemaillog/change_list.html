@@ -1,0 +1,40 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+{% if checklist_stats %}
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+
+  {% with cards=checklist_stats %}
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:14px 20px;min-width:130px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#1a3a5c;line-height:1;">{{ cards.total }}</div>
+    <div style="font-size:0.78rem;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;">Total Sent</div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:14px 20px;min-width:130px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#1a3a5c;line-height:1;">{{ cards.last_30_days }}</div>
+    <div style="font-size:0.78rem;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;">Last 30 Days</div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:14px 20px;min-width:130px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#1a3a5c;line-height:1;">{{ cards.last_7_days }}</div>
+    <div style="font-size:0.78rem;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;">Last 7 Days</div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:14px 20px;min-width:130px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#2e7d32;line-height:1;">{{ cards.converted }}</div>
+    <div style="font-size:0.78rem;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.05em;">Converted</div>
+  </div>
+  {% endwith %}
+
+</div>
+{% endif %}
+
+{{ block.super }}
+
+{% endblock %}

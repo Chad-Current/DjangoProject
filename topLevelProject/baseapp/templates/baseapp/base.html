@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
    <link rel="stylesheet" href="{% static 'baseapp/css/footer.css' %}" type="text/css">
    <title>Base Page</title>
@@ -16,7 +17,7 @@
   <body>    
 
     {% include "baseapp/navbar.html" %}
-    {% block main %}
+    {% block content %}
 
     {% endblock %}
     {% include "baseapp/footer.html" %}
