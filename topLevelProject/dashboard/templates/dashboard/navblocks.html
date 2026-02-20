@@ -19,11 +19,18 @@
                 <span>Devices</span>
             </a>
 
+            {% if documents_count == 0 %}
+            <a href="{% url 'dashboard:estate_list' %}" class="subnav-item attention" title="Estate planning documents">
+                <i class="fas fa-file-contract"></i>
+                <span>Estate Docs</span>
+            </a>
+            {% else}
             <a href="{% url 'dashboard:estate_list' %}" class="subnav-item" title="Estate planning documents">
                 <i class="fas fa-file-contract"></i>
                 <span>Estate Docs</span>
             </a>
-
+            {% endif %}
+            
             <a href="{% url 'dashboard:importantdocument_list' %}" class="subnav-item" title="Important documents">
                 <i class="fas fa-file-alt"></i>
                 <span>Documents</span>

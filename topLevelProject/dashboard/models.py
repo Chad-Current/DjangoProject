@@ -546,7 +546,7 @@ class ImportantDocument(models.Model):
 
 class FamilyNeedsToKnowSection(models.Model):
     """
-    Sections within the estate document that family needs to know
+    Sections within the estate document that family needs to know and funeral preparations
     """
     relation = models.ForeignKey(
         Contact,

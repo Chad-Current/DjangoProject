@@ -26,6 +26,10 @@
     -webkit-overflow-scrolling: touch;
 }
 
+.subnav-container .attention {
+    border: solid 2px red;
+}
+
 .subnav-container::-webkit-scrollbar {
     height: 4px;
 }

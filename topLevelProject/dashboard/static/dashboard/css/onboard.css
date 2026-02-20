@@ -245,6 +245,9 @@
   justify-content: center;
   font-size: 0.9rem;
 }
+.ob-role-group {
+  margin: 1.5em 0;
+}
 
 /* Field grid */
 .ob-grid {
@@ -337,8 +340,8 @@
   background: rgba(98, 162, 206, 0.07);
 }
 .ob-check-row input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   accent-color: var(--thirty-percent);
   cursor: pointer;
   flex-shrink: 0;

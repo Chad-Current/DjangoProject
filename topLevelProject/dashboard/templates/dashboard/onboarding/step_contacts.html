@@ -1,26 +1,22 @@
+<!-- step_contacts.html -->
+
 {% extends "dashboard/onboarding/base_onboarding.html" %}
 {% block title %}Step 1 — Add Your Contacts{% endblock %}
+
 
 {% block ob_content %}
 <div class="ob-page-header">
   <div class="ob-eyebrow">Step 1 of 6</div>
   <h1>Who needs to know?</h1>
   <p>Add the family members, executors, advisors, and caregivers who should be informed and given access after you're gone.</p>
+
 </div>
 
 <div class="ob-body">
 
   <!-- ── FORM ─────────────────────────────────────── -->
-  <form method="post">
+  <form method="post" novalidate>
     {% csrf_token %}
-
-    {# ── Non-field errors ── #}
-    {% if form.non_field_errors %}
-      <ul class="errorlist nonfield">
-        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
-      </ul>
-    {% endif %}
-
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-user-plus"></i></div>
@@ -29,68 +25,132 @@
 
       <div class="ob-grid">
 
-        <div class="ob-field">
-          <label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>
+        {# first_name #}
+        <div class="ob-field{% if form.first_name.errors %} has-error{% endif %}">
+          <label for="{{ form.first_name.id_for_label }}">
+            First Name <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.first_name }}
-          {% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.first_name.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
-          <label for="{{ form.last_name.id_for_label }}">Last Name <span class="req">*</span></label>
+        {# last_name #}
+        <div class="ob-field{% if form.last_name.errors %} has-error{% endif %}">
+          <label for="{{ form.last_name.id_for_label }}">
+            Last Name <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.last_name }}
-          {% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.last_name.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
-          <label for="{{ form.contact_relation.id_for_label }}">Relationship <span class="req">*</span></label>
+        {# contact_relation #}
+        <div class="ob-field{% if form.contact_relation.errors %} has-error{% endif %}">
+          <label for="{{ form.contact_relation.id_for_label }}">
+            Relationship <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.contact_relation }}
-          {% if form.contact_relation.errors %}<ul class="errorlist">{% for e in form.contact_relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.contact_relation.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.contact_relation.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
+        {# email #}
+        <div class="ob-field{% if form.email.errors %} has-error{% endif %}">
           <label for="{{ form.email.id_for_label }}">Email Address</label>
           {{ form.email }}
-          {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.email.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
+        {# phone #}
+        <div class="ob-field{% if form.phone.errors %} has-error{% endif %}">
           <label for="{{ form.phone.id_for_label }}">Phone Number</label>
           {{ form.phone }}
-          {% if form.phone.errors %}<ul class="errorlist">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.phone.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
-          <label for="{{ form.address_1.id_for_label }}">Street Address <span class="req">*</span></label>
+        {# address_1 #}
+        <div class="ob-field{% if form.address_1.errors %} has-error{% endif %}">
+          <label for="{{ form.address_1.id_for_label }}">
+            Street Address <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.address_1 }}
-          {% if form.address_1.errors %}<ul class="errorlist">{% for e in form.address_1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.address_1.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.address_1.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
+        {# address_2 #}
+        <div class="ob-field{% if form.address_2.errors %} has-error{% endif %}">
           <label for="{{ form.address_2.id_for_label }}">Address Line 2</label>
           {{ form.address_2 }}
-          {% if form.address_2.errors %}<ul class="errorlist">{% for e in form.address_2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.address_2.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.address_2.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
-          <label for="{{ form.city.id_for_label }}">City <span class="req">*</span></label>
+        {# city #}
+        <div class="ob-field{% if form.city.errors %} has-error{% endif %}">
+          <label for="{{ form.city.id_for_label }}">
+            City <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.city }}
-          {% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.city.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field">
-          <label for="{{ form.state.id_for_label }}">State <span class="req">*</span></label>
+        {# state #}
+        <div class="ob-field{% if form.state.errors %} has-error{% endif %}">
+          <label for="{{ form.state.id_for_label }}">
+            State <span class="req" aria-hidden="true">*</span>
+          </label>
           {{ form.state }}
-          {% if form.state.errors %}<ul class="errorlist">{% for e in form.state.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.state.errors %}
+          <ul class="errorlist" role="alert">
+            {% for e in form.state.errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+          {% endif %}
         </div>
 
-      </div>
+      </div>{# end ob-grid #}
 
       <!-- ── ROLES ──────────────────────────────────────── -->
-      <div class="ob-roles-section">
+      <div class="ob-roles-section{% if form.non_field_errors %} has-error{% endif %}">
         <div class="ob-roles-header">
-          <label>Roles</label>
+          <label class="roles-label">Roles <span class="req asterisk" aria-hidden="true"></span></label>
           <span class="ob-roles-hint">Select all that apply — hover each for a description</span>
         </div>
+
+        {# Role-level non-field error (at least one role required) #}
+        {% if form.non_field_errors %}
+        <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
+          {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+        {% endif %}
 
         <!-- Legal & Estate -->
         <div class="ob-role-group">
@@ -184,7 +244,7 @@
           </div>
         </div>
 
-      </div><!-- end ob-roles-section -->
+      </div>{# end ob-roles-section #}
 
       <div class="ob-actions">
         <button type="submit" class="ob-btn ob-btn-primary">
@@ -197,7 +257,8 @@
         </a>
         {% endif %}
       </div>
-    </div>
+
+    </div>{# end ob-form-card #}
   </form>
 
   <!-- ── PANEL ─────────────────────────────────────── -->
@@ -219,7 +280,9 @@
           </div>
           <div class="ob-item-body">
             <div class="ob-item-name">{{ contact.first_name }} {{ contact.last_name }}</div>
-            <div class="ob-item-sub">{{ contact.contact_relation }}{% if contact.email %} · {{ contact.email }}{% endif %}</div>
+            <div class="ob-item-sub">
+              {{ contact.contact_relation }}{% if contact.email %} · {{ contact.email }}{% endif %}
+            </div>
             <div class="ob-role-badges">
               {% if contact.is_legal_executor %}<span class="ob-badge badge-navy">Legal Exec</span>{% endif %}
               {% if contact.is_digital_executor %}<span class="ob-badge badge-navy">Digital Exec</span>{% endif %}
@@ -240,12 +303,14 @@
         </div>
         {% endfor %}
       </div>
+
       {% else %}
       <div class="ob-empty">
         <div class="ob-empty-icon"><i class="fas fa-users"></i></div>
         <p>No contacts yet.<br>Add your first contact to continue.</p>
       </div>
       {% endif %}
+
     </div>
 
     {% if contacts.count > 0 %}
@@ -257,8 +322,46 @@
       <i class="fas fa-info-circle" style="margin-right: 5px;"></i>Add at least one contact to unlock Step 2.
     </p>
     {% endif %}
-  </div>
 
-</div>
+      <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+    {% if form.errors or form.non_field_errors %}
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">
+          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
+          {% if form.errors %}
+          <div class="ob-error-summary" role="alert" aria-live="polite">
+            <div class="ob-error-summary-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>Please fix the following before saving:</p>
+            </div>
+            <ul class="ob-error-summary-list">
+              {% for field in form %}
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                  <li>{{ field.label }}</li>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+      </div>
+  </div>
+  
+  {% endif %}
+  {# end ob-panel errors #}  
+
+  </div>{# end ob-panel #}
+
+
+
+
+</div>{# end ob-body #}
+
+
+
 
 {% endblock %}

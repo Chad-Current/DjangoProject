@@ -28,7 +28,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
+#FIX ERROR WITH ACCOUNT_DASHBOARD
 class RegisterView(View):
     template_name = 'accounts/register.html'
     form_class = UserRegistrationForm

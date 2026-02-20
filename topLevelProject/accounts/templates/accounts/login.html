@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'accounts/css/enhanced-forms.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,10 +20,19 @@
 <body>
     {% include "baseapp/navbar.html" %}
 
-
-        <div class="form-container">
-            <div class="loginform-wrapper">
-                <h1 class="form-section-title">Login</h1>
+    
+    <div class="form-container">
+        <div class="loginform-wrapper">
+            {% if messages %} 
+                <ul class = "messages" >
+                {% for message in messages %}
+                <li {% if message.tags %} class = " {{ message.tags }} " {% endif %} >
+                    {{ message }}
+                </li> 
+                {% endfor %}
+                </ul >
+            {% endif %}
+            <h1 class="form-section-title">Login</h1>
 
                 {% if messages %}
                 {% for message in messages %}              

@@ -11,16 +11,8 @@
 <div class="ob-body">
 
   <!-- ── FORM ─────────────────────────────────────── -->
-  <form method="post">
+  <form method="post" novalidate>
     {% csrf_token %}
-
-    {# ── Non-field errors ── #}
-    {% if form.non_field_errors %}
-      <ul class="errorlist nonfield">
-        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
-      </ul>
-    {% endif %}
-
     <div class="ob-form-card">
       <div class="ob-card-heading">
         <div class="ob-card-icon"><i class="fas fa-heart"></i></div>
@@ -29,27 +21,44 @@
 
       <div class="ob-grid">
 
-        <div class="ob-field ob-full">
-          <label for="{{ form.relation.id_for_label }}">For Contact <span class="req">*</span></label>
+        {# For Contact #}
+        <div class="ob-field ob-full{% if form.relation.errors %} has-error{% endif %}">
+          <label for="{{ form.relation.id_for_label }}">For Contact <span class="req" aria-hidden="true">*</span></label>
           {{ form.relation }}
           <span class="ob-hint">Which contact should receive this note or guidance?</span>
-          {% if form.relation.errors %}<ul class="errorlist">{% for e in form.relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.relation.errors %}
+          <ul class="errorlist" role="alert">{% for e in form.relation.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
         </div>
 
-        <div class="ob-field ob-full">
-          <label for="{{ form.content.id_for_label }}">Message / Instructions <span class="req">*</span></label>
+        {# Message #}
+        <div class="ob-field ob-full{% if form.content.errors %} has-error{% endif %}">
+          <label for="{{ form.content.id_for_label }}">Message / Instructions <span class="req" aria-hidden="true">*</span></label>
           {{ form.content }}
           <span class="ob-hint">Write your wishes, instructions, or anything important this person should know</span>
-          {% if form.content.errors %}<ul class="errorlist">{% for e in form.content.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          {% if form.content.errors %}
+          <ul class="errorlist" role="alert">{% for e in form.content.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
         </div>
 
-      </div>
+      </div>{# /ob-grid #}
 
-      <!-- Topic flags -->
+      {# Topic flags — requires at least one #}
       <div style="margin-top: 1.2rem;">
-        <div class="ob-field">
-          <label>This note covers <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span></label>
+        <div class="ob-field{% if form.non_field_errors %} has-error{% endif %}">
+          <label>
+            This note covers
+            <span style="font-weight: 300; font-size: var(--font-sm); color: var(--thirty-percent);">(select all that apply)</span>
+          </label>
         </div>
+
+        {# Topic checkbox error shown inline #}
+        {% if form.non_field_errors %}
+        <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
+          {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem;">
           <label class="ob-check-row">
             {{ form.is_location_of_legal_will }}
@@ -72,12 +81,12 @@
             <span class="ob-check-label"><i class="fas fa-database" style="color: var(--ten-percent); margin-right: 5px;"></i>Data Retention Wishes</span>
           </label>
         </div>
-        {# Error blocks for each topic flag checkbox #}
-        {% if form.is_location_of_legal_will.errors %}<ul class="errorlist">{% for e in form.is_location_of_legal_will.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-        {% if form.is_password_manager.errors %}<ul class="errorlist">{% for e in form.is_password_manager.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-        {% if form.is_social_media.errors %}<ul class="errorlist">{% for e in form.is_social_media.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-        {% if form.is_photos_or_files.errors %}<ul class="errorlist">{% for e in form.is_photos_or_files.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-        {% if form.is_data_retention_preferences.errors %}<ul class="errorlist">{% for e in form.is_data_retention_preferences.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+
+        {% if form.is_location_of_legal_will.errors %}<ul class="errorlist" role="alert">{% for e in form.is_location_of_legal_will.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_password_manager.errors %}<ul class="errorlist" role="alert">{% for e in form.is_password_manager.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_social_media.errors %}<ul class="errorlist" role="alert">{% for e in form.is_social_media.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_photos_or_files.errors %}<ul class="errorlist" role="alert">{% for e in form.is_photos_or_files.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        {% if form.is_data_retention_preferences.errors %}<ul class="errorlist" role="alert">{% for e in form.is_data_retention_preferences.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
       </div>
 
       <div class="ob-actions">
@@ -145,7 +154,39 @@
     <a href="{% url 'dashboard:onboarding_complete' %}" class="ob-btn ob-btn-blue ob-btn-full">
       Finish Setup <i class="fas fa-check"></i>
     </a>
-  </div>
 
-</div>
+          <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+    {% if form.errors or form.non_field_errors %}
+    <div class="ob-panel-card">
+      <div class="ob-panel-label">
+          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
+          {% if form.errors %}
+          <div class="ob-error-summary" role="alert" aria-live="polite">
+            <div class="ob-error-summary-title">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>Please fix the following before saving:</p>
+            </div>
+            <ul class="ob-error-summary-list">
+              {% for field in form %}
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                  <li>{{ field.label }}</li>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+      </div>
+  </div>
+  
+  {% endif %}
+  {# end ob-panel errors #}  
+
+  </div>{# end ob-panel #}
+</div>{# end ob-body #}
+
 {% endblock %}

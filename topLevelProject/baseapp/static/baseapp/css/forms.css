@@ -1,7 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
-   forms.css — Mobile-first form styles for Digital Estate Plan
-   Built entirely on the project's CSS design tokens.
-   Load after baseapp/css/stylesheet.css and dashboard/css/stylesheet.css
+   forms.css — Form-specific styles for Digital Estate Plan
+   Requires: stylesheet.css loaded first (provides tokens, li reset,
+             .form-label, .login-form, .header-section, .cancel, etc.)
+   Covers: form cards, inputs, checkboxes, buttons, Django errors,
+           Django messages framework, auth page helpers.
    ═══════════════════════════════════════════════════════════════════ */
 
 
@@ -11,7 +13,6 @@
 
 /* ══════════════════════════════════════════════
    PAGE LAYOUT
-   Full-viewport centering for standalone forms
    ══════════════════════════════════════════════ */
 
 .form-container {
@@ -27,7 +28,6 @@
 
 /* ══════════════════════════════════════════════
    FORM CARD
-   White card matching .modify-form / .detail-view
    ══════════════════════════════════════════════ */
 
 .form-wrapper {
@@ -40,7 +40,7 @@
   padding: 2em;
 }
 
-/* Gradient header banner — mirrors .header-section */
+/* Gradient header banner — same visual language as .header-section */
 .form-wrapper-header {
   background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 100%);
   padding: 1.75rem 1.25rem 1.5rem;
@@ -64,12 +64,11 @@
   margin: 0;
 }
 
-/* Inner body */
 .form-wrapper-body {
   padding: 1.5rem 1.25rem;
 }
 
-/* Compact login card variant */
+/* Compact auth card — narrower than full form-wrapper */
 .loginform-wrapper {
   width: 100%;
   max-width: 440px;
@@ -123,7 +122,7 @@ fieldset legend::before {
 
 
 /* ══════════════════════════════════════════════
-   FORM FIELDS
+   FORM GROUPS & LABELS
    ══════════════════════════════════════════════ */
 
 .form-wrapper > div,
@@ -133,10 +132,11 @@ fieldset legend::before {
   margin-bottom: 1.1rem;
 }
 
-/* Labels */
+/* Scoped label styles — override base typography inside form cards */
 .form-wrapper label,
 .form-wrapper-body label,
-.form-group label {
+.form-group label,
+.form-field label {
   display: block;
   font-family: var(--main-font);
   font-size: var(--font-sm);
@@ -147,16 +147,35 @@ fieldset legend::before {
 
 label.requiredField::after {
   content: " *";
-  color: red;
+  color: #c0392b;
 }
 
-/* ── Text inputs ───────────────────────────────────────────────── */
+.asterisk::after {
+  content: " *";
+  color: var(--accent-color);
+}
+.roles-label {
+  display: block;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--ten-percent);
+  margin: 0.75em 0 0;
+}
+
+/* ══════════════════════════════════════════════
+   TEXT INPUTS
+   ══════════════════════════════════════════════ */
+
 .textinput,
 .emailinput,
 .urlinput,
 .numberinput,
 .dateinput,
 .datetimeinput,
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="password"],
 input[type="text"],
 input[type="email"],
 input[type="url"],
@@ -188,6 +207,7 @@ input[type="tel"] {
 .numberinput:focus,
 .dateinput:focus,
 .datetimeinput:focus,
+.form-field input:focus,
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="url"]:focus,
@@ -207,7 +227,11 @@ input[type="tel"]:focus {
   opacity: 1;
 }
 
-/* ── Textarea ──────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════
+   TEXTAREA
+   ══════════════════════════════════════════════ */
+
 .textarea,
 textarea {
   display: block;
@@ -236,7 +260,11 @@ textarea:focus {
   background: var(--purewhite-color);
 }
 
-/* ── Select ────────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════
+   SELECT
+   ══════════════════════════════════════════════ */
+
 .select,
 select {
   display: block;
@@ -268,7 +296,11 @@ select:focus {
   background-color: var(--purewhite-color);
 }
 
-/* ── File input ────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════
+   FILE INPUT
+   ══════════════════════════════════════════════ */
+
 .fileinput,
 input[type="file"] {
   display: block;
@@ -281,12 +313,21 @@ input[type="file"] {
   border: 1.5px dashed #dce6f0;
   border-radius: 10px;
   background: var(--background-color);
+  transition: border-color 0.2s, background 0.2s;
 }
 
-/* ── Help text ─────────────────────────────────────────────────── */
+input[type="file"]:hover {
+  border-color: var(--thirty-percent);
+  background: rgba(45, 106, 156, 0.04);
+}
+
+
+/* ══════════════════════════════════════════════
+   HELP TEXT
+   ══════════════════════════════════════════════ */
+
 .helptext,
 .field-help-text,
-#id_content_helptext,
 small.helptext,
 .form-text {
   display: block;
@@ -295,6 +336,21 @@ small.helptext,
   font-weight: 300;
   color: var(--thirty-percent);
   margin-top: 0.25rem;
+}
+
+
+/* ══════════════════════════════════════════════
+   DISABLED STATE
+   ══════════════════════════════════════════════ */
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+  background-color: #e9ecef;
+  color: var(--text-color-dark-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 
@@ -374,10 +430,8 @@ input[type="checkbox"]:checked::after {
   cursor: pointer;
   line-height: 1.35;
   padding-top: 1px;
-
 }
 
-/* Help text inside a check row */
 .form-check .helptext,
 .form-check .form-text,
 .form-check small {
@@ -387,7 +441,6 @@ input[type="checkbox"]:checked::after {
   color: var(--thirty-percent);
 }
 
-/* Wrappers */
 .checkbox-wrapper,
 .checkbox-group {
   display: flex;
@@ -424,9 +477,8 @@ input[type="checkbox"]:checked::after {
 }
 
 
-
 /* ══════════════════════════════════════════════
-   BUTTONS — pill style matching .cancel / .ob-btn
+   BUTTONS
    ══════════════════════════════════════════════ */
 
 .button-group {
@@ -467,7 +519,6 @@ input[type="submit"]:active {
   transform: translateY(1px);
 }
 
-/* Default submit = navy primary */
 button[type="submit"],
 input[type="submit"],
 .btn-primary {
@@ -488,6 +539,7 @@ input[type="submit"]:hover,
   background: var(--accent-color);
   color: var(--text-color-dark);
 }
+
 .btn-accent:hover {
   background: #e8921a;
   transform: translateY(-2px);
@@ -500,6 +552,7 @@ input[type="submit"]:hover,
   border: 1.5px solid #dce6f0;
   box-shadow: none;
 }
+
 .btn-secondary:hover {
   border-color: var(--thirty-percent);
   background: var(--background-color);
@@ -508,8 +561,34 @@ input[type="submit"]:hover,
 
 
 /* ══════════════════════════════════════════════
-   ERROR STATES
+   DJANGO VALIDATION ERRORS (.errorlist)
+   Rendered by raise ValidationError in form.clean()
+   and field-level clean_<field>() methods.
    ══════════════════════════════════════════════ */
+
+/* ── Fix: stylesheet.css sets li { display: flex } globally.
+       These !important overrides restore correct rendering for
+       error lists inside form cards. ── */
+.ob-error-summary-list {
+  margin: 0;
+  padding: 0;
+  ul, li {
+    font-size: var(--font-sm);
+    font-family: var(--title-font);
+    font-weight: 700;
+    color: #c0392b;
+  }
+}
+
+.errorlist li,
+ul.errorlist li {
+  display: block !important;
+  flex-direction: unset !important;
+  align-items: unset !important;
+  justify-content: unset !important;
+  padding: 0 !important;
+  white-space: normal !important;
+}
 
 .errorlist,
 ul.errorlist {
@@ -524,17 +603,13 @@ ul.errorlist {
   font-size: var(--font-sm);
   font-weight: 600;
   color: #c0392b;
-  display: block;
 }
 
 .errorlist li::before { content: "⚠ "; }
 
-/* Non-field error banner */
+/* Non-field error banner (from clean() / ValidationError without a field) */
 .errorlist.nonfield,
-ul.errorlist.nonfield,
-.non-field-errors,
-.alert-danger,
-.alert-error {
+ul.errorlist.nonfield {
   background: rgba(192, 57, 43, 0.07);
   border: 1.5px solid rgba(192, 57, 43, 0.25);
   border-radius: 10px;
@@ -542,7 +617,7 @@ ul.errorlist.nonfield,
   margin-bottom: 1.25rem;
 }
 
-/* Field-level error inputs */
+/* Red border on inputs that failed field-level validation */
 .has-error .textinput,
 .has-error .emailinput,
 .has-error .urlinput,
@@ -577,50 +652,128 @@ select.is-invalid:focus {
 
 
 /* ══════════════════════════════════════════════
-   FLASH MESSAGES
+   DJANGO MESSAGES FRAMEWORK
+   Template: {% if messages %}
+               <ul class="messages">
+                 {% for message in messages %}
+                   <li class="{{ message.tags }}">{{ message }}</li>
+                 {% endfor %}
+               </ul>
+             {% endif %}
+   Django default tags: debug | info | success | warning | error
    ══════════════════════════════════════════════ */
-span strong {
-  font-size: var(--font-nm);
-  font-family: var(--main-font);
-  font-weight: 500;
-  color: red;
-}
-.messages-list {
+
+ul.messages {
   list-style: none;
   padding: 0;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.5rem;
 }
 
-.message {
-  display: flex;
-  align-items: center;
+/* Override the global li { display: flex } from stylesheet.css */
+ul.messages li {
+  display: flex !important;
+  align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.8rem 1.1rem;
+  padding: 0.85rem 1.1rem !important;
   border-radius: 10px;
   font-family: var(--main-font);
   font-size: var(--font-nm);
   font-weight: 600;
   margin-bottom: 0.5rem;
+  white-space: normal !important;
+  line-height: 1.45;
+  border: 1.5px solid transparent;
 }
 
-.message-success {
-  background: rgba(98, 162, 206, 0.1);
-  border: 1px solid rgba(98, 162, 206, 0.25);
+ul.messages li::before {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+ul.messages li.success {
+  background: rgba(39, 174, 96, 0.08);
+  border-color: rgba(39, 174, 96, 0.3);
+  color: #1e8449;
+}
+ul.messages li.success::before { content: "✓"; color: #27ae60; }
+
+ul.messages li.info {
+  background: rgba(45, 106, 156, 0.08);
+  border-color: rgba(45, 106, 156, 0.25);
   color: var(--thirty-percent);
 }
+ul.messages li.info::before { content: "ℹ"; color: var(--thirty-percent); }
 
-.message-warning {
+ul.messages li.warning {
   background: rgba(255, 166, 43, 0.1);
-  border: 1px solid rgba(255, 166, 43, 0.25);
+  border-color: rgba(255, 166, 43, 0.35);
   color: #7a4a00;
 }
+ul.messages li.warning::before { content: "⚠"; color: #f39c12; }
 
-.message-error {
+ul.messages li.error {
   background: rgba(192, 57, 43, 0.07);
-  border: 1.5px solid rgba(192, 57, 43, 0.25);
+  border-color: rgba(192, 57, 43, 0.3);
   color: #c0392b;
 }
+ul.messages li.error::before { content: "✕"; color: #c0392b; }
 
+ul.messages li.debug {
+  background: rgba(108, 117, 125, 0.08);
+  border-color: rgba(108, 117, 125, 0.25);
+  color: #495057;
+}
+ul.messages li.debug::before { content: "⚙"; color: #6c757d; }
+
+
+/* ══════════════════════════════════════════════
+   AUTH PAGE HELPERS
+   Forgot password link + "Don't have an account?" section
+   ══════════════════════════════════════════════ */
+
+.fgp {
+  text-align: right;
+  margin-bottom: 1.5rem;
+}
+
+.fgp a {
+  font-size: var(--font-sm);
+  font-family: var(--main-font);
+  font-weight: 500;
+  color: var(--thirty-percent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.fgp a:hover {
+  color: var(--text-color-dark);
+  text-decoration: underline;
+}
+
+.text-center {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--sixty-percent);
+}
+
+.text-center p {
+  font-size: var(--font-nm);
+  font-family: var(--main-font);
+  font-weight: 400;
+  color: var(--text-color-dark);
+  margin: 0;
+}
+
+.text-center a {
+  font-weight: 600;
+  color: var(--thirty-percent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.text-center a:hover { text-decoration: underline; }
 
 
 /* ══════════════════════════════════════════════
@@ -655,17 +808,9 @@ span strong {
     justify-content: center;
   }
 
-  .form-wrapper-header {
-    padding: 2rem 2.25rem 1.75rem;
-  }
-
-  .form-wrapper-body {
-    padding: 2rem 2.25rem;
-  }
-
-  .loginform-wrapper .form-wrapper-body {
-    padding: 1.75rem 2rem;
-  }
+  .form-wrapper-header { padding: 2rem 2.25rem 1.75rem; }
+  .form-wrapper-body   { padding: 2rem 2.25rem; }
+  .loginform-wrapper .form-wrapper-body { padding: 1.75rem 2rem; }
 
   .checkbox-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -683,6 +828,9 @@ span strong {
     width: auto;
     min-width: 160px;
   }
+
+  .text-center { margin-top: 1.5rem; padding-top: 1.5rem; }
+  .fgp { text-align: right; }
 }
 
 
@@ -691,13 +839,19 @@ span strong {
    ══════════════════════════════════════════════ */
 
 @media (min-width: 900px) {
-  .form-container {
-    padding: 2.5rem 2rem 5rem;
-  }
+  .form-container { padding: 2.5rem 2rem 5rem; }
+  .checkbox-grid  { grid-template-columns: repeat(3, 1fr); }
+}
 
-  .checkbox-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE — mobile 480px and below
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .form-group { margin-bottom: 1.25rem; }
+  .text-center p { font-size: var(--font-sm); }
+  .fgp { text-align: center; margin-bottom: 1.25rem; }
 }
 
 
@@ -708,4 +862,5 @@ span strong {
 @media print {
   .form-wrapper { box-shadow: none; }
   .button-group { display: none; }
+  ul.messages   { display: none; }
 }

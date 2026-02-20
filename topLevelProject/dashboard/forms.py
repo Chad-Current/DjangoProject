@@ -1,7 +1,9 @@
 # dashboard/forms.py
+import re
 from django import forms
-from datetime import timezone
+from datetime import date
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models import Q
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Button
@@ -16,6 +18,23 @@ from .models import (
     ImportantDocument,
 )
 
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def validate_phone_digits(value):
+    """Allow digits, spaces, dashes, parentheses, and a leading +."""
+    cleaned = re.sub(r'[\s\-().+]', '', value)
+    if not cleaned.isdigit():
+        raise ValidationError(
+            "Phone number may only contain digits, spaces, dashes, parentheses, and a leading '+'."
+        )
+
+
+# ---------------------------------------------------------------------------
+# ProfileForm
+# ---------------------------------------------------------------------------
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -62,6 +81,44 @@ class ProfileForm(forms.ModelForm):
                 css_class='button-group'
             )
         )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip()
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                raise ValidationError("Enter a valid email address (e.g. name@example.com).")
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone', '').strip()
+        if phone:
+            validate_phone_digits(phone)
+        return phone
+
+
+# ---------------------------------------------------------------------------
+# ContactForm
+# ---------------------------------------------------------------------------
+
+# Only the boolean role fields — used by clean() to check at least one is set.
+CONTACT_ROLE_FIELDS = [
+    'is_emergency_contact',
+    'is_digital_executor',
+    'is_caregiver',
+    'is_legal_executor',
+    'is_trustee',
+    'is_financial_agent',
+    'is_healthcare_proxy',
+    'is_guardian_for_dependents',
+    'is_pet_caregiver',
+    'is_memorial_contact',
+    'is_legacy_contact',
+    'is_professional_advisor',
+    'is_notification_only',
+    'is_knowledge_contact',
+]
 
 
 class ContactForm(forms.ModelForm):
@@ -117,6 +174,15 @@ class ContactForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-wrapper'
         self.helper.layout = Layout(
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             Fieldset(
                 "Contact Information",
                 Field('contact_relation', css_class='select'),
@@ -158,6 +224,48 @@ class ContactForm(forms.ModelForm):
             ),
         )
 
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name', '').strip()
+        if not first_name:
+            raise ValidationError("First name is required.")
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name', '').strip()
+        if not last_name:
+            raise ValidationError("Last name is required.")
+        return last_name
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip()
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                raise ValidationError("Enter a valid email address (e.g. name@example.com).")
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone', '').strip()
+        if phone:
+            validate_phone_digits(phone)
+        return phone
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Check that at least one boolean role checkbox is selected.
+        if not any(cleaned_data.get(f) for f in CONTACT_ROLE_FIELDS):
+            raise ValidationError(
+                "Please select at least one role for this contact."
+            )
+
+        return cleaned_data
+
+
+# ---------------------------------------------------------------------------
+# AccountForm
+# ---------------------------------------------------------------------------
 
 class AccountForm(forms.ModelForm):
     class Meta:
@@ -187,7 +295,6 @@ class AccountForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Make delegated_to required
         self.fields['delegated_account_to'].required = True
 
         if self.user:
@@ -238,6 +345,25 @@ class AccountForm(forms.ModelForm):
             ),
         )
 
+    def clean_website_url(self):
+        url = self.cleaned_data.get('website_url', '').strip()
+        if url:
+            # Django's URLField validator runs automatically, but we add a
+            # friendlier message here by catching any resulting error.
+            from django.core.validators import URLValidator
+            validator = URLValidator()
+            try:
+                validator(url)
+            except ValidationError:
+                raise ValidationError(
+                    "Enter a valid URL including the scheme, e.g. https://example.com"
+                )
+        return url
+
+
+# ---------------------------------------------------------------------------
+# DeviceForm
+# ---------------------------------------------------------------------------
 
 class DeviceForm(forms.ModelForm):
     class Meta:
@@ -269,7 +395,6 @@ class DeviceForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Make delegated_to required
         self.fields['delegated_device_to'].required = True
 
         if self.user:
@@ -321,6 +446,10 @@ class DeviceForm(forms.ModelForm):
         )
 
 
+# ---------------------------------------------------------------------------
+# DigitalEstateDocumentForm
+# ---------------------------------------------------------------------------
+
 class DigitalEstateDocumentForm(forms.ModelForm):
     class Meta:
         model = DigitalEstateDocument
@@ -360,7 +489,6 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Make delegated_to required
         self.fields['delegated_estate_to'].required = True
 
         if self.user:
@@ -431,6 +559,19 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         return cleaned_data
 
 
+# ---------------------------------------------------------------------------
+# FamilyNeedsToKnowSectionForm
+# ---------------------------------------------------------------------------
+
+FAMILY_CHECKBOX_FIELDS = [
+    'is_location_of_legal_will',
+    'is_password_manager',
+    'is_social_media',
+    'is_photos_or_files',
+    'is_data_retention_preferences',
+]
+
+
 class FamilyNeedsToKnowSectionForm(forms.ModelForm):
     class Meta:
         model = FamilyNeedsToKnowSection
@@ -494,6 +635,30 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             ),
         )
 
+    def clean_relation(self):
+        relation = self.cleaned_data.get('relation')
+        if not relation:
+            raise ValidationError("Please select a contact to inform.")
+        return relation
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content', '').strip()
+        if not content:
+            raise ValidationError("Please enter what you want to tell this person.")
+        return content
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not any(cleaned_data.get(f) for f in FAMILY_CHECKBOX_FIELDS):
+            raise ValidationError(
+                "Please select at least one topic category for this message."
+            )
+        return cleaned_data
+
+
+# ---------------------------------------------------------------------------
+# ImportantDocumentForm
+# ---------------------------------------------------------------------------
 
 class ImportantDocumentForm(forms.ModelForm):
     class Meta:
@@ -535,7 +700,6 @@ class ImportantDocumentForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Make delegated_to required
         self.fields['delegated_important_document_to'].required = True
 
         if self.user:
@@ -549,15 +713,15 @@ class ImportantDocumentForm(forms.ModelForm):
         self.helper.form_class = 'form-wrapper'
         self.helper.form_show_errors = False
         self.helper.layout = Layout(
-                HTML('''
-                    {% if form.non_field_errors %}
-                    <ul class="errorlist nonfield">
-                        {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                '''),
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
             Fieldset(
                 'Important Document Assignment',
                 HTML('<div class="alert alert-warning"><strong>Required:</strong> You must assign this document to a contact.</div>'),
@@ -607,6 +771,10 @@ class ImportantDocumentForm(forms.ModelForm):
         return cleaned_data
 
 
+# ---------------------------------------------------------------------------
+# RelevanceReviewForm
+# ---------------------------------------------------------------------------
+
 class RelevanceReviewForm(forms.ModelForm):
     class Meta:
         model = RelevanceReview
@@ -631,13 +799,11 @@ class RelevanceReviewForm(forms.ModelForm):
             try:
                 profile = Profile.objects.get(user=self.user)
 
-                # Filter querysets to only show items belonging to this user's profile
                 self.fields['account_review'].queryset = Account.objects.filter(profile=profile)
                 self.fields['device_review'].queryset = Device.objects.filter(profile=profile)
                 self.fields['estate_review'].queryset = DigitalEstateDocument.objects.filter(profile=profile)
                 self.fields['important_document_review'].queryset = ImportantDocument.objects.filter(profile=profile)
 
-                # Make all review fields optional (user picks one)
                 self.fields['account_review'].required = False
                 self.fields['device_review'].required = False
                 self.fields['estate_review'].required = False
@@ -681,8 +847,14 @@ class RelevanceReviewForm(forms.ModelForm):
             ),
         )
 
+    def clean_next_review_due(self):
+        review_date = self.cleaned_data.get('next_review_due')
+        if review_date and review_date <= date.today():
+            raise ValidationError("Next review date must be in the future.")
+        return review_date
+
     def clean(self):
-        """Validate that exactly one review target is selected"""
+        """Validate that exactly one review target is selected."""
         cleaned_data = super().clean()
 
         account = cleaned_data.get('account_review')
