@@ -23,7 +23,12 @@
 
         {# Document Name #}
         <div class="ob-field ob-full{% if form.name_or_title.errors %} has-error{% endif %}">
-          <label for="{{ form.name_or_title.id_for_label }}">Document Name <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.name_or_title.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.">
+            Document Name <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.</span>
+          </label>
           {{ form.name_or_title }}
           <span class="ob-hint">e.g. "Last Will and Testament", "Healthcare Power of Attorney"</span>
           {% if form.name_or_title.errors %}
@@ -33,7 +38,12 @@
 
         {# Document Type #}
         <div class="ob-field{% if form.estate_category.errors %} has-error{% endif %}">
-          <label for="{{ form.estate_category.id_for_label }}">Document Type <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.estate_category.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The legal category this document falls under — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents.">
+            Document Type <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The legal category — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents at the right time.</span>
+          </label>
           {{ form.estate_category }}
           {% if form.estate_category.errors %}
           <ul class="errorlist" role="alert">{% for e in form.estate_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -42,7 +52,12 @@
 
         {# Assign to Contact #}
         <div class="ob-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
-          <label for="{{ form.delegated_estate_to.id_for_label }}">Assign to Contact <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.delegated_estate_to.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The contact who holds, manages, or is the named executor/agent for this document — typically your attorney, executor, or healthcare proxy.">
+            Assign to Contact <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.</span>
+          </label>
           {{ form.delegated_estate_to }}
           <span class="ob-hint">Who holds or manages this document?</span>
           {% if form.delegated_estate_to.errors %}
@@ -52,7 +67,12 @@
 
         {# Physical Location #}
         <div class="ob-field{% if form.estate_physical_location.errors %} has-error{% endif %}">
-          <label for="{{ form.estate_physical_location.id_for_label }}">Physical Location</label>
+          <label for="{{ form.estate_physical_location.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Where the original signed hard copy of this document is stored. Legal originals often matter — be specific so your family can find them quickly.">
+            Physical Location
+            <span class="ob-tip" role="tooltip">Where the original signed copy is stored. Legal originals often matter — be specific so your family can find them quickly.</span>
+          </label>
           {{ form.estate_physical_location }}
           <span class="ob-hint">e.g. "Safe deposit box at Chase Bank", "Filing cabinet in office"</span>
           {% if form.estate_physical_location.errors %}
@@ -62,7 +82,12 @@
 
         {# Digital Location #}
         <div class="ob-field{% if form.estate_digital_location.errors %} has-error{% endif %}">
-          <label for="{{ form.estate_digital_location.id_for_label }}">Digital Location</label>
+          <label for="{{ form.estate_digital_location.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Where a digital copy or scan of this document is stored — useful for quick reference while the original is retrieved. e.g. Google Drive, 1Password, Dropbox.">
+            Digital Location
+            <span class="ob-tip" role="tooltip">Where a digital scan is stored for quick reference. e.g. "Google Drive / Legal folder" or "1Password secure note".</span>
+          </label>
           {{ form.estate_digital_location }}
           <span class="ob-hint">e.g. "Google Drive / Legal folder", "1Password secure note"</span>
           {% if form.estate_digital_location.errors %}
@@ -72,7 +97,12 @@
 
         {# Review Schedule #}
         <div class="ob-field{% if form.review_time.errors %} has-error{% endif %}">
-          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          <label for="{{ form.review_time.id_for_label }}"
+            class="ob-label-tooltip"
+            title="How often you want a reminder to review this document and confirm it still reflects your wishes and current circumstances.">
+            Review Schedule
+            <span class="ob-tip" role="tooltip">How often you want a reminder to confirm this document still reflects your wishes and current life circumstances.</span>
+          </label>
           {{ form.review_time }}
           {% if form.review_time.errors %}
           <ul class="errorlist" role="alert">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -81,7 +111,12 @@
 
         {# Instructions for Family #}
         <div class="ob-field ob-full{% if form.estate_overall_instructions.errors %} has-error{% endif %}">
-          <label for="{{ form.estate_overall_instructions.id_for_label }}">Instructions for Family</label>
+          <label for="{{ form.estate_overall_instructions.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Any context or steps your family should follow when handling this document — e.g. who to contact first, whether probate is required, or specific wishes it contains.">
+            Instructions for Family
+            <span class="ob-tip" role="tooltip">Context your family needs — e.g. who to contact first, whether probate is required, or specific wishes contained in this document.</span>
+          </label>
           {{ form.estate_overall_instructions }}
           <span class="ob-hint">Any guidance your family needs when handling this document</span>
           {% if form.estate_overall_instructions.errors %}
@@ -100,7 +135,6 @@
           </label>
         </div>
 
-        {# Declaration error shown inline near the checkboxes #}
         {% if form.non_field_errors %}
         <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
           {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
@@ -191,41 +225,37 @@
     <a href="{% url 'dashboard:onboarding_documents' %}" class="ob-btn ob-btn-blue ob-btn-full">
       Continue → Important Docs <i class="fas fa-arrow-right"></i>
     </a>
-      <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}
-  {# end ob-panel errors #}  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
 
   </div>{# end ob-panel #}
-
-
-
 
 </div>{# end ob-body #}
 {% endblock %}

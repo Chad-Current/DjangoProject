@@ -23,7 +23,12 @@
 
         {# Document Name #}
         <div class="ob-field ob-full{% if form.name_or_title.errors %} has-error{% endif %}">
-          <label for="{{ form.name_or_title.id_for_label }}">Document Name <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.name_or_title.id_for_label }}"
+            class="ob-label-tooltip"
+            title="A clear, descriptive name for this document so your family can immediately understand what it is and why it matters.">
+            Document Name <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">A clear, descriptive name so your family can immediately understand what it is. e.g. "Term Life Insurance Policy" or "Vehicle Title — 2021 Honda CRV".</span>
+          </label>
           {{ form.name_or_title }}
           <span class="ob-hint">e.g. "Term Life Insurance Policy", "Vehicle Title — 2021 Honda CRV"</span>
           {% if form.name_or_title.errors %}
@@ -33,7 +38,12 @@
 
         {# Category #}
         <div class="ob-field{% if form.document_category.errors %} has-error{% endif %}">
-          <label for="{{ form.document_category.id_for_label }}">Category <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.document_category.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The type of document — e.g. Insurance, Financial, Medical, Property, Identification. Helps your family filter and find the right records quickly.">
+            Category <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.</span>
+          </label>
           {{ form.document_category }}
           {% if form.document_category.errors %}
           <ul class="errorlist" role="alert">{% for e in form.document_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -42,7 +52,12 @@
 
         {# Assign to Contact #}
         <div class="ob-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
-          <label for="{{ form.delegated_important_document_to.id_for_label }}">Assign to Contact <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.delegated_important_document_to.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The contact who should be the first to access, act on, or safeguard this document — e.g. your executor for financial records, or your healthcare proxy for medical documents.">
+            Assign to Contact <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
+          </label>
           {{ form.delegated_important_document_to }}
           <span class="ob-hint">Who should access this document?</span>
           {% if form.delegated_important_document_to.errors %}
@@ -52,7 +67,12 @@
 
         {# Description #}
         <div class="ob-field{% if form.description.errors %} has-error{% endif %}">
-          <label for="{{ form.description.id_for_label }}">Description</label>
+          <label for="{{ form.description.id_for_label }}"
+            class="ob-label-tooltip"
+            title="A brief summary of what this document covers — policy numbers, account details, coverage amounts, or any other key facts your family would need to know immediately.">
+            Description
+            <span class="ob-tip" role="tooltip">A brief summary of what this document covers — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.</span>
+          </label>
           {{ form.description }}
           <span class="ob-hint">Brief note about what this document covers</span>
           {% if form.description.errors %}
@@ -62,7 +82,12 @@
 
         {# Physical Location #}
         <div class="ob-field{% if form.physical_location.errors %} has-error{% endif %}">
-          <label for="{{ form.physical_location.id_for_label }}">Physical Location</label>
+          <label for="{{ form.physical_location.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Where the original physical copy of this document is stored — be specific enough that your family can find it without you. e.g. 'Fireproof safe in master bedroom closet'.">
+            Physical Location
+            <span class="ob-tip" role="tooltip">Where the original copy is stored. Be specific enough that your family can find it without you — e.g. "Fireproof safe in master bedroom closet".</span>
+          </label>
           {{ form.physical_location }}
           <span class="ob-hint">e.g. "Fireproof safe in master bedroom closet"</span>
           {% if form.physical_location.errors %}
@@ -72,7 +97,12 @@
 
         {# Digital Location #}
         <div class="ob-field{% if form.digital_location.errors %} has-error{% endif %}">
-          <label for="{{ form.digital_location.id_for_label }}">Digital Location</label>
+          <label for="{{ form.digital_location.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Where a digital copy or scan of this document is stored — allows your family to access it quickly before locating the physical original.">
+            Digital Location
+            <span class="ob-tip" role="tooltip">Where a digital copy or scan is stored for quick access — e.g. "Dropbox / Important Docs folder" or "Google Drive / Insurance".</span>
+          </label>
           {{ form.digital_location }}
           <span class="ob-hint">e.g. "Dropbox / Important Docs folder"</span>
           {% if form.digital_location.errors %}
@@ -82,7 +112,12 @@
 
         {# Review Schedule #}
         <div class="ob-field{% if form.review_time.errors %} has-error{% endif %}">
-          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          <label for="{{ form.review_time.id_for_label }}"
+            class="ob-label-tooltip"
+            title="How often you want a reminder to check that this document is still current — important for insurance policies, tax records, and anything with expiry dates.">
+            Review Schedule
+            <span class="ob-tip" role="tooltip">How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.</span>
+          </label>
           {{ form.review_time }}
           {% if form.review_time.errors %}
           <ul class="errorlist" role="alert">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -100,7 +135,6 @@
           </label>
         </div>
 
-        {# Declaration error shown inline near the checkboxes #}
         {% if form.non_field_errors %}
         <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
           {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
@@ -192,38 +226,37 @@
     <a href="{% url 'dashboard:onboarding_family' %}" class="ob-btn ob-btn-blue ob-btn-full">
       Continue → Family Notes <i class="fas fa-arrow-right"></i>
     </a>
-     <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}  {# end ob-panel errors #}  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
 
   </div>{# end ob-panel #}
 </div>{# end ob-body #}
-
 
 {% endblock %}

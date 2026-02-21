@@ -26,8 +26,13 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.subnav-container .attention {
-    border: solid 2px red;
+.attention {
+    border: 1px solid #ff7b00;
+}
+.attention:hover {
+    border: 1px solid var(--ten-percent);
+    background-color: var(--thirty-percent);
+    transition: ease-in-out (0.95, 0.05, 0.795, 0.035)
 }
 
 .subnav-container::-webkit-scrollbar {

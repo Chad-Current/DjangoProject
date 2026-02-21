@@ -10,7 +10,6 @@
 
 <div class="ob-body">
 
-  
   <!-- ── FORM ─────────────────────────────────────── -->
   <form method="post" novalidate>
     {% csrf_token %}
@@ -24,7 +23,13 @@
 
         {# Provider #}
         <div class="ob-field{% if form.account_name_or_provider.errors %} has-error{% endif %}">
-          <label for="{{ form.account_name_or_provider.id_for_label }}">Provider <span class="req" aria-hidden="true">*</span></label>
+          <label
+            for="{{ form.account_name_or_provider.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The name of the service or company — e.g. Gmail, Chase Bank, Netflix. Use the brand name your family would recognise.">
+            Provider <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The name of the service or company — e.g. Gmail, Chase Bank, Netflix. Use the brand name your family would recognise.</span>
+          </label>
           {{ form.account_name_or_provider }}
           <span class="ob-hint">e.g. Gmail, Chase Bank, Netflix</span>
           {% if form.account_name_or_provider.errors %}
@@ -34,7 +39,13 @@
 
         {# Category #}
         <div class="ob-field{% if form.account_category.errors %} has-error{% endif %}">
-          <label for="{{ form.account_category.id_for_label }}">Category <span class="req" aria-hidden="true">*</span></label>
+          <label
+            for="{{ form.account_category.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Choose the type that best describes this account. This helps your family quickly find and sort accounts by purpose.">
+            Category <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Choose the type that best describes this account. This helps your family quickly find and sort accounts by purpose.</span>
+          </label>
           {{ form.account_category }}
           {% if form.account_category.errors %}
           <ul class="errorlist" role="alert">{% for e in form.account_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -43,7 +54,13 @@
 
         {# Assign to Contact #}
         <div class="ob-field{% if form.delegated_account_to.errors %} has-error{% endif %}">
-          <label for="{{ form.delegated_account_to.id_for_label }}">Assign to Contact <span class="req" aria-hidden="true">*</span></label>
+          <label
+            for="{{ form.delegated_account_to.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Select the trusted contact who should be responsible for managing or closing this account. Contacts are added in Step 1.">
+            Assign to Contact <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Select the trusted contact responsible for managing or closing this account. Contacts are added in Step 1.</span>
+          </label>
           {{ form.delegated_account_to }}
           <span class="ob-hint">Who should handle this account?</span>
           {% if form.delegated_account_to.errors %}
@@ -53,7 +70,13 @@
 
         {# Instruction #}
         <div class="ob-field{% if form.keep_or_close_instruction.errors %} has-error{% endif %}">
-          <label for="{{ form.keep_or_close_instruction.id_for_label }}">Instruction <span class="req" aria-hidden="true">*</span></label>
+          <label
+            for="{{ form.keep_or_close_instruction.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Tell your family what to do with this account — keep it active, close it, or something else like transferring ownership.">
+            Instruction <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Tell your family what to do with this account — keep it active, close it, or transfer ownership.</span>
+          </label>
           {{ form.keep_or_close_instruction }}
           {% if form.keep_or_close_instruction.errors %}
           <ul class="errorlist" role="alert">{% for e in form.keep_or_close_instruction.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -62,7 +85,13 @@
 
         {# Username / Login Email #}
         <div class="ob-field{% if form.username_or_email.errors %} has-error{% endif %}">
-          <label for="{{ form.username_or_email.id_for_label }}">Username / Login Email</label>
+          <label
+            for="{{ form.username_or_email.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The email address or username used to log in. Never enter a password here — this is just an identifier so your family can locate the account.">
+            Username / Login Email
+            <span class="ob-tip" role="tooltip">The email or username used to log in. Never enter a password — just the identifier your family needs to locate the account.</span>
+          </label>
           {{ form.username_or_email }}
           <span class="ob-hint">No passwords — just the login identifier</span>
           {% if form.username_or_email.errors %}
@@ -72,7 +101,13 @@
 
         {# Website URL #}
         <div class="ob-field{% if form.website_url.errors %} has-error{% endif %}">
-          <label for="{{ form.website_url.id_for_label }}">Website URL</label>
+          <label
+            for="{{ form.website_url.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The direct web address for this account's login page — e.g. https://mail.google.com. Helps your family navigate straight to the right place.">
+            Website URL
+            <span class="ob-tip" role="tooltip">The direct login page URL — e.g. https://mail.google.com. Helps your family navigate straight to the right place.</span>
+          </label>
           {{ form.website_url }}
           {% if form.website_url.errors %}
           <ul class="errorlist" role="alert">{% for e in form.website_url.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -81,7 +116,13 @@
 
         {# Password Storage Location #}
         <div class="ob-field ob-full{% if form.credential_storage_location.errors %} has-error{% endif %}">
-          <label for="{{ form.credential_storage_location.id_for_label }}">Password Storage Location</label>
+          <label
+            for="{{ form.credential_storage_location.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Describe where the password for this account is stored — not the password itself. For example: '1Password – Work Logins folder' or 'Sticky note taped inside office drawer'.">
+            Password Storage Location
+            <span class="ob-tip" role="tooltip">Where is the password stored — not the password itself. e.g. "1Password – Work Logins folder" or "Sticky note inside office drawer".</span>
+          </label>
           {{ form.credential_storage_location }}
           <span class="ob-hint">e.g. "1Password - Work Logins folder", "Sticky note in office drawer"</span>
           {% if form.credential_storage_location.errors %}
@@ -91,7 +132,13 @@
 
         {# Notes for Family #}
         <div class="ob-field ob-full{% if form.notes_for_family.errors %} has-error{% endif %}">
-          <label for="{{ form.notes_for_family.id_for_label }}">Notes for Family</label>
+          <label
+            for="{{ form.notes_for_family.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Any extra context your family might need — such as subscription billing dates, linked accounts, recurring payments, or special cancellation steps.">
+            Notes for Family
+            <span class="ob-tip" role="tooltip">Extra context your family may need — billing dates, linked accounts, recurring payments, or special cancellation steps.</span>
+          </label>
           {{ form.notes_for_family }}
           <span class="ob-hint">Any special instructions about this account</span>
           {% if form.notes_for_family.errors %}
@@ -101,7 +148,13 @@
 
         {# Review Schedule #}
         <div class="ob-field{% if form.review_time.errors %} has-error{% endif %}">
-          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          <label
+            for="{{ form.review_time.id_for_label }}"
+            class="ob-label-tooltip"
+            title="How often you want to be reminded to check that this account's details are still accurate — monthly, quarterly, or annually.">
+            Review Schedule
+            <span class="ob-tip" role="tooltip">How often you want to be reminded to verify this account's details are still accurate — monthly, quarterly, or annually.</span>
+          </label>
           {{ form.review_time }}
           <span class="ob-hint">How often should this be reviewed?</span>
           {% if form.review_time.errors %}
@@ -168,40 +221,37 @@
     <a href="{% url 'dashboard:onboarding_devices' %}" class="ob-btn ob-btn-blue ob-btn-full">
       Continue → Devices <i class="fas fa-arrow-right"></i>
     </a>
-  
-        <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}
-  {# end ob-panel errors #} 
-  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
+
   </div>{# end ob-panel #}
 </div>{# end ob-body #}
-
 
 {% endblock %}

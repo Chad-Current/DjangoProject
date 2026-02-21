@@ -23,7 +23,12 @@
 
         {# For Contact #}
         <div class="ob-field ob-full{% if form.relation.errors %} has-error{% endif %}">
-          <label for="{{ form.relation.id_for_label }}">For Contact <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.relation.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Select the specific contact this note or message is intended for. Each note is delivered privately to the person you choose.">
+            For Contact <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Select the specific contact this note is intended for. Each note is delivered privately to the person you choose.</span>
+          </label>
           {{ form.relation }}
           <span class="ob-hint">Which contact should receive this note or guidance?</span>
           {% if form.relation.errors %}
@@ -33,7 +38,12 @@
 
         {# Message #}
         <div class="ob-field ob-full{% if form.content.errors %} has-error{% endif %}">
-          <label for="{{ form.content.id_for_label }}">Message / Instructions <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.content.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Write freely — your wishes, instructions, personal messages, or anything this person should know. This is your chance to speak directly to them in your own words.">
+            Message / Instructions <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Write freely — wishes, instructions, or a personal message. This is your chance to speak directly to this person in your own words.</span>
+          </label>
           {{ form.content }}
           <span class="ob-hint">Write your wishes, instructions, or anything important this person should know</span>
           {% if form.content.errors %}
@@ -52,7 +62,6 @@
           </label>
         </div>
 
-        {# Topic checkbox error shown inline #}
         {% if form.non_field_errors %}
         <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
           {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
@@ -155,36 +164,34 @@
       Finish Setup <i class="fas fa-check"></i>
     </a>
 
-          <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}
-  {# end ob-panel errors #}  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
 
   </div>{# end ob-panel #}
 </div>{# end ob-body #}

@@ -672,6 +672,7 @@ ul.messages {
 /* Override the global li { display: flex } from stylesheet.css */
 ul.messages li {
   display: flex !important;
+  flex-direction: row;
   align-items: flex-start;
   gap: 0.6rem;
   padding: 0.85rem 1.1rem !important;
@@ -703,7 +704,7 @@ ul.messages li.info {
   border-color: rgba(45, 106, 156, 0.25);
   color: var(--thirty-percent);
 }
-ul.messages li.info::before { content: "ℹ"; color: var(--thirty-percent); }
+ul.messages li.info::before { content: "i"; color: var(--thirty-percent); }
 
 ul.messages li.warning {
   background: rgba(255, 166, 43, 0.1);

@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════════════
+   tooltip_styles.css — Styled label tooltips for onboarding forms
+   Extends the base .tooltip / .tooltiptext utilities in stylesheet.css
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════
+   LABEL TOOLTIP WRAPPER
+   Wrap any <label> with .ob-label-tooltip to
+   activate the hover-tip behaviour.
+   ══════════════════════════════════════════════ */
+
+.ob-label-tooltip {
+  position: relative;          /* anchor for the floating tip          */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  width: fit-content;
+  cursor: default;
+}
+
+
+/* ── Info icon rendered via ::after ─────────────── */
+
+.ob-label-tooltip::after {
+  content: "?";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width:  1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  background-color: var(--sixty-percent);
+  color: var(--purewhite-color);
+  font-family: var(--main-font);
+  font-size: 0.65em;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.ob-label-tooltip:hover::after {
+  background-color: var(--ten-percent);
+}
+
+
+/* ── Tooltip bubble ──────────────────────────────── */
+
+.ob-label-tooltip .ob-tip {
+  /* hidden by default */
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  /* sizing & position */
+  position: absolute;
+  bottom: calc(100% + 0.55em);   /* float above the label              */
+  left: 0;
+  width: clamp(160px, 22vw, 280px);
+  z-index: 100;
+
+  /* appearance — uses your palette */
+  background-color: var(--background-color-dark);
+  color: var(--text-color);
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 0.55em 0.8em;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(2, 2, 2, 0.22);
+
+  /* smooth reveal */
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  transform: translateY(4px);
+}
+
+
+/* ── Caret pointing down toward the label ───────── */
+
+.ob-label-tooltip .ob-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;                     /* below the bubble                   */
+  left: 1em;
+  border: 6px solid transparent;
+  border-top-color: var(--background-color-dark);
+}
+
+
+/* ── Visible state ───────────────────────────────── */
+
+.ob-label-tooltip:hover .ob-tip,
+.ob-label-tooltip:focus-within .ob-tip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Checkbox labels: suppress focus-within so the tip
+   closes immediately on mouse-out after clicking a role.
+   (:hover still works normally for discovery.)          */
+
+.ob-check-row.ob-label-tooltip:focus-within .ob-tip {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+
+/* ── Accent strip on the left edge ──────────────── */
+
+.ob-label-tooltip .ob-tip::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 3px;
+  border-radius: 8px 0 0 8px;
+  background-color: var(--accent-color);
+}
+
+
+/* ══════════════════════════════════════════════
+   REQUIRED-FIELD ASTERISK
+   Keep the .req span styled consistently
+   ══════════════════════════════════════════════ */
+
+.req {
+  color: var(--accent-color);
+  margin-left: 0.1em;
+}

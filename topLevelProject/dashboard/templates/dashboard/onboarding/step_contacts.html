@@ -9,7 +9,6 @@
   <div class="ob-eyebrow">Step 1 of 6</div>
   <h1>Who needs to know?</h1>
   <p>Add the family members, executors, advisors, and caregivers who should be informed and given access after you're gone.</p>
-
 </div>
 
 <div class="ob-body">
@@ -27,8 +26,11 @@
 
         {# first_name #}
         <div class="ob-field{% if form.first_name.errors %} has-error{% endif %}">
-          <label for="{{ form.first_name.id_for_label }}">
+          <label for="{{ form.first_name.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The contact's legal first name as it appears on official documents.">
             First Name <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The contact's legal first name as it appears on official documents.</span>
           </label>
           {{ form.first_name }}
           {% if form.first_name.errors %}
@@ -40,8 +42,11 @@
 
         {# last_name #}
         <div class="ob-field{% if form.last_name.errors %} has-error{% endif %}">
-          <label for="{{ form.last_name.id_for_label }}">
+          <label for="{{ form.last_name.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The contact's legal last name or family name.">
             Last Name <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The contact's legal last name or family name.</span>
           </label>
           {{ form.last_name }}
           {% if form.last_name.errors %}
@@ -53,8 +58,11 @@
 
         {# contact_relation #}
         <div class="ob-field{% if form.contact_relation.errors %} has-error{% endif %}">
-          <label for="{{ form.contact_relation.id_for_label }}">
+          <label for="{{ form.contact_relation.id_for_label }}"
+            class="ob-label-tooltip"
+            title="How this person relates to you — e.g. Spouse, Son, Daughter, Attorney. Helps your family understand the context of each contact.">
             Relationship <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">How this person relates to you — e.g. Spouse, Son, Attorney. Helps your family understand the context of each contact.</span>
           </label>
           {{ form.contact_relation }}
           {% if form.contact_relation.errors %}
@@ -66,7 +74,12 @@
 
         {# email #}
         <div class="ob-field{% if form.email.errors %} has-error{% endif %}">
-          <label for="{{ form.email.id_for_label }}">Email Address</label>
+          <label for="{{ form.email.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The best email address to reach this contact. Used when your family needs to notify or share information with them.">
+            Email Address
+            <span class="ob-tip" role="tooltip">The best email address to reach this contact. Used when your family needs to notify or share information with them.</span>
+          </label>
           {{ form.email }}
           {% if form.email.errors %}
           <ul class="errorlist" role="alert">
@@ -77,7 +90,12 @@
 
         {# phone #}
         <div class="ob-field{% if form.phone.errors %} has-error{% endif %}">
-          <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+          <label for="{{ form.phone.id_for_label }}"
+            class="ob-label-tooltip"
+            title="A reliable phone number for this contact — mobile preferred for urgent situations like emergencies.">
+            Phone Number
+            <span class="ob-tip" role="tooltip">A reliable phone number for this contact — mobile preferred for urgent situations like emergencies.</span>
+          </label>
           {{ form.phone }}
           {% if form.phone.errors %}
           <ul class="errorlist" role="alert">
@@ -88,8 +106,11 @@
 
         {# address_1 #}
         <div class="ob-field{% if form.address_1.errors %} has-error{% endif %}">
-          <label for="{{ form.address_1.id_for_label }}">
+          <label for="{{ form.address_1.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The contact's current street address — useful for mailing legal documents or notices to them.">
             Street Address <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The contact's current street address — useful for mailing legal documents or notices to them.</span>
           </label>
           {{ form.address_1 }}
           {% if form.address_1.errors %}
@@ -101,7 +122,12 @@
 
         {# address_2 #}
         <div class="ob-field{% if form.address_2.errors %} has-error{% endif %}">
-          <label for="{{ form.address_2.id_for_label }}">Address Line 2</label>
+          <label for="{{ form.address_2.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Apartment, suite, unit, or building number if applicable.">
+            Address Line 2
+            <span class="ob-tip" role="tooltip">Apartment, suite, unit, or building number if applicable.</span>
+          </label>
           {{ form.address_2 }}
           {% if form.address_2.errors %}
           <ul class="errorlist" role="alert">
@@ -112,8 +138,11 @@
 
         {# city #}
         <div class="ob-field{% if form.city.errors %} has-error{% endif %}">
-          <label for="{{ form.city.id_for_label }}">
+          <label for="{{ form.city.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The city or town where this contact currently resides.">
             City <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The city or town where this contact currently resides.</span>
           </label>
           {{ form.city }}
           {% if form.city.errors %}
@@ -125,8 +154,11 @@
 
         {# state #}
         <div class="ob-field{% if form.state.errors %} has-error{% endif %}">
-          <label for="{{ form.state.id_for_label }}">
+          <label for="{{ form.state.id_for_label }}"
+            class="ob-label-tooltip"
+            title="State or province of this contact's address. Important for jurisdiction in legal or estate matters.">
             State <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">State or province of this contact's address. Important for jurisdiction in legal or estate matters.</span>
           </label>
           {{ form.state }}
           {% if form.state.errors %}
@@ -145,7 +177,6 @@
           <span class="ob-roles-hint">Select all that apply — hover each for a description</span>
         </div>
 
-        {# Role-level non-field error (at least one role required) #}
         {% if form.non_field_errors %}
         <ul class="errorlist" role="alert" style="margin-bottom: 0.75rem;">
           {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
@@ -158,22 +189,35 @@
             <i class="fas fa-balance-scale"></i> Legal &amp; Estate
           </div>
           <div class="ob-check-group ob-check-group-4">
-            <label class="ob-check-row" title="Named executor/personal representative to administer overall estate and will.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Named executor/personal representative to administer overall estate and will.">
               {{ form.is_legal_executor }}
               <span class="ob-check-label">Legal Executor</span>
+              <span class="ob-tip" role="tooltip">Named executor/personal representative to administer overall estate and will.</span>
             </label>
-            <label class="ob-check-row" title="Responsible for managing digital assets (accounts, passwords, online services) after death.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Responsible for managing digital assets (accounts, passwords, online services) after death.">
               {{ form.is_digital_executor }}
               <span class="ob-check-label">Digital Executor</span>
+              <span class="ob-tip" role="tooltip">Responsible for managing digital assets (accounts, passwords, online services) after death.</span>
             </label>
-            <label class="ob-check-row" title="Manages trusts, distributions, and trust assets according to trust terms.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Manages trusts, distributions, and trust assets according to trust terms.">
               {{ form.is_trustee }}
               <span class="ob-check-label">Trustee</span>
+              <span class="ob-tip" role="tooltip">Manages trusts, distributions, and trust assets according to trust terms.</span>
             </label>
-            <label class="ob-check-row" title="Attorney, accountant, or advisor to consult for legal/financial guidance.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Attorney, accountant, or advisor to consult for legal/financial guidance.">
               {{ form.is_professional_advisor }}
               <span class="ob-check-label">Professional Advisor</span>
+              <span class="ob-tip" role="tooltip">Attorney, accountant, or advisor to consult for legal/financial guidance.</span>
             </label>
+
           </div>
         </div>
 
@@ -183,22 +227,35 @@
             <i class="fas fa-heartbeat"></i> Medical &amp; Care
           </div>
           <div class="ob-check-group ob-check-group-4">
-            <label class="ob-check-row" title="Contact to notify and provide access during medical emergencies or sudden incapacity.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Contact to notify and provide access during medical emergencies or sudden incapacity.">
               {{ form.is_emergency_contact }}
               <span class="ob-check-label">Emergency Contact</span>
+              <span class="ob-tip" role="tooltip">Contact to notify and provide access during medical emergencies or sudden incapacity.</span>
             </label>
-            <label class="ob-check-row" title="Makes medical decisions if you're unable to communicate (healthcare power of attorney).">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Makes medical decisions if you're unable to communicate (healthcare power of attorney).">
               {{ form.is_healthcare_proxy }}
               <span class="ob-check-label">Healthcare Proxy</span>
+              <span class="ob-tip" role="tooltip">Makes medical decisions if you're unable to communicate (healthcare power of attorney).</span>
             </label>
-            <label class="ob-check-row" title="Primary person providing or coordinating long-term care needs and health decisions.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Primary person providing or coordinating long-term care needs and health decisions.">
               {{ form.is_caregiver }}
               <span class="ob-check-label">Caregiver</span>
+              <span class="ob-tip" role="tooltip">Primary person providing or coordinating long-term care needs and health decisions.</span>
             </label>
-            <label class="ob-check-row" title="Named legal guardian for minor children or dependent adults.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Named legal guardian for minor children or dependent adults.">
               {{ form.is_guardian_for_dependents }}
               <span class="ob-check-label">Guardian</span>
+              <span class="ob-tip" role="tooltip">Named legal guardian for minor children or dependent adults.</span>
             </label>
+
           </div>
         </div>
 
@@ -208,22 +265,35 @@
             <i class="fas fa-dollar-sign"></i> Financial &amp; Access
           </div>
           <div class="ob-check-group ob-check-group-4">
-            <label class="ob-check-row" title="Authorized under financial power of attorney to handle money/bills if incapacitated.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Authorized under financial power of attorney to handle money/bills if incapacitated.">
               {{ form.is_financial_agent }}
               <span class="ob-check-label">Financial Agent</span>
+              <span class="ob-tip" role="tooltip">Authorized under financial power of attorney to handle money/bills if incapacitated.</span>
             </label>
-            <label class="ob-check-row" title="Designated for platform-specific legacy access (e.g., Apple, Google, Facebook).">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Designated for platform-specific legacy access (e.g., Apple, Google, Facebook).">
               {{ form.is_legacy_contact }}
               <span class="ob-check-label">Legacy Contact</span>
+              <span class="ob-tip" role="tooltip">Designated for platform-specific legacy access (e.g., Apple, Google, Facebook).</span>
             </label>
-            <label class="ob-check-row" title="Delegated specific knowledge/info (e.g., account locations) but no action required.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Delegated specific knowledge/info (e.g., account locations) but no action required.">
               {{ form.is_knowledge_contact }}
               <span class="ob-check-label">Knowledge Contact</span>
+              <span class="ob-tip" role="tooltip">Delegated specific knowledge/info (e.g., account locations) but no action required.</span>
             </label>
-            <label class="ob-check-row" title="Receives notifications and basic info but has no decision-making authority or tasks.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Receives notifications and basic info but has no decision-making authority or tasks.">
               {{ form.is_notification_only }}
               <span class="ob-check-label">Notification Only</span>
+              <span class="ob-tip" role="tooltip">Receives notifications and basic info but has no decision-making authority or tasks.</span>
             </label>
+
           </div>
         </div>
 
@@ -233,14 +303,21 @@
             <i class="fas fa-heart"></i> Personal
           </div>
           <div class="ob-check-group ob-check-group-4">
-            <label class="ob-check-row" title="Handles funeral, memorial service, and burial/cremation preferences.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Handles funeral, memorial service, and burial/cremation preferences.">
               {{ form.is_memorial_contact }}
               <span class="ob-check-label">Memorial Contact</span>
+              <span class="ob-tip" role="tooltip">Handles funeral, memorial service, and burial/cremation preferences.</span>
             </label>
-            <label class="ob-check-row" title="Responsible for pet care, veterinary decisions, and related expenses.">
+
+            <label class="ob-check-row ob-label-tooltip"
+              title="Responsible for pet care, veterinary decisions, and related expenses.">
               {{ form.is_pet_caregiver }}
               <span class="ob-check-label">Pet Caregiver</span>
+              <span class="ob-tip" role="tooltip">Responsible for pet care, veterinary decisions, and related expenses.</span>
             </label>
+
           </div>
         </div>
 
@@ -323,45 +400,37 @@
     </p>
     {% endif %}
 
-      <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}
-  {# end ob-panel errors #}  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
 
   </div>{# end ob-panel #}
 
-
-
-
 </div>{# end ob-body #}
-
-
-
 
 {% endblock %}

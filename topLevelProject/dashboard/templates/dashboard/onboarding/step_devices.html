@@ -23,7 +23,12 @@
 
         {# Device Name #}
         <div class="ob-field{% if form.device_name.errors %} has-error{% endif %}">
-          <label for="{{ form.device_name.id_for_label }}">Device Name / Model <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.device_name.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The brand, model, and year of the device — specific enough that your family can identify it. e.g. iPhone 15 Pro, MacBook Pro 2022.">
+            Device Name / Model <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">Brand, model, and year — specific enough for your family to identify it. e.g. iPhone 15 Pro, MacBook Pro 2022.</span>
+          </label>
           {{ form.device_name }}
           <span class="ob-hint">e.g. iPhone 15 Pro, MacBook Pro 2022</span>
           {% if form.device_name.errors %}
@@ -33,7 +38,12 @@
 
         {# Device Type #}
         <div class="ob-field{% if form.device_type.errors %} has-error{% endif %}">
-          <label for="{{ form.device_type.id_for_label }}">Device Type <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.device_type.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The general category of this device — Phone, Laptop, Desktop, Tablet, Smart Watch, or Other. Used to group and display devices for your family.">
+            Device Type <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">General category — Phone, Laptop, Desktop, Tablet, Smart Watch, or Other. Used to group devices for your family.</span>
+          </label>
           {{ form.device_type }}
           {% if form.device_type.errors %}
           <ul class="errorlist" role="alert">{% for e in form.device_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -42,7 +52,12 @@
 
         {# Assign to Contact #}
         <div class="ob-field{% if form.delegated_device_to.errors %} has-error{% endif %}">
-          <label for="{{ form.delegated_device_to.id_for_label }}">Assign to Contact <span class="req" aria-hidden="true">*</span></label>
+          <label for="{{ form.delegated_device_to.id_for_label }}"
+            class="ob-label-tooltip"
+            title="The trusted contact who should take responsibility for this device — wiping it, transferring data, or following your decommission instructions.">
+            Assign to Contact <span class="req" aria-hidden="true">*</span>
+            <span class="ob-tip" role="tooltip">The trusted contact who should take responsibility for this device — wiping, transferring data, or following your decommission instructions.</span>
+          </label>
           {{ form.delegated_device_to }}
           <span class="ob-hint">Who should handle this device?</span>
           {% if form.delegated_device_to.errors %}
@@ -52,7 +67,12 @@
 
         {# Label #}
         <div class="ob-field{% if form.owner_label.errors %} has-error{% endif %}">
-          <label for="{{ form.owner_label.id_for_label }}">Label</label>
+          <label for="{{ form.owner_label.id_for_label }}"
+            class="ob-label-tooltip"
+            title="A short nickname your family will immediately recognise — e.g. 'Mom's iPhone' or 'Work Laptop'. Shown as a badge on the device list.">
+            Label
+            <span class="ob-tip" role="tooltip">A short nickname your family will recognise — e.g. "Mom's iPhone" or "Work Laptop". Shown as a badge on the device list.</span>
+          </label>
           {{ form.owner_label }}
           <span class="ob-hint">e.g. "Mom's iPhone", "Work Laptop"</span>
           {% if form.owner_label.errors %}
@@ -62,7 +82,12 @@
 
         {# Location #}
         <div class="ob-field ob-full{% if form.location_description.errors %} has-error{% endif %}">
-          <label for="{{ form.location_description.id_for_label }}">Where is it kept?</label>
+          <label for="{{ form.location_description.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Where this device is physically stored so your family can locate it. Be as specific as possible — e.g. 'Bedroom nightstand drawer' or 'Home office desk'.">
+            Where is it kept?
+            <span class="ob-tip" role="tooltip">Where this device is physically stored. Be specific — e.g. "Bedroom nightstand drawer" or "Home office desk".</span>
+          </label>
           {{ form.location_description }}
           <span class="ob-hint">e.g. "Bedroom nightstand drawer", "Home office desk"</span>
           {% if form.location_description.errors %}
@@ -72,7 +97,12 @@
 
         {# Unlock Method #}
         <div class="ob-field ob-full{% if form.unlock_method_description.errors %} has-error{% endif %}">
-          <label for="{{ form.unlock_method_description.id_for_label }}">How to Unlock</label>
+          <label for="{{ form.unlock_method_description.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Describe how to gain access to this device without recording the actual PIN or password. Point your family to where the credentials are stored instead.">
+            How to Unlock
+            <span class="ob-tip" role="tooltip">Describe access without recording the actual PIN or password. Point your family to where credentials are stored — e.g. "6-digit PIN stored in 1Password".</span>
+          </label>
           {{ form.unlock_method_description }}
           <span class="ob-hint">Don't include actual PINs — describe where to find them, e.g. "6-digit PIN stored in 1Password"</span>
           {% if form.unlock_method_description.errors %}
@@ -82,7 +112,12 @@
 
         {# Decommission #}
         <div class="ob-field ob-full{% if form.decommission_instruction.errors %} has-error{% endif %}">
-          <label for="{{ form.decommission_instruction.id_for_label }}">What to Do With This Device</label>
+          <label for="{{ form.decommission_instruction.id_for_label }}"
+            class="ob-label-tooltip"
+            title="Tell your family exactly what to do with this device — wipe and give away, donate, recycle, keep, or sell. Be specific so there's no guesswork.">
+            What to Do With This Device
+            <span class="ob-tip" role="tooltip">Tell your family exactly what to do — wipe and give away, donate, recycle, keep, or sell. Be specific so there's no guesswork.</span>
+          </label>
           {{ form.decommission_instruction }}
           <span class="ob-hint">e.g. "Wipe and give to daughter", "Factory reset and donate to charity"</span>
           {% if form.decommission_instruction.errors %}
@@ -92,7 +127,12 @@
 
         {# Review Schedule #}
         <div class="ob-field{% if form.review_time.errors %} has-error{% endif %}">
-          <label for="{{ form.review_time.id_for_label }}">Review Schedule</label>
+          <label for="{{ form.review_time.id_for_label }}"
+            class="ob-label-tooltip"
+            title="How often you want a reminder to check that this device's details — location, unlock method, and instructions — are still accurate.">
+            Review Schedule
+            <span class="ob-tip" role="tooltip">How often you want a reminder to verify this device's details — location, unlock method, and instructions — are still accurate.</span>
+          </label>
           {{ form.review_time }}
           {% if form.review_time.errors %}
           <ul class="errorlist" role="alert">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>
@@ -187,41 +227,37 @@
     <a href="{% url 'dashboard:onboarding_estate' %}" class="ob-btn ob-btn-blue ob-btn-full">
       Continue → Estate Docs <i class="fas fa-arrow-right"></i>
     </a>
- <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
+
+    <!-- ── PANEL (ERRORS) ─────────────────────────────────────── -->
     {% if form.errors or form.non_field_errors %}
     <div class="ob-panel-card">
       <div class="ob-panel-label">
-          {# ── Error summary banner — shown only when the form was submitted with errors ── #}
-          {% if form.errors %}
-          <div class="ob-error-summary" role="alert" aria-live="polite">
-            <div class="ob-error-summary-title">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Please fix the following before saving:</p>
-            </div>
-            <ul class="ob-error-summary-list">
-              {% for field in form %}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                  <li>{{ field.label }}</li>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+        {% if form.errors %}
+        <div class="ob-error-summary" role="alert" aria-live="polite">
+          <div class="ob-error-summary-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Please fix the following before saving:</p>
           </div>
-          {% endif %}
+          <ul class="ob-error-summary-list">
+            {% for field in form %}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
-  </div>
-  
-  {% endif %}
-  {# end ob-panel errors #}  
+    </div>
+    {% endif %}
+    {# end ob-panel errors #}
 
   </div>{# end ob-panel #}
-
-
-
 
 </div>{# end ob-body #}
 
