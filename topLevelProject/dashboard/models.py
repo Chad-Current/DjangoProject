@@ -677,7 +677,6 @@ class FuneralPlan(models.Model):
         help_text="Preferred location for the service (funeral home, church, outdoors, etc.).",
     )
 
-    # Officiant / clergy linked to existing Contact model
     officiant_contact = models.ForeignKey(
         Contact,
         on_delete=models.SET_NULL,
@@ -907,7 +906,7 @@ class FuneralPlan(models.Model):
         return all([
             self.disposition_method,
             self.service_type,
-            self.officiant_contact_id or self.officiant_name_freetext,
+            self.officiant_contact or self.officiant_name_freetext,
             self.payment_arrangements or self.funeral_insurance_policy_number,
         ])
 
