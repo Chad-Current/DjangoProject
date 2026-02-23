@@ -1,25 +1,230 @@
+{% extends 'dashboard/dashboard.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-</head>
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-<body>
-{% include 'dashboard/accounts/account_form.html' %}
-</body>
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-</html>
+    <!-- ══════════════════════════════════════════
+         DOCUMENT ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Important Document Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this document to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_important_document_to.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.">
+          Assign Document To <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
+        </label>
+        {{ form.delegated_important_document_to }}
+        {% if form.delegated_important_document_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_important_document_to.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         DOCUMENT DETAILS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Important Document</legend>
+
+      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
+        <label for="{{ form.name_or_title.id_for_label }}"
+          class="ob-label-tooltip"
+          title="A clear, descriptive name so your family can immediately understand what it is — e.g. 'Term Life Insurance Policy' or 'Vehicle Title — 2021 Honda CRV'.">
+          Name or Title <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">A clear, descriptive name so your family can immediately understand what it is — e.g. "Term Life Insurance Policy" or "Vehicle Title — 2021 Honda CRV".</span>
+        </label>
+        {{ form.name_or_title }}
+        {% if form.name_or_title.errors %}
+          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.document_category.errors %} has-error{% endif %}">
+        <label for="{{ form.document_category.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.">
+          Category <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.</span>
+        </label>
+        {{ form.document_category }}
+        {% if form.document_category.errors %}
+          <div class="error" role="alert">{{ form.document_category.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.description.errors %} has-error{% endif %}">
+        <label for="{{ form.description.id_for_label }}"
+          class="ob-label-tooltip"
+          title="A brief summary of what this document covers — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.">
+          Description
+          <span class="ob-tip" role="tooltip">A brief summary — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.</span>
+        </label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="error" role="alert">{{ form.description.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.requires_legal_review.errors %} has-error{% endif %}">
+        <label class="ob-check-row ob-label-tooltip"
+          title="Check this if this document should be reviewed by an attorney or other legal professional before your family acts on it.">
+          {{ form.requires_legal_review }}
+          <span class="ob-check-label">Requires Professional Legal Review</span>
+          <span class="ob-tip" role="tooltip">Check this if this document should be reviewed by an attorney before your family acts on it.</span>
+        </label>
+        {% if form.requires_legal_review.errors %}
+          <div class="error" role="alert">{{ form.requires_legal_review.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         REVIEW REQUIREMENTS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Review Requirements</legend>
+
+      <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
+        <label for="{{ form.review_time.id_for_label }}"
+          class="ob-label-tooltip"
+          title="How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.">
+          Review needed in
+          <span class="ob-tip" role="tooltip">How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.</span>
+        </label>
+        {{ form.review_time }}
+        {% if form.review_time.errors %}
+          <div class="error" role="alert">{{ form.review_time.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         DECLARATIONS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Declarations</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> At least one declaration must be selected.
+      </div>
+
+      <div class="checkbox-group">
+
+        <div class="form-field{% if form.applies_on_death.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document becomes relevant when you pass away — e.g. a life insurance policy or property deed that needs to be transferred.">
+            {{ form.applies_on_death }}
+            <span class="ob-check-label">Applies On Death</span>
+            <span class="ob-tip" role="tooltip">This document becomes relevant when you pass away — e.g. a life insurance policy or property deed that needs to be transferred.</span>
+          </label>
+          {% if form.applies_on_death.errors %}
+            <div class="error" role="alert">{{ form.applies_on_death.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.applies_on_incapacity.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document becomes relevant if you are incapacitated — e.g. medical records or insurance cards needed for care decisions.">
+            {{ form.applies_on_incapacity }}
+            <span class="ob-check-label">Applies On Incapacitation</span>
+            <span class="ob-tip" role="tooltip">This document becomes relevant if you are incapacitated — e.g. medical records or insurance cards needed for care decisions.</span>
+          </label>
+          {% if form.applies_on_incapacity.errors %}
+            <div class="error" role="alert">{{ form.applies_on_incapacity.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.applies_immediately.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document is currently relevant and may need to be acted on at any time — e.g. active insurance policies, vehicle registrations, or passports.">
+            {{ form.applies_immediately }}
+            <span class="ob-check-label">Applies Immediately</span>
+            <span class="ob-tip" role="tooltip">This document is currently relevant and may need to be acted on at any time — e.g. active insurance policies, vehicle registrations, or passports.</span>
+          </label>
+          {% if form.applies_immediately.errors %}
+            <div class="error" role="alert">{{ form.applies_immediately.errors }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         DOCUMENT LOCATION
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Important Document Location</legend>
+
+      <div class="form-field{% if form.important_file.errors %} has-error{% endif %}">
+        <label for="{{ form.important_file.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Optionally upload a scan or digital copy of this document so your family can access it quickly without needing to find the physical original first.">
+          Upload File
+          <span class="ob-tip" role="tooltip">Optionally upload a scan or digital copy so your family can access it quickly without needing to find the physical original first.</span>
+        </label>
+        {{ form.important_file }}
+        {% if form.important_file.errors %}
+          <div class="error" role="alert">{{ form.important_file.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.physical_location.errors %} has-error{% endif %}">
+        <label for="{{ form.physical_location.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Where the original copy is stored. Be specific enough that your family can find it without you — e.g. 'Fireproof safe in master bedroom closet'.">
+          Physical Location
+          <span class="ob-tip" role="tooltip">Where the original copy is stored. Be specific — e.g. "Fireproof safe in master bedroom closet".</span>
+        </label>
+        {{ form.physical_location }}
+        {% if form.physical_location.errors %}
+          <div class="error" role="alert">{{ form.physical_location.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.digital_location.errors %} has-error{% endif %}">
+        <label for="{{ form.digital_location.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Where a digital copy or scan is stored for quick access — e.g. 'Dropbox / Important Docs folder' or 'Google Drive / Insurance'.">
+          Other Digital Locations
+          <span class="ob-tip" role="tooltip">Where a digital copy is stored for quick access — e.g. "Dropbox / Important Docs folder" or "Google Drive / Insurance".</span>
+        </label>
+        {{ form.digital_location }}
+        {% if form.digital_location.errors %}
+          <div class="error" role="alert">{{ form.digital_location.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ── ACTIONS ─────────────────────────────── -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Save Document</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
+    </div>
+
+  </form>
+</div>
+</div>
+{% endblock %}

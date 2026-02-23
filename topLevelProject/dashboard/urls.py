@@ -54,6 +54,13 @@ urlpatterns = [
     path('familyawareness/<int:pk>/edit/', views.FamilyAwarenessUpdateView.as_view(), name='familyawareness_update'),
     path('familyawareness/<int:pk>/delete/', views.FamilyAwarenessDeleteView.as_view(), name='familyawareness_delete'),
 
+  # Funeral Planning URLs
+    path('funeralplanning/', views.FuneralPlanIndexView.as_view(), name='funeralplan_list'),
+    path('funeralplanning//<int:pk>/', views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
+    path('funeralplanning/create/', views.FuneralPlanCreateView.as_view(), name='funeralplan_create'),
+    path('funeralplanning/<int:pk>/edit/', views.FuneralPlanUpdateView.as_view(), name='funeralplan_update'),
+    path('funeralplanning/<int:pk>/delete/', views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),
+
     # Important Document URLs
     path('documents/', views.ImportantDocumentListView.as_view(), name='importantdocument_list'),
     path('documents/<int:pk>/', views.ImportantDocumentDetailView.as_view(), name='importantdocument_detail'),

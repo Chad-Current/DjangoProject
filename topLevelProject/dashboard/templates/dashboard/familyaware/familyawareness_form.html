@@ -1,25 +1,134 @@
+{% extends 'dashboard/dashboard.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-</head>
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-<body>
-{% include 'dashboard/accounts/account_form.html' %}
-</body>
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-</html>
+    <h2 class="form-section-title">Family Awareness</h2>
+
+    <!-- ══════════════════════════════════════════
+         RECIPIENT & MESSAGE
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Note Details</legend>
+
+      <div class="form-field{% if form.relation.errors %} has-error{% endif %}">
+        <label for="{{ form.relation.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Select the specific contact this note is intended for. Each note is delivered privately to the person you choose.">
+          Who Needs To Be Informed <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Select the specific contact this note is intended for. Each note is delivered privately to the person you choose.</span>
+        </label>
+        {{ form.relation }}
+        {% if form.relation.errors %}
+          <div class="error" role="alert">{{ form.relation.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.content.errors %} has-error{% endif %}">
+        <label for="{{ form.content.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Write freely — wishes, instructions, or a personal message. This is your chance to speak directly to this person in your own words.">
+          What Do You Want To Tell Them <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Write freely — wishes, instructions, or a personal message. This is your chance to speak directly to this person in your own words.</span>
+        </label>
+        {{ form.content }}
+        {% if form.content.errors %}
+          <div class="error" role="alert">{{ form.content.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         TOPIC CATEGORIES
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">This note covers</legend>
+
+      <div class="checkbox-grid">
+
+        <div class="form-field{% if form.is_location_of_legal_will.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note describes where your legal will is physically stored — e.g. safe deposit box, attorney's office, or filing cabinet.">
+            {{ form.is_location_of_legal_will }}
+            <span class="ob-check-label">For Location Of Will?</span>
+            <span class="ob-tip" role="tooltip">Check this if this note describes where your legal will is physically stored — e.g. safe deposit box, attorney's office, or filing cabinet.</span>
+          </label>
+          {% if form.is_location_of_legal_will.errors %}
+            <div class="error" role="alert">{{ form.is_location_of_legal_will.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.is_password_manager.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note explains how to access your password manager — the master key to all your online accounts.">
+            {{ form.is_password_manager }}
+            <span class="ob-check-label">Password Manager Information</span>
+            <span class="ob-tip" role="tooltip">Check this if this note explains how to access your password manager — the master key to all your online accounts.</span>
+          </label>
+          {% if form.is_password_manager.errors %}
+            <div class="error" role="alert">{{ form.is_password_manager.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.is_social_media.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note covers your wishes for social media profiles — whether to memorialize, delete, or transfer them.">
+            {{ form.is_social_media }}
+            <span class="ob-check-label">How To Handle Social Media Accounts</span>
+            <span class="ob-tip" role="tooltip">Check this if this note covers your wishes for social media profiles — whether to memorialize, delete, or transfer them.</span>
+          </label>
+          {% if form.is_social_media.errors %}
+            <div class="error" role="alert">{{ form.is_social_media.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.is_photos_or_files.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note explains where cherished photos, videos, or personal files are stored and what should be done with them.">
+            {{ form.is_photos_or_files }}
+            <span class="ob-check-label">What To Do With Photos Or Files</span>
+            <span class="ob-tip" role="tooltip">Check this if this note explains where cherished photos, videos, or personal files are stored and what should be done with them.</span>
+          </label>
+          {% if form.is_photos_or_files.errors %}
+            <div class="error" role="alert">{{ form.is_photos_or_files.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.is_data_retention_preferences.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note expresses how long you want your personal data, accounts, or digital presence to be retained or preserved.">
+            {{ form.is_data_retention_preferences }}
+            <span class="ob-check-label">How Long Do You Wish To Retain Information</span>
+            <span class="ob-tip" role="tooltip">Check this if this note expresses how long you want your personal data, accounts, or digital presence to be retained or preserved.</span>
+          </label>
+          {% if form.is_data_retention_preferences.errors %}
+            <div class="error" role="alert">{{ form.is_data_retention_preferences.errors }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- ── ACTIONS ─────────────────────────────── -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
+    </div>
+
+  </form>
+</div>
+</div>
+{% endblock %}

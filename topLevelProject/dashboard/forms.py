@@ -9,13 +9,14 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Field, Fieldset, Div, Submit, Button
 from .models import (
     Profile,
+    Contact,
     Account,
-    RelevanceReview,
     Device,
     DigitalEstateDocument,
-    FamilyNeedsToKnowSection,
-    Contact,
     ImportantDocument,
+    FamilyNeedsToKnowSection,
+    RelevanceReview,
+    FuneralPlan
 )
 
 
@@ -771,6 +772,655 @@ class ImportantDocumentForm(forms.ModelForm):
         return cleaned_data
 
 
+
+# ---------------------------------------------------------------------------
+# FuneralPlanForm
+# ---------------------------------------------------------------------------
+
+class FuneralPlanForm(forms.ModelForm):
+    class Meta:
+        model = FuneralPlan
+        exclude = ['profile', 'created_at', 'updated_at']
+        labels = {
+            # 1 · Personal Information
+            'preferred_name': 'Preferred Name / Nickname',
+            'occupation': 'Occupation or Former Occupation',
+            'marital_status': 'Marital Status',
+            'religion_or_spiritual_affiliation': 'Religion or Spiritual Affiliation',
+            'is_veteran': 'Veteran',
+            'veteran_branch': 'Branch of Service',
+            # 2 · Service Preferences
+            'service_type': 'Type of Service',
+            'preferred_funeral_home': 'Preferred Funeral Home',
+            'funeral_home_phone': 'Funeral Home Phone',
+            'funeral_home_address': 'Funeral Home Address',
+            'preferred_venue': 'Preferred Venue',
+            'officiant_contact': 'Officiant (from Contacts)',
+            'officiant_name_freetext': 'Officiant Name (if not in Contacts)',
+            'desired_timing': 'Preferred Day / Time',
+            'open_casket_viewing': 'Viewing Preference',
+            # 3 · Final Disposition
+            'disposition_method': 'Method of Disposition',
+            'burial_or_interment_location': 'Burial or Interment Location',
+            'burial_plot_or_niche_purchased': 'Plot or Niche Already Purchased?',
+            'casket_type_preference': 'Casket Type / Material Preference',
+            'urn_type_preference': 'Urn Type (if cremation)',
+            'headstone_or_marker_inscription': 'Headstone or Marker Inscription Ideas',
+            # 4 · Ceremony
+            'music_choices': 'Music Choices',
+            'flowers_or_colors': 'Flowers or Colors',
+            'readings_poems_or_scriptures': 'Readings, Poems, or Scriptures',
+            'eulogists_notes': 'Eulogists / Speakers',
+            'pallbearers_notes': 'Pallbearers',
+            'clothing_or_jewelry_description': 'Clothing or Jewelry for Deceased',
+            'religious_cultural_customs': 'Religious or Cultural Customs',
+            'items_to_display': 'Items to Display',
+            # 5 · Reception
+            'reception_desired': 'Post-Service Gathering Desired?',
+            'reception_location': 'Reception Location',
+            'reception_food_preferences': 'Food or Catering Preferences',
+            'reception_atmosphere_notes': 'Music / Atmosphere Notes',
+            'reception_guest_list_notes': 'Guest List or Invitation Notes',
+            # 6 · Obituary
+            'obituary_photo_description': 'Preferred Photo Description / Location',
+            'obituary_key_achievements': 'Key Achievements or Memories to Include',
+            'obituary_publications': 'Publications or Websites for Obituary',
+            'charitable_donations_in_lieu': 'Charitable Donations in Lieu of Flowers',
+            # 7 · Admin / Financial
+            'funeral_insurance_policy_number': 'Funeral Plan Insurance Policy Number',
+            'death_certificates_requested': 'Number of Death Certificates Requested',
+            'payment_arrangements': 'Payment Arrangements or Funding Source',
+            # 8 · Additional
+            'additional_instructions': 'Additional Instructions or Messages to Family',
+            # Meta
+            'review_time': 'Review Reminder',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        # Limit officiant dropdown to the user's own contacts
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['officiant_contact'].queryset = (
+                    Contact.objects.filter(profile=profile)
+                )
+            except Profile.DoesNotExist:
+                self.fields['officiant_contact'].queryset = Contact.objects.none()
+        else:
+            self.fields['officiant_contact'].queryset = Contact.objects.none()
+
+        self.fields['officiant_contact'].required = False
+        self.fields['burial_plot_or_niche_purchased'].required = False
+        self.fields['reception_desired'].required = False
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.form_show_errors = False
+        self.helper.layout = Layout(
+
+            HTML('''
+                {% if form.non_field_errors %}
+                <ul class="errorlist nonfield">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            '''),
+
+            # ── 1 · Personal Information ──────────────────────────────────
+            Fieldset(
+                '1 · Personal Information',
+                Field('preferred_name', css_class='textinput'),
+                Field('occupation', css_class='textinput'),
+                Field('marital_status', css_class='select'),
+                Field('religion_or_spiritual_affiliation', css_class='textinput'),
+                Field('is_veteran', css_class='checkboxinput form-check-input'),
+                Field('veteran_branch', css_class='textinput'),
+            ),
+
+            # ── 2 · Service Preferences ───────────────────────────────────
+            Fieldset(
+                '2 · Service Preferences',
+                Field('service_type', css_class='select'),
+                Field('preferred_funeral_home', css_class='textinput'),
+                Field('funeral_home_phone', css_class='textinput'),
+                Field('funeral_home_address', css_class='textinput'),
+                Field('preferred_venue', css_class='textinput'),
+                Field('officiant_contact', css_class='select'),
+                Field('officiant_name_freetext', css_class='textinput'),
+                Field('desired_timing', css_class='select'),
+                Field('open_casket_viewing', css_class='select'),
+            ),
+
+            # ── 3 · Final Disposition ─────────────────────────────────────
+            Fieldset(
+                '3 · Final Disposition',
+                Field('disposition_method', css_class='select'),
+                Field('burial_or_interment_location', css_class='textinput'),
+                Field('burial_plot_or_niche_purchased', css_class='checkboxinput form-check-input'),
+                Field('casket_type_preference', css_class='textinput'),
+                Field('urn_type_preference', css_class='textinput'),
+                Field('headstone_or_marker_inscription', css_class='textarea'),
+            ),
+
+            # ── 4 · Ceremony Personalization ──────────────────────────────
+            Fieldset(
+                '4 · Ceremony Personalization',
+                Field('music_choices', css_class='textarea'),
+                Field('flowers_or_colors', css_class='textinput'),
+                Field('readings_poems_or_scriptures', css_class='textarea'),
+                Field('eulogists_notes', css_class='textarea'),
+                Field('pallbearers_notes', css_class='textarea'),
+                Field('clothing_or_jewelry_description', css_class='textinput'),
+                Field('religious_cultural_customs', css_class='textarea'),
+                Field('items_to_display', css_class='textarea'),
+            ),
+
+            # ── 5 · Reception ─────────────────────────────────────────────
+            Fieldset(
+                '5 · Reception / Gathering',
+                Field('reception_desired', css_class='checkboxinput form-check-input'),
+                Field('reception_location', css_class='textinput'),
+                Field('reception_food_preferences', css_class='textarea'),
+                Field('reception_atmosphere_notes', css_class='textarea'),
+                Field('reception_guest_list_notes', css_class='textarea'),
+            ),
+
+            # ── 6 · Obituary & Memorial ───────────────────────────────────
+            Fieldset(
+                '6 · Obituary & Memorial',
+                Field('obituary_photo_description', css_class='textinput'),
+                Field('obituary_key_achievements', css_class='textarea'),
+                Field('obituary_publications', css_class='textarea'),
+                Field('charitable_donations_in_lieu', css_class='textinput'),
+            ),
+
+            # ── 7 · Administrative & Financial ────────────────────────────
+            Fieldset(
+                '7 · Administrative & Financial',
+                Field('funeral_insurance_policy_number', css_class='textinput'),
+                Field('death_certificates_requested', css_class='textinput'),
+                Field('payment_arrangements', css_class='textarea'),
+            ),
+
+            # ── 8 · Additional Instructions ───────────────────────────────
+            Fieldset(
+                '8 · Additional Instructions',
+                Field('additional_instructions', css_class='textarea'),
+            ),
+
+            # ── Meta ──────────────────────────────────────────────────────
+            Fieldset(
+                'Review Settings',
+                Field('review_time', css_class='select'),
+            ),
+
+            Div(
+                Submit('submit', 'Save Funeral Plan', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+    # ── Field-level validation ─────────────────────────────────────────────
+
+    def clean_veteran_branch(self):
+        is_veteran = self.cleaned_data.get('is_veteran', False)
+        branch = self.cleaned_data.get('veteran_branch', '').strip()
+        if is_veteran and not branch:
+            raise ValidationError(
+                "Please enter the branch of service, or uncheck the Veteran field."
+            )
+        if not is_veteran:
+            return ''
+        return branch
+
+    def clean_funeral_home_phone(self):
+        phone = self.cleaned_data.get('funeral_home_phone', '').strip()
+        if phone:
+            cleaned = re.sub(r'[\s\-().+]', '', phone)
+            if not cleaned.isdigit():
+                raise ValidationError(
+                    "Phone number may only contain digits, spaces, dashes, "
+                    "parentheses, and a leading '+'."
+                )
+        return phone
+
+    def clean_death_certificates_requested(self):
+        count = self.cleaned_data.get('death_certificates_requested')
+        if count is not None and count < 1:
+            raise ValidationError(
+                "Enter a positive number, or leave blank if unknown. "
+                "Most families need between 6 and 12 certified copies."
+            )
+        return count
+
+    def clean_officiant_name_freetext(self):
+        contact = self.cleaned_data.get('officiant_contact')
+        freetext = self.cleaned_data.get('officiant_name_freetext', '').strip()
+        if contact and freetext:
+            raise ValidationError(
+                "Please use either the Contacts list or the free-text field — not both."
+            )
+        return freetext
+
+# ── Section 1 ────────────────────────────────────────────────────────────────
+class FuneralPlanPersonalInfoForm(forms.ModelForm):
+    """Section 1 — supplemental personal identity."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'preferred_name',
+            'occupation',
+            'marital_status',
+            'religion_or_spiritual_affiliation',
+            'is_veteran',
+            'veteran_branch',
+        ]
+        labels = {
+            'preferred_name': 'Preferred Name / Nickname',
+            'occupation': 'Occupation or Former Occupation',
+            'marital_status': 'Marital Status',
+            'religion_or_spiritual_affiliation': 'Religion or Spiritual Affiliation',
+            'is_veteran': 'Veteran',
+            'veteran_branch': 'Branch of Service',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)          # ← FIX: pop user
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Personal Information',
+                Field('preferred_name', css_class='textinput'),
+                Field('occupation', css_class='textinput'),
+                Field('marital_status', css_class='select'),
+                Field('religion_or_spiritual_affiliation', css_class='textinput'),
+                Field('is_veteran', css_class='checkboxinput form-check-input'),
+                Field('veteran_branch', css_class='textinput'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+    def clean_veteran_branch(self):
+        is_veteran = self.cleaned_data.get('is_veteran', False)
+        branch = self.cleaned_data.get('veteran_branch', '').strip()
+        if is_veteran and not branch:
+            raise ValidationError(
+                "Please enter the branch of service, or uncheck the Veteran field."
+            )
+        if not is_veteran:
+            return ''
+        return branch
+
+# ── Section 2 ────────────────────────────────────────────────────────────────
+class FuneralPlanServiceForm(forms.ModelForm):
+    """Section 2 — service and timing preferences."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'service_type',
+            'preferred_funeral_home',
+            'funeral_home_phone',
+            'funeral_home_address',
+            'preferred_venue',
+            'officiant_contact',
+            'officiant_name_freetext',
+            'desired_timing',
+            'open_casket_viewing',
+        ]
+        labels = {
+            'service_type': 'Type of Service',
+            'preferred_funeral_home': 'Preferred Funeral Home',
+            'funeral_home_phone': 'Funeral Home Phone',
+            'funeral_home_address': 'Funeral Home Address',
+            'preferred_venue': 'Preferred Venue',
+            'officiant_contact': 'Officiant (from Contacts)',
+            'officiant_name_freetext': 'Officiant Name (if not in Contacts)',
+            'desired_timing': 'Preferred Day / Time',
+            'open_casket_viewing': 'Viewing Preference',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['officiant_contact'].required = False
+
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['officiant_contact'].queryset = (
+                    Contact.objects.filter(profile=profile)
+                )
+            except Profile.DoesNotExist:
+                self.fields['officiant_contact'].queryset = Contact.objects.none()
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Service Preferences',
+                Field('service_type', css_class='select'),
+                Field('preferred_funeral_home', css_class='textinput'),
+                Field('funeral_home_phone', css_class='textinput'),
+                Field('funeral_home_address', css_class='textinput'),
+                Field('preferred_venue', css_class='textinput'),
+                Field('officiant_contact', css_class='select'),
+                Field('officiant_name_freetext', css_class='textinput'),
+                Field('desired_timing', css_class='select'),
+                Field('open_casket_viewing', css_class='select'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+    def clean_funeral_home_phone(self):
+        phone = self.cleaned_data.get('funeral_home_phone', '').strip()
+        if phone:
+            cleaned = re.sub(r'[\s\-().+]', '', phone)
+            if not cleaned.isdigit():
+                raise ValidationError(
+                    "Phone number may only contain digits, spaces, dashes, "
+                    "parentheses, and a leading '+'."
+                )
+        return phone
+
+    def clean_officiant_name_freetext(self):
+        contact = self.cleaned_data.get('officiant_contact')
+        freetext = self.cleaned_data.get('officiant_name_freetext', '').strip()
+        if contact and freetext:
+            raise ValidationError(
+                "Please use either the Contacts list or the free-text field — not both."
+            )
+        return freetext
+
+
+# ── Section 3 ────────────────────────────────────────────────────────────────
+class FuneralPlanDispositionForm(forms.ModelForm):
+    """Section 3 — final disposition preferences."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'disposition_method',
+            'burial_or_interment_location',
+            'burial_plot_or_niche_purchased',
+            'casket_type_preference',
+            'urn_type_preference',
+            'headstone_or_marker_inscription',
+        ]
+        labels = {
+            'disposition_method': 'Method of Disposition',
+            'burial_or_interment_location': 'Burial or Interment Location',
+            'burial_plot_or_niche_purchased': 'Plot or Niche Already Purchased?',
+            'casket_type_preference': 'Casket Type / Material Preference',
+            'urn_type_preference': 'Urn Type (if cremation)',
+            'headstone_or_marker_inscription': 'Headstone or Marker Inscription Ideas',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)          
+        super().__init__(*args, **kwargs)
+        self.fields['burial_plot_or_niche_purchased'].required = False
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Final Disposition',
+                Field('disposition_method', css_class='select'),
+                Field('burial_or_interment_location', css_class='textinput'),
+                Field('burial_plot_or_niche_purchased', css_class='checkboxinput form-check-input'),
+                Field('casket_type_preference', css_class='textinput'),
+                Field('urn_type_preference', css_class='textinput'),
+                Field('headstone_or_marker_inscription', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+
+# ── Section 4 ────────────────────────────────────────────────────────────────
+class FuneralPlanCeremonyForm(forms.ModelForm):
+    """Section 4 — ceremony personalization."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'music_choices',
+            'flowers_or_colors',
+            'readings_poems_or_scriptures',
+            'eulogists_notes',
+            'pallbearers_notes',
+            'clothing_or_jewelry_description',
+            'religious_cultural_customs',
+            'items_to_display',
+        ]
+        labels = {
+            'music_choices': 'Music Choices',
+            'flowers_or_colors': 'Flowers or Colors',
+            'readings_poems_or_scriptures': 'Readings, Poems, or Scriptures',
+            'eulogists_notes': 'Eulogists / Speakers',
+            'pallbearers_notes': 'Pallbearers',
+            'clothing_or_jewelry_description': 'Clothing or Jewelry for Deceased',
+            'religious_cultural_customs': 'Religious or Cultural Customs',
+            'items_to_display': 'Items to Display',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)          
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Ceremony Personalization',
+                Field('music_choices', css_class='textarea'),
+                Field('flowers_or_colors', css_class='textinput'),
+                Field('readings_poems_or_scriptures', css_class='textarea'),
+                Field('eulogists_notes', css_class='textarea'),
+                Field('pallbearers_notes', css_class='textarea'),
+                Field('clothing_or_jewelry_description', css_class='textinput'),
+                Field('religious_cultural_customs', css_class='textarea'),
+                Field('items_to_display', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+
+# ── Section 5 ────────────────────────────────────────────────────────────────
+class FuneralPlanReceptionForm(forms.ModelForm):
+    """Section 5 — post-service reception details."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'reception_desired',
+            'reception_location',
+            'reception_food_preferences',
+            'reception_atmosphere_notes',
+            'reception_guest_list_notes',
+        ]
+        labels = {
+            'reception_desired': 'Post-Service Gathering Desired?',
+            'reception_location': 'Reception Location',
+            'reception_food_preferences': 'Food or Catering Preferences',
+            'reception_atmosphere_notes': 'Music / Atmosphere Notes',
+            'reception_guest_list_notes': 'Guest List or Invitation Notes',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)          
+        super().__init__(*args, **kwargs)
+        self.fields['reception_desired'].required = False
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Reception / Gathering',
+                Field('reception_desired', css_class='checkboxinput form-check-input'),
+                Field('reception_location', css_class='textinput'),
+                Field('reception_food_preferences', css_class='textarea'),
+                Field('reception_atmosphere_notes', css_class='textarea'),
+                Field('reception_guest_list_notes', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('reception_desired') and not cleaned_data.get('reception_location'):
+            raise ValidationError(
+                "Please provide a reception location, or uncheck 'Post-Service Gathering Desired'."
+            )
+        return cleaned_data
+
+
+# ── Section 6 ────────────────────────────────────────────────────────────────
+class FuneralPlanObituaryForm(forms.ModelForm):
+    """Section 6 — obituary and memorial information."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'obituary_photo_description',
+            'obituary_key_achievements',
+            'obituary_publications',
+            'charitable_donations_in_lieu',
+        ]
+        labels = {
+            'obituary_photo_description': 'Preferred Photo Description / Location',
+            'obituary_key_achievements': 'Key Achievements or Memories to Include',
+            'obituary_publications': 'Publications or Websites for Obituary',
+            'charitable_donations_in_lieu': 'Charitable Donations in Lieu of Flowers',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)          
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Obituary & Memorial',
+                Field('obituary_photo_description', css_class='textinput'),
+                Field('obituary_key_achievements', css_class='textarea'),
+                Field('obituary_publications', css_class='textarea'),
+                Field('charitable_donations_in_lieu', css_class='textinput'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+
+# ── Section 7 ────────────────────────────────────────────────────────────────
+class FuneralPlanAdminForm(forms.ModelForm):
+    """Section 7 — administrative and financial details."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            'funeral_insurance_policy_number',
+            'death_certificates_requested',
+            'payment_arrangements',
+            'review_time',
+        ]
+        labels = {
+            'funeral_insurance_policy_number': 'Funeral Plan Insurance Policy Number',
+            'death_certificates_requested': 'Number of Death Certificates Requested',
+            'payment_arrangements': 'Payment Arrangements or Funding Source',
+            'review_time': 'Review Reminder',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)        
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Administrative & Financial',
+                Field('funeral_insurance_policy_number', css_class='textinput'),
+                Field('death_certificates_requested', css_class='textinput'),
+                Field('payment_arrangements', css_class='textarea'),
+            ),
+            Fieldset(
+                'Review Settings',
+                Field('review_time', css_class='select'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
+
+    def clean_death_certificates_requested(self):
+        count = self.cleaned_data.get('death_certificates_requested')
+        if count is not None and count < 1:
+            raise ValidationError(
+                "Enter a positive number, or leave blank if unknown. "
+                "Most families need between 6 and 12 certified copies."
+            )
+        return count
+
+
+# ── Section 8 ────────────────────────────────────────────────────────────────
+class FuneralPlanInstructionsForm(forms.ModelForm):
+    """Section 8 — additional instructions and final messages."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = ['additional_instructions']
+        labels = {
+            'additional_instructions': 'Additional Instructions or Messages to Family',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)         
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-wrapper'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Additional Instructions',
+                Field('additional_instructions', css_class='textarea'),
+            ),
+            Div(
+                Submit('submit', 'Save', css_class='btn btn-primary'),
+                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
+                css_class='button-group'
+            ),
+        )
 # ---------------------------------------------------------------------------
 # RelevanceReviewForm
 # ---------------------------------------------------------------------------

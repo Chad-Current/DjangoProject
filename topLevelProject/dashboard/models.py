@@ -571,6 +571,349 @@ class FamilyNeedsToKnowSection(models.Model):
         return f"{self.relation} - {self.content[:50]}"
  
 
+class FuneralPlan(models.Model):
+    """
+    Comprehensive funeral and end-of-life planning preferences for a user.
+
+    Covers fields NOT already captured by Profile, Contact, or ImportantDocument:
+      - Supplemental personal identity (nickname, occupation, marital status,
+        religion, veteran status)
+      - Service and disposition preferences
+      - Ceremony personalization
+      - Reception details
+      - Obituary guidance
+      - Administrative and financial arrangements
+      - Final messages to family
+
+    One plan per user profile (OneToOne).
+    Key contacts (officiant, funeral director, pallbearers, etc.) are
+    linked via the existing Contact model using dedicated ForeignKey fields
+    so they remain part of the unified contacts system.
+    """
+
+    profile = models.OneToOneField(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='funeral_plan',
+        editable=False,
+    )
+
+    preferred_name = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Nickname or preferred name to use in service/obituary.",
+    )
+    occupation = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Current or former occupation to include in obituary.",
+    )
+
+    MARITAL_STATUS_CHOICES = [
+        ('Single', 'Single'),
+        ('Married', 'Married'),
+        ('Widowed', 'Widowed'),
+        ('Divorced', 'Divorced'),
+        ('Separated', 'Separated'),
+        ('Domestic Partnership', 'Domestic Partnership'),
+        ('Prefer Not to Say', 'Prefer Not to Say'),
+    ]
+    marital_status = models.CharField(
+        max_length=50,
+        choices=MARITAL_STATUS_CHOICES,
+        blank=True,
+    )
+
+    religion_or_spiritual_affiliation = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Religion, denomination, or spiritual tradition (if any).",
+    )
+
+    is_veteran = models.BooleanField(
+        default=False,
+        help_text="Did the person serve in the military?",
+    )
+    veteran_branch = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Branch of military service (e.g., Army, Navy, Air Force).",
+    )
+
+    # ── 2. Service Preferences ────────────────────────────────────────────────
+
+    SERVICE_TYPE_CHOICES = [
+        ('Traditional Funeral', 'Traditional Funeral'),
+        ('Memorial Service', 'Memorial Service'),
+        ('Graveside Service', 'Graveside Service'),
+        ('Celebration of Life', 'Celebration of Life'),
+        ('Private / Family Only', 'Private / Family Only'),
+        ('No Service', 'No Service'),
+        ('Other', 'Other'),
+    ]
+    service_type = models.CharField(
+        max_length=50,
+        choices=SERVICE_TYPE_CHOICES,
+        blank=True,
+    )
+
+    preferred_funeral_home = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Name of preferred funeral home or funeral director.",
+    )
+    funeral_home_phone = models.CharField(
+        max_length=20,
+        blank=True,
+    )
+    funeral_home_address = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    preferred_venue = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Preferred location for the service (funeral home, church, outdoors, etc.).",
+    )
+
+    # Officiant / clergy linked to existing Contact model
+    officiant_contact = models.ForeignKey(
+        Contact,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='officiant_for_plans',
+        help_text="Clergy, celebrant, or officiant from your contacts list.",
+    )
+    officiant_name_freetext = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Officiant name if not yet in contacts.",
+    )
+
+    TIMING_CHOICES = [
+        ('Weekday - Daytime', 'Weekday - Daytime'),
+        ('Weekday - Evening', 'Weekday - Evening'),
+        ('Weekend - Daytime', 'Weekend - Daytime'),
+        ('Weekend - Evening', 'Weekend - Evening'),
+        ('No Preference', 'No Preference'),
+    ]
+    desired_timing = models.CharField(
+        max_length=50,
+        choices=TIMING_CHOICES,
+        blank=True,
+    )
+
+    VIEWING_CHOICES = [
+        ('Yes - Open Casket', 'Yes - Open Casket'),
+        ('Family Only', 'Family Only'),
+        ('No Viewing', 'No Viewing'),
+        ('No Preference', 'No Preference'),
+    ]
+    open_casket_viewing = models.CharField(
+        max_length=50,
+        choices=VIEWING_CHOICES,
+        blank=True,
+    )
+
+    # ── 3. Final Disposition ──────────────────────────────────────────────────
+
+    DISPOSITION_CHOICES = [
+        ('Burial', 'Burial'),
+        ('Cremation', 'Cremation'),
+        ('Green / Natural Burial', 'Green / Natural Burial'),
+        ('Donation to Science', 'Donation to Science'),
+        ('Other', 'Other'),
+        ('No Preference', 'No Preference'),
+    ]
+    disposition_method = models.CharField(
+        max_length=50,
+        choices=DISPOSITION_CHOICES,
+        blank=True,
+    )
+    burial_or_interment_location = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Cemetery name, columbarium, or scatter site.",
+    )
+    burial_plot_or_niche_purchased = models.BooleanField(
+        null=True,
+        blank=True,
+        help_text="Has a burial plot or cremation niche already been purchased?",
+    )
+    casket_type_preference = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Casket material or style preference (e.g., wood, eco-friendly, simple).",
+    )
+    urn_type_preference = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Urn style or material preference (if cremation).",
+    )
+    headstone_or_marker_inscription = models.TextField(
+        blank=True,
+        help_text="Ideas or wording for a headstone, marker, or memorial plaque.",
+    )
+
+    # ── 4. Ceremony Personalization ───────────────────────────────────────────
+
+    music_choices = models.TextField(
+        blank=True,
+        help_text="Songs, hymns, performers, or instruments desired at the service.",
+    )
+    flowers_or_colors = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Preferred flowers, arrangements, or color palette.",
+    )
+    readings_poems_or_scriptures = models.TextField(
+        blank=True,
+        help_text="Specific readings, poems, or scripture passages to be included.",
+    )
+    eulogists_notes = models.TextField(
+        blank=True,
+        help_text="Names of desired eulogists or speakers, and topics to address.",
+    )
+    pallbearers_notes = models.TextField(
+        blank=True,
+        help_text="Desired pallbearers (names or relationship descriptions).",
+    )
+    clothing_or_jewelry_description = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="What clothing or jewelry the deceased should be dressed in.",
+    )
+    religious_cultural_customs = models.TextField(
+        blank=True,
+        help_text="Religious rites, cultural traditions, or customs to observe.",
+    )
+    items_to_display = models.TextField(
+        blank=True,
+        help_text="Photos, memorabilia, military flag, hobby items, or other displays.",
+    )
+
+    # ── 5. Reception / Post-Service Gathering ─────────────────────────────────
+
+    reception_desired = models.BooleanField(
+        null=True,
+        blank=True,
+        help_text="Is a post-service gathering or reception desired?",
+    )
+    reception_location = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+    reception_food_preferences = models.TextField(
+        blank=True,
+        help_text="Catering style, dietary notes, or specific food/drink preferences.",
+    )
+    reception_atmosphere_notes = models.TextField(
+        blank=True,
+        help_text="Music, ambiance, or atmosphere preferences for the reception.",
+    )
+    reception_guest_list_notes = models.TextField(
+        blank=True,
+        help_text="Notes on invitations, guest list scope, or who to notify.",
+    )
+
+    # ── 6. Obituary and Memorial Information ──────────────────────────────────
+
+    obituary_photo_description = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Description or location of preferred photo for obituary/service.",
+    )
+    obituary_key_achievements = models.TextField(
+        blank=True,
+        help_text="Key life achievements, milestones, or memories to highlight.",
+    )
+    obituary_publications = models.TextField(
+        blank=True,
+        help_text="Newspapers, websites, or platforms to publish the obituary.",
+    )
+    charitable_donations_in_lieu = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Charity or cause to suggest in lieu of flowers.",
+    )
+
+    # ── 7. Administrative and Financial Details ───────────────────────────────
+    # NOTE: Location of legal documents (will, insurance) belongs in
+    #       ImportantDocument. Only funeral-specific admin fields live here.
+
+    funeral_insurance_policy_number = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Pre-paid funeral plan or funeral insurance policy number.",
+    )
+    death_certificates_requested = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Number of certified death certificate copies needed (typically 6-12).",
+    )
+    payment_arrangements = models.TextField(
+        blank=True,
+        help_text="Funding source or payment arrangements for funeral expenses.",
+    )
+
+    # ── 8. Additional Instructions ────────────────────────────────────────────
+
+    additional_instructions = models.TextField(
+        blank=True,
+        help_text="Any other instructions, requests, or personal messages to family.",
+    )
+
+    # ── Metadata ──────────────────────────────────────────────────────────────
+
+    review_time = models.PositiveSmallIntegerField(
+        choices=[
+            (30,  '30 Days (One Month)'),
+            (60,  '60 Days (2 Months)'),
+            (90,  '90 Days (3 Months)'),
+            (180, '180 Days (6 Months)'),
+            (365, '365 Days (1 Year)'),
+        ],
+        default=365,
+        help_text='How often to send a reminder email to review this plan.',
+    )
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'funeral_plans'
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"Funeral Plan - {self.profile}"
+
+    # ── Convenience helpers ───────────────────────────────────────────────────
+
+    @property
+    def has_disposition_set(self):
+        return bool(self.disposition_method)
+
+    @property
+    def has_service_preferences(self):
+        return bool(self.service_type or self.preferred_venue)
+
+    @property
+    def is_complete(self):
+        """
+        Rough completeness check — returns True when the four most critical
+        sections (disposition, service type, officiant, and payment) are filled.
+        """
+        return all([
+            self.disposition_method,
+            self.service_type,
+            self.officiant_contact_id or self.officiant_name_freetext,
+            self.payment_arrangements or self.funeral_insurance_policy_number,
+        ])
+
+
+
+
 class RelevanceReview(models.Model):
 
     """

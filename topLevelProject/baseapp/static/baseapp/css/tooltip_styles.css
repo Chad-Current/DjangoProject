@@ -101,6 +101,10 @@
    closes immediately on mouse-out after clicking a role.
    (:hover still works normally for discovery.)          */
 
+.ob-check-row {
+  margin: 1em 0;
+}
+
 .ob-check-row.ob-label-tooltip:focus-within .ob-tip {
   visibility: hidden;
   opacity: 0;

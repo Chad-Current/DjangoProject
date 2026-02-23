@@ -132,6 +132,7 @@ fieldset legend::before {
   margin-bottom: 1.1rem;
 }
 
+
 /* Scoped label styles — override base typography inside form cards */
 .form-wrapper label,
 .form-wrapper-body label,
@@ -143,6 +144,10 @@ fieldset legend::before {
   font-weight: 700;
   color: var(--ten-percent);
   margin-bottom: 0.4rem;
+}
+
+.form-field + .ob-check-label {
+  display: inline;
 }
 
 label.requiredField::after {
@@ -384,7 +389,7 @@ input[type="checkbox"] {
   width: 20px;
   height: 20px;
   min-width: 20px;
-  border: 2px solid #dce6f0;
+  border: 2px solid var(--accent-color);
   border-radius: 6px;
   background: var(--purewhite-color);
   cursor: pointer;

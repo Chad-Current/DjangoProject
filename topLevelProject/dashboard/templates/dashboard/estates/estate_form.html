@@ -1,25 +1,218 @@
+{% extends 'dashboard/dashboard.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-</head>
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-<body>
-{% include 'dashboard/accounts/account_form.html' %}
-</body>
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-</html>
+    <!-- ══════════════════════════════════════════
+         ESTATE DOCUMENT ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Estate Document Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this document to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_estate_to.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.">
+          Assign Document to <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.</span>
+        </label>
+        {{ form.delegated_estate_to }}
+        {% if form.delegated_estate_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_estate_to.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ESTATE DOCUMENT DETAILS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Estate Document Details</legend>
+
+      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
+        <label for="{{ form.name_or_title.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.">
+          Name or Title <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.</span>
+        </label>
+        {{ form.name_or_title }}
+        {% if form.name_or_title.errors %}
+          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.estate_category.errors %} has-error{% endif %}">
+        <label for="{{ form.estate_category.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The legal category — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents at the right time.">
+          Category <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The legal category — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents at the right time.</span>
+        </label>
+        {{ form.estate_category }}
+        {% if form.estate_category.errors %}
+          <div class="error" role="alert">{{ form.estate_category.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.estate_file.errors %} has-error{% endif %}">
+        <label for="{{ form.estate_file.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Optionally upload a scanned or digital copy of this document for quick reference. The original signed copy should still be stored securely in its physical location.">
+          Upload File
+          <span class="ob-tip" role="tooltip">Optionally upload a scanned or digital copy for quick reference. The original signed copy should still be stored securely in its physical location.</span>
+        </label>
+        {{ form.estate_file }}
+        {% if form.estate_file.errors %}
+          <div class="error" role="alert">{{ form.estate_file.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.estate_overall_instructions.errors %} has-error{% endif %}">
+        <label for="{{ form.estate_overall_instructions.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Context your family needs — e.g. who to contact first, whether probate is required, or specific wishes contained in this document.">
+          Instructions
+          <span class="ob-tip" role="tooltip">Context your family needs — e.g. who to contact first, whether probate is required, or specific wishes contained in this document.</span>
+        </label>
+        {{ form.estate_overall_instructions }}
+        {% if form.estate_overall_instructions.errors %}
+          <div class="error" role="alert">{{ form.estate_overall_instructions.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ESTATE DOCUMENT LOCATION
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Estate Document Location</legend>
+
+      <div class="form-field{% if form.estate_physical_location.errors %} has-error{% endif %}">
+        <label for="{{ form.estate_physical_location.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Where the original signed copy is stored. Legal originals often matter — be specific so your family can find them quickly.">
+          Physical Location
+          <span class="ob-tip" role="tooltip">Where the original signed copy is stored. Legal originals often matter — be specific so your family can find them quickly.</span>
+        </label>
+        {{ form.estate_physical_location }}
+        {% if form.estate_physical_location.errors %}
+          <div class="error" role="alert">{{ form.estate_physical_location.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.estate_digital_location.errors %} has-error{% endif %}">
+        <label for="{{ form.estate_digital_location.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Where a digital scan is stored for quick reference — e.g. 'Google Drive / Legal folder' or '1Password secure note'.">
+          Digital Location
+          <span class="ob-tip" role="tooltip">Where a digital scan is stored for quick reference — e.g. "Google Drive / Legal folder" or "1Password secure note".</span>
+        </label>
+        {{ form.estate_digital_location }}
+        {% if form.estate_digital_location.errors %}
+          <div class="error" role="alert">{{ form.estate_digital_location.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         REVIEW REQUIREMENTS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Review Requirements</legend>
+
+      <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
+        <label for="{{ form.review_time.id_for_label }}"
+          class="ob-label-tooltip"
+          title="How often you want a reminder to confirm this document still reflects your wishes and current life circumstances.">
+          Review needed in
+          <span class="ob-tip" role="tooltip">How often you want a reminder to confirm this document still reflects your wishes and current life circumstances.</span>
+        </label>
+        {{ form.review_time }}
+        {% if form.review_time.errors %}
+          <div class="error" role="alert">{{ form.review_time.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         DECLARATIONS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Declarations</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> At least one declaration must be selected.
+      </div>
+
+      <div class="checkbox-group">
+
+        <div class="form-field{% if form.applies_on_death.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document becomes active and relevant when you pass away — e.g. a Will or Trust.">
+            {{ form.applies_on_death }}
+            <span class="ob-check-label">Applies Upon Death</span>
+            <span class="ob-tip" role="tooltip">This document becomes active and relevant when you pass away — e.g. a Will or Trust.</span>
+          </label>
+          {% if form.applies_on_death.errors %}
+            <div class="error" role="alert">{{ form.applies_on_death.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.applies_on_incapacity.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document becomes active if you become incapacitated and are unable to make decisions — e.g. a Durable Power of Attorney or Healthcare Directive.">
+            {{ form.applies_on_incapacity }}
+            <span class="ob-check-label">Applies On Incapacitation</span>
+            <span class="ob-tip" role="tooltip">This document becomes active if you become incapacitated — e.g. a Durable Power of Attorney or Healthcare Directive.</span>
+          </label>
+          {% if form.applies_on_incapacity.errors %}
+            <div class="error" role="alert">{{ form.applies_on_incapacity.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.applies_immediately.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="This document is currently active and in effect right now — e.g. an existing Trust or active Power of Attorney.">
+            {{ form.applies_immediately }}
+            <span class="ob-check-label">Applies Immediately</span>
+            <span class="ob-tip" role="tooltip">This document is currently active and in effect right now — e.g. an existing Trust or active Power of Attorney.</span>
+          </label>
+          {% if form.applies_immediately.errors %}
+            <div class="error" role="alert">{{ form.applies_immediately.errors }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- ── ACTIONS ─────────────────────────────── -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Save Estate Document</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
+    </div>
+
+  </form>
+</div>
+</div>
+{% endblock %}

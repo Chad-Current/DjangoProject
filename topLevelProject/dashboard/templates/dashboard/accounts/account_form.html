@@ -1,35 +1,180 @@
+{% extends 'dashboard/dashboard.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-</head>
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-<body>
-    {% block forms_html %}
-    {% include "baseapp/navbar.html" %}
-    {% include "dashboard/navblocks.html" %}
-    <div class="form-container">
-        {% crispy form %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- ══════════════════════════════════════════
+         ACCOUNT ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Account Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this account to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_account_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_account_to.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The trusted contact who should manage or close this account. Contacts are added in the Contacts section.">
+          Assign Account to <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The trusted contact who should manage or close this account. Contacts are added in the Contacts section.</span>
+        </label>
+        {{ form.delegated_account_to }}
+        {% if form.delegated_account_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_account_to.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ACCOUNT DETAILS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Account Details</legend>
+
+      <div class="form-field{% if form.account_category.errors %} has-error{% endif %}">
+        <label for="{{ form.account_category.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The type of account — e.g. Email, Banking, Social Media, Streaming. Helps your family filter and find accounts by purpose.">
+          Type of Account <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The type of account — e.g. Email, Banking, Social Media, Streaming. Helps your family filter and find accounts by purpose.</span>
+        </label>
+        {{ form.account_category }}
+        {% if form.account_category.errors %}
+          <div class="error" role="alert">{{ form.account_category.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.account_name_or_provider.errors %} has-error{% endif %}">
+        <label for="{{ form.account_name_or_provider.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The name of the service or company — e.g. Gmail, Chase Bank, Netflix. Use the brand name your family would recognise.">
+          Name or Provider <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The name of the service or company — e.g. Gmail, Chase Bank, Netflix. Use the brand name your family would recognise.</span>
+        </label>
+        {{ form.account_name_or_provider }}
+        {% if form.account_name_or_provider.errors %}
+          <div class="error" role="alert">{{ form.account_name_or_provider.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.website_url.errors %} has-error{% endif %}">
+        <label for="{{ form.website_url.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The direct login page URL — e.g. https://mail.google.com. Helps your family navigate straight to the right place.">
+          Website URL
+          <span class="ob-tip" role="tooltip">The direct login page URL — e.g. https://mail.google.com. Helps your family navigate straight to the right place.</span>
+        </label>
+        {{ form.website_url }}
+        {% if form.website_url.errors %}
+          <div class="error" role="alert">{{ form.website_url.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.username_or_email.errors %} has-error{% endif %}">
+        <label for="{{ form.username_or_email.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The email or username used to log in. Never enter a password — just the identifier your family needs to locate the account.">
+          Username or Email
+          <span class="ob-tip" role="tooltip">The email or username used to log in. Never enter a password — just the identifier your family needs to locate the account.</span>
+        </label>
+        {{ form.username_or_email }}
+        {% if form.username_or_email.errors %}
+          <div class="error" role="alert">{{ form.username_or_email.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.credential_storage_location.errors %} has-error{% endif %}">
+        <label for="{{ form.credential_storage_location.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Where the password is stored — not the password itself. e.g. '1Password - Work Logins folder' or 'Sticky note inside office drawer'.">
+          Credential Storage Location
+          <span class="ob-tip" role="tooltip">Where the password is stored — not the password itself. e.g. "1Password - Work Logins folder" or "Sticky note inside office drawer".</span>
+        </label>
+        {{ form.credential_storage_location }}
+        {% if form.credential_storage_location.errors %}
+          <div class="error" role="alert">{{ form.credential_storage_location.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         INSTRUCTIONS FOR FAMILY
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Instructions for Family</legend>
+
+      <div class="form-field{% if form.keep_or_close_instruction.errors %} has-error{% endif %}">
+        <label for="{{ form.keep_or_close_instruction.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Tell your family what to do with this account — keep it active, close it, or transfer ownership.">
+          Instruction <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Tell your family what to do with this account — keep it active, close it, or transfer ownership.</span>
+        </label>
+        {{ form.keep_or_close_instruction }}
+        {% if form.keep_or_close_instruction.errors %}
+          <div class="error" role="alert">{{ form.keep_or_close_instruction.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.notes_for_family.errors %} has-error{% endif %}">
+        <label for="{{ form.notes_for_family.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Extra context your family may need — billing dates, linked accounts, recurring payments, or special cancellation steps.">
+          Notes for Family
+          <span class="ob-tip" role="tooltip">Extra context your family may need — billing dates, linked accounts, recurring payments, or special cancellation steps.</span>
+        </label>
+        {{ form.notes_for_family }}
+        {% if form.notes_for_family.errors %}
+          <div class="error" role="alert">{{ form.notes_for_family.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         REVIEW REQUIREMENTS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Review Requirements</legend>
+
+      <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
+        <label for="{{ form.review_time.id_for_label }}"
+          class="ob-label-tooltip"
+          title="How often you want a reminder to verify this account's details are still accurate — monthly, quarterly, or annually.">
+          Review needed in
+          <span class="ob-tip" role="tooltip">How often you want a reminder to verify this account's details are still accurate.</span>
+        </label>
+        {{ form.review_time }}
+        {% if form.review_time.errors %}
+          <div class="error" role="alert">{{ form.review_time.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ── ACTIONS ─────────────────────────────── -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Save Account</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
     </div>
 
-    {% include "baseapp/footer.html" %}
-    {% endblock %}
-    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-
-</body>
-
-</html>
+  </form>
+</div>
+</div>
+{% endblock %}

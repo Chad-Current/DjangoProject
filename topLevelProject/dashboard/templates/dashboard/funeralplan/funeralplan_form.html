@@ -1,0 +1,504 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}" type="text/css">
+{% endblock %}
+{% block content %}
+<div class="form-container">
+<div class="onboarding-wrap">
+
+  <!-- ── SECTION NAV RAIL ─────────────────────────────── -->
+  <aside class="step-rail">
+    <div class="rail-header">
+      <h2>{{ page_title|default:"Funeral Plan" }}</h2>
+      <p>Complete as much or as little as you like — save at any time.</p>
+    </div>
+
+    <div class="rail-steps">
+
+      <a href="#section-personal" class="rail-step active" style="text-decoration:none;">
+        <div class="rail-dot">1</div>
+        <div class="rail-text">
+          <span class="rail-label">Personal Info</span>
+          <span class="rail-sub">Identity &amp; background</span>
+        </div>
+      </a>
+      <a href="#section-service" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">2</div>
+        <div class="rail-text">
+          <span class="rail-label">Service</span>
+          <span class="rail-sub">Type, venue &amp; timing</span>
+        </div>
+      </a>
+      <a href="#section-disposition" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">3</div>
+        <div class="rail-text">
+          <span class="rail-label">Disposition</span>
+          <span class="rail-sub">Burial or cremation</span>
+        </div>
+      </a>
+      <a href="#section-ceremony" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">4</div>
+        <div class="rail-text">
+          <span class="rail-label">Ceremony</span>
+          <span class="rail-sub">Music, readings &amp; customs</span>
+        </div>
+      </a>
+      <a href="#section-reception" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">5</div>
+        <div class="rail-text">
+          <span class="rail-label">Reception</span>
+          <span class="rail-sub">Gathering preferences</span>
+        </div>
+      </a>
+      <a href="#section-obituary" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">6</div>
+        <div class="rail-text">
+          <span class="rail-label">Obituary</span>
+          <span class="rail-sub">Legacy &amp; memorial</span>
+        </div>
+      </a>
+      <a href="#section-admin" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">7</div>
+        <div class="rail-text">
+          <span class="rail-label">Administrative</span>
+          <span class="rail-sub">Insurance &amp; finances</span>
+        </div>
+      </a>
+      <a href="#section-instructions" class="rail-step todo" style="text-decoration:none;">
+        <div class="rail-dot">8</div>
+        <div class="rail-text">
+          <span class="rail-label">Instructions</span>
+          <span class="rail-sub">Final notes &amp; messages</span>
+        </div>
+      </a>
+
+      <div class="rail-footer">
+        {% if object %}
+        <a href="{% url 'dashboard:funeralplan_detail' object.pk %}">
+          <i class="fas fa-arrow-left"></i> Back to plan
+        </a>
+        {% else %}
+        <a href="{% url 'dashboard:dashboard_home' %}">
+          <i class="fas fa-arrow-left"></i> Back to dashboard
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ─────────────────────────────────── -->
+  <main class="onboarding-main">
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="ob-alert ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
+        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
+        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
+        {% else %}<i class="fas fa-info-circle"></i>
+        {% endif %}
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="ob-page-header">
+      <div class="ob-eyebrow">Funeral &amp; Memorial Plan</div>
+      <h1>{% if form_action == "Update" %}Update your plan.{% else %}Create your funeral plan.{% endif %}</h1>
+      <p>Record your end-of-life preferences so your family never has to guess. Every field is optional — come back and add more any time.</p>
+    </div>
+
+    <form method="post" id="funeral-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="ob-alert ob-alert-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ══ 1. PERSONAL INFORMATION ════════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-personal">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-user"></i></div>
+          Personal Information
+          <span class="fp-section-hint">Supplemental identity for the obituary and funeral home records</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field">
+            <label for="{{ form.preferred_name.id_for_label }}">Preferred / Known-as Name</label>
+            {{ form.preferred_name }}
+            <span class="ob-hint">How you prefer to be referred to publicly</span>
+            {% if form.preferred_name.errors %}<ul class="errorlist">{% for e in form.preferred_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.occupation.id_for_label }}">Occupation / Career</label>
+            {{ form.occupation }}
+            {% if form.occupation.errors %}<ul class="errorlist">{% for e in form.occupation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.marital_status.id_for_label }}">Marital Status</label>
+            {{ form.marital_status }}
+            {% if form.marital_status.errors %}<ul class="errorlist">{% for e in form.marital_status.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.religion_or_spiritual_affiliation.id_for_label }}">Religion / Spiritual Affiliation</label>
+            {{ form.religion_or_spiritual_affiliation }}
+            {% if form.religion_or_spiritual_affiliation.errors %}<ul class="errorlist">{% for e in form.religion_or_spiritual_affiliation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+
+        <div class="ob-check-group" style="margin-top:1rem;">
+          <label class="ob-check-row">
+            {{ form.is_veteran }}
+            <span class="ob-check-label"><i class="fas fa-medal" style="color:var(--ten-percent); margin-right:6px;"></i>Military Veteran — entitled to veteran burial honours</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ══ 2. SERVICE PREFERENCES ═════════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-service">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-church"></i></div>
+          Service Preferences
+          <span class="fp-section-hint">Type, venue and timing of the service</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field">
+            <label for="{{ form.service_type.id_for_label }}">Service Type</label>
+            {{ form.service_type }}
+            <span class="ob-hint">e.g. Traditional, Celebration of Life, Graveside only</span>
+            {% if form.service_type.errors %}<ul class="errorlist">{% for e in form.service_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.desired_timing.id_for_label }}">Desired Timing</label>
+            {{ form.desired_timing }}
+            <span class="ob-hint">e.g. "Within a week", "No rush — allow travel time"</span>
+            {% if form.desired_timing.errors %}<ul class="errorlist">{% for e in form.desired_timing.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.preferred_funeral_home.id_for_label }}">Preferred Funeral Home</label>
+            {{ form.preferred_funeral_home }}
+            {% if form.preferred_funeral_home.errors %}<ul class="errorlist">{% for e in form.preferred_funeral_home.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.preferred_venue.id_for_label }}">Preferred Venue</label>
+            {{ form.preferred_venue }}
+            <span class="ob-hint">Church, community hall, garden, etc.</span>
+            {% if form.preferred_venue.errors %}<ul class="errorlist">{% for e in form.preferred_venue.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.officiant_contact.id_for_label }}">Officiant (from your contacts)</label>
+            {{ form.officiant_contact }}
+            <span class="ob-hint">Select a contact you've already added</span>
+            {% if form.officiant_contact.errors %}<ul class="errorlist">{% for e in form.officiant_contact.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.officiant_name_freetext.id_for_label }}">Officiant (if not a contact)</label>
+            {{ form.officiant_name_freetext }}
+            <span class="ob-hint">Name and contact details of your preferred officiant</span>
+            {% if form.officiant_name_freetext.errors %}<ul class="errorlist">{% for e in form.officiant_name_freetext.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+
+        <div class="ob-check-group" style="margin-top:1rem;">
+          <label class="ob-check-row">
+            {{ form.open_casket_viewing }}
+            <span class="ob-check-label"><i class="fas fa-eye" style="color:var(--thirty-percent); margin-right:6px;"></i>Open casket viewing is desired</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ══ 3. FINAL DISPOSITION ═══════════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-disposition">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-leaf"></i></div>
+          Final Disposition
+          <span class="fp-section-hint">Burial, cremation or alternative preferences</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field">
+            <label for="{{ form.disposition_method.id_for_label }}">Preferred Method</label>
+            {{ form.disposition_method }}
+            {% if form.disposition_method.errors %}<ul class="errorlist">{% for e in form.disposition_method.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.burial_or_interment_location.id_for_label }}">Burial / Interment Location</label>
+            {{ form.burial_or_interment_location }}
+            <span class="ob-hint">Cemetery name, pre-purchased plot details, or scatter location</span>
+            {% if form.burial_or_interment_location.errors %}<ul class="errorlist">{% for e in form.burial_or_interment_location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.casket_type_preference.id_for_label }}">Casket Preference</label>
+            {{ form.casket_type_preference }}
+            <span class="ob-hint">e.g. Simple wood, eco-friendly wicker, no preference</span>
+            {% if form.casket_type_preference.errors %}<ul class="errorlist">{% for e in form.casket_type_preference.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.urn_type_preference.id_for_label }}">Urn Preference</label>
+            {{ form.urn_type_preference }}
+            <span class="ob-hint">e.g. Biodegradable, ceramic, family keeps ashes</span>
+            {% if form.urn_type_preference.errors %}<ul class="errorlist">{% for e in form.urn_type_preference.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.headstone_or_marker_inscription.id_for_label }}">Headstone / Marker Inscription</label>
+            {{ form.headstone_or_marker_inscription }}
+            <span class="ob-hint">Exact wording you'd like on your marker — dates, a quote, or a message</span>
+            {% if form.headstone_or_marker_inscription.errors %}<ul class="errorlist">{% for e in form.headstone_or_marker_inscription.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 4. CEREMONY PERSONALISATION ═══════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-ceremony">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-music"></i></div>
+          Ceremony Personalisation
+          <span class="fp-section-hint">Music, readings, customs and the personal touches that matter</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field ob-full">
+            <label for="{{ form.music_choices.id_for_label }}">🎵 Music Choices</label>
+            {{ form.music_choices }}
+            <span class="ob-hint">Songs or pieces for the service, processional or recessional</span>
+            {% if form.music_choices.errors %}<ul class="errorlist">{% for e in form.music_choices.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.flowers_or_colors.id_for_label }}">🌸 Flowers / Colours</label>
+            {{ form.flowers_or_colors }}
+            <span class="ob-hint">Preferred flowers or colour theme for the service</span>
+            {% if form.flowers_or_colors.errors %}<ul class="errorlist">{% for e in form.flowers_or_colors.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.clothing_or_jewelry_description.id_for_label }}">👔 Clothing / Jewelry</label>
+            {{ form.clothing_or_jewelry_description }}
+            <span class="ob-hint">What you'd like to be dressed in</span>
+            {% if form.clothing_or_jewelry_description.errors %}<ul class="errorlist">{% for e in form.clothing_or_jewelry_description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.readings_poems_or_scriptures.id_for_label }}">📖 Readings, Poems or Scriptures</label>
+            {{ form.readings_poems_or_scriptures }}
+            <span class="ob-hint">Specific passages, poems or prayers you'd like read at the service</span>
+            {% if form.readings_poems_or_scriptures.errors %}<ul class="errorlist">{% for e in form.readings_poems_or_scriptures.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.eulogists_notes.id_for_label }}">🎤 Eulogist Notes</label>
+            {{ form.eulogists_notes }}
+            <span class="ob-hint">Who should speak, or what you'd like said — stories, themes, wishes for the tone</span>
+            {% if form.eulogists_notes.errors %}<ul class="errorlist">{% for e in form.eulogists_notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.pallbearers_notes.id_for_label }}">🤝 Pallbearer Notes</label>
+            {{ form.pallbearers_notes }}
+            <span class="ob-hint">Preferred pallbearers by name or relationship</span>
+            {% if form.pallbearers_notes.errors %}<ul class="errorlist">{% for e in form.pallbearers_notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.religious_cultural_customs.id_for_label }}">🕯️ Religious / Cultural Customs</label>
+            {{ form.religious_cultural_customs }}
+            <span class="ob-hint">Any rituals, prayers, or customs important to your faith or heritage</span>
+            {% if form.religious_cultural_customs.errors %}<ul class="errorlist">{% for e in form.religious_cultural_customs.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.items_to_display.id_for_label }}">🖼️ Items to Display</label>
+            {{ form.items_to_display }}
+            <span class="ob-hint">Photos, memorabilia or meaningful objects to have at the service</span>
+            {% if form.items_to_display.errors %}<ul class="errorlist">{% for e in form.items_to_display.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 5. RECEPTION ════════════════════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-reception">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-utensils"></i></div>
+          Reception / Gathering
+          <span class="fp-section-hint">Post-service gathering preferences</span>
+        </div>
+
+        <div class="ob-check-group" style="margin-bottom:1rem;">
+          <label class="ob-check-row">
+            {{ form.reception_desired }}
+            <span class="ob-check-label"><i class="fas fa-glass-cheers" style="color:var(--accent-color); margin-right:6px;"></i>A reception or gathering after the service is desired</span>
+          </label>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field">
+            <label for="{{ form.reception_location.id_for_label }}">Location</label>
+            {{ form.reception_location }}
+            <span class="ob-hint">Venue, family home, restaurant, etc.</span>
+            {% if form.reception_location.errors %}<ul class="errorlist">{% for e in form.reception_location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.reception_food_preferences.id_for_label }}">Food &amp; Drink Preferences</label>
+            {{ form.reception_food_preferences }}
+            {% if form.reception_food_preferences.errors %}<ul class="errorlist">{% for e in form.reception_food_preferences.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.reception_atmosphere_notes.id_for_label }}">Atmosphere &amp; Tone</label>
+            {{ form.reception_atmosphere_notes }}
+            <span class="ob-hint">e.g. "Casual, music playing, laughter welcome" or "Quiet, intimate gathering"</span>
+            {% if form.reception_atmosphere_notes.errors %}<ul class="errorlist">{% for e in form.reception_atmosphere_notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.reception_guest_list_notes.id_for_label }}">Guest List Notes</label>
+            {{ form.reception_guest_list_notes }}
+            <span class="ob-hint">Any guidance on who should or shouldn't be invited</span>
+            {% if form.reception_guest_list_notes.errors %}<ul class="errorlist">{% for e in form.reception_guest_list_notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 6. OBITUARY & MEMORIAL ══════════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-obituary">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-pen-nib"></i></div>
+          Obituary &amp; Memorial
+          <span class="fp-section-hint">Your legacy and how you'd like to be remembered</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field ob-full">
+            <label for="{{ form.obituary_photo_description.id_for_label }}">Photo Description</label>
+            {{ form.obituary_photo_description }}
+            <span class="ob-hint">Describe the photo you'd like used, or note where to find it</span>
+            {% if form.obituary_photo_description.errors %}<ul class="errorlist">{% for e in form.obituary_photo_description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.obituary_key_achievements.id_for_label }}">Key Achievements &amp; Life Highlights</label>
+            {{ form.obituary_key_achievements }}
+            <span class="ob-hint">Things you're proud of, milestones, or how you want to be remembered</span>
+            {% if form.obituary_key_achievements.errors %}<ul class="errorlist">{% for e in form.obituary_key_achievements.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.obituary_publications.id_for_label }}">Obituary Publications</label>
+            {{ form.obituary_publications }}
+            <span class="ob-hint">Specific newspapers, websites or platforms where you'd like an obituary published</span>
+            {% if form.obituary_publications.errors %}<ul class="errorlist">{% for e in form.obituary_publications.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.charitable_donations_in_lieu.id_for_label }}">Charitable Donations in Lieu of Flowers</label>
+            {{ form.charitable_donations_in_lieu }}
+            <span class="ob-hint">Charity names and donation links or addresses</span>
+            {% if form.charitable_donations_in_lieu.errors %}<ul class="errorlist">{% for e in form.charitable_donations_in_lieu.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 7. ADMINISTRATIVE & FINANCIAL ══════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-admin">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+          Administrative &amp; Financial
+          <span class="fp-section-hint">Insurance, certificates and payment arrangements</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field">
+            <label for="{{ form.funeral_insurance_policy_number.id_for_label }}">Funeral Insurance Policy Number</label>
+            {{ form.funeral_insurance_policy_number }}
+            <span class="ob-hint">Pre-paid funeral plan policy or life insurance policy number</span>
+            {% if form.funeral_insurance_policy_number.errors %}<ul class="errorlist">{% for e in form.funeral_insurance_policy_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field">
+            <label for="{{ form.death_certificates_requested.id_for_label }}">Number of Death Certificates</label>
+            {{ form.death_certificates_requested }}
+            <span class="ob-hint">Typically 6–10 certified copies are needed for banks, insurance, etc.</span>
+            {% if form.death_certificates_requested.errors %}<ul class="errorlist">{% for e in form.death_certificates_requested.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="ob-field ob-full">
+            <label for="{{ form.payment_arrangements.id_for_label }}">Payment Arrangements</label>
+            {{ form.payment_arrangements }}
+            <span class="ob-hint">How funeral costs should be paid — pre-paid plan details, account to use, etc.</span>
+            {% if form.payment_arrangements.errors %}<ul class="errorlist">{% for e in form.payment_arrangements.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 8. ADDITIONAL INSTRUCTIONS ════════════════════════ -->
+      <div class="ob-form-card fp-section" id="section-instructions">
+        <div class="ob-card-heading">
+          <div class="ob-card-icon"><i class="fas fa-scroll"></i></div>
+          Additional Instructions
+          <span class="fp-section-hint">Anything else your family needs to know</span>
+        </div>
+
+        <div class="ob-grid">
+          <div class="ob-field ob-full">
+            <label for="{{ form.additional_instructions.id_for_label }}">Final Notes &amp; Instructions</label>
+            {{ form.additional_instructions }}
+            <span class="ob-hint">Any wishes, messages to loved ones, or practical instructions not covered above</span>
+            {% if form.additional_instructions.errors %}<ul class="errorlist">{% for e in form.additional_instructions.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ACTIONS ═══════════════════════════════════════════ -->
+      <div class="ob-form-card" style="background:var(--background-color);">
+        <div class="ob-actions" style="padding:0;">
+          {% if object %}
+          <a href="{% url 'dashboard:funeralplan_detail' object.pk %}" class="ob-btn ob-btn-ghost">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          {% else %}
+          <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          {% endif %}
+          <div class="ob-spacer"></div>
+          <button type="submit" class="ob-btn ob-btn-accent" form="funeral-form">
+            <i class="fas fa-save"></i>
+            {% if form_action == "Update" %}Save Changes{% else %}Create Plan{% endif %}
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Tip -->
+    <div class="ob-tip">
+      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> You don't need to fill everything in at once</div>
+      <ul>
+        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Save with as little or as much as you have today</li>
+        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Come back to add sections as you think of things</li>
+        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Share the location of this plan with your executor</li>
+        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Review and update after any major life change</li>
+      </ul>
+    </div>
+
+  </main>
+</div>
+</div>
+
+
+<script>
+/* Highlight the active rail step as the user scrolls */
+(function () {
+  const sections = document.querySelectorAll('.fp-section[id]');
+  const railLinks = document.querySelectorAll('.step-rail a.rail-step');
+
+  function setActive () {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+    });
+    railLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  }
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setActive();
+})();
+</script>
+{% endblock %}

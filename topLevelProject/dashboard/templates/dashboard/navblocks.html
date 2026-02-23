@@ -10,6 +10,7 @@
                 class="subnav-item {% if contacts_count == 0 %}attention{% endif %}"
                 title="{% if contacts_count == 0 %}Add your first contact{% else %}Emergency contacts{% endif %}">
                 <i class="fas fa-address-book"></i>
+                <span>Peronal</span>
                 <span>Contacts</span>
                 {% if contacts_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
@@ -18,6 +19,7 @@
                 class="subnav-item {% if accounts_count == 0 %}attention{% endif %}"
                 title="{% if accounts_count == 0 %}Add your first digital account{% else %}Manage your digital accounts{% endif %}">
                 <i class="fas fa-user-circle"></i>
+                <span>Important</span>
                 <span>Accounts</span>
                 {% if accounts_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
@@ -26,6 +28,7 @@
                 class="subnav-item {% if devices_count == 0 %}attention{% endif %}"
                 title="{% if devices_count == 0 %}Add your first device{% else %}Track your devices{% endif %}">
                 <i class="fas fa-laptop"></i>
+                <span>Personal</span>
                 <span>Devices</span>
                 {% if devices_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
@@ -34,7 +37,8 @@
                 class="subnav-item {% if estates_count == 0 %}attention{% endif %}"
                 title="{% if estates_count == 0 %}Add your first estate document{% else %}Estate planning documents{% endif %}">
                 <i class="fas fa-file-contract"></i>
-                <span>Estate Docs</span>
+                <span>Estate</span>
+                <span>Documents</span>
                 {% if estates_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
@@ -42,6 +46,7 @@
                 class="subnav-item {% if documents_count == 0 %}attention{% endif %}"
                 title="{% if documents_count == 0 %}Add your first important document{% else %}Important documents{% endif %}">
                 <i class="fas fa-file-alt"></i>
+                <span>Other</span>
                 <span>Documents</span>
                 {% if documents_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
@@ -49,16 +54,26 @@
             <a href="{% url 'dashboard:familyawareness_list' %}"
                 class="subnav-item {% if family_knows_count == 0 %}attention{% endif %}"
                 title="{% if family_knows_count == 0 %}Add your first family note{% else %}Family information{% endif %}">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-address-book"></i>
                 <span>Family</span>
+                <span> Notes</span>
                 {% if family_knows_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
+            </a>
+
+            <a href="{% url 'dashboard:funeralplan_list' %}"
+                class="subnav-item"
+                title="Review your Funeral Planning">
+                <i class="fas fa-users"></i>
+                <span>Funeral</span>
+                <span>Planning</span>
             </a>
 
             <a href="{% url 'dashboard:relevancereview_list' %}"
                 class="subnav-item"
                 title="Review your accounts">
                 <i class="fas fa-calendar-check"></i>
-                <span>Reviews</span>
+                <span>Review</span>
+                <span>List</span>
             </a>
 
         </div>
