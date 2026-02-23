@@ -1,3 +1,13 @@
+/* ═══════════════════════════════════════════════════════════════════
+   navblocks.css — Dashboard sticky subnav
+   Requires: stylesheet.css (design tokens)
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════
+   WRAPPER & NAV SHELL
+   ══════════════════════════════════════════════ */
+
 .dashboard-subnav-wrapper {
     background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
     border-bottom: 1px solid #e5e7eb;
@@ -13,6 +23,11 @@
     padding: 0 1rem;
 }
 
+
+/* ══════════════════════════════════════════════
+   SCROLL CONTAINER
+   ══════════════════════════════════════════════ */
+
 .subnav-container {
     display: flex;
     align-items: center;
@@ -26,31 +41,17 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.attention {
-    border: 1px solid #ff7b00;
-}
-.attention:hover {
-    border: 1px solid var(--ten-percent);
-    background-color: var(--thirty-percent);
-    transition: ease-in-out (0.95, 0.05, 0.795, 0.035)
-}
+.subnav-container::-webkit-scrollbar        { height: 4px; }
+.subnav-container::-webkit-scrollbar-track  { background: transparent; }
+.subnav-container::-webkit-scrollbar-thumb  { background: #cbd5e0; border-radius: 2px; }
+.subnav-container::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 
-.subnav-container::-webkit-scrollbar {
-    height: 4px;
-}
 
-.subnav-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.subnav-container::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 2px;
-}
-
-.subnav-container::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
-}
+/* ══════════════════════════════════════════════
+   SUBNAV ITEM — base
+   border is transparent by default so .attention
+   can add a coloured border without a layout shift
+   ══════════════════════════════════════════════ */
 
 .subnav-item {
     display: flex;
@@ -60,10 +61,11 @@
     padding: 0.75rem 1.25rem;
     text-decoration: none;
     color: #4b5563;
-    font-family: 'Inter', 'Nunito', sans-serif;
+    font-family: 'Nunito', 'Inter', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     border-radius: 8px;
+    border: 2px solid transparent;   /* keeps layout stable for .attention */
     transition: all 0.2s ease;
     white-space: nowrap;
     position: relative;
@@ -87,15 +89,59 @@
     transform: translateY(-1px);
 }
 
-.subnav-item:hover i {
-    transform: scale(1.1);
+.subnav-item:hover i { transform: scale(1.1); }
+.subnav-item:active  { transform: translateY(0); }
+
+
+/* ══════════════════════════════════════════════
+   ATTENTION STATE
+   Shown when a section has no entries yet
+   ══════════════════════════════════════════════ */
+
+.subnav-item.attention {
+    border-color: var(--accent-color);
 }
 
-.subnav-item:active {
-    transform: translateY(0);
+.subnav-item.attention:hover {
+    border-color: var(--ten-percent);
+    background-color: var(--thirty-percent);
+    color: var(--text-color);
+    transition: all 0.2s ease;
 }
 
-/* Active state */
+.subnav-item.attention:hover i,
+.subnav-item.attention:hover span {
+    color: var(--text-color);
+}
+
+
+/* ══════════════════════════════════════════════
+   "START" BADGE
+   Shown on empty-section items alongside .attention
+   ══════════════════════════════════════════════ */
+
+.nav-badge-empty {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: var(--accent-color);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 20px;
+    line-height: 1.6;
+    pointer-events: none;
+}
+
+
+/* ══════════════════════════════════════════════
+   ACTIVE / CURRENT PAGE STATE
+   ══════════════════════════════════════════════ */
+
 .subnav-item.active,
 .subnav-item[aria-current="page"] {
     background: linear-gradient(135deg, var(--ten-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
@@ -107,11 +153,16 @@
 .subnav-item[aria-current="page"]:hover {
     background: linear-gradient(135deg, var(--ten-percent) 0%, var(--thirty-percent) 50%, var(--ten-percent) 100%);
     color: #ffffff;
+    transform: translateY(-1px);
 }
 
-/* Focus states for accessibility */
+
+/* ══════════════════════════════════════════════
+   FOCUS / ACCESSIBILITY
+   ══════════════════════════════════════════════ */
+
 .subnav-item:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid var(--sixty-percent);
     outline-offset: 2px;
 }
 
@@ -119,12 +170,16 @@
     outline: none;
 }
 
-/* Responsive breakpoints */
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ══════════════════════════════════════════════ */
+
 @media (max-width: 780px) {
     .dashboard-subnav-wrapper {
         position: static;
     }
-    
+
     .subnav-container {
         justify-content: flex-start;
         padding: 0.5rem 0;
@@ -136,13 +191,8 @@
         font-size: 0.813rem;
     }
 
-    .subnav-item i {
-        font-size: 1.1rem;
-    }
-
-    .subnav-item span {
-        font-size: 0.688rem;
-    }
+    .subnav-item i    { font-size: 1.1rem; }
+    .subnav-item span { font-size: 0.688rem; }
 }
 
 @media (min-width: 781px) and (max-width: 1024px) {
@@ -162,8 +212,16 @@
     }
 }
 
-/* Smooth scroll hint for mobile */
+
+/* ══════════════════════════════════════════════
+   MOBILE SCROLL FADE HINT
+   ══════════════════════════════════════════════ */
+
 @media (max-width: 780px) {
+    .dashboard-subnav-wrapper {
+        position: relative; /* needed for ::after to anchor correctly */
+    }
+
     .dashboard-subnav-wrapper::after {
         content: '';
         position: absolute;
@@ -176,17 +234,21 @@
     }
 }
 
-/* Animation on load */
+
+/* ══════════════════════════════════════════════
+   LOAD ANIMATION
+   ══════════════════════════════════════════════ */
+
 .subnav-item {
     animation: fadeInUp 0.4s ease backwards;
 }
 
 .subnav-item:nth-child(1) { animation-delay: 0.05s; }
-.subnav-item:nth-child(2) { animation-delay: 0.1s; }
+.subnav-item:nth-child(2) { animation-delay: 0.10s; }
 .subnav-item:nth-child(3) { animation-delay: 0.15s; }
-.subnav-item:nth-child(4) { animation-delay: 0.2s; }
+.subnav-item:nth-child(4) { animation-delay: 0.20s; }
 .subnav-item:nth-child(5) { animation-delay: 0.25s; }
-.subnav-item:nth-child(6) { animation-delay: 0.3s; }
+.subnav-item:nth-child(6) { animation-delay: 0.30s; }
 .subnav-item:nth-child(7) { animation-delay: 0.35s; }
 
 @keyframes fadeInUp {
@@ -199,6 +261,3 @@
         transform: translateY(0);
     }
 }
-
-
-

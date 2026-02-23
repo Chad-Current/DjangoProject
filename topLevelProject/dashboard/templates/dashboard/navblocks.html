@@ -1,52 +1,67 @@
 {% load static %}
+
 <link rel="stylesheet" href="{% static 'dashboard/css/navblocks.css' %}" type="text/css">
+
 <div class="dashboard-subnav-wrapper">
     <nav class="dashboard-subnav" role="navigation" aria-label="Dashboard sections">
         <div class="subnav-container">
 
-            <a href="{% url 'dashboard:contact_list' %}" class="subnav-item" title="Emergency contacts">
+            <a href="{% url 'dashboard:contact_list' %}"
+                class="subnav-item {% if contacts_count == 0 %}attention{% endif %}"
+                title="{% if contacts_count == 0 %}Add your first contact{% else %}Emergency contacts{% endif %}">
                 <i class="fas fa-address-book"></i>
                 <span>Contacts</span>
+                {% if contacts_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
-            
-            <a href="{% url 'dashboard:account_list' %}" class="subnav-item" title="Manage your digital accounts">
+
+            <a href="{% url 'dashboard:account_list' %}"
+                class="subnav-item {% if accounts_count == 0 %}attention{% endif %}"
+                title="{% if accounts_count == 0 %}Add your first digital account{% else %}Manage your digital accounts{% endif %}">
                 <i class="fas fa-user-circle"></i>
                 <span>Accounts</span>
+                {% if accounts_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
-            <a href="{% url 'dashboard:device_list' %}" class="subnav-item" title="Track your devices">
+            <a href="{% url 'dashboard:device_list' %}"
+                class="subnav-item {% if devices_count == 0 %}attention{% endif %}"
+                title="{% if devices_count == 0 %}Add your first device{% else %}Track your devices{% endif %}">
                 <i class="fas fa-laptop"></i>
                 <span>Devices</span>
+                {% if devices_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
-            {% if documents_count == 0 %}
-            <a href="{% url 'dashboard:estate_list' %}" class="subnav-item attention" title="Estate planning documents">
+            <a href="{% url 'dashboard:estate_list' %}"
+                class="subnav-item {% if estates_count == 0 %}attention{% endif %}"
+                title="{% if estates_count == 0 %}Add your first estate document{% else %}Estate planning documents{% endif %}">
                 <i class="fas fa-file-contract"></i>
                 <span>Estate Docs</span>
+                {% if estates_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
-            {% else %}
-            <a href="{% url 'dashboard:estate_list' %}" class="subnav-item" title="Estate planning documents">
-                <i class="fas fa-file-contract"></i>
-                <span>Estate Docs</span>
-            </a>
-            {% endif %}
-            
-            <a href="{% url 'dashboard:importantdocument_list' %}" class="subnav-item" title="Important documents">
+
+            <a href="{% url 'dashboard:importantdocument_list' %}"
+                class="subnav-item {% if documents_count == 0 %}attention{% endif %}"
+                title="{% if documents_count == 0 %}Add your first important document{% else %}Important documents{% endif %}">
                 <i class="fas fa-file-alt"></i>
                 <span>Documents</span>
+                {% if documents_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
-            <a href="{% url 'dashboard:familyawareness_list' %}" class="subnav-item" title="Family information">
+            <a href="{% url 'dashboard:familyawareness_list' %}"
+                class="subnav-item {% if family_knows_count == 0 %}attention{% endif %}"
+                title="{% if family_knows_count == 0 %}Add your first family note{% else %}Family information{% endif %}">
                 <i class="fas fa-users"></i>
                 <span>Family</span>
+                {% if family_knows_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
-            <a href="{% url 'dashboard:relevancereview_list' %}" class="subnav-item" title="Review your accounts">
+            <a href="{% url 'dashboard:relevancereview_list' %}"
+                class="subnav-item"
+                title="Review your accounts">
                 <i class="fas fa-calendar-check"></i>
                 <span>Reviews</span>
             </a>
+
         </div>
     </nav>
 </div>
-  <script src="{% static 'dashboard/js/navblocks.js' %}"></script>
-
+<script src="{% static 'dashboard/js/navblocks.js' %}"></script>

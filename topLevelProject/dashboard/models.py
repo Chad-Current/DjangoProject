@@ -32,7 +32,7 @@ class Profile(models.Model):
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=20, blank=False)
-    zipcode = models.IntegerField(blank=True, null=True)  # Fixed: added null=True
+    zipcode = models.IntegerField(blank=True, null=True)  
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)
     
