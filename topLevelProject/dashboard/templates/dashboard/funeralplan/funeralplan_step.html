@@ -1,0 +1,268 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Step {{ step }} — {{ section_label }} | Funeral Plan{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/tooltip_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="onboarding-wrap">
+
+  <!-- ═══════════════════
+       STEP RAIL
+       ═══════════════════ -->
+  <aside class="step-rail">
+    <div class="rail-header">
+      <h2>Funeral Plan</h2>
+      <p>{{ step }} of {{ total_steps }} sections</p>
+      <div class="rail-progress-track">
+        <div class="rail-progress-fill" id="fp-rail-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="rail-steps">
+      {% with p=progress s=step %}
+
+      <div class="rail-step {% if s == 1 %}active{% elif p.personal_info %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.personal_info and s != 1 %}✓{% else %}1{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Personal Info</span>
+          <span class="rail-sub">Name, occupation, religion</span>
+        </div>
+        {% if p.personal_info and s != 1 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 2 %}active{% elif p.service %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.service and s != 2 %}✓{% else %}2{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Service Prefs</span>
+          <span class="rail-sub">Type, venue, officiant</span>
+        </div>
+        {% if p.service and s != 2 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 3 %}active{% elif p.disposition %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.disposition and s != 3 %}✓{% else %}3{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Disposition</span>
+          <span class="rail-sub">Burial or cremation</span>
+        </div>
+        {% if p.disposition and s != 3 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 4 %}active{% elif p.ceremony %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.ceremony and s != 4 %}✓{% else %}4{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Ceremony</span>
+          <span class="rail-sub">Music, flowers, readings</span>
+        </div>
+        {% if p.ceremony and s != 4 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 5 %}active{% elif p.reception %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.reception and s != 5 %}✓{% else %}5{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Reception</span>
+          <span class="rail-sub">Gathering & food</span>
+        </div>
+        {% if p.reception and s != 5 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 6 %}active{% elif p.obituary %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.obituary and s != 6 %}✓{% else %}6{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Obituary</span>
+          <span class="rail-sub">Photo, achievements</span>
+        </div>
+        {% if p.obituary and s != 6 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 7 %}active{% elif p.admin %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.admin and s != 7 %}✓{% else %}7{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Administrative</span>
+          <span class="rail-sub">Insurance, paperwork</span>
+        </div>
+        {% if p.admin and s != 7 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      <div class="rail-step {% if s == 8 %}active{% elif p.instructions %}done{% else %}todo{% endif %}">
+        <div class="rail-dot">{% if p.instructions and s != 8 %}✓{% else %}8{% endif %}</div>
+        <div class="rail-text">
+          <span class="rail-label">Instructions</span>
+          <span class="rail-sub">Final wishes</span>
+        </div>
+        {% if p.instructions and s != 8 %}<span class="rail-count">Done</span>{% endif %}
+      </div>
+
+      {% endwith %}
+
+      <div class="rail-footer">
+        <a href="{% url 'dashboard:funeralplan_index' %}">
+          <i class="fas fa-grid-2"></i> Plan overview
+        </a>
+      </div>
+    </div><!-- /.rail-steps -->
+  </aside>
+
+  <!-- ═══════════════════
+       MAIN CONTENT
+       ═══════════════════ -->
+  <main class="onboarding-main">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="ob-alert {% if message.tags == 'error' %}ob-alert-error{% elif message.tags == 'warning' %}ob-alert-warning{% else %}ob-alert-success{% endif %}">
+          <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Page header -->
+    <div class="ob-page-header">
+      <p class="ob-eyebrow">Step {{ step }} of {{ total_steps }}</p>
+      <h1>{{ section_label }}</h1>
+      <p>
+        {% if step == 1 %}Supplemental identity information used in the service programme and obituary.{% endif %}
+        {% if step == 2 %}Your preferences for the type, timing, and key people involved in your service.{% endif %}
+        {% if step == 3 %}How and where you wish to be laid to rest.{% endif %}
+        {% if step == 4 %}Music, readings, speakers, and personal touches for the ceremony.{% endif %}
+        {% if step == 5 %}Preferences for any post-service gathering or reception.{% endif %}
+        {% if step == 6 %}Guidance for those writing or publishing your obituary.{% endif %}
+        {% if step == 7 %}Insurance, paperwork, and financial arrangements for the funeral.{% endif %}
+        {% if step == 8 %}Any other wishes, personal messages, or guidance for your family.{% endif %}
+        All fields are optional — fill in what feels right.
+      </p>
+    </div>
+
+    <div class="ob-body" style="grid-template-columns: 1fr;">
+      <div>
+
+        {% if can_modify %}
+          <!-- Form card -->
+          <div class="ob-form-card">
+            <div class="ob-card-heading">
+              <div class="ob-card-icon">
+                {% if step == 1 %}🪪{% endif %}
+                {% if step == 2 %}⛪{% endif %}
+                {% if step == 3 %}🌿{% endif %}
+                {% if step == 4 %}🎵{% endif %}
+                {% if step == 5 %}🤝{% endif %}
+                {% if step == 6 %}📰{% endif %}
+                {% if step == 7 %}📋{% endif %}
+                {% if step == 8 %}✉️{% endif %}
+              </div>
+              {{ section_label }}
+            </div>
+
+            <form method="post" novalidate>
+              {% csrf_token %}
+              {{ form|crispy }}
+
+              <div class="ob-actions">
+                <!-- Previous / Cancel -->
+                {% if step == 1 %}
+                  <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Overview
+                  </a>
+                {% elif step == 2 %}
+                  <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 3 %}
+                  <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 4 %}
+                  <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 5 %}
+                  <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 6 %}
+                  <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 7 %}
+                  <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% elif step == 8 %}
+                  <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% endif %}
+
+                <span class="ob-spacer"></span>
+
+                <!-- Save & Continue -->
+                <button type="submit" name="action" value="save_continue" class="ob-btn ob-btn-primary">
+                  Save &amp; Continue <i class="fas fa-arrow-right"></i>
+                </button>
+
+                {% if step < total_steps %}
+                  <!-- Skip -->
+                  {% if step == 1 %}<a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 2 %}<a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 3 %}<a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 4 %}<a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 5 %}<a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 6 %}<a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% elif step == 7 %}<a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost">Skip</a>
+                  {% endif %}
+                {% else %}
+                  <a href="{% url 'dashboard:funeralplan_detail' %}" class="ob-btn ob-btn-ghost">
+                    View summary <i class="fas fa-eye"></i>
+                  </a>
+                {% endif %}
+
+              </div><!-- /.ob-actions -->
+            </form>
+          </div><!-- /.ob-form-card -->
+
+        {% else %}
+          <!-- View-only notice -->
+          <div class="ob-form-card">
+            <div class="ob-alert ob-alert-warning">
+              <i class="fas fa-lock"></i>
+              <strong>View only.</strong> Your current plan access does not allow editing.
+              <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost" style="margin-left: auto;">
+                <i class="fas fa-arrow-left"></i> Dashboard
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </div><!-- /.ob-body -->
+
+  </main>
+
+</div><!-- /.onboarding-wrap -->
+
+<script>
+  (function () {
+    var flags = [
+      {{ progress.personal_info|yesno:"true,false" }},
+      {{ progress.service|yesno:"true,false" }},
+      {{ progress.disposition|yesno:"true,false" }},
+      {{ progress.ceremony|yesno:"true,false" }},
+      {{ progress.reception|yesno:"true,false" }},
+      {{ progress.obituary|yesno:"true,false" }},
+      {{ progress.admin|yesno:"true,false" }},
+      {{ progress.instructions|yesno:"true,false" }}
+    ];
+    var done = flags.filter(Boolean).length;
+    var pct  = Math.round((done / 8) * 100);
+    var fill  = document.getElementById('fp-rail-fill');
+    if (fill) fill.style.width = pct + '%';
+  })();
+</script>
+{% endblock %}

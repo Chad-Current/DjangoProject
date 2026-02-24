@@ -55,11 +55,19 @@ urlpatterns = [
     path('familyawareness/<int:pk>/delete/', views.FamilyAwarenessDeleteView.as_view(), name='familyawareness_delete'),
 
   # Funeral Planning URLs
-    path('funeralplanning/', views.FuneralPlanIndexView.as_view(), name='funeralplan_list'),
-    path('funeralplanning//<int:pk>/', views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
-    path('funeralplanning/create/', views.FuneralPlanCreateView.as_view(), name='funeralplan_create'),
-    path('funeralplanning/<int:pk>/edit/', views.FuneralPlanUpdateView.as_view(), name='funeralplan_update'),
-    path('funeralplanning/<int:pk>/delete/', views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),
+    path('funeralplan/', views.FuneralPlanIndexView.as_view(), name='funeralplan_index'),
+    path('funeralplan/summary/', views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
+    path('funeralplan/delete/', views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),
+    # ── 8 section steps ───────────────────────────────────────────────
+    path('funeralplan/step/1/', views.FuneralPlanStep1View.as_view(), name='funeralplan_step1'),
+    path('funeralplan/step/2/', views.FuneralPlanStep2View.as_view(), name='funeralplan_step2'),
+    path('funeralplan/step/3/', views.FuneralPlanStep3View.as_view(), name='funeralplan_step3'),
+    path('funeralplan/step/4/', views.FuneralPlanStep4View.as_view(), name='funeralplan_step4'),
+    path('funeralplan/step/5/', views.FuneralPlanStep5View.as_view(), name='funeralplan_step5'),
+    path('funeralplan/step/6/', views.FuneralPlanStep6View.as_view(), name='funeralplan_step6'),
+    path('funeralplan/step/7/', views.FuneralPlanStep7View.as_view(), name='funeralplan_step7'),
+    path('funeralplan/step/8/', views.FuneralPlanStep8View.as_view(), name='funeralplan_step8'),
+
 
     # Important Document URLs
     path('documents/', views.ImportantDocumentListView.as_view(), name='importantdocument_list'),
@@ -70,6 +78,7 @@ urlpatterns = [
     
     # Onboarding URLs 
     path('onboarding/', views.OnboardingWelcomeView.as_view(), name='onboarding_welcome'),
+    # ── 7 section steps ───────────────────────────────────────────────
     path('onboarding/contacts/', views.OnboardingContactView.as_view(), name='onboarding_contacts'),
     path('onboarding/accounts/', views.OnboardingAccountView.as_view(), name='onboarding_accounts'),
     path('onboarding/devices/', views.OnboardingDeviceView.as_view(), name='onboarding_devices'),

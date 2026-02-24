@@ -41,7 +41,6 @@ from .forms import (
     ImportantDocumentForm,
     FamilyNeedsToKnowSectionForm,
     RelevanceReviewForm,
-    FuneralPlanForm,
     FuneralPlanPersonalInfoForm,
     FuneralPlanServiceForm,
     FuneralPlanDispositionForm,
@@ -80,7 +79,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-
+        progress = 0
+        
         try:
             profile = Profile.objects.get(user=user)
             context['user'] = user
@@ -94,6 +94,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['estates_count'] = DigitalEstateDocument.objects.filter(profile=profile).count()
             context['documents_count'] = ImportantDocument.objects.filter(profile=profile).count()
             context['family_knows_count'] = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
+            context['funeral_planned'] = FuneralPlan.objects.filter(profile=profile).count()
             
             # CALCULATE PROGRESS (Weighted scoring)
             progress = self._calculate_progress(
@@ -104,8 +105,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 documents=context['documents_count'],
                 family_knows=context['family_knows_count'],
             )
-            context['progress'] = progress
-            
+
             # CALCULATE REMAINING TASKS
             remaining_tasks = self._calculate_remaining_tasks(
                 accounts=context['accounts_count'],
@@ -959,346 +959,323 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
 # FUNERAL VIEWS 
 # ============================================================================
 
-class FuneralPlanIndexView(ViewAccessMixin, RedirectView):
+class FuneralPlanMixin(LoginRequiredMixin):
     """
-    Entry-point URL. Redirects to detail if a plan exists, otherwise to create.
-    Mirrors the ProfileDetailView get_object pattern — no pk needed in URL.
+    Shared base for all funeral-plan step views.
+
+    * Enforces payment and profile prerequisites (mirrors OnboardingMixin).
+    * Provides get_or_create_plan() so every step view works regardless of
+      whether a plan already exists — no separate create/update distinction.
+    * Provides get_plan_progress() for the side-rail completion summary.
+    * Provides can_modify check used by every step.
     """
-    owner_field = 'profile__user'
-
-    def get_redirect_url(self, *args, **kwargs):
-        try:
-            plan = self.request.user.profile.funeral_plan
-            return reverse('dashboard:funeralplan_detail', kwargs={'pk': plan.pk})
-        except FuneralPlan.DoesNotExist:
-            return reverse('dashboard:funeralplan_create')
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Create
-# ─────────────────────────────────────────────────────────────────────────────
-
-class FuneralPlanCreateView(FullAccessMixin, CreateView):
-    """
-    Create a new FuneralPlan. Blocked if one already exists (one per profile).
-    Follows AccountCreateView / DeviceCreateView pattern exactly.
-    """
-    model = FuneralPlan
-    form_class = FuneralPlanForm
-    template_name = 'dashboard/funeralplan/funeralplan_form.html'
-    owner_field = 'profile__user'
+    login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        # One plan per profile guard
-        if request.user.is_authenticated:
-            try:
-                existing = request.user.profile.funeral_plan
-                messages.info(
-                    request,
-                    "You already have a funeral plan. You can edit it below.",
-                )
-                return redirect(
-                    reverse('dashboard:funeralplan_detail', kwargs={'pk': existing.pk})
-                )
-            except FuneralPlan.DoesNotExist:
-                pass
+        user = request.user
+
+        if not getattr(user, "has_paid", False):
+            messages.warning(request, "Please complete payment to access your funeral plan.")
+            return redirect(reverse("accounts:payment"))
+
+        try:
+            _ = user.profile
+        except Profile.DoesNotExist:
+            messages.info(request, "Please create your profile first.")
+            return redirect(reverse("dashboard:profile_create"))
+
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+    # ------------------------------------------------------------------
+    # Helpers available to all step views
+    # ------------------------------------------------------------------
 
-    def form_valid(self, form):
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        form.instance.profile = profile
-        messages.success(
-            self.request,
-            "Funeral plan created successfully. Remember to review it periodically.",
-        )
-        return super().form_valid(form)
+    def get_or_create_plan(self):
+        """Return (plan, created).  Always safe to call — never raises."""
+        profile = self.request.user.profile
+        plan, created = FuneralPlan.objects.get_or_create(profile=profile)
+        return plan, created
 
-    def get_success_url(self):
-        return reverse('dashboard:funeralplan_detail', kwargs={'pk': self.object.pk})
+    def get_plan_progress(self):
+        """
+        Returns a dict that templates use to show section completion status
+        in the step rail / sidebar.
+        """
+        plan, _ = self.get_or_create_plan()
+        return {
+            'plan':          plan,
+            'personal_info': bool(plan.preferred_name or plan.occupation or plan.marital_status),
+            'service':       bool(plan.service_type or plan.preferred_funeral_home),
+            'disposition':   bool(plan.disposition_method),
+            'ceremony':      bool(plan.music_choices or plan.flowers_or_colors or plan.readings_poems_or_scriptures),
+            'reception':     plan.reception_desired is not None,
+            'obituary':      bool(plan.obituary_key_achievements or plan.obituary_photo_description),
+            'admin':         bool(plan.payment_arrangements or plan.funeral_insurance_policy_number),
+            'instructions':  bool(plan.additional_instructions),
+            'is_complete':   plan.is_complete,
+        }
+
+    def _base_context(self):
+        """Common context keys injected by every step view."""
+        return {
+            'progress':    self.get_plan_progress(),
+            'total_steps': 8,
+            'can_modify':  self.request.user.can_modify_data(),
+        }
+
+
+# ── Index / Overview ──────────────────────────────────────────────────────────
+
+class FuneralPlanIndexView(FuneralPlanMixin, TemplateView):
+    """
+    Entry point.  Auto-creates the plan on first visit, then shows an
+    overview page with completion status for each of the 8 sections.
+    Replaces the old FuneralPlanIndexView (RedirectView) pattern.
+    """
+    template_name = 'dashboard/funeralplan/funeralplan_index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = "Create Funeral Plan"
-        context['form_action'] = "Create"
-        context['can_modify'] = self.request.user.can_modify_data()
+        plan, created = self.get_or_create_plan()
+        if created:
+            messages.info(
+                self.request,
+                "We've started your funeral plan. Complete each section at your own pace."
+            )
+        context.update(self._base_context())
+        context['plan']       = plan
+        context['page_title'] = "My Funeral Plan"
         return context
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Detail
-# ─────────────────────────────────────────────────────────────────────────────
+# ── Detail (read-only summary) ────────────────────────────────────────────────
 
-class FuneralPlanDetailView(ViewAccessMixin, DetailView):
+class FuneralPlanDetailView(FuneralPlanMixin, TemplateView):
     """
-    Read-only summary of the funeral plan, organised by section.
-    Follows ContactDetailView / ImportantDocumentDetailView pattern.
+    Read-only summary of all 8 sections.  No PK in the URL — the plan is
+    fetched (or silently created) via get_or_create_plan().
     """
-    model = FuneralPlan
     template_name = 'dashboard/funeralplan/funeralplan_detail.html'
-    context_object_name = 'plan'
-    owner_field = 'profile__user'
-
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return (
-                FuneralPlan.objects
-                .select_related('profile', 'profile__user', 'officiant_contact')
-                .filter(profile=profile)
-            )
-        except Profile.DoesNotExist:
-            return FuneralPlan.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
-        plan = self.object
+        plan, _ = self.get_or_create_plan()
+        context.update(self._base_context())
+        context['plan']       = plan
+        context['page_title'] = "Funeral Plan Summary"
 
         # Section visibility flags — suppress empty sections in the template
         context['has_personal_info'] = any([
-            plan.preferred_name,
-            plan.occupation,
-            plan.marital_status,
-            plan.religion_or_spiritual_affiliation,
+            plan.preferred_name, plan.occupation,
+            plan.marital_status, plan.religion_or_spiritual_affiliation,
             plan.is_veteran,
         ])
         context['has_service_prefs'] = any([
-            plan.service_type,
-            plan.preferred_funeral_home,
-            plan.preferred_venue,
-            plan.officiant_contact,
-            plan.officiant_name_freetext,
-            plan.desired_timing,
+            plan.service_type, plan.preferred_funeral_home,
+            plan.preferred_venue, plan.officiant_contact,
+            plan.officiant_name_freetext, plan.desired_timing,
             plan.open_casket_viewing,
         ])
         context['has_disposition'] = any([
-            plan.disposition_method,
-            plan.burial_or_interment_location,
-            plan.casket_type_preference,
-            plan.urn_type_preference,
+            plan.disposition_method, plan.burial_or_interment_location,
+            plan.casket_type_preference, plan.urn_type_preference,
             plan.headstone_or_marker_inscription,
         ])
         context['has_ceremony'] = any([
-            plan.music_choices,
-            plan.flowers_or_colors,
-            plan.readings_poems_or_scriptures,
-            plan.eulogists_notes,
-            plan.pallbearers_notes,
-            plan.clothing_or_jewelry_description,
-            plan.religious_cultural_customs,
-            plan.items_to_display,
+            plan.music_choices, plan.flowers_or_colors,
+            plan.readings_poems_or_scriptures, plan.eulogists_notes,
+            plan.pallbearers_notes, plan.clothing_or_jewelry_description,
+            plan.religious_cultural_customs, plan.items_to_display,
         ])
         context['has_reception'] = any([
-            plan.reception_desired,
-            plan.reception_location,
-            plan.reception_food_preferences,
-            plan.reception_atmosphere_notes,
+            plan.reception_desired, plan.reception_location,
+            plan.reception_food_preferences, plan.reception_atmosphere_notes,
             plan.reception_guest_list_notes,
         ])
         context['has_obituary'] = any([
-            plan.obituary_photo_description,
-            plan.obituary_key_achievements,
-            plan.obituary_publications,
-            plan.charitable_donations_in_lieu,
+            plan.obituary_photo_description, plan.obituary_key_achievements,
+            plan.obituary_publications, plan.charitable_donations_in_lieu,
         ])
         context['has_admin'] = any([
             plan.funeral_insurance_policy_number,
             plan.death_certificates_requested,
             plan.payment_arrangements,
         ])
-        context['is_complete'] = plan.is_complete
-        context['page_title'] = "My Funeral Plan"
+        context['has_instructions'] = bool(plan.additional_instructions)
         return context
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Full Update (all sections at once)
-# ─────────────────────────────────────────────────────────────────────────────
+# ── Step base ─────────────────────────────────────────────────────────────────
 
-class FuneralPlanUpdateView(FullAccessMixin, UpdateView):
+class _FuneralPlanStepBase(FuneralPlanMixin, TemplateView):
     """
-    Full edit view — all 8 sections in one form.
-    Follows AccountUpdateView / DeviceUpdateView pattern.
+    Abstract base for the 8 section step views.
+
+    Subclasses must define:
+      - form_class   : the section ModelForm
+      - step         : integer 1-8
+      - section_label: human-readable section title
+      - next_url     : named URL to redirect to on success (or None for summary)
+
+    Mirrors the OnboardingContactView / OnboardingAccountView pattern exactly:
+      GET  → render form pre-filled from existing plan
+      POST → validate, save section, redirect to next step
     """
-    model = FuneralPlan
-    form_class = FuneralPlanForm
-    template_name = 'dashboard/funeralplan/funeralplan_form.html'
-    owner_field = 'profile__user'
-
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return FuneralPlan.objects.filter(profile=profile)
-        except Profile.DoesNotExist:
-            return FuneralPlan.objects.none()
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        messages.success(self.request, "Funeral plan updated successfully.")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(
-            self.request,
-            "There were errors in your plan. Please review the highlighted fields.",
-        )
-        return super().form_invalid(form)
-
-    def get_success_url(self):
-        return reverse('dashboard:funeralplan_detail', kwargs={'pk': self.object.pk})
+    template_name    = 'dashboard/funeralplan/funeralplan_step.html'
+    form_class       = None   # set in subclass
+    step             = None   # set in subclass
+    section_label    = ''     # set in subclass
+    next_url         = None   # set in subclass (named URL string or None)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = "Edit Funeral Plan"
-        context['form_action'] = "Update"
-        context['can_modify'] = self.request.user.can_modify_data()
-        return context
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Section-specific partial update views
-# Each uses its matching section form from forms.py — no raw `fields` lists.
-# ─────────────────────────────────────────────────────────────────────────────
-
-class _FuneralPlanSectionUpdateBase(FullAccessMixin, UpdateView):
-    """
-    Shared base for all section-scoped update views.
-    Ownership is enforced through FullAccessMixin + owner_field.
-    """
-    model = FuneralPlan
-    template_name = 'dashboard/funeralplan/funeralplan_section_form.html'
-    owner_field = 'profile__user'
-
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return FuneralPlan.objects.filter(profile=profile)
-        except Profile.DoesNotExist:
-            return FuneralPlan.objects.none()
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # Pass user only to section forms that need it (service form needs
-        # it for officiant queryset scoping; others ignore the kwarg safely
-        # because the base ModelForm __init__ pops it).
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        messages.success(self.request, f"{self.section_label} updated successfully.")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Please correct the errors below.")
-        return super().form_invalid(form)
-
-    def get_success_url(self):
-        return reverse('dashboard:funeralplan_detail', kwargs={'pk': self.object.pk})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        plan, _ = self.get_or_create_plan()
+        context.update(self._base_context())
+        context['plan']          = plan
+        context['step']          = self.step
         context['section_label'] = self.section_label
-        context['page_title'] = f"Edit – {self.section_label}"
-        context['can_modify'] = self.request.user.can_modify_data()
+        context['page_title']    = f"Step {self.step} — {self.section_label}"
+
+        # Supply a blank (or error-carrying) form only when not already set
+        if 'form' not in context:
+            context['form'] = self.form_class(instance=plan, user=self.request.user)
+
         return context
-
-
-class FuneralPlanPersonalInfoUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 1 — supplemental personal identity."""
-    form_class = FuneralPlanPersonalInfoForm
-    section_label = "Personal Information"
-
-
-class FuneralPlanServiceUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 2 — service and timing preferences."""
-    form_class = FuneralPlanServiceForm
-    section_label = "Service Preferences"
-
-
-class FuneralPlanDispositionUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 3 — final disposition preferences."""
-    form_class = FuneralPlanDispositionForm
-    section_label = "Final Disposition"
-
-
-class FuneralPlanCeremonyUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 4 — ceremony personalisation."""
-    form_class = FuneralPlanCeremonyForm
-    section_label = "Ceremony Personalization"
-
-
-class FuneralPlanReceptionUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 5 — post-service reception."""
-    form_class = FuneralPlanReceptionForm
-    section_label = "Reception / Gathering"
-
-
-class FuneralPlanObituaryUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 6 — obituary and memorial."""
-    form_class = FuneralPlanObituaryForm
-    section_label = "Obituary & Memorial"
-
-
-class FuneralPlanAdminUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 7 — administrative and financial details."""
-    form_class = FuneralPlanAdminForm
-    section_label = "Administrative & Financial"
-
-
-class FuneralPlanInstructionsUpdateView(_FuneralPlanSectionUpdateBase):
-    """Section 8 — additional instructions and final messages."""
-    form_class = FuneralPlanInstructionsForm
-    section_label = "Additional Instructions"
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Delete
-# ─────────────────────────────────────────────────────────────────────────────
-
-class FuneralPlanDeleteView(DeleteAccessMixin, DeleteView):
-    """
-    Hard-delete a funeral plan after explicit typed confirmation.
-    Follows ContactDeleteView pattern; uses DeleteAccessMixin for permission.
-    """
-    model = FuneralPlan
-    template_name = 'dashboard/funeralplan/funeralplan_confirm_delete.html'
-    success_url = reverse_lazy('dashboard:funeralplan_create')
-    owner_field = 'profile__user'
-
-    def get_queryset(self):
-        try:
-            profile = Profile.objects.get(user=self.request.user)
-            return FuneralPlan.objects.filter(profile=profile)
-        except Profile.DoesNotExist:
-            return FuneralPlan.objects.none()
 
     def post(self, request, *args, **kwargs):
-        confirmation = request.POST.get('confirm_text', '').strip()
-        if confirmation != 'DELETE':
-            messages.error(
-                request,
-                "Deletion cancelled. Type DELETE (all caps) to confirm.",
+        if not request.user.can_modify_data():
+            messages.error(request, "You don't have permission to edit your funeral plan.")
+            return redirect(reverse('dashboard:funeralplan_index'))
+
+        plan, _ = self.get_or_create_plan()
+        form = self.form_class(request.POST, instance=plan, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'"{self.section_label}" saved successfully.')
+            return redirect(
+                reverse(self.next_url) if self.next_url
+                else reverse('dashboard:funeralplan_detail')
             )
-            return self.get(request, *args, **kwargs)
-        messages.warning(request, "Your funeral plan has been permanently deleted.")
-        return super().post(request, *args, **kwargs)
+
+        # Validation failed — re-render with errors
+        context = self.get_context_data()
+        context['form'] = form
+        messages.error(request, "Please correct the errors below.")
+        return self.render_to_response(context)
+
+
+# ── Step 1 — Personal Information ─────────────────────────────────────────────
+
+class FuneralPlanStep1View(_FuneralPlanStepBase):
+    """Section 1 — supplemental personal identity."""
+    form_class    = FuneralPlanPersonalInfoForm
+    step          = 1
+    section_label = "Personal Information"
+    next_url      = 'dashboard:funeralplan_step2'
+
+
+# ── Step 2 — Service Preferences ──────────────────────────────────────────────
+
+class FuneralPlanStep2View(_FuneralPlanStepBase):
+    """Section 2 — service and timing preferences."""
+    form_class    = FuneralPlanServiceForm
+    step          = 2
+    section_label = "Service Preferences"
+    next_url      = 'dashboard:funeralplan_step3'
+
+
+# ── Step 3 — Final Disposition ────────────────────────────────────────────────
+
+class FuneralPlanStep3View(_FuneralPlanStepBase):
+    """Section 3 — final disposition preferences."""
+    form_class    = FuneralPlanDispositionForm
+    step          = 3
+    section_label = "Final Disposition"
+    next_url      = 'dashboard:funeralplan_step4'
+
+
+# ── Step 4 — Ceremony Personalization ────────────────────────────────────────
+
+class FuneralPlanStep4View(_FuneralPlanStepBase):
+    """Section 4 — ceremony personalization."""
+    form_class    = FuneralPlanCeremonyForm
+    step          = 4
+    section_label = "Ceremony Personalization"
+    next_url      = 'dashboard:funeralplan_step5'
+
+
+# ── Step 5 — Reception ────────────────────────────────────────────────────────
+
+class FuneralPlanStep5View(_FuneralPlanStepBase):
+    """Section 5 — post-service reception details."""
+    form_class    = FuneralPlanReceptionForm
+    step          = 5
+    section_label = "Reception / Gathering"
+    next_url      = 'dashboard:funeralplan_step6'
+
+
+# ── Step 6 — Obituary & Memorial ──────────────────────────────────────────────
+
+class FuneralPlanStep6View(_FuneralPlanStepBase):
+    """Section 6 — obituary and memorial information."""
+    form_class    = FuneralPlanObituaryForm
+    step          = 6
+    section_label = "Obituary & Memorial"
+    next_url      = 'dashboard:funeralplan_step7'
+
+
+# ── Step 7 — Administrative & Financial ───────────────────────────────────────
+
+class FuneralPlanStep7View(_FuneralPlanStepBase):
+    """Section 7 — administrative and financial details."""
+    form_class    = FuneralPlanAdminForm
+    step          = 7
+    section_label = "Administrative & Financial"
+    next_url      = 'dashboard:funeralplan_step8'
+
+
+# ── Step 8 — Additional Instructions ─────────────────────────────────────────
+
+class FuneralPlanStep8View(_FuneralPlanStepBase):
+    """Section 8 — additional instructions and final messages."""
+    form_class    = FuneralPlanInstructionsForm
+    step          = 8
+    section_label = "Additional Instructions"
+    next_url      = None   # last step → redirect to detail / summary
+
+
+# ── Delete ────────────────────────────────────────────────────────────────────
+
+class FuneralPlanDeleteView(FuneralPlanMixin, TemplateView):
+    template_name = 'dashboard/funeralplan/funeralplan_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        plan, _ = self.get_or_create_plan()
+        context.update(self._base_context())
+        context['plan']       = plan
         context['page_title'] = "Delete Funeral Plan"
-        context['can_modify'] = self.request.user.can_modify_data()
         return context
 
+    def post(self, request, *args, **kwargs):
+        if not request.user.can_modify_data():
+            messages.error(request, "You don't have permission to delete your funeral plan.")
+            return redirect(reverse('dashboard:funeralplan_index'))
 
+        confirmation = request.POST.get('confirm_text', '').strip()
+        if confirmation != 'DELETE':
+            messages.error(request, "Deletion cancelled. Type DELETE (all caps) to confirm.")
+            return self.get(request, *args, **kwargs)
+
+        try:
+            plan = FuneralPlan.objects.get(profile=request.user.profile)
+            plan.delete()
+            messages.warning(request, "Your funeral plan has been permanently deleted.")
+        except FuneralPlan.DoesNotExist:
+            messages.info(request, "No funeral plan was found to delete.")
+
+        return redirect(reverse('dashboard:funeralplan_index'))
 
 
 # ============================================================================

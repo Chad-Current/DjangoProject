@@ -1,660 +1,390 @@
 {% extends "dashboard/dashboard.html" %}
 {% load static %}
 
-{% block title %}My Funeral Plan{% endblock %}
+
+{% block title %}Funeral Plan Summary{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/onboarding.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="onboarding-wrap">
+<div class="onboarding-wrap" style="grid-template-columns: 1fr; max-width: 960px;">
 
-  <!-- ── SECTION NAV RAIL ─────────────────────────────── -->
-  <aside class="step-rail">
-    <div class="rail-header">
-      <h2>Funeral Plan</h2>
-      <p>Your personalised end-of-life preferences</p>
-      <div class="rail-progress-track">
-        <div class="rail-progress-fill" style="width:
-          {% with filled=0 %}
-            {% if has_personal_info %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_service_prefs %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_disposition %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_ceremony %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_reception %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_obituary %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-            {% if has_admin %}{% with filled=filled|add:1 %}{% endwith %}{% endif %}
-          {% endwith %}
-          {% if is_complete %}100{% else %}40{% endif %}%">
-        </div>
-      </div>
-    </div>
-
-    <div class="rail-steps">
-
-      <a href="#section-personal" class="rail-step {% if has_personal_info %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_personal_info %}<i class="fas fa-check"></i>{% else %}1{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Personal Info</span>
-          <span class="rail-sub">Identity &amp; background</span>
-        </div>
-      </a>
-
-      <a href="#section-service" class="rail-step {% if has_service_prefs %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_service_prefs %}<i class="fas fa-check"></i>{% else %}2{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Service</span>
-          <span class="rail-sub">Type, venue &amp; timing</span>
-        </div>
-      </a>
-
-      <a href="#section-disposition" class="rail-step {% if has_disposition %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_disposition %}<i class="fas fa-check"></i>{% else %}3{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Disposition</span>
-          <span class="rail-sub">Burial or cremation</span>
-        </div>
-      </a>
-
-      <a href="#section-ceremony" class="rail-step {% if has_ceremony %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_ceremony %}<i class="fas fa-check"></i>{% else %}4{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Ceremony</span>
-          <span class="rail-sub">Music, readings &amp; customs</span>
-        </div>
-      </a>
-
-      <a href="#section-reception" class="rail-step {% if has_reception %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_reception %}<i class="fas fa-check"></i>{% else %}5{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Reception</span>
-          <span class="rail-sub">Gathering preferences</span>
-        </div>
-      </a>
-
-      <a href="#section-obituary" class="rail-step {% if has_obituary %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_obituary %}<i class="fas fa-check"></i>{% else %}6{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Obituary</span>
-          <span class="rail-sub">Legacy &amp; memorial</span>
-        </div>
-      </a>
-
-      <a href="#section-admin" class="rail-step {% if has_admin %}done{% else %}todo{% endif %}" style="text-decoration:none;">
-        <div class="rail-dot">{% if has_admin %}<i class="fas fa-check"></i>{% else %}7{% endif %}</div>
-        <div class="rail-text">
-          <span class="rail-label">Administrative</span>
-          <span class="rail-sub">Insurance &amp; finances</span>
-        </div>
-      </a>
-
-      <a href="#section-instructions" class="rail-step todo" style="text-decoration:none;">
-        <div class="rail-dot">8</div>
-        <div class="rail-text">
-          <span class="rail-label">Instructions</span>
-          <span class="rail-sub">Final notes &amp; messages</span>
-        </div>
-      </a>
-
-      <div class="rail-footer">
-        <a href="{% url 'dashboard:dashboard_home' %}">
-          <i class="fas fa-arrow-left"></i> Back to dashboard
-        </a>
-      </div>
-
-    </div>
-  </aside>
-
-  <!-- ── MAIN CONTENT ─────────────────────────────────── -->
-  <main class="onboarding-main">
-
-    {% if messages %}
-      {% for message in messages %}
-      <div class="ob-alert ob-alert-{% if message.tags %}{{ message.tags }}{% else %}success{% endif %}">
-        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
-        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
-        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
-        {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="ob-alert {% if message.tags == 'error' %}ob-alert-error{% elif message.tags == 'warning' %}ob-alert-warning{% else %}ob-alert-success{% endif %}">
+        <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
         {{ message }}
       </div>
-      {% endfor %}
+    {% endfor %}
+  {% endif %}
+
+  <!-- Page header -->
+  <div class="ob-page-header{% if progress.is_complete %} ob-complete-header{% endif %}">
+    {% if progress.is_complete %}
+      <div class="ob-complete-trophy">🎗️</div>
     {% endif %}
+    <p class="ob-eyebrow">Estate Planning</p>
+    <h1>Funeral Plan Summary</h1>
+    <p>A complete record of your wishes across all eight planning sections.</p>
+  </div>
 
-    <!-- Page header -->
-    <div class="ob-page-header">
-      <div class="ob-eyebrow">Funeral &amp; Memorial Plan</div>
-      <h1>Your end-of-life preferences.</h1>
-      <p>These instructions give your family the clarity they need when it matters most. Review and update this plan any time your wishes change.</p>
-    </div>
-
-    <!-- Action bar -->
-    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem; align-items:center;">
-      {% if can_modify %}
-      <a href="{% url 'dashboard:funeralplan_update' plan.pk %}" class="ob-btn ob-btn-primary">
-        <i class="fas fa-edit"></i> Edit Full Plan
+  <!-- Action bar -->
+  <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+    {% if can_modify %}
+      <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-primary">
+        <i class="fas fa-pen"></i> Edit Plan
       </a>
-      {% endif %}
-      <a href="{% url 'dashboard:funeralplan_delete' plan.pk %}" class="ob-btn ob-btn-ghost" style="color:#c0392b; border-color:#c0392b;">
+    {% endif %}
+    <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-ghost">
+      <i class="fas fa-grid-2"></i> Overview
+    </a>
+    <button onclick="window.print()" class="ob-btn ob-btn-ghost">
+      <i class="fas fa-print"></i> Print
+    </button>
+    <span style="flex:1"></span>
+    {% if can_modify %}
+      <a href="{% url 'dashboard:funeralplan_delete' %}"
+         class="ob-btn ob-btn-ghost" style="color:#c0392b; border-color:#fecaca;">
         <i class="fas fa-trash"></i> Delete Plan
       </a>
-    </div>
-
-    <!-- ══ SECTION 1 — PERSONAL INFO ══════════════════════════════ -->
-    {% if has_personal_info %}
-    <div class="ob-form-card" id="section-personal" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-user"></i></div>
-        Personal Information
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_personal' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.preferred_name %}
-        <div class="ob-field">
-          <label>Preferred Name</label>
-          <div class="ob-detail-value">{{ plan.preferred_name }}</div>
-        </div>
-        {% endif %}
-        {% if plan.occupation %}
-        <div class="ob-field">
-          <label>Occupation / Career</label>
-          <div class="ob-detail-value">{{ plan.occupation }}</div>
-        </div>
-        {% endif %}
-        {% if plan.marital_status %}
-        <div class="ob-field">
-          <label>Marital Status</label>
-          <div class="ob-detail-value">{{ plan.marital_status }}</div>
-        </div>
-        {% endif %}
-        {% if plan.religion_or_spiritual_affiliation %}
-        <div class="ob-field">
-          <label>Religion / Spiritual Affiliation</label>
-          <div class="ob-detail-value">{{ plan.religion_or_spiritual_affiliation }}</div>
-        </div>
-        {% endif %}
-        {% if plan.is_veteran %}
-        <div class="ob-field ob-full">
-          <span class="ob-badge badge-navy"><i class="fas fa-medal"></i> Military Veteran</span>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-personal" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-user"></i></div>
-        Personal Information
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_personal' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-user-circle"></i></div>
-        <p>No personal information added yet.</p>
-      </div>
-    </div>
     {% endif %}
+    <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost">
+      <i class="fas fa-arrow-left"></i> Dashboard
+    </a>
+  </div>
 
-    <!-- ══ SECTION 2 — SERVICE PREFERENCES ════════════════════════ -->
-    {% if has_service_prefs %}
-    <div class="ob-form-card" id="section-service" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-church"></i></div>
-        Service Preferences
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_service' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.service_type %}
-        <div class="ob-field">
-          <label>Service Type</label>
-          <div class="ob-detail-value">{{ plan.service_type }}</div>
-        </div>
-        {% endif %}
-        {% if plan.desired_timing %}
-        <div class="ob-field">
-          <label>Desired Timing</label>
-          <div class="ob-detail-value">{{ plan.desired_timing }}</div>
-        </div>
-        {% endif %}
-        {% if plan.preferred_funeral_home %}
-        <div class="ob-field">
-          <label>Preferred Funeral Home</label>
-          <div class="ob-detail-value">{{ plan.preferred_funeral_home }}</div>
-        </div>
-        {% endif %}
-        {% if plan.preferred_venue %}
-        <div class="ob-field">
-          <label>Preferred Venue</label>
-          <div class="ob-detail-value">{{ plan.preferred_venue }}</div>
-        </div>
-        {% endif %}
-        {% if plan.officiant_contact %}
-        <div class="ob-field">
-          <label>Officiant</label>
-          <div class="ob-detail-value">{{ plan.officiant_contact.first_name }} {{ plan.officiant_contact.last_name }}</div>
-        </div>
-        {% elif plan.officiant_name_freetext %}
-        <div class="ob-field">
-          <label>Officiant</label>
-          <div class="ob-detail-value">{{ plan.officiant_name_freetext }}</div>
-        </div>
-        {% endif %}
-        {% if plan.open_casket_viewing is not None %}
-        <div class="ob-field">
-          <label>Open Casket Viewing</label>
-          <div class="ob-detail-value">{% if plan.open_casket_viewing %}Yes — viewing requested{% else %}No viewing preferred{% endif %}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-service" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-church"></i></div>
-        Service Preferences
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_service' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-church"></i></div>
-        <p>No service preferences added yet.</p>
-      </div>
-    </div>
-    {% endif %}
+  <!-- ── Sections ── -->
+  <div class="ob-complete-card">
 
-    <!-- ══ SECTION 3 — FINAL DISPOSITION ══════════════════════════ -->
-    {% if has_disposition %}
-    <div class="ob-form-card" id="section-disposition" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-leaf"></i></div>
-        Final Disposition
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_disposition' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
+    <!-- Progress count row -->
+    <div class="ob-count-grid">
+      <div class="ob-count-cell accent-blue">
+        <div class="ob-count-emoji">🪪</div>
+        <div class="ob-count-number">{% if progress.personal_info %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Personal Info</div>
       </div>
-      <div class="ob-grid">
-        {% if plan.disposition_method %}
-        <div class="ob-field">
-          <label>Method</label>
-          <div class="ob-detail-value">
-            {% if 'Burial' in plan.disposition_method %}⚰️{% elif 'Cremat' in plan.disposition_method %}🔥{% elif 'Donate' in plan.disposition_method %}🏥{% else %}🌿{% endif %}
-            {{ plan.disposition_method }}
-          </div>
-        </div>
-        {% endif %}
-        {% if plan.burial_or_interment_location %}
-        <div class="ob-field">
-          <label>Burial / Interment Location</label>
-          <div class="ob-detail-value">{{ plan.burial_or_interment_location }}</div>
-        </div>
-        {% endif %}
-        {% if plan.casket_type_preference %}
-        <div class="ob-field">
-          <label>Casket Preference</label>
-          <div class="ob-detail-value">{{ plan.casket_type_preference }}</div>
-        </div>
-        {% endif %}
-        {% if plan.urn_type_preference %}
-        <div class="ob-field">
-          <label>Urn Preference</label>
-          <div class="ob-detail-value">{{ plan.urn_type_preference }}</div>
-        </div>
-        {% endif %}
-        {% if plan.headstone_or_marker_inscription %}
-        <div class="ob-field ob-full">
-          <label>Headstone / Marker Inscription</label>
-          <div class="ob-detail-value">{{ plan.headstone_or_marker_inscription }}</div>
-        </div>
-        {% endif %}
+      <div class="ob-count-cell accent-navy">
+        <div class="ob-count-emoji">⛪</div>
+        <div class="ob-count-number">{% if progress.service %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Service Prefs</div>
+      </div>
+      <div class="ob-count-cell accent-amber">
+        <div class="ob-count-emoji">🌿</div>
+        <div class="ob-count-number">{% if progress.disposition %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Disposition</div>
+      </div>
+      <div class="ob-count-cell accent-amber">
+        <div class="ob-count-emoji">🎵</div>
+        <div class="ob-count-number">{% if progress.ceremony %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Ceremony</div>
+      </div>
+      <div class="ob-count-cell accent-navy">
+        <div class="ob-count-emoji">🤝</div>
+        <div class="ob-count-number">{% if progress.reception %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Reception</div>
+      </div>
+      <div class="ob-count-cell accent-blue">
+        <div class="ob-count-emoji">📰</div>
+        <div class="ob-count-number">{% if progress.obituary %}✓{% else %}—{% endif %}</div>
+        <div class="ob-count-label">Obituary</div>
       </div>
     </div>
-    {% else %}
-    <div class="ob-form-card" id="section-disposition" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-leaf"></i></div>
-        Final Disposition
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_disposition' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-leaf"></i></div>
-        <p>No disposition preferences added yet.</p>
-      </div>
-    </div>
-    {% endif %}
 
-    <!-- ══ SECTION 4 — CEREMONY ════════════════════════════════════ -->
-    {% if has_ceremony %}
-    <div class="ob-form-card" id="section-ceremony" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-music"></i></div>
-        Ceremony Personalization
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_ceremony' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
+    <div class="ob-complete-cta">
+      <p>
+        {% if progress.is_complete %}
+          Your funeral plan is complete. Your loved ones will have clear guidance when the time comes.
+        {% else %}
+          Complete all sections to ensure your wishes are clearly documented for your loved ones.
+        {% endif %}
+      </p>
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-primary">
+          <i class="fas fa-pen"></i> Continue Editing
         </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.music_choices %}
-        <div class="ob-field">
-          <label>🎵 Music Choices</label>
-          <div class="ob-detail-value">{{ plan.music_choices }}</div>
-        </div>
-        {% endif %}
-        {% if plan.flowers_or_colors %}
-        <div class="ob-field">
-          <label>🌸 Flowers / Colours</label>
-          <div class="ob-detail-value">{{ plan.flowers_or_colors }}</div>
-        </div>
-        {% endif %}
-        {% if plan.readings_poems_or_scriptures %}
-        <div class="ob-field ob-full">
-          <label>📖 Readings, Poems or Scriptures</label>
-          <div class="ob-detail-value">{{ plan.readings_poems_or_scriptures }}</div>
-        </div>
-        {% endif %}
-        {% if plan.eulogists_notes %}
-        <div class="ob-field ob-full">
-          <label>🎤 Eulogist Notes</label>
-          <div class="ob-detail-value">{{ plan.eulogists_notes }}</div>
-        </div>
-        {% endif %}
-        {% if plan.pallbearers_notes %}
-        <div class="ob-field ob-full">
-          <label>🤝 Pallbearer Notes</label>
-          <div class="ob-detail-value">{{ plan.pallbearers_notes }}</div>
-        </div>
-        {% endif %}
-        {% if plan.clothing_or_jewelry_description %}
-        <div class="ob-field ob-full">
-          <label>👔 Clothing / Jewelry</label>
-          <div class="ob-detail-value">{{ plan.clothing_or_jewelry_description }}</div>
-        </div>
-        {% endif %}
-        {% if plan.religious_cultural_customs %}
-        <div class="ob-field ob-full">
-          <label>🕯️ Religious / Cultural Customs</label>
-          <div class="ob-detail-value">{{ plan.religious_cultural_customs }}</div>
-        </div>
-        {% endif %}
-        {% if plan.items_to_display %}
-        <div class="ob-field ob-full">
-          <label>🖼️ Items to Display</label>
-          <div class="ob-detail-value">{{ plan.items_to_display }}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-ceremony" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-music"></i></div>
-        Ceremony Personalization
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_ceremony' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-music"></i></div>
-        <p>No ceremony preferences added yet.</p>
-      </div>
-    </div>
-    {% endif %}
-
-    <!-- ══ SECTION 5 — RECEPTION ════════════════════════════════════ -->
-    {% if has_reception %}
-    <div class="ob-form-card" id="section-reception" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-utensils"></i></div>
-        Reception / Gathering
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_reception' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.reception_desired is not None %}
-        <div class="ob-field">
-          <label>Reception Desired</label>
-          <div class="ob-detail-value">{% if plan.reception_desired %}Yes{% else %}No{% endif %}</div>
-        </div>
-        {% endif %}
-        {% if plan.reception_location %}
-        <div class="ob-field">
-          <label>Location</label>
-          <div class="ob-detail-value">{{ plan.reception_location }}</div>
-        </div>
-        {% endif %}
-        {% if plan.reception_food_preferences %}
-        <div class="ob-field ob-full">
-          <label>Food Preferences</label>
-          <div class="ob-detail-value">{{ plan.reception_food_preferences }}</div>
-        </div>
-        {% endif %}
-        {% if plan.reception_atmosphere_notes %}
-        <div class="ob-field ob-full">
-          <label>Atmosphere Notes</label>
-          <div class="ob-detail-value">{{ plan.reception_atmosphere_notes }}</div>
-        </div>
-        {% endif %}
-        {% if plan.reception_guest_list_notes %}
-        <div class="ob-field ob-full">
-          <label>Guest List Notes</label>
-          <div class="ob-detail-value">{{ plan.reception_guest_list_notes }}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-reception" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-utensils"></i></div>
-        Reception / Gathering
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_reception' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-utensils"></i></div>
-        <p>No reception preferences added yet.</p>
-      </div>
-    </div>
-    {% endif %}
-
-    <!-- ══ SECTION 6 — OBITUARY ═════════════════════════════════════ -->
-    {% if has_obituary %}
-    <div class="ob-form-card" id="section-obituary" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-pen-nib"></i></div>
-        Obituary &amp; Memorial
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_obituary' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.obituary_photo_description %}
-        <div class="ob-field ob-full">
-          <label>Photo Description</label>
-          <div class="ob-detail-value">{{ plan.obituary_photo_description }}</div>
-        </div>
-        {% endif %}
-        {% if plan.obituary_key_achievements %}
-        <div class="ob-field ob-full">
-          <label>Key Achievements / Life Highlights</label>
-          <div class="ob-detail-value">{{ plan.obituary_key_achievements }}</div>
-        </div>
-        {% endif %}
-        {% if plan.obituary_publications %}
-        <div class="ob-field ob-full">
-          <label>Obituary Publications</label>
-          <div class="ob-detail-value">{{ plan.obituary_publications }}</div>
-        </div>
-        {% endif %}
-        {% if plan.charitable_donations_in_lieu %}
-        <div class="ob-field ob-full">
-          <label>Charitable Donations in Lieu of Flowers</label>
-          <div class="ob-detail-value">{{ plan.charitable_donations_in_lieu }}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-obituary" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-pen-nib"></i></div>
-        Obituary &amp; Memorial
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_obituary' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-pen-nib"></i></div>
-        <p>No obituary preferences added yet.</p>
-      </div>
-    </div>
-    {% endif %}
-
-    <!-- ══ SECTION 7 — ADMINISTRATIVE ══════════════════════════════ -->
-    {% if has_admin %}
-    <div class="ob-form-card" id="section-admin" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-        Administrative &amp; Financial
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_admin' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-grid">
-        {% if plan.funeral_insurance_policy_number %}
-        <div class="ob-field">
-          <label>Insurance Policy Number</label>
-          <div class="ob-detail-value">{{ plan.funeral_insurance_policy_number }}</div>
-        </div>
-        {% endif %}
-        {% if plan.death_certificates_requested %}
-        <div class="ob-field">
-          <label>Death Certificates Requested</label>
-          <div class="ob-detail-value">{{ plan.death_certificates_requested }}</div>
-        </div>
-        {% endif %}
-        {% if plan.payment_arrangements %}
-        <div class="ob-field ob-full">
-          <label>Payment Arrangements</label>
-          <div class="ob-detail-value">{{ plan.payment_arrangements }}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    {% else %}
-    <div class="ob-form-card" id="section-admin" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-        Administrative &amp; Financial
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_admin' plan.pk %}" class="ob-btn ob-btn-accent" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-plus"></i> Add
-        </a>
-        {% endif %}
-      </div>
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-        <p>No administrative details added yet.</p>
-      </div>
-    </div>
-    {% endif %}
-
-    <!-- ══ SECTION 8 — ADDITIONAL INSTRUCTIONS ═════════════════════ -->
-    <div class="ob-form-card" id="section-instructions" style="margin-bottom:1.5rem;">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon"><i class="fas fa-scroll"></i></div>
-        Additional Instructions
-        {% if can_modify %}
-        <a href="{% url 'dashboard:funeralplan_section_instructions' plan.pk %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size:var(--font-sm); padding:0.35rem 0.9rem;">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        {% endif %}
-      </div>
-      {% if plan.additional_instructions %}
-      <div class="ob-field ob-full" style="margin-top:0.5rem;">
-        <div class="ob-detail-value" style="white-space:pre-line;">{{ plan.additional_instructions }}</div>
-      </div>
-      {% else %}
-      <div class="ob-empty">
-        <div class="ob-empty-icon"><i class="fas fa-scroll"></i></div>
-        <p>No additional instructions added yet.</p>
-      </div>
       {% endif %}
     </div>
 
-    <!-- Tip -->
-    <div class="ob-tip">
-      <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> Keep this plan current</div>
-      <ul>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Review this plan after major life events</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Share the location of this plan with your executor</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Discuss your wishes with your family directly</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Revisit at least once a year</li>
-      </ul>
-    </div>
+  </div><!-- /.ob-complete-card -->
 
-  </main>
-</div>
+  <!-- ══════════════════════════════════
+       DETAIL SECTIONS
+       ══════════════════════════════════ -->
+
+  <!-- 1 — Personal Information -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">🪪</div>
+      1 — Personal Information
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_personal_info %}
+      <div class="ob-grid">
+        {% if plan.preferred_name %}
+          <div class="ob-field">
+            <label class="form-label">Preferred Name</label>
+            <div class="ob-items"><div class="ob-item"><div class="ob-item-body"><div class="ob-item-name">{{ plan.preferred_name }}</div></div></div></div>
+          </div>
+        {% endif %}
+        {% if plan.occupation %}
+          <div class="ob-field">
+            <label class="form-label">Occupation</label>
+            <div class="ob-items"><div class="ob-item"><div class="ob-item-body"><div class="ob-item-name">{{ plan.occupation }}</div></div></div></div>
+          </div>
+        {% endif %}
+        {% if plan.marital_status %}
+          <div class="ob-field">
+            <label class="form-label">Marital Status</label>
+            <div class="ob-items"><div class="ob-item"><div class="ob-item-body"><div class="ob-item-name">{{ plan.marital_status }}</div></div></div></div>
+          </div>
+        {% endif %}
+        {% if plan.religion_or_spiritual_affiliation %}
+          <div class="ob-field">
+            <label class="form-label">Religion / Affiliation</label>
+            <div class="ob-items"><div class="ob-item"><div class="ob-item-body"><div class="ob-item-name">{{ plan.religion_or_spiritual_affiliation }}</div></div></div></div>
+          </div>
+        {% endif %}
+        <div class="ob-field">
+          <label class="form-label">Veteran</label>
+          {% if plan.is_veteran %}
+            <span class="ob-badge badge-blue">✓ Yes{% if plan.veteran_branch %} — {{ plan.veteran_branch }}{% endif %}</span>
+          {% else %}
+            <span class="ob-badge badge-navy">No</span>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">🪪</div>
+        <p>No personal information recorded yet.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 2 — Service Preferences -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">⛪</div>
+      2 — Service Preferences
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_service_prefs %}
+      <div class="ob-grid">
+        {% if plan.service_type %}<div class="ob-field"><label class="form-label">Service Type</label><div class="ob-item-name">{{ plan.service_type }}</div></div>{% endif %}
+        {% if plan.preferred_funeral_home %}<div class="ob-field"><label class="form-label">Funeral Home</label><div class="ob-item-name">{{ plan.preferred_funeral_home }}</div></div>{% endif %}
+        {% if plan.funeral_home_phone %}<div class="ob-field"><label class="form-label">Phone</label><div class="ob-item-name">{{ plan.funeral_home_phone }}</div></div>{% endif %}
+        {% if plan.desired_timing %}<div class="ob-field"><label class="form-label">Preferred Timing</label><div class="ob-item-name">{{ plan.desired_timing }}</div></div>{% endif %}
+        {% if plan.open_casket_viewing %}<div class="ob-field"><label class="form-label">Viewing</label><div class="ob-item-name">{{ plan.open_casket_viewing }}</div></div>{% endif %}
+        {% if plan.officiant_name_freetext %}<div class="ob-field"><label class="form-label">Officiant</label><div class="ob-item-name">{{ plan.officiant_name_freetext }}</div></div>{% endif %}
+        {% if plan.funeral_home_address %}<div class="ob-field ob-full"><label class="form-label">Funeral Home Address</label><div class="ob-item-name">{{ plan.funeral_home_address }}</div></div>{% endif %}
+        {% if plan.preferred_venue %}<div class="ob-field ob-full"><label class="form-label">Preferred Venue</label><div class="ob-item-name">{{ plan.preferred_venue }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">⛪</div>
+        <p>No service preferences recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 3 — Final Disposition -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">🌿</div>
+      3 — Final Disposition
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_disposition %}
+      <div class="ob-grid">
+        {% if plan.disposition_method %}<div class="ob-field"><label class="form-label">Method</label><div class="ob-item-name">{{ plan.disposition_method }}</div></div>{% endif %}
+        <div class="ob-field"><label class="form-label">Plot / Niche Purchased</label>
+          {% if plan.burial_plot_or_niche_purchased is True %}<span class="ob-badge badge-blue">✓ Yes</span>
+          {% elif plan.burial_plot_or_niche_purchased is False %}<span class="ob-badge badge-navy">No</span>
+          {% else %}<span class="ob-badge">—</span>{% endif %}
+        </div>
+        {% if plan.casket_type_preference %}<div class="ob-field"><label class="form-label">Casket Preference</label><div class="ob-item-name">{{ plan.casket_type_preference }}</div></div>{% endif %}
+        {% if plan.urn_type_preference %}<div class="ob-field"><label class="form-label">Urn Preference</label><div class="ob-item-name">{{ plan.urn_type_preference }}</div></div>{% endif %}
+        {% if plan.burial_or_interment_location %}<div class="ob-field ob-full"><label class="form-label">Location</label><div class="ob-item-name">{{ plan.burial_or_interment_location }}</div></div>{% endif %}
+        {% if plan.headstone_or_marker_inscription %}<div class="ob-field ob-full"><label class="form-label">Inscription Ideas</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.headstone_or_marker_inscription }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">🌿</div>
+        <p>No disposition preferences recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 4 — Ceremony -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">🎵</div>
+      4 — Ceremony Personalization
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_ceremony %}
+      <div class="ob-grid">
+        {% if plan.flowers_or_colors %}<div class="ob-field"><label class="form-label">Flowers / Colors</label><div class="ob-item-name">{{ plan.flowers_or_colors }}</div></div>{% endif %}
+        {% if plan.clothing_or_jewelry_description %}<div class="ob-field"><label class="form-label">Clothing / Jewelry</label><div class="ob-item-name">{{ plan.clothing_or_jewelry_description }}</div></div>{% endif %}
+        {% if plan.music_choices %}<div class="ob-field ob-full"><label class="form-label">Music</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.music_choices }}</div></div>{% endif %}
+        {% if plan.readings_poems_or_scriptures %}<div class="ob-field ob-full"><label class="form-label">Readings / Poems</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.readings_poems_or_scriptures }}</div></div>{% endif %}
+        {% if plan.eulogists_notes %}<div class="ob-field ob-full"><label class="form-label">Eulogists / Speakers</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.eulogists_notes }}</div></div>{% endif %}
+        {% if plan.pallbearers_notes %}<div class="ob-field ob-full"><label class="form-label">Pallbearers</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.pallbearers_notes }}</div></div>{% endif %}
+        {% if plan.religious_cultural_customs %}<div class="ob-field ob-full"><label class="form-label">Religious / Cultural Customs</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.religious_cultural_customs }}</div></div>{% endif %}
+        {% if plan.items_to_display %}<div class="ob-field ob-full"><label class="form-label">Items to Display</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.items_to_display }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">🎵</div>
+        <p>No ceremony preferences recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 5 — Reception -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">🤝</div>
+      5 — Reception / Gathering
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_reception %}
+      <div class="ob-grid">
+        <div class="ob-field"><label class="form-label">Gathering Desired</label>
+          {% if plan.reception_desired is True %}<span class="ob-badge badge-blue">✓ Yes</span>
+          {% elif plan.reception_desired is False %}<span class="ob-badge badge-navy">No</span>
+          {% else %}<span class="ob-badge">Not specified</span>{% endif %}
+        </div>
+        {% if plan.reception_location %}<div class="ob-field ob-full"><label class="form-label">Location</label><div class="ob-item-name">{{ plan.reception_location }}</div></div>{% endif %}
+        {% if plan.reception_food_preferences %}<div class="ob-field ob-full"><label class="form-label">Food / Catering</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.reception_food_preferences }}</div></div>{% endif %}
+        {% if plan.reception_atmosphere_notes %}<div class="ob-field ob-full"><label class="form-label">Atmosphere / Music</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.reception_atmosphere_notes }}</div></div>{% endif %}
+        {% if plan.reception_guest_list_notes %}<div class="ob-field ob-full"><label class="form-label">Guest List Notes</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.reception_guest_list_notes }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">🤝</div>
+        <p>No reception preferences recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 6 — Obituary -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">📰</div>
+      6 — Obituary &amp; Memorial
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_obituary %}
+      <div class="ob-grid">
+        {% if plan.obituary_photo_description %}<div class="ob-field ob-full"><label class="form-label">Photo Preference</label><div class="ob-item-name">{{ plan.obituary_photo_description }}</div></div>{% endif %}
+        {% if plan.obituary_key_achievements %}<div class="ob-field ob-full"><label class="form-label">Key Achievements / Memories</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.obituary_key_achievements }}</div></div>{% endif %}
+        {% if plan.obituary_publications %}<div class="ob-field ob-full"><label class="form-label">Publications / Websites</label><div class="ob-item-name">{{ plan.obituary_publications }}</div></div>{% endif %}
+        {% if plan.charitable_donations_in_lieu %}<div class="ob-field ob-full"><label class="form-label">Charitable Donations in Lieu</label><div class="ob-item-name">{{ plan.charitable_donations_in_lieu }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">📰</div>
+        <p>No obituary information recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 7 — Administrative -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">📋</div>
+      7 — Administrative &amp; Financial
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_admin %}
+      <div class="ob-grid">
+        {% if plan.funeral_insurance_policy_number %}<div class="ob-field"><label class="form-label">Insurance Policy #</label><div class="ob-item-name">{{ plan.funeral_insurance_policy_number }}</div></div>{% endif %}
+        {% if plan.death_certificates_requested %}<div class="ob-field"><label class="form-label">Death Certificates Needed</label><div class="ob-item-name">{{ plan.death_certificates_requested }}</div></div>{% endif %}
+        <div class="ob-field"><label class="form-label">Review Reminder</label><div class="ob-item-name">Every {{ plan.review_time }} days</div></div>
+        {% if plan.payment_arrangements %}<div class="ob-field ob-full"><label class="form-label">Payment Arrangements</label><div class="ob-item-name" style="white-space:pre-line;">{{ plan.payment_arrangements }}</div></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">📋</div>
+        <p>No administrative details recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 8 — Additional Instructions -->
+  <div class="ob-form-card" style="margin-top: 1rem;">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon">✉️</div>
+      8 — Additional Instructions
+      {% if can_modify %}
+        <a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost" style="margin-left:auto; font-size: var(--font-sm);">
+          <i class="fas fa-pen"></i> Edit
+        </a>
+      {% endif %}
+    </div>
+    {% if has_instructions %}
+      <p style="white-space:pre-line; margin:0; font-family: var(--paragraph-font); font-size: var(--font-nm); font-weight:300; color: var(--text-color-dark);">{{ plan.additional_instructions }}</p>
+    {% else %}
+      <div class="ob-empty">
+        <div class="ob-empty-icon">✉️</div>
+        <p>No additional instructions recorded.</p>
+        {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost" style="margin-top:.75rem;">Add now</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Footer -->
+  <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-top:0.5rem; padding-top:1rem;">
+    <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-primary">
+      <i class="fas fa-arrow-left"></i> Back to Overview
+    </a>
+    <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost">Dashboard</a>
+    <button onclick="window.print()" class="ob-btn ob-btn-ghost">Print Summary</button>
+  </div>
+
+</div><!-- /.onboarding-wrap -->
 
 <style>
-  /* ── Detail value display ─────────────────────────────────── */
-  .ob-detail-value {
-    font-family: var(--paragraph-font);
-    font-size: var(--font-nm);
-    font-weight: 400;
-    color: var(--text-color-dark);
-    padding: 0.55rem 0.75rem;
-    background: var(--background-color);
-    border-radius: 8px;
-    border: 1px solid rgba(98,162,206,0.15);
-    line-height: 1.55;
-    white-space: pre-line;
+  @media print {
+    .ob-btn, [onclick] { display: none !important; }
   }
-  .ob-field label {
-    font-size: var(--font-sm);
-    font-weight: 700;
-    color: var(--thirty-percent);
-    display: block;
-    margin-bottom: 0.3rem;
-  }
-  /* Anchor rail-steps — remove default link style */
-  .step-rail a.rail-step:hover { text-decoration: none; }
 </style>
 {% endblock %}

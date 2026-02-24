@@ -4,221 +4,111 @@
 {% block title %}Delete Funeral Plan{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/onboarding.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="onboarding-wrap ob-single-col">
+<div class="delete-view-wrapper">
+  <div class="delete-view">
 
-  <main class="onboarding-main" style="max-width: 580px; margin: 0 auto;">
+    <!-- Warning icon -->
+    <div class="delete-icon">⚠️</div>
 
-    {% if messages %}
-      {% for message in messages %}
-      <div class="ob-alert ob-alert-{% if message.tags %}{{ message.tags }}{% else %}error{% endif %}">
-        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
-        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
-        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
-        {% else %}<i class="fas fa-info-circle"></i>
-        {% endif %}
-        {{ message }}
-      </div>
-      {% endfor %}
-    {% endif %}
+    <h1 class="delete-title">Delete Funeral Plan</h1>
+    <p class="delete-subtitle">
+      This will permanently erase your entire funeral plan.<br>
+      Your other estate data will not be affected.
+    </p>
 
-    <!-- Warning header -->
-    <div class="ob-page-header" style="text-align:center;">
-      <div class="fp-delete-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <div class="ob-eyebrow" style="color:#c0392b;">Permanent Action</div>
-      <h1>Delete your funeral plan?</h1>
-      <p>This will permanently erase all of your funeral and memorial preferences. Your other estate data (contacts, accounts, documents) will not be affected.</p>
+    <!-- Sections that will be erased -->
+    <div class="delete-item-name" style="flex-wrap:wrap; gap:.4rem; margin: 1.25rem 0 1.75rem; justify-content: center;">
+      <i class="fas fa-folder-open"></i>
+      {% if progress.personal_info %}<span class="ob-badge badge-blue">Personal Info</span>{% endif %}
+      {% if progress.service %}<span class="ob-badge badge-blue">Service Prefs</span>{% endif %}
+      {% if progress.disposition %}<span class="ob-badge badge-blue">Disposition</span>{% endif %}
+      {% if progress.ceremony %}<span class="ob-badge badge-blue">Ceremony</span>{% endif %}
+      {% if progress.reception %}<span class="ob-badge badge-blue">Reception</span>{% endif %}
+      {% if progress.obituary %}<span class="ob-badge badge-blue">Obituary</span>{% endif %}
+      {% if progress.admin %}<span class="ob-badge badge-blue">Admin</span>{% endif %}
+      {% if progress.instructions %}<span class="ob-badge badge-blue">Instructions</span>{% endif %}
+      {% if not progress.personal_info and not progress.service and not progress.disposition and not progress.ceremony and not progress.reception and not progress.obituary and not progress.admin and not progress.instructions %}
+        <span style="font-family: var(--main-font); font-size: var(--font-sm); color: #9ca3af;">No sections completed yet</span>
+      {% endif %}
     </div>
 
-    <!-- What will be lost -->
-    <div class="ob-form-card" style="border-left: 4px solid #c0392b; margin-bottom:1.5rem;">
-      <div class="ob-card-heading" style="color:#c0392b;">
-        <div class="ob-card-icon" style="background:rgba(192,57,43,0.1); color:#c0392b;">
-          <i class="fas fa-trash-alt"></i>
-        </div>
-        The following will be permanently deleted
-      </div>
-      <div class="fp-delete-summary">
-        <div class="fp-delete-row">
-          <i class="fas fa-user"></i>
-          <span>Personal information, religion, occupation</span>
-          {% if has_personal_info %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-church"></i>
-          <span>Service type, venue and timing preferences</span>
-          {% if has_service_prefs %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-leaf"></i>
-          <span>Burial, cremation and disposition choices</span>
-          {% if has_disposition %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-music"></i>
-          <span>Ceremony personalisation — music, readings, customs</span>
-          {% if has_ceremony %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-utensils"></i>
-          <span>Reception and gathering preferences</span>
-          {% if has_reception %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-pen-nib"></i>
-          <span>Obituary and memorial instructions</span>
-          {% if has_obituary %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-file-invoice-dollar"></i>
-          <span>Administrative and insurance details</span>
-          {% if has_admin %}<span class="ob-badge badge-navy">Has data</span>{% endif %}
-        </div>
-        <div class="fp-delete-row">
-          <i class="fas fa-scroll"></i>
-          <span>Additional instructions and final messages</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Typed confirmation form -->
-    <div class="ob-form-card">
-      <div class="ob-card-heading">
-        <div class="ob-card-icon" style="background:rgba(192,57,43,0.1); color:#c0392b;">
-          <i class="fas fa-keyboard"></i>
-        </div>
-        Confirm deletion
-      </div>
-
-      <p style="font-family:var(--paragraph-font); font-size:var(--font-nm); font-weight:300; color:var(--text-color-dark); margin:0 0 1.1rem; line-height:1.6;">
-        To confirm, type <strong style="font-family:var(--main-font); letter-spacing:0.08em; color:#c0392b;">DELETE</strong> in the box below and click the delete button.
+    <!-- Warning notice -->
+    <div class="delete-warning-notice">
+      <i class="fas fa-triangle-exclamation"></i>
+      <p>
+        <strong>This cannot be undone.</strong> Once deleted, all funeral plan data is permanently
+        removed and cannot be recovered. You will be able to start a new plan at any time.
       </p>
-
-      <form method="post" id="delete-form">
-        {% csrf_token %}
-
-        <div class="ob-field" style="margin-bottom:1.25rem;">
-          <label for="confirm_text" style="font-weight:700; color:var(--ten-percent);">
-            Type DELETE to confirm
-          </label>
-          <input
-            type="text"
-            id="confirm_text"
-            name="confirm_text"
-            class="textinput"
-            placeholder="DELETE"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="characters"
-            spellcheck="false"
-            style="letter-spacing:0.1em; font-weight:700;"
-          >
-        </div>
-
-        <div class="ob-actions">
-          <a href="{% url 'dashboard:funeralplan_detail' object.pk %}" class="ob-btn ob-btn-ghost">
-            <i class="fas fa-arrow-left"></i> Keep my plan
-          </a>
-          <div class="ob-spacer"></div>
-          <button
-            type="submit"
-            id="delete-btn"
-            class="ob-btn ob-btn-ghost"
-            disabled
-            style="color:#c0392b; border-color:#c0392b; opacity:0.45; cursor:not-allowed; transition:opacity 0.2s;"
-          >
-            <i class="fas fa-trash-alt"></i> Delete permanently
-          </button>
-        </div>
-      </form>
-
     </div>
 
-    <!-- Reassurance tip -->
-    <div class="ob-tip">
-      <div class="ob-tip-title"><i class="fas fa-info-circle"></i> Before you delete</div>
-      <ul>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Consider editing individual sections instead of deleting the whole plan</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Your contacts, accounts, devices and documents are NOT affected</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>You can create a new funeral plan at any time after deletion</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>This action cannot be undone — there is no recovery</li>
-      </ul>
-    </div>
+    <!-- Single form wrapping BOTH the input and the submit button -->
+    <form method="post" id="deleteForm" style="width: 100%;">
+      {% csrf_token %}
 
-  </main>
-</div>
+      <!-- Confirmation input -->
+      <div style="margin-bottom: 1.5rem; text-align: left;">
+        <label for="confirm_text"
+               style="display:block; font-family:var(--main-font); font-size:var(--font-sm);
+                      font-weight:700; color:var(--ten-percent); margin-bottom:.4rem;">
+          Type
+          <code style="background:#f3f4f6; border:1px solid #e5e7eb; border-radius:4px;
+                       padding:.1rem .4rem; color:#dc2626; font-weight:700; letter-spacing:.05em;">DELETE</code>
+          to confirm
+        </label>
+        <input
+          type="text"
+          id="confirm_text"
+          name="confirm_text"
+          placeholder="Type DELETE to confirm"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          style="width:100%; padding:9px 13px; border:1.5px solid #dce6f0; border-radius:10px;
+                 font-family:var(--main-font); font-size:var(--font-nm); color:var(--text-color-dark);
+                 background:var(--background-color); outline:none; box-sizing:border-box;
+                 transition:border-color .2s, box-shadow .2s;"
+          oninput="document.getElementById('delete-btn').disabled = this.value.trim() !== 'DELETE';"
+        >
+        <p style="font-family:var(--paragraph-font); font-size:var(--font-sm); font-weight:300;
+                  color:var(--thirty-percent); margin:.3rem 0 0;">
+          Must be typed exactly — all capital letters.
+        </p>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="delete-actions">
+        <button type="submit" id="delete-btn" class="btn-confirm-delete" disabled>
+          <i class="fas fa-trash"></i> Permanently Delete Plan
+        </button>
+        <a href="{% url 'dashboard:funeralplan_index' %}" class="btn-cancel">
+          <i class="fas fa-arrow-left"></i> Cancel — Keep My Plan
+        </a>
+      </div>
+
+    </form>
+
+  </div>
+</div><!-- /.delete-view-wrapper -->
 
 <style>
-/* ── Delete confirmation page specifics ─────────────────── */
-.ob-single-col .onboarding-main {
-  grid-column: 1 / -1;
-}
-
-.fp-delete-icon {
-  width: 72px;
-  height: 72px;
-  background: rgba(192,57,43,0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  color: #c0392b;
-  margin: 0 auto 1.25rem;
-}
-
-.fp-delete-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
-}
-
-.fp-delete-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.55rem 0.75rem;
-  background: var(--background-color);
-  border-radius: 8px;
-  font-family: var(--paragraph-font);
-  font-size: var(--font-nm);
-  font-weight: 300;
-  color: var(--text-color-dark);
-}
-
-.fp-delete-row i {
-  color: var(--sixty-percent);
-  width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.fp-delete-row .ob-badge {
-  margin-left: auto;
-  flex-shrink: 0;
-}
+  #confirm_text:focus {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .1) !important;
+    background: var(--purewhite-color) !important;
+  }
 </style>
 
 <script>
-/* Enable the delete button only when the user types DELETE exactly */
-(function () {
-  const input  = document.getElementById('confirm_text');
-  const button = document.getElementById('delete-btn');
-
-  input.addEventListener('input', function () {
-    const match = this.value.trim() === 'DELETE';
-    button.disabled = !match;
-    button.style.opacity = match ? '1' : '0.45';
-    button.style.cursor  = match ? 'pointer' : 'not-allowed';
+  document.getElementById('deleteForm').addEventListener('submit', function () {
+    var btn = document.getElementById('delete-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Deleting…';
   });
-})();
 </script>
 {% endblock %}

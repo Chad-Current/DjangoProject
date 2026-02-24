@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('baseapp.urls', namespace='baseapp_main')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('', include('dashboard.urls', namespace="dashboard_homepage")),
+    path('', include('dashboard.urls', namespace="dashboard_home")),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('faqs/', include('faqs.urls', namespace='faqs_page')),
     path('recovery/', include('recovery.urls', namespace="recovery")),

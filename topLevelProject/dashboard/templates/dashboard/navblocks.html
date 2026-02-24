@@ -18,7 +18,7 @@
             <a href="{% url 'dashboard:account_list' %}"
                 class="subnav-item {% if accounts_count == 0 %}attention{% endif %}"
                 title="{% if accounts_count == 0 %}Add your first digital account{% else %}Manage your digital accounts{% endif %}">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-shield"></i>
                 <span>Important</span>
                 <span>Accounts</span>
                 {% if accounts_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
@@ -45,7 +45,7 @@
             <a href="{% url 'dashboard:importantdocument_list' %}"
                 class="subnav-item {% if documents_count == 0 %}attention{% endif %}"
                 title="{% if documents_count == 0 %}Add your first important document{% else %}Important documents{% endif %}">
-                <i class="fas fa-file-alt"></i>
+                <i class="fas fa-scroll"></i>
                 <span>Other</span>
                 <span>Documents</span>
                 {% if documents_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
@@ -54,18 +54,19 @@
             <a href="{% url 'dashboard:familyawareness_list' %}"
                 class="subnav-item {% if family_knows_count == 0 %}attention{% endif %}"
                 title="{% if family_knows_count == 0 %}Add your first family note{% else %}Family information{% endif %}">
-                <i class="fas fa-address-book"></i>
+                <i class="fas fa-users"></i>
                 <span>Family</span>
                 <span> Notes</span>
                 {% if family_knows_count == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
-            <a href="{% url 'dashboard:funeralplan_list' %}"
-                class="subnav-item"
-                title="Review your Funeral Planning">
-                <i class="fas fa-users"></i>
+            <a href="{% url 'dashboard:funeralplan_index' %}"
+                class="subnav-item {% if funeral_planned == 0 %}attention{% endif %}"
+                title="{% if funeral_planned == 0 %}Start your funeral plan{% else %}Funeral planned{% endif %}">
+                <i class="fas fa-user-tie"></i>
                 <span>Funeral</span>
                 <span>Planning</span>
+                {% if funeral_planned == 0 %}<span class="nav-badge-empty">Start</span>{% endif %}
             </a>
 
             <a href="{% url 'dashboard:relevancereview_list' %}"

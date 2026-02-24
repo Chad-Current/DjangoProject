@@ -18,9 +18,4 @@ urlpatterns = [
     path('password-reset/confirm/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
     path('password-reset/complete/', views.password_reset_complete_view, name='password_reset_complete'),
 
-    # Checklist Download
-    # path('checklist/', views.checklist_download_view, name='checklist_download'),
-    # path('checklist/thankyou/', views.checklist_thankyou_view, name='checklist_thankyou'),
-    # path('checklist/download/', views.checklist_file_view, name='checklist_file'),
-
 ]

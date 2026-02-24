@@ -1,6 +1,7 @@
 # dashboard/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.urls import reverse
 from django.db.models import Count
 from .models import (
@@ -363,7 +364,10 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
 class FuneralPlanAdmin(admin.ModelAdmin):
     """
     Admin interface for FuneralPlan.
-    Organised into the same 8 sections as the model and user-facing form.
+    Organised into the same 8 sections as the onboarding wizard.
+    Plans are created exclusively through the user-facing wizard
+    (get_or_create on first step visit) — add permission is disabled.
+    Only superusers may hard-delete.
     """
 
     # ── List display ──────────────────────────────────────────────────────────
@@ -375,6 +379,7 @@ class FuneralPlanAdmin(admin.ModelAdmin):
         'is_veteran',
         'burial_plot_or_niche_purchased',
         'reception_desired',
+        'sections_complete',
         'completeness_badge',
         'review_time',
         'updated_at',
@@ -411,10 +416,10 @@ class FuneralPlanAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
         'completeness_badge',
+        'sections_complete',
+        'section_progress_display',
     )
 
-    # autocomplete_fields requires the target ModelAdmin to define search_fields.
-    # ContactAdmin has search_fields, so this is safe.
     autocomplete_fields = ['officiant_contact']
 
     # ── Fieldsets ─────────────────────────────────────────────────────────────
@@ -425,6 +430,7 @@ class FuneralPlanAdmin(admin.ModelAdmin):
             {
                 'fields': (
                     'profile_link',
+                    'section_progress_display',
                     'completeness_badge',
                     'created_at',
                     'updated_at',
@@ -536,21 +542,104 @@ class FuneralPlanAdmin(admin.ModelAdmin):
         ),
     )
 
+    # ── Section progress helper (mirrors get_plan_progress() in views) ────────
+
+    def _get_progress(self, obj):
+        """
+        Mirrors FuneralPlanMixin.get_plan_progress() so the admin
+        shows the same completion logic as the user-facing wizard.
+        """
+        return {
+            'personal_info': any([
+                obj.preferred_name, obj.occupation, obj.marital_status,
+                obj.religion_or_spiritual_affiliation, obj.is_veteran,
+            ]),
+            'service': any([
+                obj.service_type, obj.preferred_funeral_home,
+                obj.preferred_venue, obj.desired_timing,
+            ]),
+            'disposition': any([
+                obj.disposition_method, obj.burial_or_interment_location,
+                obj.casket_type_preference, obj.urn_type_preference,
+            ]),
+            'ceremony': any([
+                obj.music_choices, obj.flowers_or_colors,
+                obj.readings_poems_or_scriptures, obj.eulogists_notes,
+                obj.clothing_or_jewelry_description,
+            ]),
+            'reception': obj.reception_desired is not None,
+            'obituary': any([
+                obj.obituary_photo_description, obj.obituary_key_achievements,
+                obj.obituary_publications, obj.charitable_donations_in_lieu,
+            ]),
+            'admin': any([
+                obj.funeral_insurance_policy_number,
+                obj.death_certificates_requested,
+                obj.payment_arrangements,
+            ]),
+            'instructions': bool(obj.additional_instructions),
+        }
+
     # ── Custom list-display helpers ───────────────────────────────────────────
 
     @admin.display(description='Profile', ordering='profile__last_name')
     def profile_full_name(self, obj):
         return f"{obj.profile.first_name} {obj.profile.last_name}"
 
+    @admin.display(description='Sections')
+    def sections_complete(self, obj):
+        progress = self._get_progress(obj)
+        done = sum(progress.values())
+        return f"{done} / 8"
+
     @admin.display(description='Complete?')
     def completeness_badge(self, obj):
-        if obj.is_complete:
+        progress = self._get_progress(obj)
+        done = sum(progress.values())
+        if done == 8:
             return format_html(
-                '<span style="color:#2e7d32;font-weight:bold;">&#10003; Complete</span>'
+                '<span style="color:#2e7d32; font-weight:bold;">&#10003; Complete</span>'
+            )
+        if done == 0:
+            return format_html(
+                '<span style="color:#9e9e9e;">&#9675; Empty</span>'
             )
         return format_html(
-            '<span style="color:#c62828;">&#10007; Incomplete</span>'
+            '<span style="color:#e65100; font-weight:bold;">&#9679; {}/8 sections</span>',
+            done,
         )
+
+    @admin.display(description='Section Progress')
+    def section_progress_display(self, obj):
+        if not obj.pk:
+            return '—'
+        progress = self._get_progress(obj)
+        labels = {
+            'personal_info': '1 · Personal Info',
+            'service':       '2 · Service Prefs',
+            'disposition':   '3 · Disposition',
+            'ceremony':      '4 · Ceremony',
+            'reception':     '5 · Reception',
+            'obituary':      '6 · Obituary',
+            'admin':         '7 · Admin',
+            'instructions':  '8 · Instructions',
+        }
+        rows = []
+        for key, label in labels.items():
+            done = progress[key]
+            icon  = '&#10003;' if done else '&#10007;'
+            color = '#2e7d32' if done else '#c62828'
+            rows.append(
+                f'<span style="display:inline-block; min-width:200px; '
+                f'color:{color}; margin-right:1rem;">{icon} {label}</span>'
+            )
+        # Two columns
+        pairs = [
+            rows[i] + (rows[i + 1] if i + 1 < len(rows) else '')
+            for i in range(0, len(rows), 2)
+        ]
+        inner = ''.join(f'<div>{p}</div>' for p in pairs)
+        return mark_safe(f'<div style="line-height:1.9;">{inner}</div>')
 
     # ── Readonly link helpers ─────────────────────────────────────────────────
 
@@ -559,7 +648,6 @@ class FuneralPlanAdmin(admin.ModelAdmin):
         if not obj.pk:
             return '—'
         try:
-            # App label is 'dashboard' — the Django app name, not the db_table name.
             url = reverse('admin:dashboard_profile_change', args=[obj.profile.pk])
             return format_html(
                 '<a href="{}">{} {}</a>',
@@ -575,13 +663,8 @@ class FuneralPlanAdmin(admin.ModelAdmin):
         if not obj.officiant_contact_id:
             return '—'
         try:
-            # App label is 'dashboard' — the Django app name, not the db_table name.
             url = reverse('admin:dashboard_contact_change', args=[obj.officiant_contact.pk])
-            return format_html(
-                '<a href="{}">{}</a>',
-                url,
-                obj.officiant_contact,
-            )
+            return format_html('<a href="{}">{}</a>', url, obj.officiant_contact)
         except Exception:
             return str(obj.officiant_contact)
 
@@ -597,7 +680,10 @@ class FuneralPlanAdmin(admin.ModelAdmin):
     # ── Permissions ───────────────────────────────────────────────────────────
 
     def has_add_permission(self, request):
-        """FuneralPlans are created through the user-facing UI only."""
+        """
+        FuneralPlans are created exclusively through the user-facing
+        onboarding wizard via get_or_create — never directly in admin.
+        """
         return False
 
     def has_delete_permission(self, request, obj=None):

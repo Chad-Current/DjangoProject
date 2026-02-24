@@ -128,6 +128,8 @@ class DeleteAccessMixin(LoginRequiredMixin):
         owner = obj
         for field in self.owner_field.split('__'):
             owner = getattr(owner, field)
+        # if owner is None:
+        #     raise Http404('Owner not found')
         if owner != self.request.user:
             raise Http404("You don't have permission to delete this object")
         return obj

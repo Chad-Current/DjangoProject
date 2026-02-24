@@ -45,13 +45,13 @@
                                     <td>
                                         <div class="contact-name">
                                             {% if review.get_item_type == "Account" %}
-                                                <i class="fas fa-user-lock contact-icon"></i>
+                                                <i class="fas fa-user-shield contact-icon"></i>
                                             {% elif review.get_item_type == "Device" %}
                                                 <i class="fas fa-laptop contact-icon"></i>
                                             {% elif review.get_item_type == "Estate Document" %}
                                                 <i class="fas fa-file-contract contact-icon"></i>
                                             {% elif review.get_item_type == "Important Document" %}
-                                                <i class="fas fa-file-alt contact-icon"></i>
+                                                <i class="fas fa-scroll contact-icon"></i>
                                             {% else %}
                                                 <i class="fas fa-question-circle contact-icon"></i>
                                             {% endif %}
@@ -87,7 +87,7 @@
                                         <div class="action-buttons">
                                             <a href="{% url 'dashboard:relevancereview_detail' review.pk %}"
                                                 class="btn-action btn-view" title="View review">
-                                                <i class="fas fa-clock"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <!-- <a href="{% url 'dashboard:relevancereview_update' review.pk %}"
                                                 class="btn-action btn-edit" title="Edit review">
@@ -185,13 +185,13 @@
                     <div class="contact-card">
                             <div class="contact-avatar">
                                 {% if review.get_item_type == "Account" %}
-                                    <i class="fas fa-user-lock"></i>
+                                    <i class="fas fa-user-shield"></i>
                                 {% elif review.get_item_type == "Device" %}
                                     <i class="fas fa-laptop"></i>
                                 {% elif review.get_item_type == "Estate Document" %}
                                     <i class="fas fa-file-contract"></i>
                                 {% elif review.get_item_type == "Important Document" %}
-                                    <i class="fas fa-file-alt"></i>
+                                    <i class="fas fa-scroll"></i>
                                 {% else %}
                                     <i class="fas fa-question-circle"></i>
                                 {% endif %}
