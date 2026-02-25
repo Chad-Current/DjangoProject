@@ -79,7 +79,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        progress = 0
         
         try:
             profile = Profile.objects.get(user=user)
@@ -106,6 +105,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 family_knows=context['family_knows_count'],
             )
 
+            context['progress'] = progress
+            
             # CALCULATE REMAINING TASKS
             remaining_tasks = self._calculate_remaining_tasks(
                 accounts=context['accounts_count'],
@@ -226,6 +227,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             total_progress += item_progress
         
         # Convert to percentage (0-100)
+
         return round(total_progress * 100)
     
     def _calculate_remaining_tasks(self, **kwargs):
@@ -920,7 +922,8 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
         important_count = ImportantDocument.objects.filter(delegated_important_document_to=contact).count()
         account_count = Account.objects.filter(delegated_account_to=contact).count()
         device_count = Device.objects.filter(delegated_device_to=contact).count()
-        total_resictions = estate_count + important_count + account_count + device_count
+        family_note_count = FamilyNeedsToKnowSection.objects.filter(relation=contact).count()
+        total_resictions = estate_count + important_count + account_count + device_count + family_note_count
         
         if total_resictions > 0:
             # Contact has documents - cannot delete
@@ -941,7 +944,7 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
             # This shouldn't happen since we checked above, but just in case
             messages.error(
                 request,
-                f'Cannot delete {contact.contact_name} because they have documents assigned. '
+                f'Cannot delete {contact.first_name} {contact.last_name } because they have documents assigned. '
                 'Please reassign the documents first.'
             )
             return HttpResponseRedirect(

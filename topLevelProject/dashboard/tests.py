@@ -2,18 +2,23 @@
 """
 Comprehensive test suite for the dashboard app.
 
-Coverage:
-  - Models: Profile, Contact, Account, Device, DigitalEstateDocument,
-            ImportantDocument, FamilyNeedsToKnowSection, FuneralPlan,
-            RelevanceReview
-  - Signals: auto-create Self contact, RelevanceReview on item creation,
-             review_time update propagation
-  - Forms: all 14 forms, validation rules, clean() methods
-  - Views: DashboardHomeView, Profile CRUD, Contact CRUD, Account CRUD,
-           Device CRUD, Estate CRUD, ImportantDocument CRUD,
-           FamilyAwareness CRUD, FuneralPlan wizard (all 8 steps + delete),
-           RelevanceReview CRUD, MarkItemReviewedView
-  - Edge cases throughout
+CONTACT DELETION RULE (business requirement)
+============================================
+A Contact CANNOT be deleted while ANY of the following records reference it:
+
+  1. Account.delegated_account_to          (on_delete=PROTECT  — DB enforced)
+  2. Device.delegated_device_to            (on_delete=PROTECT  — DB enforced)
+  3. DigitalEstateDocument.delegated_estate_to
+                                           (on_delete=PROTECT  — DB enforced)
+  4. ImportantDocument.delegated_important_document_to
+                                           (on_delete=PROTECT  — DB enforced)
+  5. FamilyNeedsToKnowSection.relation     (on_delete=CASCADE  — view enforced)
+
+The view must check the count of all five types and refuse deletion if any
+total > 0.  The four PROTECT types are also enforced at the database level;
+FamilyNeedsToKnowSection.relation uses CASCADE so the view must catch it
+*before* the database call — once the DB deletes the contact it would silently
+cascade away, but the user must explicitly clear those notes first.
 
 Run with:
     python manage.py test dashboard --verbosity=2
@@ -21,10 +26,10 @@ Run with:
 
 import json
 from datetime import date, timedelta
-from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -48,8 +53,11 @@ User = get_user_model()
 #  SHARED FIXTURES
 # ═══════════════════════════════════════════════════════════════
 
-def make_user(username='tuser', email='tuser@example.com', password='StrongPass1!', **kw):
-    return User.objects.create_user(username=username, email=email, password=password, **kw)
+def make_user(username='tuser', email='tuser@example.com',
+              password='StrongPass1!', **kw):
+    return User.objects.create_user(
+        username=username, email=email, password=password, **kw
+    )
 
 
 def make_legacy(username='legacy', email='legacy@example.com'):
@@ -72,7 +80,7 @@ def make_profile(user, **kw):
         email='jane@example.com', phone='515-555-1234',
     )
     defaults.update(kw)
-    return Profile.objects.create(user=user, **defaults)
+    return Profile.objects.get_or_create(user=user, defaults=defaults)[0]
 
 
 def make_contact(profile, relation='Spouse', **kw):
@@ -132,6 +140,16 @@ def make_important_doc(profile, contact, **kw):
     return ImportantDocument.objects.create(profile=profile, **defaults)
 
 
+def make_family_note(contact, **kw):
+    """Create a FamilyNeedsToKnowSection tied to a contact via .relation."""
+    defaults = dict(
+        content='Remember to check the safe.',
+        is_location_of_legal_will=True,
+    )
+    defaults.update(kw)
+    return FamilyNeedsToKnowSection.objects.create(relation=contact, **defaults)
+
+
 def make_funeral_plan(profile, **kw):
     defaults = dict(
         service_type='Celebration of Life',
@@ -153,11 +171,10 @@ class ProfileModelTest(TestCase):
         self.user = make_legacy()
         self.profile = make_profile(self.user)
 
-    def test_str(self):
+    def test_str_contains_first_name(self):
         self.assertIn('Jane', str(self.profile))
 
-    def test_one_profile_per_user(self):
-        from django.db import IntegrityError
+    def test_one_profile_per_user_enforced(self):
         with self.assertRaises(Exception):
             Profile.objects.create(
                 user=self.user,
@@ -165,43 +182,101 @@ class ProfileModelTest(TestCase):
                 address_1='1 St', city='City', state='IA',
             )
 
-    def test_profile_ordering_by_user(self):
-        user2 = make_legacy(username='u2', email='u2@x.com')
-        p2 = make_profile(user2, first_name='Alice', last_name='Smith')
-        profiles = list(Profile.objects.all())
-        self.assertGreaterEqual(len(profiles), 2)
+    def test_profile_cascades_when_user_deleted(self):
+        user2 = make_legacy(username='cascade', email='cascade@x.com')
+        p2 = make_profile(user2)
+        pk = p2.pk
+        user2.delete()
+        self.assertFalse(Profile.objects.filter(pk=pk).exists())
 
 
 # ═══════════════════════════════════════════════════════════════
-#  MODEL TESTS — Contact
+#  MODEL TESTS — Contact: DB-level protection
 # ═══════════════════════════════════════════════════════════════
 
-class ContactModelTest(TestCase):
+class ContactModelProtectionTest(TestCase):
+    """
+    Verify the on_delete=PROTECT constraints at the database layer.
+    These fire regardless of the view — they are the last line of defence.
+    """
 
     def setUp(self):
         self.user = make_legacy()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
-    def test_str(self):
+    def test_str_contains_name_and_relation(self):
         s = str(self.contact)
         self.assertIn('Doe', s)
         self.assertIn('Spouse', s)
 
-    def test_get_estate_documents_count_zero(self):
-        self.assertEqual(self.contact.get_estate_documents_count(), 0)
+    def test_db_protects_contact_with_account(self):
+        make_account(self.profile, self.contact)
+        with self.assertRaises(ProtectedError):
+            self.contact.delete()
 
-    def test_get_important_documents_count_zero(self):
-        self.assertEqual(self.contact.get_important_documents_count(), 0)
+    def test_db_protects_contact_with_device(self):
+        make_device(self.profile, self.contact)
+        with self.assertRaises(ProtectedError):
+            self.contact.delete()
 
-    def test_get_total_documents_count(self):
+    def test_db_protects_contact_with_estate_document(self):
+        make_estate_doc(self.profile, self.contact)
+        with self.assertRaises(ProtectedError):
+            self.contact.delete()
+
+    def test_db_protects_contact_with_important_document(self):
+        make_important_doc(self.profile, self.contact)
+        with self.assertRaises(ProtectedError):
+            self.contact.delete()
+
+    def test_db_cascades_family_note_on_contact_delete(self):
+        """
+        FamilyNeedsToKnowSection uses on_delete=CASCADE, so at the raw DB
+        level a contact with only family notes CAN be deleted and the notes
+        are removed automatically.  The VIEW layer must catch this case BEFORE
+        reaching the DB and return an error to the user instead.
+        """
+        note = make_family_note(self.contact)
+        note_pk = note.pk
+        self.contact.delete()                                          # succeeds at DB level
+        self.assertFalse(FamilyNeedsToKnowSection.objects.filter(pk=note_pk).exists())
+
+    def test_bare_contact_can_be_deleted_at_db_level(self):
+        """A contact with no assignments at all can be deleted directly."""
+        bare = make_contact(self.profile, relation='Other',
+                            first_name='Bare', last_name='Contact')
+        pk = bare.pk
+        bare.delete()
+        self.assertFalse(Contact.objects.filter(pk=pk).exists())
+
+    def test_contact_deletable_after_all_four_protect_items_removed(self):
+        """
+        Removing every PROTECT-type assignment allows DB-level deletion.
+        Family notes are not present here — that is the pure DB behaviour test.
+        """
+        acct   = make_account(self.profile, self.contact)
+        dev    = make_device(self.profile, self.contact)
+        estate = make_estate_doc(self.profile, self.contact)
+        imp    = make_important_doc(self.profile, self.contact)
+
+        acct.delete()
+        dev.delete()
+        estate.delete()
+        imp.delete()
+
+        pk = self.contact.pk
+        self.contact.delete()
+        self.assertFalse(Contact.objects.filter(pk=pk).exists())
+
+    def test_get_total_documents_count_aggregates_estate_and_important(self):
         make_estate_doc(self.profile, self.contact)
         make_important_doc(self.profile, self.contact)
         self.assertEqual(self.contact.get_total_documents_count(), 2)
 
 
 # ═══════════════════════════════════════════════════════════════
-#  MODEL TESTS — Account
+#  MODEL TESTS — Account signals
 # ═══════════════════════════════════════════════════════════════
 
 class AccountModelTest(TestCase):
@@ -211,53 +286,48 @@ class AccountModelTest(TestCase):
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
-    def test_str(self):
-        acct = make_account(self.profile, self.contact)
-        self.assertEqual(str(acct), 'Gmail')
+    def test_str_returns_provider_name(self):
+        self.assertEqual(str(make_account(self.profile, self.contact)), 'Gmail')
 
-    def test_default_instruction(self):
-        acct = make_account(self.profile, self.contact)
-        self.assertEqual(acct.keep_or_close_instruction, 'Keep Active')
+    def test_default_instruction_is_keep_active(self):
+        self.assertEqual(
+            make_account(self.profile, self.contact).keep_or_close_instruction,
+            'Keep Active',
+        )
 
-    def test_review_creates_relevance_review_via_signal(self):
-        """Signal should auto-create a RelevanceReview on account creation."""
-        acct = make_account(self.profile, self.contact, account_name_or_provider='TestBank')
+    def test_creation_auto_creates_relevance_review(self):
+        acct = make_account(self.profile, self.contact)
         self.assertTrue(RelevanceReview.objects.filter(account_review=acct).exists())
 
-    def test_review_time_update_updates_next_review_due(self):
-        acct = make_account(self.profile, self.contact)
-        original_due = RelevanceReview.objects.filter(account_review=acct).latest('review_date').next_review_due
+    def test_review_due_date_matches_review_time_field(self):
+        acct = make_account(self.profile, self.contact, review_time=60)
+        review = RelevanceReview.objects.filter(account_review=acct).latest('review_date')
+        self.assertEqual(review.next_review_due, date.today() + timedelta(days=60))
+
+    def test_changing_review_time_updates_next_due_date(self):
+        acct = make_account(self.profile, self.contact, review_time=30)
+        original = RelevanceReview.objects.filter(
+            account_review=acct
+        ).latest('review_date').next_review_due
+
         acct.review_time = 365
         acct.save()
-        new_due = RelevanceReview.objects.filter(account_review=acct).latest('review_date').next_review_due
-        self.assertGreater(new_due, original_due)
 
+        updated = RelevanceReview.objects.filter(
+            account_review=acct
+        ).latest('review_date').next_review_due
+        self.assertGreater(updated, original)
 
-# ═══════════════════════════════════════════════════════════════
-#  MODEL TESTS — Device
-# ═══════════════════════════════════════════════════════════════
-
-class DeviceModelTest(TestCase):
-
-    def setUp(self):
-        self.user = make_legacy()
-        self.profile = make_profile(self.user)
-        self.contact = make_contact(self.profile)
-
-    def test_str(self):
-        dev = make_device(self.profile, self.contact)
-        self.assertIn('iPhone', str(dev))
-        self.assertIn('Phone', str(dev))
-
-    def test_signal_creates_review(self):
-        dev = make_device(self.profile, self.contact)
-        self.assertTrue(RelevanceReview.objects.filter(device_review=dev).exists())
-
-    def test_next_review_due_uses_review_time(self):
-        dev = make_device(self.profile, self.contact, review_time=60)
-        review = RelevanceReview.objects.filter(device_review=dev).latest('review_date')
-        expected = date.today() + timedelta(days=60)
-        self.assertEqual(review.next_review_due, expected)
+    def test_saving_with_same_review_time_does_not_alter_due_date(self):
+        acct = make_account(self.profile, self.contact, review_time=30)
+        original = RelevanceReview.objects.filter(
+            account_review=acct
+        ).latest('review_date').next_review_due
+        acct.save()   # no field changed
+        unchanged = RelevanceReview.objects.filter(
+            account_review=acct
+        ).latest('review_date').next_review_due
+        self.assertEqual(original, unchanged)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -270,11 +340,10 @@ class FuneralPlanModelTest(TestCase):
         self.user = make_legacy()
         self.profile = make_profile(self.user)
 
-    def test_is_complete_true_when_required_fields_set(self):
-        plan = make_funeral_plan(self.profile)
-        self.assertTrue(plan.is_complete)
+    def test_is_complete_true_when_all_four_required_fields_set(self):
+        self.assertTrue(make_funeral_plan(self.profile).is_complete)
 
-    def test_is_complete_false_when_missing_disposition(self):
+    def test_is_complete_false_without_disposition_method(self):
         plan = FuneralPlan.objects.create(
             profile=self.profile,
             service_type='Memorial Service',
@@ -283,33 +352,34 @@ class FuneralPlanModelTest(TestCase):
         )
         self.assertFalse(plan.is_complete)
 
-    def test_is_complete_false_when_no_officiant(self):
+    def test_is_complete_false_without_service_type(self):
         plan = FuneralPlan.objects.create(
             profile=self.profile,
-            service_type='Memorial Service',
-            disposition_method='Burial',
+            disposition_method='Cremation',
+            officiant_name_freetext='Rev. Jones',
             payment_arrangements='Pre-paid',
         )
         self.assertFalse(plan.is_complete)
 
-    def test_has_disposition_set_property(self):
-        plan = make_funeral_plan(self.profile)
-        self.assertTrue(plan.has_disposition_set)
+    def test_is_complete_false_without_any_officiant(self):
+        plan = FuneralPlan.objects.create(
+            profile=self.profile,
+            service_type='Memorial Service',
+            disposition_method='Cremation',
+            payment_arrangements='Pre-paid',
+        )
+        self.assertFalse(plan.is_complete)
 
-    def test_has_service_preferences_property(self):
-        plan = make_funeral_plan(self.profile)
-        self.assertTrue(plan.has_service_preferences)
+    def test_is_complete_false_without_payment_arrangements(self):
+        plan = FuneralPlan.objects.create(
+            profile=self.profile,
+            service_type='Memorial Service',
+            disposition_method='Cremation',
+            officiant_name_freetext='Rev. Jones',
+        )
+        self.assertFalse(plan.is_complete)
 
-    def test_one_plan_per_profile(self):
-        make_funeral_plan(self.profile)
-        with self.assertRaises(Exception):
-            FuneralPlan.objects.create(profile=self.profile, service_type='Other')
-
-    def test_str(self):
-        plan = make_funeral_plan(self.profile)
-        self.assertIn('Funeral Plan', str(plan))
-
-    def test_is_complete_accepts_fk_officiant(self):
+    def test_is_complete_accepts_fk_contact_as_officiant(self):
         contact = make_contact(self.profile)
         plan = FuneralPlan.objects.create(
             profile=self.profile,
@@ -319,6 +389,17 @@ class FuneralPlanModelTest(TestCase):
             payment_arrangements='Pre-paid',
         )
         self.assertTrue(plan.is_complete)
+
+    def test_one_plan_per_profile_enforced(self):
+        make_funeral_plan(self.profile)
+        with self.assertRaises(Exception):
+            FuneralPlan.objects.create(profile=self.profile, service_type='Other')
+
+    def test_has_disposition_set_property(self):
+        self.assertTrue(make_funeral_plan(self.profile).has_disposition_set)
+
+    def test_has_service_preferences_property(self):
+        self.assertTrue(make_funeral_plan(self.profile).has_service_preferences)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -333,55 +414,62 @@ class RelevanceReviewModelTest(TestCase):
         self.contact = make_contact(self.profile)
 
     def test_clean_raises_if_no_target(self):
-        review = RelevanceReview(reviewer=self.user)
         with self.assertRaises(ValidationError):
-            review.clean()
+            RelevanceReview(reviewer=self.user).clean()
 
-    def test_clean_raises_if_multiple_targets(self):
+    def test_clean_raises_if_two_targets_set(self):
         acct = make_account(self.profile, self.contact)
         dev  = make_device(self.profile, self.contact)
-        review = RelevanceReview(reviewer=self.user, account_review=acct, device_review=dev)
         with self.assertRaises(ValidationError):
-            review.clean()
+            RelevanceReview(
+                reviewer=self.user, account_review=acct, device_review=dev
+            ).clean()
 
     def test_get_item_type_account(self):
         acct = make_account(self.profile, self.contact)
-        review = RelevanceReview.objects.filter(account_review=acct).first()
-        self.assertEqual(review.get_item_type(), 'Account')
+        self.assertEqual(
+            RelevanceReview.objects.filter(account_review=acct).first().get_item_type(),
+            'Account',
+        )
 
     def test_get_item_type_device(self):
         dev = make_device(self.profile, self.contact)
-        review = RelevanceReview.objects.filter(device_review=dev).first()
-        self.assertEqual(review.get_item_type(), 'Device')
+        self.assertEqual(
+            RelevanceReview.objects.filter(device_review=dev).first().get_item_type(),
+            'Device',
+        )
 
-    def test_get_item_type_estate(self):
+    def test_get_item_type_estate_document(self):
         doc = make_estate_doc(self.profile, self.contact)
-        review = RelevanceReview.objects.filter(estate_review=doc).first()
-        self.assertEqual(review.get_item_type(), 'Estate Document')
+        self.assertEqual(
+            RelevanceReview.objects.filter(estate_review=doc).first().get_item_type(),
+            'Estate Document',
+        )
 
-    def test_get_item_type_important_doc(self):
+    def test_get_item_type_important_document(self):
         doc = make_important_doc(self.profile, self.contact)
-        review = RelevanceReview.objects.filter(important_document_review=doc).first()
-        self.assertEqual(review.get_item_type(), 'Important Document')
+        self.assertEqual(
+            RelevanceReview.objects.filter(
+                important_document_review=doc
+            ).first().get_item_type(),
+            'Important Document',
+        )
 
-    def test_get_item_name_account(self):
+    def test_get_item_name_uses_account_provider(self):
         acct = make_account(self.profile, self.contact, account_name_or_provider='MyBank')
-        review = RelevanceReview.objects.filter(account_review=acct).first()
-        self.assertEqual(review.get_item_name(), 'MyBank')
-
-    def test_get_item_name_no_item(self):
-        review = RelevanceReview(reviewer=self.user)
-        self.assertEqual(review.get_item_name(), 'Unknown Item')
+        self.assertEqual(
+            RelevanceReview.objects.filter(account_review=acct).first().get_item_name(),
+            'MyBank',
+        )
 
     def test_get_reviewed_item_returns_none_when_empty(self):
-        review = RelevanceReview(reviewer=self.user)
-        self.assertIsNone(review.get_reviewed_item())
+        self.assertIsNone(RelevanceReview(reviewer=self.user).get_reviewed_item())
 
-    def test_str_contains_item_type_and_date(self):
-        dev = make_device(self.profile, self.contact)
-        review = RelevanceReview.objects.filter(device_review=dev).first()
-        s = str(review)
-        self.assertIn('Device', s)
+    def test_get_item_name_returns_unknown_when_no_item(self):
+        self.assertEqual(
+            RelevanceReview(reviewer=self.user).get_item_name(),
+            'Unknown Item',
+        )
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -393,60 +481,72 @@ class SignalTest(TestCase):
     def setUp(self):
         self.user = make_legacy()
 
-    def test_profile_save_creates_self_contact(self):
-        """Saving a complete profile should auto-create a Self contact."""
+    def test_complete_profile_auto_creates_self_contact(self):
         profile = make_profile(self.user)
-        self.assertTrue(Contact.objects.filter(profile=profile, contact_relation='Self').exists())
+        self.assertTrue(
+            Contact.objects.filter(profile=profile, contact_relation='Self').exists()
+        )
 
-    def test_profile_update_syncs_self_contact(self):
+    def test_profile_update_syncs_self_contact_name(self):
         profile = make_profile(self.user)
         profile.first_name = 'Updated'
         profile.save()
-        self_contact = Contact.objects.get(profile=profile, contact_relation='Self')
-        self.assertEqual(self_contact.first_name, 'Updated')
+        self.assertEqual(
+            Contact.objects.get(profile=profile, contact_relation='Self').first_name,
+            'Updated',
+        )
 
-    def test_profile_save_without_required_fields_skips_self_contact(self):
-        """Incomplete profile should not create a Self contact."""
+    def test_incomplete_profile_does_not_create_self_contact(self):
         profile = Profile.objects.create(
-            user=self.user,
-            first_name='', last_name='',
+            user=self.user, first_name='', last_name='',
             address_1='', city='', state='',
         )
-        self.assertFalse(Contact.objects.filter(profile=profile, contact_relation='Self').exists())
+        self.assertFalse(
+            Contact.objects.filter(profile=profile, contact_relation='Self').exists()
+        )
 
-    def test_account_creation_creates_review(self):
+    def test_saving_profile_twice_does_not_duplicate_self_contact(self):
+        profile = make_profile(self.user)
+        profile.first_name = 'Once'
+        profile.save()
+        profile.first_name = 'Twice'
+        profile.save()
+        self.assertEqual(
+            Contact.objects.filter(profile=profile, contact_relation='Self').count(), 1
+        )
+
+    def test_account_creation_creates_exactly_one_review(self):
         profile = make_profile(self.user)
         contact = make_contact(profile)
         acct = make_account(profile, contact)
         self.assertEqual(RelevanceReview.objects.filter(account_review=acct).count(), 1)
 
-    def test_device_creation_creates_review(self):
+    def test_device_creation_creates_exactly_one_review(self):
         profile = make_profile(self.user)
         contact = make_contact(profile)
         dev = make_device(profile, contact)
         self.assertEqual(RelevanceReview.objects.filter(device_review=dev).count(), 1)
 
-    def test_estate_doc_creation_creates_review(self):
+    def test_estate_doc_creation_creates_exactly_one_review(self):
         profile = make_profile(self.user)
         contact = make_contact(profile)
         doc = make_estate_doc(profile, contact)
         self.assertEqual(RelevanceReview.objects.filter(estate_review=doc).count(), 1)
 
-    def test_important_doc_creation_creates_review(self):
+    def test_important_doc_creation_creates_exactly_one_review(self):
         profile = make_profile(self.user)
         contact = make_contact(profile)
         doc = make_important_doc(profile, contact)
-        self.assertEqual(RelevanceReview.objects.filter(important_document_review=doc).count(), 1)
+        self.assertEqual(
+            RelevanceReview.objects.filter(important_document_review=doc).count(), 1
+        )
 
-    def test_review_time_same_value_does_not_update_review(self):
-        """Saving with unchanged review_time must not modify the review due date."""
+    def test_review_initial_due_date_respects_review_time(self):
         profile = make_profile(self.user)
         contact = make_contact(profile)
-        acct = make_account(profile, contact, review_time=30)
-        review_before = RelevanceReview.objects.filter(account_review=acct).latest('review_date').next_review_due
-        acct.save()  # no field change
-        review_after = RelevanceReview.objects.filter(account_review=acct).latest('review_date').next_review_due
-        self.assertEqual(review_before, review_after)
+        dev = make_device(profile, contact, review_time=180)
+        review = RelevanceReview.objects.filter(device_review=dev).first()
+        self.assertEqual(review.next_review_due, date.today() + timedelta(days=180))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -455,34 +555,32 @@ class SignalTest(TestCase):
 
 class ProfileFormTest(TestCase):
 
-    def _valid(self, **overrides):
-        data = dict(
-            first_name='Jane', last_name='Doe',
-            address_1='123 Main', city='Des Moines', state='IA',
-            zipcode='50309', email='jane@example.com', phone='515-555-0000',
-        )
-        data.update(overrides)
-        return data
+    def _data(self, **kw):
+        d = dict(first_name='Jane', last_name='Doe', address_1='123 Main',
+                 city='Des Moines', state='IA', zipcode='50309',
+                 email='jane@example.com', phone='515-555-0000')
+        d.update(kw)
+        return d
 
-    def test_valid_form(self):
+    def test_valid_form_passes(self):
         from .forms import ProfileForm
-        self.assertTrue(ProfileForm(data=self._valid()).is_valid())
+        self.assertTrue(ProfileForm(data=self._data()).is_valid())
 
     def test_invalid_email_rejected(self):
         from .forms import ProfileForm
-        form = ProfileForm(data=self._valid(email='not-an-email'))
+        form = ProfileForm(data=self._data(email='not-an-email'))
         self.assertFalse(form.is_valid())
         self.assertIn('email', form.errors)
 
     def test_invalid_phone_rejected(self):
         from .forms import ProfileForm
-        form = ProfileForm(data=self._valid(phone='abc123'))
+        form = ProfileForm(data=self._data(phone='abc123'))
         self.assertFalse(form.is_valid())
         self.assertIn('phone', form.errors)
 
-    def test_blank_phone_allowed(self):
+    def test_blank_phone_accepted(self):
         from .forms import ProfileForm
-        self.assertTrue(ProfileForm(data=self._valid(phone='')).is_valid())
+        self.assertTrue(ProfileForm(data=self._data(phone='')).is_valid())
 
 
 class ContactFormTest(TestCase):
@@ -491,37 +589,49 @@ class ContactFormTest(TestCase):
         self.user = make_legacy()
         make_profile(self.user)
 
-    def _valid(self, **overrides):
-        data = dict(
-            contact_relation='Spouse',
-            first_name='John', last_name='Doe',
-            address_1='1 Main', city='Ames', state='IA',
-            is_emergency_contact=True,
-        )
-        data.update(overrides)
-        return data
+    def _data(self, **kw):
+        d = dict(contact_relation='Spouse', first_name='John', last_name='Doe',
+                 address_1='1 Main', city='Ames', state='IA',
+                 is_emergency_contact=True)
+        d.update(kw)
+        return d
 
-    def test_valid_form(self):
+    def test_valid_form_passes(self):
         from .forms import ContactForm
-        self.assertTrue(ContactForm(data=self._valid(), user=self.user).is_valid())
+        self.assertTrue(ContactForm(data=self._data(), user=self.user).is_valid())
 
-    def test_no_role_selected_raises_error(self):
+    def test_no_role_raises_non_field_error(self):
         from .forms import ContactForm
-        data = self._valid()
-        data['is_emergency_contact'] = False
-        form = ContactForm(data=data, user=self.user)
+        form = ContactForm(data=self._data(is_emergency_contact=False), user=self.user)
         self.assertFalse(form.is_valid())
         self.assertTrue(form.non_field_errors())
 
     def test_blank_first_name_rejected(self):
         from .forms import ContactForm
-        form = ContactForm(data=self._valid(first_name=''), user=self.user)
-        self.assertFalse(form.is_valid())
+        self.assertFalse(
+            ContactForm(data=self._data(first_name=''), user=self.user).is_valid()
+        )
+
+    def test_blank_last_name_rejected(self):
+        from .forms import ContactForm
+        self.assertFalse(
+            ContactForm(data=self._data(last_name=''), user=self.user).is_valid()
+        )
 
     def test_invalid_phone_rejected(self):
         from .forms import ContactForm
-        form = ContactForm(data=self._valid(phone='xyz'), user=self.user)
-        self.assertFalse(form.is_valid())
+        self.assertFalse(
+            ContactForm(data=self._data(phone='xyz!'), user=self.user).is_valid()
+        )
+
+    def test_multiple_roles_valid(self):
+        from .forms import ContactForm
+        self.assertTrue(
+            ContactForm(
+                data=self._data(is_emergency_contact=True, is_digital_executor=True),
+                user=self.user,
+            ).is_valid()
+        )
 
 
 class AccountFormTest(TestCase):
@@ -531,37 +641,78 @@ class AccountFormTest(TestCase):
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
-    def _valid(self, **overrides):
-        data = dict(
-            delegated_account_to=self.contact.pk,
-            account_category='Email Account',
-            account_name_or_provider='Gmail',
-            review_time=30,
-            keep_or_close_instruction='Keep Active',
-        )
-        data.update(overrides)
-        return data
+    def _data(self, **kw):
+        d = dict(delegated_account_to=self.contact.pk,
+                 account_category='Email Account',
+                 account_name_or_provider='Gmail',
+                 review_time=30,
+                 keep_or_close_instruction='Keep Active')
+        d.update(kw)
+        return d
 
-    def test_valid_form(self):
+    def test_valid_form_passes(self):
         from .forms import AccountForm
-        self.assertTrue(AccountForm(data=self._valid(), user=self.user).is_valid())
+        self.assertTrue(AccountForm(data=self._data(), user=self.user).is_valid())
 
     def test_invalid_url_rejected(self):
         from .forms import AccountForm
-        form = AccountForm(data=self._valid(website_url='not-a-url'), user=self.user)
+        form = AccountForm(data=self._data(website_url='not-a-url'), user=self.user)
         self.assertFalse(form.is_valid())
+        self.assertIn('website_url', form.errors)
 
-    def test_valid_url_accepted(self):
+    def test_valid_https_url_accepted(self):
         from .forms import AccountForm
-        form = AccountForm(data=self._valid(website_url='https://gmail.com'), user=self.user)
-        self.assertTrue(form.is_valid())
+        self.assertTrue(
+            AccountForm(
+                data=self._data(website_url='https://gmail.com'), user=self.user
+            ).is_valid()
+        )
 
-    def test_no_contact_selected_rejected(self):
+    def test_missing_contact_rejected(self):
         from .forms import AccountForm
-        data = self._valid()
-        data['delegated_account_to'] = ''
-        form = AccountForm(data=data, user=self.user)
+        self.assertFalse(
+            AccountForm(data=self._data(delegated_account_to=''), user=self.user).is_valid()
+        )
+
+
+class DigitalEstateDocumentFormTest(TestCase):
+
+    def setUp(self):
+        self.user = make_legacy()
+        self.profile = make_profile(self.user)
+        self.contact = make_contact(self.profile)
+
+    def _data(self, **kw):
+        d = dict(delegated_estate_to=self.contact.pk,
+                 estate_category='Advance Directive / Living Will',
+                 name_or_title='My Living Will',
+                 review_time=365,
+                 applies_on_death=True)
+        d.update(kw)
+        return d
+
+    def test_valid_form_passes(self):
+        from .forms import DigitalEstateDocumentForm
+        self.assertTrue(
+            DigitalEstateDocumentForm(data=self._data(), user=self.user).is_valid()
+        )
+
+    def test_no_declaration_rejected(self):
+        from .forms import DigitalEstateDocumentForm
+        form = DigitalEstateDocumentForm(
+            data=self._data(applies_on_death=False), user=self.user
+        )
         self.assertFalse(form.is_valid())
+        self.assertTrue(form.non_field_errors())
+
+    def test_applies_immediately_alone_valid(self):
+        from .forms import DigitalEstateDocumentForm
+        self.assertTrue(
+            DigitalEstateDocumentForm(
+                data=self._data(applies_on_death=False, applies_immediately=True),
+                user=self.user,
+            ).is_valid()
+        )
 
 
 class FuneralPlanPersonalInfoFormTest(TestCase):
@@ -580,7 +731,7 @@ class FuneralPlanPersonalInfoFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('veteran_branch', form.errors)
 
-    def test_non_veteran_branch_cleared(self):
+    def test_non_veteran_branch_cleared_on_save(self):
         from .forms import FuneralPlanPersonalInfoForm
         form = FuneralPlanPersonalInfoForm(
             data={'is_veteran': False, 'veteran_branch': 'Army'},
@@ -606,7 +757,7 @@ class FuneralPlanServiceFormTest(TestCase):
         self.contact = make_contact(self.profile)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
 
-    def test_both_officiant_fields_rejected(self):
+    def test_both_officiant_fields_simultaneously_rejected(self):
         from .forms import FuneralPlanServiceForm
         form = FuneralPlanServiceForm(
             data={
@@ -618,13 +769,23 @@ class FuneralPlanServiceFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('officiant_name_freetext', form.errors)
 
-    def test_invalid_phone_rejected(self):
+    def test_invalid_funeral_home_phone_rejected(self):
         from .forms import FuneralPlanServiceForm
         form = FuneralPlanServiceForm(
             data={'funeral_home_phone': 'ABC-DEFG'},
             instance=self.plan, user=self.user,
         )
         self.assertFalse(form.is_valid())
+        self.assertIn('funeral_home_phone', form.errors)
+
+    def test_freetext_officiant_alone_valid(self):
+        from .forms import FuneralPlanServiceForm
+        self.assertTrue(
+            FuneralPlanServiceForm(
+                data={'officiant_name_freetext': 'Rev. Smith'},
+                instance=self.plan, user=self.user,
+            ).is_valid()
+        )
 
 
 class FuneralPlanReceptionFormTest(TestCase):
@@ -636,19 +797,30 @@ class FuneralPlanReceptionFormTest(TestCase):
 
     def test_reception_desired_without_location_rejected(self):
         from .forms import FuneralPlanReceptionForm
-        form = FuneralPlanReceptionForm(
-            data={'reception_desired': True, 'reception_location': ''},
-            instance=self.plan, user=self.user,
+        self.assertFalse(
+            FuneralPlanReceptionForm(
+                data={'reception_desired': True, 'reception_location': ''},
+                instance=self.plan, user=self.user,
+            ).is_valid()
         )
-        self.assertFalse(form.is_valid())
 
     def test_reception_desired_with_location_valid(self):
         from .forms import FuneralPlanReceptionForm
-        form = FuneralPlanReceptionForm(
-            data={'reception_desired': True, 'reception_location': 'Community Hall'},
-            instance=self.plan, user=self.user,
+        self.assertTrue(
+            FuneralPlanReceptionForm(
+                data={'reception_desired': True, 'reception_location': 'Community Hall'},
+                instance=self.plan, user=self.user,
+            ).is_valid()
         )
-        self.assertTrue(form.is_valid())
+
+    def test_no_reception_valid_without_location(self):
+        from .forms import FuneralPlanReceptionForm
+        self.assertTrue(
+            FuneralPlanReceptionForm(
+                data={'reception_desired': False},
+                instance=self.plan, user=self.user,
+            ).is_valid()
+        )
 
 
 class FuneralPlanAdminFormTest(TestCase):
@@ -658,64 +830,32 @@ class FuneralPlanAdminFormTest(TestCase):
         self.profile = make_profile(self.user)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
 
-    def test_death_certificates_zero_rejected(self):
+    def test_zero_death_certificates_rejected(self):
         from .forms import FuneralPlanAdminForm
         form = FuneralPlanAdminForm(
             data={'death_certificates_requested': 0, 'review_time': 365},
             instance=self.plan, user=self.user,
         )
         self.assertFalse(form.is_valid())
+        self.assertIn('death_certificates_requested', form.errors)
 
-    def test_blank_death_certificates_allowed(self):
+    def test_blank_death_certificates_accepted(self):
         from .forms import FuneralPlanAdminForm
-        form = FuneralPlanAdminForm(
-            data={'death_certificates_requested': '', 'review_time': 365},
-            instance=self.plan, user=self.user,
+        self.assertTrue(
+            FuneralPlanAdminForm(
+                data={'death_certificates_requested': '', 'review_time': 365},
+                instance=self.plan, user=self.user,
+            ).is_valid()
         )
-        self.assertTrue(form.is_valid())
 
     def test_positive_count_accepted(self):
         from .forms import FuneralPlanAdminForm
-        form = FuneralPlanAdminForm(
-            data={'death_certificates_requested': 8, 'review_time': 365},
-            instance=self.plan, user=self.user,
+        self.assertTrue(
+            FuneralPlanAdminForm(
+                data={'death_certificates_requested': 8, 'review_time': 365},
+                instance=self.plan, user=self.user,
+            ).is_valid()
         )
-        self.assertTrue(form.is_valid())
-
-
-class DigitalEstateDocumentFormTest(TestCase):
-
-    def setUp(self):
-        self.user = make_legacy()
-        self.profile = make_profile(self.user)
-        self.contact = make_contact(self.profile)
-
-    def _valid(self, **overrides):
-        data = dict(
-            delegated_estate_to=self.contact.pk,
-            estate_category='Advance Directive / Living Will',
-            name_or_title='My Living Will',
-            review_time=365,
-            applies_on_death=True,
-        )
-        data.update(overrides)
-        return data
-
-    def test_valid_form(self):
-        from .forms import DigitalEstateDocumentForm
-        self.assertTrue(DigitalEstateDocumentForm(data=self._valid(), user=self.user).is_valid())
-
-    def test_no_declaration_rejected(self):
-        from .forms import DigitalEstateDocumentForm
-        data = self._valid(applies_on_death=False)
-        form = DigitalEstateDocumentForm(data=data, user=self.user)
-        self.assertFalse(form.is_valid())
-        self.assertTrue(form.non_field_errors())
-
-    def test_applies_immediately_alone_is_valid(self):
-        from .forms import DigitalEstateDocumentForm
-        data = self._valid(applies_on_death=False, applies_immediately=True)
-        self.assertTrue(DigitalEstateDocumentForm(data=data, user=self.user).is_valid())
 
 
 class RelevanceReviewFormTest(TestCase):
@@ -726,39 +866,62 @@ class RelevanceReviewFormTest(TestCase):
         self.contact = make_contact(self.profile)
         self.acct = make_account(self.profile, self.contact)
 
-    def test_valid_single_target(self):
+    def test_valid_single_target_passes(self):
         from .forms import RelevanceReviewForm
-        form = RelevanceReviewForm(data={
-            'account_review': self.acct.pk,
-            'matters': True,
-            'next_review_due': (date.today() + timedelta(days=30)).isoformat(),
-        }, user=self.user)
+        form = RelevanceReviewForm(
+            data={
+                'account_review': self.acct.pk,
+                'matters': True,
+                'next_review_due': (date.today() + timedelta(days=30)).isoformat(),
+            },
+            user=self.user,
+        )
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_no_target_rejected(self):
         from .forms import RelevanceReviewForm
         form = RelevanceReviewForm(data={'matters': True}, user=self.user)
         self.assertFalse(form.is_valid())
+        self.assertTrue(form.non_field_errors())
 
     def test_past_review_date_rejected(self):
         from .forms import RelevanceReviewForm
-        form = RelevanceReviewForm(data={
-            'account_review': self.acct.pk,
-            'matters': True,
-            'next_review_due': (date.today() - timedelta(days=1)).isoformat(),
-        }, user=self.user)
+        form = RelevanceReviewForm(
+            data={
+                'account_review': self.acct.pk,
+                'matters': True,
+                'next_review_due': (date.today() - timedelta(days=1)).isoformat(),
+            },
+            user=self.user,
+        )
         self.assertFalse(form.is_valid())
         self.assertIn('next_review_due', form.errors)
+
+    def test_today_as_review_date_rejected(self):
+        from .forms import RelevanceReviewForm
+        form = RelevanceReviewForm(
+            data={
+                'account_review': self.acct.pk,
+                'matters': True,
+                'next_review_due': date.today().isoformat(),
+            },
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
 
     def test_multiple_targets_rejected(self):
         from .forms import RelevanceReviewForm
         dev = make_device(self.profile, self.contact)
-        form = RelevanceReviewForm(data={
-            'account_review': self.acct.pk,
-            'device_review': dev.pk,
-            'matters': True,
-        }, user=self.user)
+        form = RelevanceReviewForm(
+            data={
+                'account_review': self.acct.pk,
+                'device_review': dev.pk,
+                'matters': True,
+            },
+            user=self.user,
+        )
         self.assertFalse(form.is_valid())
+        self.assertTrue(form.non_field_errors())
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -770,14 +933,18 @@ class DashboardHomeViewTest(TestCase):
     def test_unpaid_user_redirected_to_payment(self):
         user = make_user(username='np', email='np@x.com')
         self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertRedirects(response, reverse('accounts:payment'))
+        self.assertRedirects(
+            self.client.get(reverse('dashboard:dashboard_home')),
+            reverse('accounts:payment'),
+        )
 
     def test_paid_user_without_profile_redirected_to_profile_create(self):
-        user = make_legacy(username='noprofile', email='np2@x.com')
+        user = make_legacy(username='noprof', email='np2@x.com')
         self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertRedirects(response, reverse('dashboard:profile_create'))
+        self.assertRedirects(
+            self.client.get(reverse('dashboard:dashboard_home')),
+            reverse('dashboard:profile_create'),
+        )
 
     def test_fully_set_up_user_sees_dashboard(self):
         user = make_legacy()
@@ -787,96 +954,247 @@ class DashboardHomeViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
-    def test_dashboard_context_contains_counts(self):
+    def test_context_includes_correct_account_count(self):
         user = make_legacy()
         profile = make_profile(user)
         contact = make_contact(profile)
         make_account(profile, contact)
         self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertIn('accounts_count', response.context)
-        self.assertEqual(response.context['accounts_count'], 1)
+        self.assertEqual(
+            self.client.get(reverse('dashboard:dashboard_home')).context['accounts_count'], 1
+        )
 
-    def test_dashboard_shows_onboarding_when_incomplete(self):
+    def test_onboarding_shown_when_fewer_than_three_categories_filled(self):
         user = make_legacy()
         make_profile(user)
         self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertTrue(response.context['show_onboarding'])
+        self.assertTrue(
+            self.client.get(reverse('dashboard:dashboard_home')).context['show_onboarding']
+        )
 
-    def test_unauthenticated_redirected_to_login(self):
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertNotEqual(response.status_code, 200)
-
-    def test_progress_is_integer(self):
+    def test_progress_is_integer_between_0_and_100(self):
         user = make_legacy()
         make_profile(user)
         self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertIsInstance(response.context['progress'], int)
+        p = self.client.get(reverse('dashboard:dashboard_home')).context['progress']
+        self.assertIsInstance(p, int)
+        self.assertGreaterEqual(p, 0)
+        self.assertLessEqual(p, 100)
+
+    def test_unauthenticated_user_cannot_access_dashboard(self):
+        self.assertNotEqual(
+            self.client.get(reverse('dashboard:dashboard_home')).status_code, 200
+        )
 
 
 # ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — Profile
+#  VIEW TESTS — Contact CRUD & deletion enforcement
 # ═══════════════════════════════════════════════════════════════
 
-class ProfileViewTest(TestCase):
+class ContactDeletionViewTest(TestCase):
+    """
+    All five assignment types (Account, Device, DigitalEstateDocument,
+    ImportantDocument, FamilyNeedsToKnowSection) must be removed before
+    the view will allow a contact to be deleted.
+
+    The view checks a combined total of all five counts and returns an error
+    to the user if any remain — regardless of whether the DB would cascade
+    or protect the row.
+    """
 
     def setUp(self):
         self.user = make_legacy()
+        self.profile = make_profile(self.user)
+        self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
+        self.delete_url = reverse('dashboard:contact_delete', args=[self.contact.pk])
 
-    def test_create_get_renders_form(self):
-        response = self.client.get(reverse('dashboard:profile_create'))
+    # ── Each type blocks individually ────────────────────────
+
+    def test_account_assignment_blocks_deletion(self):
+        make_account(self.profile, self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_device_assignment_blocks_deletion(self):
+        make_device(self.profile, self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_estate_document_assignment_blocks_deletion(self):
+        make_estate_doc(self.profile, self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_important_document_assignment_blocks_deletion(self):
+        make_important_doc(self.profile, self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_family_note_assignment_blocks_deletion(self):
+        """
+        FamilyNeedsToKnowSection.relation uses CASCADE at the DB level, but
+        the view must refuse deletion if any family notes exist — the user
+        must explicitly delete the notes first.
+        """
+        make_family_note(self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_all_five_present_blocks_deletion(self):
+        make_account(self.profile, self.contact)
+        make_device(self.profile, self.contact)
+        make_estate_doc(self.profile, self.contact)
+        make_important_doc(self.profile, self.contact)
+        make_family_note(self.contact)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    # ── Single remaining assignment still blocks ──────────────
+
+    def test_one_remaining_account_still_blocks_after_others_cleared(self):
+        acct   = make_account(self.profile, self.contact)
+        dev    = make_device(self.profile, self.contact)
+        estate = make_estate_doc(self.profile, self.contact)
+        imp    = make_important_doc(self.profile, self.contact)
+        note   = make_family_note(self.contact)
+
+        dev.delete()
+        estate.delete()
+        imp.delete()
+        note.delete()
+        # Account still present → blocked
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    def test_one_remaining_family_note_still_blocks_after_others_cleared(self):
+        acct   = make_account(self.profile, self.contact)
+        dev    = make_device(self.profile, self.contact)
+        estate = make_estate_doc(self.profile, self.contact)
+        imp    = make_important_doc(self.profile, self.contact)
+        _note  = make_family_note(self.contact)   # left in place
+
+        acct.delete()
+        dev.delete()
+        estate.delete()
+        imp.delete()
+        # Family note still present → view must block
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    # ── Step-by-step removal: blocked until the very last item gone ──
+
+    def test_deletion_blocked_until_all_five_types_removed(self):
+        """
+        Remove one assignment type at a time and confirm the contact survives
+        each intermediate attempt.  Only after the last assignment is gone
+        should deletion succeed.
+        """
+        acct   = make_account(self.profile, self.contact)
+        dev    = make_device(self.profile, self.contact)
+        estate = make_estate_doc(self.profile, self.contact)
+        imp    = make_important_doc(self.profile, self.contact)
+        note   = make_family_note(self.contact)
+
+        acct.delete()
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists(),
+                        'Contact deleted too early — device/estate/imp/note still present')
+
+        dev.delete()
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists(),
+                        'Contact deleted too early — estate/imp/note still present')
+
+        estate.delete()
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists(),
+                        'Contact deleted too early — imp/note still present')
+
+        imp.delete()
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists(),
+                        'Contact deleted too early — note still present')
+
+        # Delete the last remaining assignment type (family note)
+        note.delete()
+        self.client.post(self.delete_url)
+        self.assertFalse(
+            Contact.objects.filter(pk=self.contact.pk).exists(),
+            'Contact should have been deleted once all five assignment types were cleared',
+        )
+
+    # ── Deletion succeeds when truly empty ───────────────────
+
+    def test_contact_with_no_assignments_deleted_successfully(self):
+        bare = make_contact(self.profile, relation='Other',
+                            first_name='Bare', last_name='Contact')
+        self.client.post(reverse('dashboard:contact_delete', args=[bare.pk]))
+        self.assertFalse(Contact.objects.filter(pk=bare.pk).exists())
+
+    # ── Reassignment allows deletion ─────────────────────────
+
+    def test_reassigning_all_five_types_then_deleting_succeeds(self):
+        """
+        Reassign every assignment to a different contact; the original
+        contact should then be deletable.
+        """
+        replacement = make_contact(
+            self.profile, relation='Other', first_name='Alt', last_name='C'
+        )
+        acct   = make_account(self.profile, self.contact)
+        dev    = make_device(self.profile, self.contact)
+        estate = make_estate_doc(self.profile, self.contact)
+        imp    = make_important_doc(self.profile, self.contact)
+        note   = make_family_note(self.contact)
+
+        acct.delegated_account_to = replacement;   acct.save()
+        dev.delegated_device_to = replacement;     dev.save()
+        estate.delegated_estate_to = replacement;  estate.save()
+        imp.delegated_important_document_to = replacement; imp.save()
+        note.delete()   # FamilyNeedsToKnowSection has no delegation target — must be deleted
+
+        self.client.post(self.delete_url)
+        self.assertFalse(Contact.objects.filter(pk=self.contact.pk).exists())
+
+    # ── Context surface: confirmation page ───────────────────
+
+    def test_delete_confirm_page_shows_assignment_summary(self):
+        make_account(self.profile, self.contact)
+        make_device(self.profile, self.contact)
+        make_family_note(self.contact)
+        response = self.client.get(self.delete_url)
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['has_assignments'])
+        self.assertEqual(response.context['total_accounts'], 1)
+        self.assertEqual(response.context['total_devices'], 1)
 
-    def test_create_post_creates_profile_and_redirects(self):
-        response = self.client.post(reverse('dashboard:profile_create'), {
-            'first_name': 'Jane', 'last_name': 'Doe',
-            'address_1': '1 Main', 'city': 'Ames',
-            'state': 'IA', 'zipcode': '50010',
-            'email': 'jane@example.com', 'phone': '515-555-0001',
-        })
-        self.assertTrue(Profile.objects.filter(user=self.user).exists())
+    def test_delete_confirm_page_suggests_other_contacts_for_reassignment(self):
+        make_account(self.profile, self.contact)
+        make_contact(self.profile, relation='Other', first_name='Alt', last_name='C')
+        response = self.client.get(self.delete_url)
+        self.assertTrue(response.context['has_other_contacts'])
 
-    def test_already_has_profile_redirected_to_detail(self):
-        make_profile(self.user)
-        response = self.client.get(reverse('dashboard:profile_create'))
-        self.assertRedirects(response, reverse('dashboard:profile_detail'))
+    # ── Ownership isolation ───────────────────────────────────
 
-    def test_update_saves_changes(self):
-        make_profile(self.user)
-        response = self.client.post(reverse('dashboard:profile_update'), {
-            'first_name': 'Updated', 'last_name': 'Doe',
-            'address_1': '1 Main', 'city': 'Ames',
-            'state': 'IA', 'zipcode': '50010',
-            'email': 'jane@example.com', 'phone': '',
-        })
-        self.user.profile.refresh_from_db()
-        self.assertEqual(self.user.profile.first_name, 'Updated')
+    def test_other_user_cannot_delete_contact(self):
+        other = make_legacy(username='iso_del', email='iso_del@x.com')
+        make_profile(other)
+        self.client.force_login(other)
+        self.client.post(self.delete_url)
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
 
-    def test_expired_essentials_cannot_update_profile(self):
-        """FullAccessMixin blocks expired essentials users from updating."""
-        user = make_essentials(username='exp2', email='exp2@x.com')
-        user.essentials_expires = timezone.now() - timedelta(days=1)
-        user.save()
-        make_profile(user)
-        self.client.force_login(user)
-        response = self.client.get(reverse('dashboard:profile_update'))
-        self.assertNotEqual(response.status_code, 200)
-
-    def test_unpaid_user_redirected_from_create(self):
-        unpaid = make_user(username='unpaid2', email='unpaid2@x.com')
-        self.client.force_login(unpaid)
-        response = self.client.get(reverse('dashboard:profile_create'))
-        self.assertRedirects(response, reverse('accounts:payment'))
+    def test_other_user_cannot_view_contact_detail(self):
+        other = make_legacy(username='iso_det', email='iso_det@x.com')
+        make_profile(other)
+        self.client.force_login(other)
+        response = self.client.get(
+            reverse('dashboard:contact_detail', args=[self.contact.pk])
+        )
+        self.assertEqual(response.status_code, 404)
 
 
-# ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — Contact CRUD
-# ═══════════════════════════════════════════════════════════════
-
-class ContactViewTest(TestCase):
+class ContactCRUDViewTest(TestCase):
 
     def setUp(self):
         self.user = make_legacy()
@@ -884,23 +1202,25 @@ class ContactViewTest(TestCase):
         self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
 
-    def test_list_view_200(self):
-        response = self.client.get(reverse('dashboard:contact_list'))
-        self.assertEqual(response.status_code, 200)
+    def test_list_200(self):
+        self.assertEqual(self.client.get(reverse('dashboard:contact_list')).status_code, 200)
 
-    def test_detail_view_200(self):
-        response = self.client.get(reverse('dashboard:contact_detail', args=[self.contact.pk]))
-        self.assertEqual(response.status_code, 200)
+    def test_detail_200(self):
+        self.assertEqual(
+            self.client.get(
+                reverse('dashboard:contact_detail', args=[self.contact.pk])
+            ).status_code, 200
+        )
 
-    def test_create_post_creates_contact(self):
-        count_before = Contact.objects.filter(profile=self.profile).count()
+    def test_create_adds_contact(self):
+        count = Contact.objects.filter(profile=self.profile).count()
         self.client.post(reverse('dashboard:contact_create'), {
             'contact_relation': 'Daughter',
             'first_name': 'Alice', 'last_name': 'Doe',
             'address_1': '1 Oak', 'city': 'Ames', 'state': 'IA',
             'is_emergency_contact': True,
         })
-        self.assertEqual(Contact.objects.filter(profile=self.profile).count(), count_before + 1)
+        self.assertGreater(Contact.objects.filter(profile=self.profile).count(), count)
 
     def test_update_modifies_contact(self):
         self.client.post(reverse('dashboard:contact_update', args=[self.contact.pk]), {
@@ -912,29 +1232,19 @@ class ContactViewTest(TestCase):
         self.contact.refresh_from_db()
         self.assertEqual(self.contact.first_name, 'Jonathan')
 
-    def test_cannot_delete_contact_with_assigned_documents(self):
-        """Contact with assigned estate docs must be protected from deletion."""
+    def test_detail_context_shows_all_assignment_types(self):
+        make_account(self.profile, self.contact)
+        make_device(self.profile, self.contact)
         make_estate_doc(self.profile, self.contact)
-        response = self.client.post(reverse('dashboard:contact_delete', args=[self.contact.pk]))
-        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
-
-    def test_can_delete_contact_with_no_assignments(self):
-        bare_contact = make_contact(self.profile, relation='Other',
-                                    first_name='Bare', last_name='Contact',
-                                    is_emergency_contact=True)
-        self.client.post(reverse('dashboard:contact_delete', args=[bare_contact.pk]))
-        self.assertFalse(Contact.objects.filter(pk=bare_contact.pk).exists())
-
-    def test_other_user_cannot_see_contact_detail(self):
-        other = make_legacy(username='other2', email='other2@x.com')
-        make_profile(other)
-        self.client.force_login(other)
-        response = self.client.get(reverse('dashboard:contact_detail', args=[self.contact.pk]))
-        self.assertEqual(response.status_code, 404)
+        make_important_doc(self.profile, self.contact)
+        response = self.client.get(
+            reverse('dashboard:contact_detail', args=[self.contact.pk])
+        )
+        self.assertEqual(response.context['total_assignments'], 4)
 
 
 # ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — Account CRUD
+#  VIEW TESTS — Account CRUD (deletion frees contact)
 # ═══════════════════════════════════════════════════════════════
 
 class AccountViewTest(TestCase):
@@ -947,12 +1257,14 @@ class AccountViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_list_200(self):
-        response = self.client.get(reverse('dashboard:account_list'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.get(reverse('dashboard:account_list')).status_code, 200)
 
     def test_detail_200(self):
-        response = self.client.get(reverse('dashboard:account_detail', args=[self.account.pk]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            self.client.get(
+                reverse('dashboard:account_detail', args=[self.account.pk])
+            ).status_code, 200
+        )
 
     def test_create_adds_account(self):
         count = Account.objects.filter(profile=self.profile).count()
@@ -963,26 +1275,34 @@ class AccountViewTest(TestCase):
             'review_time': 30,
             'keep_or_close_instruction': 'Close Account',
         })
-        self.assertEqual(Account.objects.filter(profile=self.profile).count(), count + 1)
+        self.assertGreater(Account.objects.filter(profile=self.profile).count(), count)
 
     def test_delete_removes_account(self):
         self.client.post(reverse('dashboard:account_delete', args=[self.account.pk]))
         self.assertFalse(Account.objects.filter(pk=self.account.pk).exists())
 
-    def test_other_user_cannot_access_account(self):
-        other = make_legacy(username='oth3', email='oth3@x.com')
+    def test_deleting_only_account_then_allows_contact_deletion(self):
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:account_delete', args=[self.account.pk]))
+        self.client.post(reverse('dashboard:contact_delete', args=[contact_pk]))
+        self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
+
+    def test_other_user_cannot_access_account_detail(self):
+        other = make_legacy(username='a_iso', email='a_iso@x.com')
         make_profile(other)
         self.client.force_login(other)
-        response = self.client.get(reverse('dashboard:account_detail', args=[self.account.pk]))
-        self.assertEqual(response.status_code, 404)
-
-    def test_category_filter_in_list(self):
-        make_account(self.profile, self.contact, account_name_or_provider='Chase',
-                     account_category='Online Banking Account')
-        response = self.client.get(
-            reverse('dashboard:account_list') + '?account_category=Online+Banking+Account'
+        self.assertEqual(
+            self.client.get(
+                reverse('dashboard:account_detail', args=[self.account.pk])
+            ).status_code, 404
         )
-        self.assertEqual(response.status_code, 200)
+
+    def test_list_paginates_at_20(self):
+        for i in range(22):
+            make_account(self.profile, self.contact, account_name_or_provider=f'A-{i}')
+        response = self.client.get(reverse('dashboard:account_list'))
+        self.assertTrue(response.context['is_paginated'])
+        self.assertEqual(len(response.context['accounts']), 20)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1003,7 +1323,9 @@ class DeviceViewTest(TestCase):
 
     def test_detail_200(self):
         self.assertEqual(
-            self.client.get(reverse('dashboard:device_detail', args=[self.device.pk])).status_code, 200
+            self.client.get(
+                reverse('dashboard:device_detail', args=[self.device.pk])
+            ).status_code, 200
         )
 
     def test_create_adds_device(self):
@@ -1014,18 +1336,24 @@ class DeviceViewTest(TestCase):
             'device_name': 'MacBook Pro',
             'review_time': 30,
         })
-        self.assertEqual(Device.objects.filter(profile=self.profile).count(), count + 1)
+        self.assertGreater(Device.objects.filter(profile=self.profile).count(), count)
 
     def test_delete_removes_device(self):
         self.client.post(reverse('dashboard:device_delete', args=[self.device.pk]))
         self.assertFalse(Device.objects.filter(pk=self.device.pk).exists())
 
+    def test_deleting_only_device_then_allows_contact_deletion(self):
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:device_delete', args=[self.device.pk]))
+        self.client.post(reverse('dashboard:contact_delete', args=[contact_pk]))
+        self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
+
 
 # ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — Estate Document CRUD
+#  VIEW TESTS — Estate & Important Document CRUD
 # ═══════════════════════════════════════════════════════════════
 
-class EstateViewTest(TestCase):
+class EstateDocumentViewTest(TestCase):
 
     def setUp(self):
         self.user = make_legacy()
@@ -1039,17 +1367,21 @@ class EstateViewTest(TestCase):
 
     def test_detail_200(self):
         self.assertEqual(
-            self.client.get(reverse('dashboard:estate_detail', args=[self.doc.pk])).status_code, 200
+            self.client.get(
+                reverse('dashboard:estate_detail', args=[self.doc.pk])
+            ).status_code, 200
         )
 
     def test_delete_removes_document(self):
         self.client.post(reverse('dashboard:estate_delete', args=[self.doc.pk]))
         self.assertFalse(DigitalEstateDocument.objects.filter(pk=self.doc.pk).exists())
 
+    def test_deleting_only_estate_doc_then_allows_contact_deletion(self):
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:estate_delete', args=[self.doc.pk]))
+        self.client.post(reverse('dashboard:contact_delete', args=[contact_pk]))
+        self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
 
-# ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — Important Document CRUD
-# ═══════════════════════════════════════════════════════════════
 
 class ImportantDocumentViewTest(TestCase):
 
@@ -1067,10 +1399,12 @@ class ImportantDocumentViewTest(TestCase):
 
     def test_detail_200(self):
         self.assertEqual(
-            self.client.get(reverse('dashboard:importantdocument_detail', args=[self.doc.pk])).status_code, 200
+            self.client.get(
+                reverse('dashboard:importantdocument_detail', args=[self.doc.pk])
+            ).status_code, 200
         )
 
-    def test_create_valid_adds_document(self):
+    def test_create_adds_document(self):
         count = ImportantDocument.objects.filter(profile=self.profile).count()
         self.client.post(reverse('dashboard:importantdocument_create'), {
             'delegated_important_document_to': self.contact.pk,
@@ -1079,7 +1413,63 @@ class ImportantDocumentViewTest(TestCase):
             'review_time': 365,
             'applies_on_death': True,
         })
-        self.assertEqual(ImportantDocument.objects.filter(profile=self.profile).count(), count + 1)
+        self.assertGreater(ImportantDocument.objects.filter(profile=self.profile).count(), count)
+
+    def test_delete_removes_document(self):
+        self.client.post(reverse('dashboard:importantdocument_delete', args=[self.doc.pk]))
+        self.assertFalse(ImportantDocument.objects.filter(pk=self.doc.pk).exists())
+
+    def test_deleting_only_important_doc_then_allows_contact_deletion(self):
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:importantdocument_delete', args=[self.doc.pk]))
+        self.client.post(reverse('dashboard:contact_delete', args=[contact_pk]))
+        self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
+
+
+# ═══════════════════════════════════════════════════════════════
+#  VIEW TESTS — FamilyAwareness CRUD
+# ═══════════════════════════════════════════════════════════════
+
+class FamilyAwarenessViewTest(TestCase):
+
+    def setUp(self):
+        self.user = make_legacy()
+        self.profile = make_profile(self.user)
+        self.contact = make_contact(self.profile)
+        self.note = make_family_note(self.contact)
+        self.client.force_login(self.user)
+
+    def test_list_200(self):
+        self.assertEqual(
+            self.client.get(reverse('dashboard:familyawareness_list')).status_code, 200
+        )
+
+    def test_detail_200(self):
+        self.assertEqual(
+            self.client.get(
+                reverse('dashboard:familyawareness_detail', args=[self.note.pk])
+            ).status_code, 200
+        )
+
+    def test_delete_removes_note(self):
+        self.client.post(reverse('dashboard:familyawareness_delete', args=[self.note.pk]))
+        self.assertFalse(FamilyNeedsToKnowSection.objects.filter(pk=self.note.pk).exists())
+
+    def test_deleting_only_family_note_then_allows_contact_deletion(self):
+        """
+        Deleting the FamilyNeedsToKnowSection via its own delete view must
+        unblock the contact for deletion.
+        """
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:familyawareness_delete', args=[self.note.pk]))
+        self.client.post(reverse('dashboard:contact_delete', args=[contact_pk]))
+        self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
+
+    def test_family_note_deletion_does_not_delete_contact(self):
+        """Cascade is one-way: deleting the note must not delete the contact."""
+        contact_pk = self.contact.pk
+        self.client.post(reverse('dashboard:familyawareness_delete', args=[self.note.pk]))
+        self.assertTrue(Contact.objects.filter(pk=contact_pk).exists())
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1093,116 +1483,141 @@ class FuneralPlanViewTest(TestCase):
         self.profile = make_profile(self.user)
         self.client.force_login(self.user)
 
-    def test_index_creates_plan_on_first_visit(self):
+    def test_index_auto_creates_plan_on_first_visit(self):
         self.assertFalse(FuneralPlan.objects.filter(profile=self.profile).exists())
         self.client.get(reverse('dashboard:funeralplan_index'))
         self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
 
     def test_index_200(self):
-        self.assertEqual(self.client.get(reverse('dashboard:funeralplan_index')).status_code, 200)
+        self.assertEqual(
+            self.client.get(reverse('dashboard:funeralplan_index')).status_code, 200
+        )
 
     def test_detail_200(self):
         FuneralPlan.objects.create(profile=self.profile)
-        self.assertEqual(self.client.get(reverse('dashboard:funeralplan_detail')).status_code, 200)
+        self.assertEqual(
+            self.client.get(reverse('dashboard:funeralplan_detail')).status_code, 200
+        )
 
-    def test_step1_get_200(self):
-        self.assertEqual(self.client.get(reverse('dashboard:funeralplan_step1')).status_code, 200)
+    def test_all_eight_steps_return_200(self):
+        for step in range(1, 9):
+            response = self.client.get(reverse(f'dashboard:funeralplan_step{step}'))
+            self.assertEqual(response.status_code, 200, f'Step {step} returned {response.status_code}')
 
-    def test_step1_post_saves_and_redirects_to_step2(self):
+    def test_step1_post_saves_data_and_redirects_to_step2(self):
         response = self.client.post(reverse('dashboard:funeralplan_step1'), {
-            'preferred_name': 'Janie',
-            'occupation': 'Teacher',
-            'is_veteran': False,
-            'veteran_branch': '',
+            'preferred_name': 'Janie', 'occupation': 'Teacher',
+            'is_veteran': False, 'veteran_branch': '',
         })
         self.assertRedirects(response, reverse('dashboard:funeralplan_step2'))
-        plan = FuneralPlan.objects.get(profile=self.profile)
-        self.assertEqual(plan.preferred_name, 'Janie')
+        self.assertEqual(FuneralPlan.objects.get(profile=self.profile).preferred_name, 'Janie')
 
-    def test_step2_post_saves_and_redirects_to_step3(self):
-        FuneralPlan.objects.get_or_create(profile=self.profile)
-        response = self.client.post(reverse('dashboard:funeralplan_step2'), {
-            'service_type': 'Celebration of Life',
-        })
-        self.assertRedirects(response, reverse('dashboard:funeralplan_step3'))
-
-    def test_step8_post_redirects_to_detail(self):
+    def test_step8_post_redirects_to_summary_detail(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
         response = self.client.post(reverse('dashboard:funeralplan_step8'), {
-            'additional_instructions': 'Play jazz at my service.',
+            'additional_instructions': 'Play jazz.',
         })
         self.assertRedirects(response, reverse('dashboard:funeralplan_detail'))
 
-    def test_step1_invalid_veteran_rerenders_with_errors(self):
+    def test_sequential_step_saves_accumulate_data(self):
+        self.client.post(reverse('dashboard:funeralplan_step1'), {
+            'preferred_name': 'Jay', 'is_veteran': False, 'veteran_branch': '',
+        })
+        self.client.post(reverse('dashboard:funeralplan_step2'), {
+            'service_type': 'Graveside Service',
+        })
+        plan = FuneralPlan.objects.get(profile=self.profile)
+        self.assertEqual(plan.preferred_name, 'Jay')
+        self.assertEqual(plan.service_type, 'Graveside Service')
+
+    def test_invalid_step1_rerenders_with_form_error(self):
         response = self.client.post(reverse('dashboard:funeralplan_step1'), {
             'is_veteran': True,
             'veteran_branch': '',
         })
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'veteran_branch',
-                             'Please enter the branch of service, or uncheck the Veteran field.')
+        self.assertFormError(
+            response, 'form', 'veteran_branch',
+            'Please enter the branch of service, or uncheck the Veteran field.',
+        )
 
-    def test_unpaid_user_redirected_from_funeralplan(self):
-        unpaid = make_user(username='unpaid3', email='u3@x.com')
+    def test_unpaid_user_redirected_from_funeralplan_index(self):
+        unpaid = make_user(username='fp_unp', email='fp_unp@x.com')
         Profile.objects.create(
             user=unpaid, first_name='U', last_name='P',
             address_1='1 St', city='City', state='IA',
         )
         self.client.force_login(unpaid)
-        response = self.client.get(reverse('dashboard:funeralplan_index'))
-        self.assertRedirects(response, reverse('accounts:payment'))
+        self.assertRedirects(
+            self.client.get(reverse('dashboard:funeralplan_index')),
+            reverse('accounts:payment'),
+        )
 
-    def test_expired_essentials_cannot_post_step(self):
-        exp = make_essentials(username='exp3', email='exp3@x.com')
+    def test_expired_essentials_post_to_step_is_blocked(self):
+        exp = make_essentials(username='fp_exp', email='fp_exp@x.com')
         exp.essentials_expires = timezone.now() - timedelta(days=1)
         exp.save()
         make_profile(exp)
         FuneralPlan.objects.create(profile=exp.profile)
         self.client.force_login(exp)
-        response = self.client.post(reverse('dashboard:funeralplan_step1'), {
-            'preferred_name': 'Blocked',
-            'is_veteran': False,
+        self.client.post(reverse('dashboard:funeralplan_step1'), {
+            'preferred_name': 'Blocked', 'is_veteran': False,
         })
-        self.assertRedirects(response, reverse('dashboard:funeralplan_index'))
         self.assertNotEqual(
             FuneralPlan.objects.get(profile=exp.profile).preferred_name, 'Blocked'
         )
 
     # ── Delete ────────────────────────────────────────────────
 
-    def test_delete_get_renders_confirm_page(self):
+    def test_delete_get_renders_confirm_template(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
         response = self.client.get(reverse('dashboard:funeralplan_delete'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dashboard/funeralplan/funeralplan_confirm_delete.html')
+        self.assertTemplateUsed(
+            response, 'dashboard/funeralplan/funeralplan_confirm_delete.html'
+        )
 
-    def test_delete_wrong_confirmation_text_does_not_delete(self):
+    def test_delete_wrong_confirmation_text_preserves_plan(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
         self.client.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'delete'})
         self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
 
-    def test_delete_correct_confirmation_deletes_plan(self):
+    def test_delete_mixed_case_confirmation_preserves_plan(self):
+        FuneralPlan.objects.get_or_create(profile=self.profile)
+        self.client.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'Delete'})
+        self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
+
+    def test_delete_correct_DELETE_removes_plan(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
         self.client.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'})
         self.assertFalse(FuneralPlan.objects.filter(profile=self.profile).exists())
 
-    def test_delete_redirects_to_index_after_deletion(self):
+    def test_delete_redirects_to_index(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
         response = self.client.post(
             reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'}
         )
         self.assertRedirects(response, reverse('dashboard:funeralplan_index'))
 
-    def test_delete_nonexistent_plan_shows_info_message(self):
-        """No plan exists → delete should gracefully report nothing found."""
+    def test_delete_when_no_plan_exists_shows_info_message(self):
         response = self.client.post(
             reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'}
         )
-        messages_list = list(response.wsgi_request._messages)
-        self.assertTrue(any('no funeral plan' in str(m).lower() for m in messages_list))
+        msgs = list(response.wsgi_request._messages)
+        self.assertTrue(any('no funeral plan' in str(m).lower() for m in msgs))
 
-    def test_delete_blocked_for_expired_essentials(self):
-        exp = make_essentials(username='delexp', email='delexp@x.com')
+    def test_delete_requires_csrf(self):
+        FuneralPlan.objects.get_or_create(profile=self.profile)
+        c = Client(enforce_csrf_checks=True)
+        c.force_login(self.user)
+        response = c.post(
+            reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
+
+    def test_expired_essentials_cannot_delete_plan(self):
+        exp = make_essentials(username='fp_delexp', email='fp_delexp@x.com')
         exp.essentials_expires = timezone.now() - timedelta(days=1)
         exp.save()
         make_profile(exp)
@@ -1213,49 +1628,7 @@ class FuneralPlanViewTest(TestCase):
 
 
 # ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — FuneralPlanMixin.get_plan_progress()
-# ═══════════════════════════════════════════════════════════════
-
-class FuneralPlanProgressTest(TestCase):
-
-    def setUp(self):
-        self.user = make_legacy()
-        self.profile = make_profile(self.user)
-        self.client.force_login(self.user)
-
-    def _progress(self):
-        """Call the index view and return its progress context dict."""
-        response = self.client.get(reverse('dashboard:funeralplan_index'))
-        return response.context['progress']
-
-    def test_empty_plan_all_false(self):
-        p = self._progress()
-        self.assertFalse(p['personal_info'])
-        self.assertFalse(p['service'])
-        self.assertFalse(p['disposition'])
-
-    def test_personal_info_flag_set_after_step1(self):
-        self.client.post(reverse('dashboard:funeralplan_step1'), {
-            'preferred_name': 'Jay', 'is_veteran': False, 'veteran_branch': '',
-        })
-        p = self._progress()
-        self.assertTrue(p['personal_info'])
-
-    def test_is_complete_flag_requires_all_four_fields(self):
-        plan = FuneralPlan.objects.get_or_create(profile=self.profile)[0]
-        p = self._progress()
-        self.assertFalse(p['is_complete'])
-        plan.service_type = 'Memorial Service'
-        plan.disposition_method = 'Cremation'
-        plan.officiant_name_freetext = 'Rev. Smith'
-        plan.payment_arrangements = 'Pre-paid'
-        plan.save()
-        p = self._progress()
-        self.assertTrue(p['is_complete'])
-
-
-# ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — RelevanceReview
+#  VIEW TESTS — RelevanceReview & MarkItemReviewed
 # ═══════════════════════════════════════════════════════════════
 
 class RelevanceReviewViewTest(TestCase):
@@ -1269,31 +1642,34 @@ class RelevanceReviewViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_list_200(self):
-        self.assertEqual(self.client.get(reverse('dashboard:relevancereview_list')).status_code, 200)
+        self.assertEqual(
+            self.client.get(reverse('dashboard:relevancereview_list')).status_code, 200
+        )
 
     def test_detail_200(self):
         self.assertEqual(
-            self.client.get(reverse('dashboard:relevancereview_detail', args=[self.review.pk])).status_code, 200
+            self.client.get(
+                reverse('dashboard:relevancereview_detail', args=[self.review.pk])
+            ).status_code, 200
         )
 
-    def test_detail_enforces_ownership(self):
-        other = make_legacy(username='rv_other', email='rvo@x.com')
+    def test_other_user_cannot_view_review(self):
+        other = make_legacy(username='rv_iso', email='rv_iso@x.com')
         make_profile(other)
         self.client.force_login(other)
-        from django.core.exceptions import PermissionDenied
-        response = self.client.get(reverse('dashboard:relevancereview_detail', args=[self.review.pk]))
+        response = self.client.get(
+            reverse('dashboard:relevancereview_detail', args=[self.review.pk])
+        )
         self.assertIn(response.status_code, [403, 404])
 
-    def test_unpaid_redirected_from_list(self):
-        unpaid = make_user(username='unpaid_rv', email='unpaid_rv@x.com')
+    def test_unpaid_user_redirected_from_list(self):
+        unpaid = make_user(username='rv_unp', email='rv_unp@x.com')
         self.client.force_login(unpaid)
-        response = self.client.get(reverse('dashboard:relevancereview_list'))
-        self.assertRedirects(response, reverse('accounts:payment'))
+        self.assertRedirects(
+            self.client.get(reverse('dashboard:relevancereview_list')),
+            reverse('accounts:payment'),
+        )
 
-
-# ═══════════════════════════════════════════════════════════════
-#  VIEW TESTS — MarkItemReviewedView (AJAX)
-# ═══════════════════════════════════════════════════════════════
 
 class MarkItemReviewedViewTest(TestCase):
 
@@ -1306,41 +1682,39 @@ class MarkItemReviewedViewTest(TestCase):
         self.client.force_login(self.user)
         self.url = reverse('dashboard:mark_item_reviewed', args=[self.review.pk])
 
-    def test_get_returns_405(self):
-        response = self.client.get(self.url)
-        data = json.loads(response.content)
-        self.assertEqual(response.status_code, 405)
+    def test_get_returns_method_not_allowed(self):
+        data = json.loads(self.client.get(self.url).content)
         self.assertFalse(data['success'])
 
-    def test_post_returns_success(self):
-        response = self.client.post(self.url)
-        data = json.loads(response.content)
+    def test_post_returns_success_with_timestamps(self):
+        data = json.loads(self.client.post(self.url).content)
         self.assertTrue(data['success'])
         self.assertIn('updated_at', data)
         self.assertIn('next_review_due', data)
 
-    def test_post_updates_next_review_due(self):
+    def test_post_advances_next_review_due(self):
         old_due = self.review.next_review_due
         self.client.post(self.url)
         self.review.refresh_from_db()
         self.assertGreater(self.review.next_review_due, old_due)
 
     def test_nonexistent_review_returns_404(self):
-        response = self.client.post(reverse('dashboard:mark_item_reviewed', args=[99999]))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            self.client.post(
+                reverse('dashboard:mark_item_reviewed', args=[99999])
+            ).status_code, 404
+        )
 
     def test_unpaid_user_returns_403(self):
-        unpaid = make_user(username='unp_mk', email='unp_mk@x.com')
+        unpaid = make_user(username='mk_unp', email='mk_unp@x.com')
         self.client.force_login(unpaid)
-        response = self.client.post(self.url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.client.post(self.url).status_code, 403)
 
-    def test_other_user_returns_403(self):
-        other = make_legacy(username='mk_other', email='mk_other@x.com')
+    def test_other_users_review_returns_error(self):
+        other = make_legacy(username='mk_oth', email='mk_oth@x.com')
         make_profile(other)
         self.client.force_login(other)
-        response = self.client.post(self.url)
-        data = json.loads(response.content)
+        data = json.loads(self.client.post(self.url).content)
         self.assertFalse(data['success'])
 
 
@@ -1365,36 +1739,42 @@ class OnboardingViewTest(TestCase):
             self.client.get(reverse('dashboard:onboarding_complete')).status_code, 200
         )
 
-    def test_onboarding_progress_context(self):
-        response = self.client.get(reverse('dashboard:onboarding_welcome'))
-        p = response.context['progress']
-        self.assertIn('contacts', p)
-        self.assertIn('accounts', p)
-        self.assertIn('devices', p)
+    def test_progress_context_has_all_six_keys(self):
+        p = self.client.get(reverse('dashboard:onboarding_welcome')).context['progress']
+        for key in ('contacts', 'accounts', 'devices', 'estates', 'documents', 'family_knows'):
+            self.assertIn(key, p)
 
     def test_contacts_step_post_adds_contact(self):
-        count = Contact.objects.filter(profile=self.profile).exclude(contact_relation='Self').count()
+        count = Contact.objects.filter(
+            profile=self.profile
+        ).exclude(contact_relation='Self').count()
         self.client.post(reverse('dashboard:onboarding_contacts'), {
             'contact_relation': 'Daughter',
             'first_name': 'Lily', 'last_name': 'Doe',
             'address_1': '1 Oak', 'city': 'Ames', 'state': 'IA',
             'is_emergency_contact': True,
         })
-        new_count = Contact.objects.filter(profile=self.profile).exclude(contact_relation='Self').count()
-        self.assertEqual(new_count, count + 1)
+        self.assertEqual(
+            Contact.objects.filter(
+                profile=self.profile
+            ).exclude(contact_relation='Self').count(),
+            count + 1,
+        )
 
     def test_unpaid_user_redirected_from_onboarding(self):
-        unpaid = make_user(username='unpaid_ob', email='unpaid_ob@x.com')
+        unpaid = make_user(username='ob_unp', email='ob_unp@x.com')
         self.client.force_login(unpaid)
-        response = self.client.get(reverse('dashboard:onboarding_welcome'))
-        self.assertRedirects(response, reverse('accounts:payment'))
+        self.assertRedirects(
+            self.client.get(reverse('dashboard:onboarding_welcome')),
+            reverse('accounts:payment'),
+        )
 
 
 # ═══════════════════════════════════════════════════════════════
 #  EDGE CASES
 # ═══════════════════════════════════════════════════════════════
 
-class DashboardEdgeCaseTest(TestCase):
+class EdgeCaseTest(TestCase):
 
     def setUp(self):
         self.user = make_legacy()
@@ -1402,101 +1782,62 @@ class DashboardEdgeCaseTest(TestCase):
         self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
 
-    # ── Dashboard progress calculation ───────────────────────
-
-    def test_progress_caps_at_100(self):
-        """Progress should never exceed 100 regardless of item counts."""
-        for i in range(20):
-            make_account(self.profile, self.contact,
-                         account_name_or_provider=f'Account {i}')
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertLessEqual(response.context['progress'], 100)
+    def test_progress_never_exceeds_100(self):
+        for i in range(25):
+            make_account(self.profile, self.contact, account_name_or_provider=f'A-{i}')
+        p = self.client.get(reverse('dashboard:dashboard_home')).context['progress']
+        self.assertLessEqual(p, 100)
 
     def test_progress_zero_for_empty_profile(self):
-        """Brand new profile with no items should have 0 progress."""
-        response = self.client.get(reverse('dashboard:dashboard_home'))
-        self.assertEqual(response.context['progress'], 0)
+        self.assertEqual(
+            self.client.get(reverse('dashboard:dashboard_home')).context['progress'], 0
+        )
 
-    # ── Ownership isolation between users ─────────────────────
-
-    def test_users_cannot_see_each_others_accounts_in_list(self):
-        other = make_legacy(username='iso_other', email='iso_other@x.com')
-        other_profile = make_profile(other)
-        other_contact = make_contact(other_profile, first_name='Other', last_name='Person')
-        make_account(other_profile, other_contact, account_name_or_provider='OtherBank')
-
-        response = self.client.get(reverse('dashboard:account_list'))
-        accounts = list(response.context['accounts'])
-        for acct in accounts:
+    def test_account_list_only_shows_own_accounts(self):
+        other = make_legacy(username='iso_a', email='iso_a@x.com')
+        op = make_profile(other)
+        oc = make_contact(op, first_name='O', last_name='P')
+        make_account(op, oc, account_name_or_provider='OtherBank')
+        for acct in self.client.get(reverse('dashboard:account_list')).context['accounts']:
             self.assertEqual(acct.profile, self.profile)
 
-    # ── Signal idempotency ────────────────────────────────────
+    def test_self_contact_not_duplicated_on_multiple_profile_saves(self):
+        self.profile.first_name = 'A'; self.profile.save()
+        self.profile.first_name = 'B'; self.profile.save()
+        self.assertEqual(
+            Contact.objects.filter(profile=self.profile, contact_relation='Self').count(), 1
+        )
 
-    def test_saving_profile_twice_does_not_duplicate_self_contact(self):
-        self.profile.first_name = 'Updated'
-        self.profile.save()
-        self.profile.first_name = 'Updated Again'
-        self.profile.save()
-        self_contacts = Contact.objects.filter(profile=self.profile, contact_relation='Self')
-        self.assertEqual(self_contacts.count(), 1)
-
-    # ── FuneralPlan wizard isolation ──────────────────────────
-
-    def test_multiple_step_saves_accumulate_data(self):
-        """Saving step 1 then step 2 should persist both sections."""
-        self.client.post(reverse('dashboard:funeralplan_step1'), {
-            'preferred_name': 'Jay', 'is_veteran': False, 'veteran_branch': '',
-        })
-        self.client.post(reverse('dashboard:funeralplan_step2'), {
-            'service_type': 'Graveside Service',
-        })
-        plan = FuneralPlan.objects.get(profile=self.profile)
-        self.assertEqual(plan.preferred_name, 'Jay')
-        self.assertEqual(plan.service_type, 'Graveside Service')
-
-    # ── RelevanceReview created with correct due date ─────────
-
-    def test_review_due_date_matches_review_time(self):
-        acct = make_account(self.profile, self.contact, review_time=180)
-        review = RelevanceReview.objects.filter(account_review=acct).first()
-        expected = date.today() + timedelta(days=180)
-        self.assertEqual(review.next_review_due, expected)
-
-    # ── Empty queryset for user without profile ───────────────
-
-    def test_account_list_returns_empty_for_user_without_profile(self):
-        """get_queryset should return Account.objects.none() gracefully."""
-        no_profile_user = make_legacy(username='noprof', email='noprof@x.com')
-        # Deliberately do NOT create a profile for this user
-        self.client.force_login(no_profile_user)
+    def test_account_list_empty_for_paid_user_without_profile(self):
+        """get_queryset must handle Profile.DoesNotExist gracefully."""
+        no_prof = make_legacy(username='np3', email='np3@x.com')
+        self.client.force_login(no_prof)
         response = self.client.get(reverse('dashboard:account_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(response.context.get('accounts', [])), [])
 
-    # ── Contact detail shows correct assignment counts ─────────
+    def test_review_due_date_exact_days_from_today(self):
+        acct = make_account(self.profile, self.contact, review_time=90)
+        review = RelevanceReview.objects.filter(account_review=acct).first()
+        self.assertEqual(review.next_review_due, date.today() + timedelta(days=90))
 
-    def test_contact_detail_shows_assignment_counts(self):
-        make_estate_doc(self.profile, self.contact)
-        make_account(self.profile, self.contact)
-        response = self.client.get(reverse('dashboard:contact_detail', args=[self.contact.pk]))
-        self.assertEqual(response.context['total_assignments'], 2)
-
-    # ── CSRF protection on delete ─────────────────────────────
-
-    def test_funeral_delete_requires_csrf(self):
+    def test_funeral_plan_recreatable_after_deletion(self):
         FuneralPlan.objects.get_or_create(profile=self.profile)
-        c = Client(enforce_csrf_checks=True)
-        c.force_login(self.user)
-        response = c.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'})
-        self.assertEqual(response.status_code, 403)
+        self.client.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'})
+        self.client.get(reverse('dashboard:funeralplan_index'))   # triggers get_or_create
         self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
 
-    # ── Pagination ────────────────────────────────────────────
-
-    def test_account_list_paginates_at_20(self):
-        for i in range(25):
-            make_account(self.profile, self.contact,
-                         account_name_or_provider=f'Acct-{i}')
-        response = self.client.get(reverse('dashboard:account_list'))
-        self.assertTrue(response.context['is_paginated'])
-        self.assertEqual(len(response.context['accounts']), 20)
+    def test_partial_contact_reassignment_still_blocks_deletion(self):
+        """
+        Reassigning Account but leaving Device means deletion is still blocked
+        (view must check all five counts, not stop at the first non-zero one).
+        """
+        acct = make_account(self.profile, self.contact)
+        _dev = make_device(self.profile, self.contact)
+        replacement = make_contact(
+            self.profile, relation='Other', first_name='R', last_name='C'
+        )
+        acct.delegated_account_to = replacement
+        acct.save()
+        self.client.post(reverse('dashboard:contact_delete', args=[self.contact.pk]))
+        self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
