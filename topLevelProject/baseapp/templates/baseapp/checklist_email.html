@@ -7,17 +7,7 @@
     <div class="form-container">
       <div class="form-wrapper" style="max-width:520px;">
         
-    {% if messages %}
-    <div class="" style="padding-bottom:0;">
-      <ul class="messages-list" style="margin:0;">
-        {% for message in messages %}
-          <li class="message {% if message.tags == 'error' %}message-error{% elif message.tags == 'success' %}message-success{% else %}message-warning{% endif %}">
-            {{ message }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+
 
     <!-- Header -->
     <div class="form-wrapper-header" style="text-align:center;">

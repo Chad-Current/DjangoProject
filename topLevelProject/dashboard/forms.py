@@ -92,10 +92,15 @@ class ProfileForm(forms.ModelForm):
                 raise ValidationError("Enter a valid email address (e.g. name@example.com).")
         return email
 
-    def clean_phone(self):
+    def clean_home_phone(self):
         phone = self.cleaned_data.get('phone', '').strip()
         if phone:
-            validate_phone_digits(phone)
+            cleaned = re.sub(r'[\s\-().+]', '', phone)
+            if not cleaned.isdigit():
+                raise ValidationError(
+                    "Phone number may only contain digits, spaces, dashes, "
+                    "parentheses, and a leading '+'."
+                )
         return phone
 
 
@@ -835,7 +840,7 @@ class FuneralPlanPersonalInfoForm(forms.ModelForm):
         is_veteran = self.cleaned_data.get('is_veteran', False)
         branch     = self.cleaned_data.get('veteran_branch', '').strip()
         if is_veteran and not branch:
-            raise ValidationError(
+            raise forms.ValidationError(
                 "Please enter the branch of service, or uncheck the Veteran field."
             )
         return '' if not is_veteran else branch

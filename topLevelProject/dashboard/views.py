@@ -929,7 +929,7 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
             # Contact has documents - cannot delete
             messages.error(
                 request,
-                f'Cannot delete {contact.contact_name} because they have {total_resictions} '
+                f'Cannot delete {contact.first_name} {contact.last_name }because they have {total_resictions} '
                 f'document(s) assigned to them ({estate_count} estate, {important_count} important, {account_count} account, {device_count} device)'
                 f'Please reassign these to another contact first.'
             )
@@ -951,13 +951,18 @@ class ContactDeleteView(DeleteAccessMixin, DeleteView):
                 reverse('dashboard:contact_detail', kwargs={'pk': contact.pk})
             )
     
+    # def delete(self, request, *args, **kwargs):
+    #     """Override delete to add success message"""
+    #     contact_name = self.object.contact_name
+    #     messages.success(request, f'Contact "{contact_name}" deleted successfully.')
+    #     return super().delete(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         """Override delete to add success message"""
-        contact_name = self.object.contact_name
+        self.object = self.get_object()
+        contact_name = f"{self.object.first_name} {self.object.last_name}"
         messages.success(request, f'Contact "{contact_name}" deleted successfully.')
         return super().delete(request, *args, **kwargs)
-
-
 # ============================================================================
 # FUNERAL VIEWS 
 # ============================================================================

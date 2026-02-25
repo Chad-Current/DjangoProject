@@ -17,9 +17,23 @@
   <body>    
 
     {% include "baseapp/navbar.html" %}
-    {% block content %}
-
+    {% block messages %}
+        {% if messages %}
+    <div class="" style="padding-bottom:0;">
+      <ul class="messages-list" style="margin:0;">
+        {% for message in messages %}
+          <li class="message {% if message.tags == 'error' %}message-error{% elif message.tags == 'success' %}message-success{% else %}message-warning{% endif %}">
+            {{ message }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
     {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
     {% include "baseapp/footer.html" %}
 
 
