@@ -86,7 +86,7 @@
                             <i class="fas fa-user-check"></i> Assigned To
                         </div>
                         <div class="info-value">
-                            <a href="{% url 'dashboard:contact_detail' item.delegated_account_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_account_to.pk %}">
                                 {{ item.delegated_account_to.first_name }} {{ item.delegated_account_to.last_name }}
                             </a>
                         </div>
@@ -131,7 +131,7 @@
                             <i class="fas fa-user-check"></i> Assigned To
                         </div>
                         <div class="info-value">
-                            <a href="{% url 'dashboard:contact_detail' item.delegated_device_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_device_to.pk %}">
                                 {{ item.delegated_device_to.first_name }} {{ item.delegated_device_to.last_name }}
                             </a>
                         </div>
@@ -154,7 +154,7 @@
                             <i class="fas fa-user-check"></i> Assigned To
                         </div>
                         <div class="info-value">
-                            <a href="{% url 'dashboard:contact_detail' item.delegated_estate_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_estate_to.pk %}">
                                 {{ item.delegated_estate_to.first_name }} {{ item.delegated_estate_to.last_name }}
                             </a>
                         </div>
@@ -190,7 +190,7 @@
                             <i class="fas fa-user-check"></i> Assigned To
                         </div>
                         <div class="info-value">
-                            <a href="{% url 'dashboard:contact_detail' item.delegated_important_document_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' item.delegated_important_document_to.pk %}">
                                 {{ item.delegated_important_document_to.first_name }} {{ item.delegated_important_document_to.last_name }}
                             </a>
                         </div>
@@ -427,19 +427,19 @@
     {% if can_modify %}
     <div class="action-buttons">
         {% if review.account_review %}
-            <a href="{% url 'dashboard:account_detail' review.account_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:account_detail' review.account_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Account
             </a>
         {% elif review.device_review %}
-            <a href="{% url 'dashboard:device_detail' review.device_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:device_detail' review.device_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Device
             </a>
         {% elif review.estate_review %}
-            <a href="{% url 'dashboard:estate_detail' review.estate_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:estate_detail' review.estate_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Document
             </a>
         {% elif review.important_document_review %}
-            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Document
             </a>
         {% endif %}
@@ -450,19 +450,19 @@
     {% else %}
     <div class="action-buttons">
         {% if review.account_review %}
-            <a href="{% url 'dashboard:account_detail' review.account_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:account_detail' review.account_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Account
             </a>
         {% elif review.device_review %}
-            <a href="{% url 'dashboard:device_detail' review.device_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:device_detail' review.device_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Device
             </a>
         {% elif review.estate_review %}
-            <a href="{% url 'dashboard:estate_detail' review.estate_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:estate_detail' review.estate_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Document
             </a>
         {% elif review.important_document_review %}
-            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.slug %}" class="btn-back btn-custom">
+            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.pk %}" class="btn-back btn-custom">
                 <i class="fas fa-arrow-left"></i> Back to Document
             </a>
         {% endif %}
@@ -502,7 +502,7 @@
                 markReviewedBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
                 
                 // Make AJAX request
-                fetch("{% url 'dashboard:mark_item_reviewed' review.slug %}", {
+                fetch("{% url 'dashboard:mark_item_reviewed' review.pk %}", {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),

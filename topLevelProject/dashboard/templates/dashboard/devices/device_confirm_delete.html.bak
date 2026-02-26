@@ -1,7 +1,7 @@
 {% extends "dashboard/dashboard.html" %}
 {% load static %}
 
-{% block title %}Delete Family Note{% endblock %}
+{% block title %}Delete Device{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}" type="text/css">
 {% endblock %}
@@ -17,24 +17,28 @@
             </div>
 
             <!-- Heading -->
-            <h2 class="delete-title">Delete Family Note?</h2>
-            <p class="delete-subtitle">You are about to permanently remove a note for</p>
+            <h2 class="delete-title">Delete Device?</h2>
+            <p class="delete-subtitle">You are about to permanently remove</p>
 
             <!-- Item name chip -->
             <div class="delete-item-name">
-                <i class="fas fa-user"></i>
-                {{ object.relation.first_name }} {{ object.relation.last_name }}
+                <i class="fas fa-laptop"></i>
+                {{ object.device_name }}
             </div>
 
             <!-- Warning notice -->
             <div class="delete-warning-notice">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p>This action cannot be undone. All data associated with this family note will be permanently deleted.</p>
+                {% if object.used_for_2fa %}
+                <p>This device is used for <strong>two-factor authentication</strong>. Deleting it may affect access to linked accounts. This action cannot be undone.</p>
+                {% else %}
+                <p>This action cannot be undone. All data associated with this device will be permanently deleted.</p>
+                {% endif %}
             </div>
 
             <!-- Action buttons -->
             <div class="delete-actions">
-                <a href="{% url 'dashboard:familyawareness_detail' object.slug %}" class="btn-cancel">
+                <a href="{% url 'dashboard:device_detail' object.pk %}" class="btn-cancel">
                     <i class="fas fa-arrow-left"></i> Cancel
                 </a>
                 <form method="post">

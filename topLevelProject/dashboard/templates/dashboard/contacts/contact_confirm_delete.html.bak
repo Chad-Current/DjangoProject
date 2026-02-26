@@ -48,7 +48,7 @@
                         {% for doc in estate_documents %}
                         <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
                             <span><i class="fas fa-file-contract" style="color:#6b7280; margin-right:0.4rem;"></i>{{ doc.name_or_title }}</span>
-                            <a href="{% url 'dashboard:estate_update' doc.slug %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                            <a href="{% url 'dashboard:estate_update' doc.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -62,7 +62,7 @@
                         {% for doc in important_documents %}
                         <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
                             <span><i class="fas fa-file-alt" style="color:#6b7280; margin-right:0.4rem;"></i>{{ doc.name_or_title }}</span>
-                            <a href="{% url 'dashboard:importantdocument_update' doc.slug %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                            <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -76,7 +76,7 @@
                         {% for assign in assigned_accounts %}
                         <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
                             <span><i class="fas fa-globe" style="color:#6b7280; margin-right:0.4rem;"></i>{{ assign.account_name_or_provider }}</span>
-                            <a href="{% url 'dashboard:account_update' assign.slug %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                            <a href="{% url 'dashboard:account_update' assign.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -90,7 +90,7 @@
                         {% for device in assigned_devices %}
                         <li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:0.4rem; font-size:0.85rem;">
                             <span><i class="fas fa-laptop" style="color:#6b7280; margin-right:0.4rem;"></i>{{ device.device_name }}</span>
-                            <a href="{% url 'dashboard:device_update' device.slug %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
+                            <a href="{% url 'dashboard:device_update' device.pk %}" style="font-size:0.78rem; font-weight:600; color:#dc2626; text-decoration:none;">Reassign →</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -143,7 +143,7 @@
 
                 <!-- Action buttons -->
                 <div class="delete-actions">
-                    <a href="{% url 'dashboard:contact_detail' contact.slug %}" class="btn-cancel">
+                    <a href="{% url 'dashboard:contact_detail' contact.pk %}" class="btn-cancel">
                         <i class="fas fa-arrow-left"></i> Cancel
                     </a>
                     <form method="post">

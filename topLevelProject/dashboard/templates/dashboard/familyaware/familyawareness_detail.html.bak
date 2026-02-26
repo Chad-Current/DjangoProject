@@ -95,7 +95,7 @@
                 <div class="contact-card">
                     <h5>
                         <i class="fas fa-user-circle"></i>
-                        <a href="{% url 'dashboard:contact_detail' familyawareness.relation.slug %}">
+                        <a href="{% url 'dashboard:contact_detail' familyawareness.relation.pk %}">
                             {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}
                         </a>
                     </h5>
@@ -177,10 +177,10 @@
     <!-- Action Buttons -->
     {% if can_modify %}
     <div class="action-buttons">
-        <a href="{% url 'dashboard:familyawareness_update' familyawareness.slug %}" class="btn-edit btn-custom">
+        <a href="{% url 'dashboard:familyawareness_update' familyawareness.pk %}" class="btn-edit btn-custom">
             <i class="fas fa-edit"></i> Edit Note
         </a>
-        <a href="{% url 'dashboard:familyawareness_delete' familyawareness.slug %}" class="btn-delete btn-custom">
+        <a href="{% url 'dashboard:familyawareness_delete' familyawareness.pk %}" class="btn-delete btn-custom">
             <i class="fas fa-trash-alt"></i> Delete Note
         </a>
         <a href="{% url 'dashboard:familyawareness_list' %}" class="btn-back btn-custom">

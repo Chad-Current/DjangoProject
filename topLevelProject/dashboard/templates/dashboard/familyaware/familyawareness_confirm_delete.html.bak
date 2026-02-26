@@ -34,7 +34,7 @@
 
             <!-- Action buttons -->
             <div class="delete-actions">
-                <a href="{% url 'dashboard:familyawareness_detail' object.slug %}" class="btn-cancel">
+                <a href="{% url 'dashboard:familyawareness_detail' object.pk %}" class="btn-cancel">
                     <i class="fas fa-arrow-left"></i> Cancel
                 </a>
                 <form method="post">

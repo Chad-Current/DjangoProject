@@ -20,7 +20,7 @@
                         <small>{{ past_review.review_date|date:"M d, Y" }}</small>
                     </div>
                     {% if past_review.pk != review.pk %}
-                        <a href="{% url 'dashboard:relevancereview_detail' past_review.slug %}" 
+                        <a href="{% url 'dashboard:relevancereview_detail' past_review.pk %}" 
                            class="btn btn-sm btn-outline-primary">
                             View
                         </a>

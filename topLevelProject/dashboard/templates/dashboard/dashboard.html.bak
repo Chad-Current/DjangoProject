@@ -260,7 +260,7 @@
             {% if upcoming_reviews %}
             <div class="review-list">
                 {% for review in upcoming_reviews %}
-                <a href="{% url 'dashboard:relevancereview_detail' review.slug %}" class="review-item-link">
+                <a href="{% url 'dashboard:relevancereview_detail' review.pk %}" class="review-item-link">
                     <div class="review-item">
                         <div class="review-main">
                             <div class="review-icon">

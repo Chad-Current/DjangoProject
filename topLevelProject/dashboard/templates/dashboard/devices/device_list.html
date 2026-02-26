@@ -48,14 +48,14 @@
                             <td><span class="contact-info">{{ device.delegated_device_to|truncatechars:50 }}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{% url 'dashboard:device_detail' device.pk %}" class="btn-action btn-edit" title="View device">
+                                    <a href="{% url 'dashboard:device_detail' device.slug %}" class="btn-action btn-edit" title="View device">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     {% if can_modify %}
-                                    <a href="{% url 'dashboard:device_update' device.pk %}" class="btn-action btn-edit" title="Edit device">
+                                    <a href="{% url 'dashboard:device_update' device.slug %}" class="btn-action btn-edit" title="Edit device">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn-action btn-delete" title="Delete device">
+                                    <a href="{% url 'dashboard:device_delete' device.slug %}" class="btn-action btn-delete" title="Delete device">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                     {% endif %}
@@ -84,10 +84,10 @@
                 </div>
                 {% if can_modify %}
                 <div class="card-actions">
-                    <a href="{% url 'dashboard:device_update' device.pk %}" class="btn-card-action btn-edit-card">
+                    <a href="{% url 'dashboard:device_update' device.slug %}" class="btn-card-action btn-edit-card">
                         <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
-                    <a href="{% url 'dashboard:device_delete' device.pk %}" class="btn-card-action btn-delete-card">
+                    <a href="{% url 'dashboard:device_delete' device.slug %}" class="btn-card-action btn-delete-card">
                         <i class="fas fa-trash-alt"></i><span>Delete</span>
                     </a>
                 </div>

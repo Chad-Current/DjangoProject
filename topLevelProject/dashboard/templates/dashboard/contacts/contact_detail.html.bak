@@ -166,7 +166,7 @@
                                 <div class="document-item estate-doc">
                                     <h5>
                                         <i class="fas fa-file-contract"></i> 
-                                        <a href="{% url 'dashboard:estate_detail' doc.slug %}">
+                                        <a href="{% url 'dashboard:estate_detail' doc.pk %}">
                                             {{ doc.name_or_title }}
                                         </a>
                                     </h5>
@@ -217,7 +217,7 @@
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:estate_update' doc.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:estate_update' doc.pk %}" class="text-primary">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -252,7 +252,7 @@
                                 <div class="document-item important-doc">
                                     <h5>
                                         <i class="fas fa-file-alt"></i> 
-                                        <a href="{% url 'dashboard:importantdocument_detail' doc.slug %}">
+                                        <a href="{% url 'dashboard:importantdocument_detail' doc.pk %}">
                                             {{ doc.name_or_title }}
                                         </a>
                                     </h5>
@@ -306,7 +306,7 @@
                                         {% endif %}
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:importantdocument_update' doc.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:importantdocument_update' doc.pk %}" class="text-primary">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -341,7 +341,7 @@
                                 <div class="document-item" style="border-left: 4px solid #8b5cf6;">
                                     <h5>
                                         <i class="fas fa-{% if device.device_type == 'Phone' %}mobile-alt{% elif device.device_type == 'Laptop' %}laptop{% elif device.device_type == 'Tablet' %}tablet-alt{% elif device.device_type == 'Desktop' %}desktop{% elif device.device_type == 'Smart Watch' %}clock{% else %}microchip{% endif %}"></i>
-                                        <a href="{% url 'dashboard:device_detail' device.slug %}">
+                                        <a href="{% url 'dashboard:device_detail' device.pk %}">
                                             {{ device.device_name }}
                                         </a>
                                     </h5>
@@ -396,7 +396,7 @@
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:device_update' device.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:device_update' device.pk %}" class="text-primary">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -431,7 +431,7 @@
                                 <div class="document-item" style="border-left: 4px solid #0ea5e9;">
                                     <h5>
                                         <i class="fas fa-user-circle"></i>
-                                        <a href="{% url 'dashboard:account_detail' account.slug %}">
+                                        <a href="{% url 'dashboard:account_detail' account.pk %}">
                                             {{ account.account_name_or_provider }}
                                         </a>
                                         {% if account.is_critical %}
@@ -490,7 +490,7 @@
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:account_update' account.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:account_update' account.pk %}" class="text-primary">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -532,10 +532,10 @@
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:contact_update' contact.slug %}" class="btn-edit btn-custom">
+            <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn-edit btn-custom">
                 <i class="fas fa-edit"></i> Edit Contact
             </a>
-            <a href="{% url 'dashboard:contact_delete' contact.slug %}" class="btn-delete btn-custom">
+            <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn-delete btn-custom">
                 <i class="fas fa-trash-alt"></i> Delete Contact
             </a>
             <a href="{% url 'dashboard:contact_list' %}" class="btn-back btn-custom">

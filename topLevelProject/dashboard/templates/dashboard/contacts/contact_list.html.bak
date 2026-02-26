@@ -50,14 +50,14 @@
                             <td><span class="contact-info">{{ contact.phone|phone2numeric }}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{% url 'dashboard:contact_detail' contact.slug %}" class="btn-action btn-view" title="View contact">
+                                    <a href="{% url 'dashboard:contact_detail' contact.pk %}" class="btn-action btn-view" title="View contact">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     {% if can_modify %}
-                                    <a href="{% url 'dashboard:contact_update' contact.slug %}" class="btn-action btn-edit" title="Edit contact">
+                                    <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn-action btn-edit" title="Edit contact">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'dashboard:contact_delete' contact.slug %}" class="btn-action btn-delete" title="Delete contact">
+                                    <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn-action btn-delete" title="Delete contact">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                     {% endif %}
@@ -86,10 +86,10 @@
                 </div>
                 {% if can_modify %}
                 <div class="card-actions">
-                    <a href="{% url 'dashboard:contact_update' contact.slug %}" class="btn-card-action btn-edit-card">
+                    <a href="{% url 'dashboard:contact_update' contact.pk %}" class="btn-card-action btn-edit-card">
                         <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
-                    <a href="{% url 'dashboard:contact_delete' contact.slug %}" class="btn-card-action btn-delete-card">
+                    <a href="{% url 'dashboard:contact_delete' contact.pk %}" class="btn-card-action btn-delete-card">
                         <i class="fas fa-trash-alt"></i><span>Delete</span>
                     </a>
                 </div>

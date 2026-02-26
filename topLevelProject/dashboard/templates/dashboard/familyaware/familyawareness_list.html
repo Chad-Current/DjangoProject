@@ -44,16 +44,16 @@
                             <td><span class="contact-info">{{ family.content|truncatechars:50 }}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{% url 'dashboard:familyawareness_detail' family.pk %}"
+                                    <a href="{% url 'dashboard:familyawareness_detail' family.slug %}"
                                         class="btn-action btn-edit" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     {% if can_modify %}
-                                    <a href="{% url 'dashboard:familyawareness_update' family.pk %}"
+                                    <a href="{% url 'dashboard:familyawareness_update' family.slug %}"
                                         class="btn-action btn-edit" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'dashboard:familyawareness_delete' family.pk %}"
+                                    <a href="{% url 'dashboard:familyawareness_delete' family.slug %}"
                                         class="btn-action btn-delete" title="Delete">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
@@ -80,16 +80,16 @@
                     <div class="info-label">Information</div>
                     <p class="contact-info-text">{{ family.content|truncatechars:100 }}</p>
                 </div>
-                <a href="{% url 'dashboard:familyawareness_detail' family.pk %}" class="btn-card-action btn-edit-card">
+                <a href="{% url 'dashboard:familyawareness_detail' family.slug %}" class="btn-card-action btn-edit-card">
                     <i class="fas fa-eye"></i><span>View</span>
                 </a>
                 {% if can_modify %}
                 <div class="card-actions">
-                    <a href="{% url 'dashboard:familyawareness_update' family.pk %}"
+                    <a href="{% url 'dashboard:familyawareness_update' family.slug %}"
                         class="btn-card-action btn-edit-card">
                         <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
-                    <a href="{% url 'dashboard:familyawareness_delete' family.pk %}"
+                    <a href="{% url 'dashboard:familyawareness_delete' family.slug %}"
                         class="btn-card-action btn-delete-card">
                         <i class="fas fa-trash-alt"></i><span>Delete</span>
                     </a>

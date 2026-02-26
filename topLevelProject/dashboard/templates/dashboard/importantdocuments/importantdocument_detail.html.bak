@@ -147,7 +147,7 @@
                     <div class="contact-card">
                         <h5>
                             <i class="fas fa-user-circle"></i>
-                            <a href="{% url 'dashboard:contact_detail' document.delegated_important_document_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' document.delegated_important_document_to.pk %}">
                                 {{ document.delegated_important_document_to.contact_name }}
                             </a>
                         </h5>
@@ -227,10 +227,10 @@
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:importantdocument_update' document.slug %}" class="btn-edit btn-custom">
+            <a href="{% url 'dashboard:importantdocument_update' document.pk %}" class="btn-edit btn-custom">
                 <i class="fas fa-edit"></i> Edit Document
             </a>
-            <a href="{% url 'dashboard:importantdocument_delete' document.slug %}" class="btn-delete btn-custom">
+            <a href="{% url 'dashboard:importantdocument_delete' document.pk %}" class="btn-delete btn-custom">
                 <i class="fas fa-trash-alt"></i> Delete Document
             </a>
             <a href="{% url 'dashboard:importantdocument_list' %}" class="btn-back btn-custom">

@@ -108,7 +108,7 @@
                     <div class="contact-card">
                         <h5>
                             <i class="fas fa-user-circle"></i>
-                            <a href="{% url 'dashboard:contact_detail' account.delegated_account_to.slug %}">
+                            <a href="{% url 'dashboard:contact_detail' account.delegated_account_to.pk %}">
                                 {{ account.delegated_account_to.first_name }} {{ account.delegated_account_to.last_name }}
                             </a>
                         </h5>
@@ -198,10 +198,10 @@
         <!-- Action Buttons -->
         {% if can_modify %}
         <div class="action-buttons">
-            <a href="{% url 'dashboard:account_update' account.slug %}" class="btn-edit btn-custom">
+            <a href="{% url 'dashboard:account_update' account.pk %}" class="btn-edit btn-custom">
                 <i class="fas fa-edit"></i> Edit Account
             </a>
-            <a href="{% url 'dashboard:account_delete' account.slug %}" class="btn-delete btn-custom">
+            <a href="{% url 'dashboard:account_delete' account.pk %}" class="btn-delete btn-custom">
                 <i class="fas fa-trash-alt"></i> Delete Account
             </a>
             <a href="{% url 'dashboard:account_list' %}" class="btn-back btn-custom">

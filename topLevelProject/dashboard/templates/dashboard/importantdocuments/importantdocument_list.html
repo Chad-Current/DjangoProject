@@ -48,14 +48,14 @@
                             <td><span>{{ document.delegated_important_document_to }}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{% url 'dashboard:importantdocument_detail' document.pk %}" class="btn-action btn-edit" title="View document">
+                                    <a href="{% url 'dashboard:importantdocument_detail' document.slug %}" class="btn-action btn-edit" title="View document">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     {% if can_modify %}
-                                    <a href="{% url 'dashboard:importantdocument_update' document.pk %}" class="btn-action btn-edit" title="Edit document">
+                                    <a href="{% url 'dashboard:importantdocument_update' document.slug %}" class="btn-action btn-edit" title="Edit document">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'dashboard:importantdocument_delete' document.pk %}" class="btn-action btn-delete" title="Delete document">
+                                    <a href="{% url 'dashboard:importantdocument_delete' document.slug %}" class="btn-action btn-delete" title="Delete document">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                     {% endif %}
@@ -84,10 +84,10 @@
                 </div>
                 {% if can_modify %}
                 <div class="card-actions">
-                    <a href="{% url 'dashboard:importantdocument_update' document.pk %}" class="btn-card-action btn-edit-card">
+                    <a href="{% url 'dashboard:importantdocument_update' document.slug %}" class="btn-card-action btn-edit-card">
                         <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
-                    <a href="{% url 'dashboard:importantdocument_delete' document.pk %}" class="btn-card-action btn-delete-card">
+                    <a href="{% url 'dashboard:importantdocument_delete' document.slug %}" class="btn-card-action btn-delete-card">
                         <i class="fas fa-trash-alt"></i><span>Delete</span>
                     </a>
                 </div>

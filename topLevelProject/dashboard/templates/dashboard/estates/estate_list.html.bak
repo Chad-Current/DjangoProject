@@ -49,14 +49,14 @@
                                 <td><span>{{ estate.delegated_estate_to }}</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="{% url 'dashboard:estate_detail' estate.slug %}" class="btn-action btn-edit" title="View estate">
+                                        <a href="{% url 'dashboard:estate_detail' estate.pk %}" class="btn-action btn-edit" title="View estate">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         {% if can_modify %}
-                                        <a href="{% url 'dashboard:estate_update' estate.slug %}" class="btn-action btn-edit" title="Edit estate">
+                                        <a href="{% url 'dashboard:estate_update' estate.pk %}" class="btn-action btn-edit" title="Edit estate">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="{% url 'dashboard:estate_delete' estate.slug %}" class="btn-action btn-delete" title="Delete estate">
+                                        <a href="{% url 'dashboard:estate_delete' estate.pk %}" class="btn-action btn-delete" title="Delete estate">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
                                         {% endif %}
@@ -85,10 +85,10 @@
                     </div>
                     {% if can_modify %}
                     <div class="card-actions">
-                        <a href="{% url 'dashboard:estate_update' estate.slug %}" class="btn-card-action btn-edit-card">
+                        <a href="{% url 'dashboard:estate_update' estate.pk %}" class="btn-card-action btn-edit-card">
                             <i class="fas fa-edit"></i><span>Edit</span>
                         </a>
-                        <a href="{% url 'dashboard:estate_delete' estate.slug %}" class="btn-card-action btn-delete-card">
+                        <a href="{% url 'dashboard:estate_delete' estate.pk %}" class="btn-card-action btn-delete-card">
                             <i class="fas fa-trash-alt"></i><span>Delete</span>
                         </a>
                     </div>

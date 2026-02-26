@@ -1,7 +1,7 @@
 {% extends "dashboard/dashboard.html" %}
 {% load static %}
 
-{% block title %}Delete Family Note{% endblock %}
+{% block title %}Delete Document{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}" type="text/css">
 {% endblock %}
@@ -17,24 +17,30 @@
             </div>
 
             <!-- Heading -->
-            <h2 class="delete-title">Delete Family Note?</h2>
-            <p class="delete-subtitle">You are about to permanently remove a note for</p>
+            <h2 class="delete-title">Delete Document?</h2>
+            <p class="delete-subtitle">You are about to permanently remove</p>
 
             <!-- Item name chip -->
             <div class="delete-item-name">
-                <i class="fas fa-user"></i>
-                {{ object.relation.first_name }} {{ object.relation.last_name }}
+                <i class="fas fa-file-alt"></i>
+                {{ object.name_or_title }}
             </div>
 
             <!-- Warning notice -->
             <div class="delete-warning-notice">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p>This action cannot be undone. All data associated with this family note will be permanently deleted.</p>
+                {% if object.requires_legal_review %}
+                <p>This document requires <strong>professional legal review</strong>. Ensure you have an alternative copy before deleting. This action cannot be undone.</p>
+                {% elif object.important_file %}
+                <p>This document has an <strong>uploaded file attached</strong> that will also be permanently removed. This action cannot be undone.</p>
+                {% else %}
+                <p>This action cannot be undone. All data associated with this document will be permanently deleted.</p>
+                {% endif %}
             </div>
 
             <!-- Action buttons -->
             <div class="delete-actions">
-                <a href="{% url 'dashboard:familyawareness_detail' object.slug %}" class="btn-cancel">
+                <a href="{% url 'dashboard:importantdocument_detail' object.pk %}" class="btn-cancel">
                     <i class="fas fa-arrow-left"></i> Cancel
                 </a>
                 <form method="post">
