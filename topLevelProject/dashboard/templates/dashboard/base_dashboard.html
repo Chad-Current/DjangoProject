@@ -19,11 +19,23 @@
 
 <body>
     {% include 'baseapp/navbar.html'%}
+    
     {% block navigation %}
-    {% include 'dashboard/navblocks.html'%}
     {% endblock %}
-
-
+    {% block messages %}
+    {% if messages %}
+      {% for message in messages %}
+      <div class="ob-alert ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
+        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
+        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
+        {% else %}<i class="fas fa-info-circle"></i>
+        {% endif %}
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+    {% endblock %}
     {% block content %}
     {% endblock %}
     {% block footer %}

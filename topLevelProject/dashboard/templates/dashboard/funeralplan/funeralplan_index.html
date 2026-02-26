@@ -7,17 +7,13 @@
 <link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}">
 {% endblock %}
 
+{% block messages %}
+{% endblock %}
+
+
 {% block content %}
 <div class="onboarding-wrap" style="grid-template-columns: 1fr; max-width: 960px;">
 
-  {% if messages %}
-    {% for message in messages %}
-      <div class="ob-alert {% if message.tags == 'error' %}ob-alert-error{% elif message.tags == 'warning' %}ob-alert-warning{% else %}ob-alert-success{% endif %}">
-        <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
 
   <!-- Page header -->
   <div class="ob-page-header">

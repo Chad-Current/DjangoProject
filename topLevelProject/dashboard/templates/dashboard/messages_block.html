@@ -1,0 +1,10 @@
+{% load static %}
+   <!-- Django flash messages -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="ob-alert {% if message.tags == 'error' %}ob-alert-error{% elif message.tags == 'warning' %}ob-alert-warning{% else %}ob-alert-success{% endif %}">
+      <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
