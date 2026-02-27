@@ -192,10 +192,10 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         criteria = {
             'accounts':    {'weight': 0.25, 'target': 10},
             'devices':     {'weight': 0.15, 'target': 5},
-            'contacts':    {'weight': 0.20, 'target': 5},
-            'estates':     {'weight': 0.15, 'target': 3},
+            'contacts':    {'weight': 0.10, 'target': 5},
+            'estates':     {'weight': 0.25, 'target': 3},
             'documents':   {'weight': 0.15, 'target': 5},
-            'family_knows':{'weight': 0.05, 'target': 5},
+            'family_knows':{'weight': 0.10, 'target': 5},
         }
         total = 0
         for key, cfg in criteria.items():
@@ -352,7 +352,6 @@ class AccountListView(ViewAccessMixin, ListView):
         except Profile.DoesNotExist:
             context['accounts'] = Account.objects.none()
         return context
-
 
 class AccountDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     model               = Account

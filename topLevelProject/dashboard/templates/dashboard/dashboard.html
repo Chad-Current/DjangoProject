@@ -206,15 +206,15 @@
             <div class="layer estate">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-file-contract"></i> Estate Documents</div>
-                    <div class="layer-status">{{ estates_count }}/8</div>
+                    <div class="layer-status">{{ estates_count }}/3</div>
                 </div>
                 <div class="layer-strength">
-                    <div class="layer-strength-fill" style="width: {% widthratio estates_count 8 100 %}%"></div>
+                    <div class="layer-strength-fill" style="width: {% widthratio estates_count 3 100 %}%"></div>
                 </div>
                 <div class="layer-label">
                     <span>Estate Documents</span>
                     <span class="layer-rating {% if estates_count >= 8 %}excellent{% elif estates_count >= 5 %}strong{% elif estates_count >= 2 %}moderate{% else %}weak{% endif %}">
-                        {% if estates_count >= 8 %}EXCELLENT{% elif estates_count >= 5 %}STRONG{% elif estates_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
+                        {% if estates_count >= 3 %}EXCELLENT{% elif estates_count >= 2 %}STRONG{% elif estates_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>
             </div>
@@ -225,12 +225,12 @@
                     <div class="layer-status">{{ documents_count }}/8</div>
                 </div>
                 <div class="layer-strength">
-                    <div class="layer-strength-fill" style="width: {% widthratio documents_count 8 100 %}%"></div>
+                    <div class="layer-strength-fill" style="width: {% widthratio documents_count 5 100 %}%"></div>
                 </div>
                 <div class="layer-label">
                     <span>Important Documents</span>
                     <span class="layer-rating {% if documents_count >= 8 %}excellent{% elif documents_count >= 5 %}strong{% elif documents_count >= 2 %}moderate{% else %}weak{% endif %}">
-                        {% if documents_count >= 8 %}EXCELLENT{% elif documents_count >= 5 %}STRONG{% elif documents_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
+                        {% if documents_count >= 5 %}EXCELLENT{% elif documents_count >= 3 %}STRONG{% elif documents_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>
             </div>
@@ -246,7 +246,7 @@
                 <div class="layer-label">
                     <span>Family Notes</span>
                     <span class="layer-rating {% if family_knows_count >= 5 %}excellent{% elif family_knows_count >= 3 %}strong{% elif family_knows_count >= 1 %}moderate{% else %}weak{% endif %}">
-                        {% if family_knows_count >= 5 %}EXCELLENT{% elif family_knows_count >= 3 %}STRONG{% elif family_knows_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
+                        {% if family_knows_count >= 5 %}EXCELLENT{% elif family_knows_count >= 4 %}STRONG{% elif family_knows_count >= 3 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>
             </div>

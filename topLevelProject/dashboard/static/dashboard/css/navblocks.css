@@ -104,14 +104,14 @@
 
 .subnav-item.attention:hover {
     border-color: var(--ten-percent);
-    background-color: var(--thirty-percent);
-    color: var(--text-color);
+    /* background-color: var(--sixty-percent); */
+    color: var(--text-color-dark);
     transition: all 0.2s ease;
 }
 
 .subnav-item.attention:hover i,
 .subnav-item.attention:hover span {
-    color: var(--text-color);
+    color: var(--text-color-dark);
 }
 
 

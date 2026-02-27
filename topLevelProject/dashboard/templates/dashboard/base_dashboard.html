@@ -23,9 +23,10 @@
     {% block navigation %}
     {% endblock %}
     {% block messages %}
+    <div class="ob-alert">
     {% if messages %}
-      {% for message in messages %}
-      <div class="ob-alert ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+    {% for message in messages %}
+      <div class="ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
         {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
         {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
         {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
@@ -34,10 +35,13 @@
         {{ message }}
       </div>
       {% endfor %}
-    {% endif %}
+      {% endif %}
+    </div>
     {% endblock %}
+
     {% block content %}
     {% endblock %}
+
     {% block footer %}
     {% include 'baseapp/footer.html'%}
     {% endblock %}
