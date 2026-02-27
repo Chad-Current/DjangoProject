@@ -159,11 +159,12 @@
 
 .delete-warning-notice strong {
     font-family: 'DM Sans', var(--title-font, sans-serif);
-    font-size: var(--font-nm);
+    font-size: var(--font-sm);
     color: #ff0000;
     margin: 0;
     line-height: 1.5;
 }
+
 /* ── Buttons ────────────────────────────────────────────── */
 
 .delete-actions {
@@ -232,4 +233,79 @@
 /* form inline so it flows with flex */
 .delete-actions form {
     display: contents;
+}
+
+/* ── Assignment groups (contact reassignment block) ─────────── */
+
+.delete-assignment-group {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.delete-assignment-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+}
+
+.delete-assignment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.delete-assignment-item {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0.75rem !important;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    color: #374151;
+}
+
+.delete-assignment-item i {
+    color: #6b7280;
+    margin-right: 0.4rem;
+}
+
+.delete-reassign-link {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #dc2626;
+    text-decoration: none;
+    font-family: 'DM Sans', var(--main-font, sans-serif);
+    transition: color 0.2s;
+}
+
+.delete-reassign-link:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+}
+
+/* ── Item meta text (relation label in chip) ─────────────────── */
+
+.delete-item-meta {
+    font-weight: 400;
+    color: #9ca3af;
+}
+
+/* ── Create button variant (blue instead of red) ─────────────── */
+
+.btn-confirm-create {
+    background: #2563eb;
+    text-decoration: none;
+}
+
+.btn-confirm-create:hover {
+    background: #1d4ed8;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
 }

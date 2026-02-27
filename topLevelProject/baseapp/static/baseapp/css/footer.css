@@ -23,9 +23,27 @@
   align-items: flex-start;
   justify-content: flex-start;
   margin: 0em;
-  h1,
-  h3,
-  p {
+  h1 {
+    font-size: var(--font-xl);
+    font-family: var(--main-font);
+    font-weight: 500;
+    color: var(--ten-percent);
+    padding: 0.4rem 0rem;
+    margin: 0;
+  }
+  h3{
+    font-size: var(--font-lg);
+    font-family: var(--main-font);
+    font-weight: 500;
+    color: var(--ten-percent);
+    padding: 0.4rem 0rem;
+    margin: 0;
+  }
+  a {
+    font-size: var(--font-nm);
+    font-family: var(--main-font);
+    font-weight: 500;
+    color: var(--ten-percent);
     padding: 0.4rem 0rem;
     margin: 0;
   }

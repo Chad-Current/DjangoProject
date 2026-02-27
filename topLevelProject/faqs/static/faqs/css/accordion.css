@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════════
+   accordion.css — FAQ Accordion Component
+   Requires: stylesheet.css (design tokens must be loaded first)
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════
+   ACCORDION WRAPPER
+   ══════════════════════════════════════════════ */
+
+.accordion {
+  width: clamp(20em, 60vw, 80em);
+  margin: 2rem auto;
+  font-family: var(--main-font);
+  color: var(--text-color-dark);
+}
+
+
+/* ══════════════════════════════════════════════
+   SECTION HEADER (h2 with icon)
+   ══════════════════════════════════════════════ */
+
+.accordion-header {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  column-gap: 20px;
+  font-family: var(--title-font);
+  font-size: var(--font-xxl);
+  color: var(--ten-percent);
+  margin: 1.5em 0 0.5em;
+}
+
+.accordion-header img {
+  width: 2.2em;
+  height: 2.2em;
+}
+
+
+/* ══════════════════════════════════════════════
+   SUMMARY (collapsed row)
+   ══════════════════════════════════════════════ */
+
+.accordion summary {
+  cursor: pointer;
+  font-size: var(--font-nm);
+  font-family: var(--main-font);
+  font-weight: 700;
+  color: var(--ten-percent);
+  padding: 0.9rem 1.2rem;
+  border: 1px solid rgba(45, 106, 156, 0.25);
+  border-radius: 12px;
+  background-color: var(--purewhite-color);
+  list-style: none;          /* hide default triangle in Firefox */
+  transition: background 0.25s, box-shadow 0.25s;
+  box-shadow: 3px 3px 8px #02020210;
+}
+
+.accordion summary::-webkit-details-marker { display: none; } /* hide triangle in Chrome/Safari */
+
+.accordion summary::after {
+  content: "+";
+  float: right;
+  font-size: var(--font-lg);
+  color: var(--thirty-percent);
+  line-height: 1;
+  transition: transform 0.25s;
+}
+
+.accordion details[open] > summary::after {
+  transform: rotate(45deg);
+}
+
+.accordion summary:hover {
+  background-color: var(--background-color);
+  box-shadow: 3px 3px 12px rgba(45, 106, 156, 0.15);
+}
+
+.accordion details[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+  background-color: var(--thirty-percent);
+  color: var(--text-color);
+}
+
+.accordion details[open] > summary::after {
+  color: var(--text-color);
+}
+
+.accordion details {
+  margin-bottom: 0.6rem;
+}
+
+
+/* ══════════════════════════════════════════════
+   EXPANDED CONTENT PANEL
+   ══════════════════════════════════════════════ */
+
+.accordion-content {
+  border: 1px solid rgba(45, 106, 156, 0.25);
+  border-top: none;
+  padding: 1.2rem 1.6rem;
+  background-color: var(--background-color);
+  border-radius: 0 0 12px 12px;
+  box-shadow: 3px 6px 10px #02020210;
+}
+
+.accordion-content p {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-md);
+  font-weight: 400;
+  color: var(--text-color-dark);
+  margin-top: 0;
+}
+
+.accordion-content strong {
+  font-size: var(--font-nm);
+  font-weight: 700;
+  color: var(--ten-percent);
+}
+
+.accordion-content ul {
+  margin-top: 0.6rem;
+  padding-left: 1rem;
+  font-family: var(--paragraph-font);
+  font-size: var(--font-nm);
+  color: var(--text-color-dark);
+}
+
+.accordion-content li {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  column-gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  overflow-wrap: break-word;
+  white-space: normal;
+  padding: 0.3rem 0;
+}
+
+.accordion-content li::before {
+  content: "›";
+  color: var(--accent-color);
+  font-size: var(--font-md);
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.4;
+}

@@ -353,6 +353,7 @@ class AccountListView(ViewAccessMixin, ListView):
             context['accounts'] = Account.objects.none()
         return context
 
+
 class AccountDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     model               = Account
     template_name       = 'dashboard/accounts/account_detail.html'

@@ -445,7 +445,7 @@ li {
   font-weight: 600;
   margin: 1.25rem auto;
 }
-.ob-alert-success { background: rgba(98, 162, 206, 0.1); border-radius: 20px; color: #62a2ce; border: 2px solid rgba(98, 162, 206, 0.32); padding: 0.25rem;}
-.ob-alert-warning { background: rgba(255, 166, 43, 0.1); border-radius: 20px;color: #9a5e10;  border: 2px solid rgba(255, 166, 43, 0.32); padding: 0.25rem;}
-.ob-alert-error   { background: rgba(192, 57, 43, 0.09); border-radius: 20px; color: #922b21; border: 2px solid rgba(192, 57, 43, 0.28);  padding: 0.25rem;}
-.ob-alert-info   { background: rgba(19, 224, 46, 0.09); border-radius: 20px;color: #1eff00;  border: 2px solid rgba(19, 224, 36, 0.28); padding: 0.25rem;}
+.ob-alert-success { background: rgba(98, 162, 206, 0.1); border-radius: 12px; color: #62a2ce; border: 2px solid rgba(98, 162, 206, 0.32); padding: 0.45rem;}
+.ob-alert-warning { background: rgba(255, 166, 43, 0.1); border-radius: 12px;color: #9a5e10;  border: 2px solid rgba(255, 166, 43, 0.32); padding: 0.45rem;}
+.ob-alert-error   { background: rgba(192, 57, 43, 0.09); border-radius: 12px; color: #922b21; border: 2px solid rgba(192, 57, 43, 0.28);  padding: 0.45rem;}
+.ob-alert-info   { background: rgba(19, 224, 46, 0.09); border-radius: 12px;color: rgb(11, 90, 0);  border: 2px solid rgba(11, 90, 0, 0.28); padding: 0.45rem;}

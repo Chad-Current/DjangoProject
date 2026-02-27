@@ -215,13 +215,53 @@ class ChecklistEmailView(View):
 
 class ChecklistEmailSuccessView(View):
     """Confirmation page shown after a successful checklist email send."""
-
     template_name = 'baseapp/checklist_email_success.html'
 
     def get(self, request):
         return render(request, self.template_name)
 
 
+class LegalPolicyView(View):
+    """ Legal Policy Page """
+    template_name = 'baseapp/legal/privacy_policy.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+class TermsAndCondtionsView(View):
+    """ Terms and Conditions Page """
+    template_name = 'baseapp/legal/terms_and_condtions.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+class CookiePolicyView(View):
+    """ Cookie Policy Page """
+    template_name = 'baseapp/legal/cookie_policy.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+class DataCollectionView(View):
+    """ Data Collection Page """
+    template_name = 'baseapp/legal/data_collection.html'
+
+    def get(self, request):
+        return render(request, self.template_name)  
+
+class DataRetentionView(View):
+    """ Data Retention Page """
+    template_name = 'baseapp/legal/data_retention.html'
+
+    def get(self, request):
+        return render(request, self.template_name)  
+    
+class AccessibilityView(View):
+    """ Accessibility Page """
+    template_name = 'baseapp/legal/accessibility.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 # ── URL aliases ───────────────────────────────────────────────────────────────
 
 checklist_download_view     = ChecklistDownloadView.as_view()

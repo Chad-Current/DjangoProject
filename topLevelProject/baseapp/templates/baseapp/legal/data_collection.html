@@ -1,0 +1,231 @@
+{% extends 'baseapp/legal/base_legal.html' %}
+{% block content %}
+
+<div class="form-container">
+  <div class="form-wrapper" style="max-width: 860px;">
+
+    <!-- Header Banner -->
+    <div class="form-wrapper-header">
+      <h2>Data Collection Policy</h2>
+      <p>Last Updated: February 27, 2026</p>
+    </div>
+
+    <div class="form-wrapper-body">
+
+      <!-- 1. Introduction -->
+      <fieldset>
+        <legend>1. Introduction</legend>
+        <p>
+          At Digital Estate Plan ("we," "our," or "us"), your privacy and data security are our highest
+          priorities. This Data Collection Policy explains what information we collect, how we collect it,
+          and how it is used and protected in the course of delivering our digital estate organization services.
+        </p>
+        <p>
+          This policy applies to all information collected through our website, communications, and any
+          secure client storage platforms we operate or integrate with.
+        </p>
+      </fieldset>
+
+      <!-- 2. Information We Collect -->
+      <fieldset>
+        <legend>2. Information We Collect</legend>
+        <p>We collect information only as needed to provide, secure, and improve our services. The types of data we may collect include:</p>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Personal Identification Data</strong>
+              <small class="helptext">Name, email address, phone number, and general contact information voluntarily provided by you.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Account and Service Information</strong>
+              <small class="helptext">Information you share or upload when using our digital estate organization tools, consultations, or secure file services.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Authentication Data</strong>
+              <small class="helptext">Credentials stored and managed securely through the Bitwarden Password Manager API, never accessible in plain text.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Technical Data</strong>
+              <small class="helptext">Browser type, IP address, device information, and website activity (collected via analytics) to enhance site performance and reliability.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Communication Data</strong>
+              <small class="helptext">Correspondence or support requests sent to us by email, form, or chat.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="ob-alert ob-alert-info" role="note" style="margin-top: 1rem;">
+          <span>We do not sell or rent any collected data to third parties.</span>
+        </div>
+      </fieldset>
+
+      <!-- 3. How Information Is Collected -->
+      <fieldset>
+        <legend>3. How Information Is Collected</legend>
+        <p>We collect data in several ways:</p>
+        <ul style="padding-left: 0; margin: 0;">
+          <li>Directly from you when you contact us, create an account, request a consultation, or upload files.</li>
+          <li>Automatically through essential cookies, analytics tools, and server logs that monitor website performance.</li>
+          <li>Through integrations with trusted third-party services such as Bitwarden or encrypted cloud storage providers, strictly for secure functionality.</li>
+        </ul>
+      </fieldset>
+
+      <!-- 4. How We Use Collected Data -->
+      <fieldset>
+        <legend>4. How We Use Collected Data</legend>
+        <p>Your information may be used to:</p>
+        <ul style="padding-left: 0; margin: 0 0 1rem;">
+          <li>Provide requested services, including file management and digital organization.</li>
+          <li>Facilitate communication and support.</li>
+          <li>Ensure secure authentication and password management using Bitwarden integration.</li>
+          <li>Improve our website, services, and security infrastructure.</li>
+          <li>Comply with applicable laws and regulations.</li>
+        </ul>
+        <div class="ob-alert ob-alert-info" role="note">
+          <span>
+            We do not use personal data for marketing or profiling purposes unless you expressly opt in.
+          </span>
+        </div>
+      </fieldset>
+
+      <!-- 5. Data Storage and Security -->
+      <fieldset>
+        <legend>5. Data Storage and Security</legend>
+        <p>We use encrypted and access-controlled systems to keep your data safe.</p>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Encryption</strong>
+              <small class="helptext">All data is encrypted at rest and in transit using modern encryption standards such as AES-256 and TLS 1.3.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Password Protection</strong>
+              <small class="helptext">Passwords and credentials are managed entirely through the Bitwarden API under its end-to-end zero-knowledge security model.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Access Control</strong>
+              <small class="helptext">Only authorized personnel with legitimate service needs may access limited client data.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check" style="cursor: default; pointer-events: none;">
+            <span class="form-check-label">
+              <strong style="font-size: var(--font-nm);">Secure Storage</strong>
+              <small class="helptext">Uploaded files are hosted on trusted encrypted cloud services with redundant backups and activity monitoring.</small>
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 6. Data Retention -->
+      <fieldset>
+        <legend>6. Data Retention</legend>
+        <p>
+          We retain information only as long as necessary to fulfill service obligations or meet legal and
+          regulatory requirements. You may request permanent deletion of your personal information or uploaded
+          data at any time by contacting&nbsp;
+          <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
+            privacy@digitalestateplan.com
+          </a>.
+        </p>
+      </fieldset>
+
+      <!-- 7. Sharing and Disclosure -->
+      <fieldset>
+        <legend>7. Sharing and Disclosure</legend>
+        <p>We may share limited data only:</p>
+        <ul style="padding-left: 0; margin: 0 0 1rem;">
+          <li>With your explicit consent.</li>
+          <li>With service providers who support our operations (e.g., Bitwarden, encrypted storage vendors) under strict confidentiality agreements.</li>
+          <li>When required by law, court order, or regulatory authority.</li>
+        </ul>
+        <div class="ob-alert ob-alert-info" role="note">
+          <span>We will never sell, lease, or trade confidential information with outside organizations.</span>
+        </div>
+      </fieldset>
+
+      <!-- 8. Your Rights -->
+      <fieldset>
+        <legend>8. Your Rights</legend>
+        <p>Depending on your location, you may have the right to:</p>
+        <ul style="padding-left: 0; margin: 0 0 1rem;">
+          <li>Request access to your personal data.</li>
+          <li>Request correction or deletion of your data.</li>
+          <li>Withdraw consent at any time.</li>
+          <li>Request a summary of data stored about you.</li>
+        </ul>
+        <p style="margin: 0;">
+          Contact&nbsp;
+          <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
+            privacy@digitalestateplan.com
+          </a>
+          &nbsp;to exercise any of these rights.
+        </p>
+      </fieldset>
+
+      <!-- 9. Changes to This Policy -->
+      <fieldset>
+        <legend>9. Changes to This Policy</legend>
+        <p>
+          We may update this Data Collection Policy periodically to reflect updates in laws, technology, or
+          business practices. All revisions will be posted here with an updated "Last Updated" date.
+        </p>
+      </fieldset>
+
+      <!-- 10. Contact Us -->
+      <fieldset>
+        <legend>10. Contact Us</legend>
+        <p>For questions about this Data Collection Policy or data protection practices, please contact:</p>
+        <div class="detail-view" style="gap: 0.35rem; padding: 1.25rem 1.5rem;">
+          <p style="margin: 0;"><strong style="font-size: var(--font-nm);">Digital Estate Plan</strong></p>
+          <p style="margin: 0;">
+            Email:&nbsp;
+            <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
+              privacy@digitalestateplan.com
+            </a>
+          </p>
+
+          <p style="margin: 0;">Location: Des Moines, Iowa, USA</p>
+        </div>
+      </fieldset>
+
+    </div><!-- /.form-wrapper-body -->
+  </div><!-- /.form-wrapper -->
+</div><!-- /.form-container -->
+
+{% endblock %}
