@@ -1,4 +1,5 @@
 {% extends 'baseapp/base.html' %}
+{% load static % }
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -304,58 +305,72 @@
         </div>
     </section>
 
-    <!-- PRICING -->
-    <section class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Transparent, Affordable Pricing</h2>
-                <p class="section-subtitle">One-time service • No monthly fees • Update anytime on your own</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3 class="plan-name">Foundation Plan</h3>
-                    <p class="plan-description">For individuals who want structure and clarity</p>
-                    <div class="price">
-                        <span class="price-amount">$297</span>
-                        <span class="price-period">one-time</span>
-                    </div>
-                    <ul class="features-list">
-                        <li>✓ Complete Estate Profile</li>
-                        <li>✓ Secure Encrypted Vault</li>
-                        <li>✓ Digital Accounts Inventory</li>
-                        <li>✓ Role-Based Contact Assignment</li>
-                        <li>✓ Emergency Contact Hierarchy</li>
-                        <li>✓ Device & 2FA Tracking</li>
-                        <li>✓ Decommission Instructions</li>
-                    </ul>
-                    <button class="btn btn-primary">Get Started</button>
-                </div>
-                
-                <div class="pricing-card pricing-featured">
-                    <div class="featured-badge">Most Popular</div>
-                    <h3 class="plan-name">Family Continuity Plan</h3>
-                    <p class="plan-description">For households who want full delegation and lifecycle oversight</p>
-                    <div class="price">
-                        <span class="price-amount">$597</span>
-                        <span class="price-period">one-time</span>
-                    </div>
-                    <ul class="features-list">
-                        <li>✓ Everything in Foundation, Plus:</li>
-                        <li>✓ <strong>Role Assignment & Delegation Tracking</strong></li>
-                        <li>✓ <strong>Ongoing Review Cycles</strong></li>
-                        <li>✓ <strong>Incapacity vs Death Logic</strong></li>
-                        <li>✓ Document Digitization Service</li>
-                        <li>✓ Legal Document Categorization</li>
-                        <li>✓ Complete Digital Estate Instructions</li>
-                        <li>✓ Quarterly & Annual Maintenance Checkups</li>
-                    </ul>
-                    <button class="btn btn-primary">Get Started</button>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Pricing Section -->
 
+  <div class="payment-wrapper">
+
+    <!-- Pricing Cards -->
+    <div class="pricing-cards">
+
+      <!-- Essentials -->
+      <div class="pricing-card">
+        <div class="tier-name">Essentials</div>
+        <div class="tier-price">
+          <span class="currency">$</span>
+          <span class="price-amount">297</span>
+        </div>
+        <div class="period">one-time payment</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-features">
+          <li><i class="fas fa-check-circle"></i> Full edit access for 1 year</li>
+          <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
+          <li><i class="fas fa-check-circle"></i> Automatic emails to review information for 1st year</li>
+          <li><i class="fas fa-check-circle"></i> View-only access forever after 1 year</li>
+          <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
+        </ul>
+      </div>
+
+      <!-- Legacy (recommended) -->
+      <div class="pricing-card recommended">
+        <div class="recommended-badge">Best Value</div>
+        <div class="tier-name">Legacy</div>
+        <div class="tier-price">
+          <span class="currency">$</span>
+          <span class="price-amount">597</span>
+        </div>
+        <div class="period">one-time payment</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-features">
+          <li><i class="fas fa-check-circle"></i> Lifetime full access — forever</li>
+          <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
+          <li><i class="fas fa-check-circle"></i> Edit permissions never expire</li>
+          <li><i class="fas fa-check-circle"></i> Includes detailed funeral planning</li>
+          <li><i class="fas fa-check-circle"></i> Priority email support</li>
+          <li><i class="fas fa-check-circle"></i> All future updates included</li>
+          <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Trust Strip -->
+    <div class="trust-strip">
+      <div class="trust-item">
+        <i class="fas fa-lock"></i> Secured by Stripe
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-shield-alt"></i> Encrypted payment
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-redo"></i> No recurring charges
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-headset"></i> Support included
+      </div>
+    </div>
+</div>
+
+</section>
     <!-- CLOSING CTA -->
     <section class="closing-cta">
         <div class="container">

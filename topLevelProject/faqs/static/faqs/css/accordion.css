@@ -1,149 +1,239 @@
-/* ═══════════════════════════════════════════════════════════════════
-   accordion.css — FAQ Accordion Component
-   Requires: stylesheet.css (design tokens must be loaded first)
-   ═══════════════════════════════════════════════════════════════════ */
 
-
-/* ══════════════════════════════════════════════
-   ACCORDION WRAPPER
-   ══════════════════════════════════════════════ */
-
-.accordion {
-  width: clamp(20em, 60vw, 80em);
-  margin: 2rem auto;
-  font-family: var(--main-font);
-  color: var(--text-color-dark);
+/* ── Elderly-friendly overrides ── */
+.faq-page {
+  max-width: 860px;
+  margin: 0 auto;
 }
 
-
-/* ══════════════════════════════════════════════
-   SECTION HEADER (h2 with icon)
-   ══════════════════════════════════════════════ */
-
-.accordion-header {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  column-gap: 20px;
-  font-family: var(--title-font);
+/* Page intro */
+.faq-intro {
+  text-align: center;
+  padding: 2rem 1.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.faq-intro h1 {
   font-size: var(--font-xxl);
   color: var(--ten-percent);
-  margin: 1.5em 0 0.5em;
+  margin-bottom: 0.5rem;
+}
+.faq-intro p {
+  font-size: var(--font-md);
+  color: var(--text-color-dark);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
 }
 
-.accordion-header img {
-  width: 2.2em;
-  height: 2.2em;
-}
-
-
-/* ══════════════════════════════════════════════
-   SUMMARY (collapsed row)
-   ══════════════════════════════════════════════ */
-
-.accordion summary {
-  cursor: pointer;
-  font-size: var(--font-nm);
-  font-family: var(--main-font);
+/* Category heading */
+.faq-category-label {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+  font-size: var(--font-xl);
+  font-family: var(--title-font);
   font-weight: 700;
   color: var(--ten-percent);
-  padding: 0.9rem 1.2rem;
-  border: 1px solid rgba(45, 106, 156, 0.25);
-  border-radius: 12px;
-  background-color: var(--purewhite-color);
-  list-style: none;          /* hide default triangle in Firefox */
-  transition: background 0.25s, box-shadow 0.25s;
-  box-shadow: 3px 3px 8px #02020210;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(45, 106, 156, 0.18);
 }
-
-.accordion summary::-webkit-details-marker { display: none; } /* hide triangle in Chrome/Safari */
-
-.accordion summary::after {
-  content: "+";
-  float: right;
+.faq-category-label i {
   font-size: var(--font-lg);
   color: var(--thirty-percent);
-  line-height: 1;
+}
+
+/* Single-layer accordion item */
+.faq-item {
+  border-radius: 12px;
+  border: 1.5px solid rgba(45, 106, 156, 0.2);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--purewhite-color);
+  box-shadow: 2px 3px 10px rgba(2, 2, 2, 0.06);
+  transition: box-shadow 0.2s;
+}
+.faq-item:hover {
+  box-shadow: 2px 4px 16px rgba(45, 106, 156, 0.14);
+}
+
+/* Summary / question row */
+.faq-item summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 1rem;
+  padding: 1.3rem 1.6rem;
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--ten-percent);
+  background: var(--purewhite-color);
+  transition: background 0.2s;
+  min-height: 64px;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover {
+  background: var(--background-color);
+}
+
+.faq-question-text {
+  display: flex;
+  align-items: center;
+  column-gap: 0.85rem;
+  flex: 1;
+  line-height: 1.45;
+}
+.faq-question-text i {
+  font-size: var(--font-lg);
+  color: var(--thirty-percent);
+  flex-shrink: 0;
+}
+
+/* Show / Hide label */
+.faq-toggle-label {
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
+  font-size: var(--font-nm);
+  font-weight: 600;
+  color: var(--thirty-percent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.faq-toggle-label .toggle-arrow {
   transition: transform 0.25s;
+  font-size: var(--font-sm);
 }
 
-.accordion details[open] > summary::after {
-  transform: rotate(45deg);
+details[open] .faq-item summary {
+  background: var(--thirty-percent);
+  color: var(--purewhite-color);
+}
+details[open] .faq-item summary .faq-question-text i,
+details[open] .faq-item summary .faq-toggle-label {
+  color: var(--purewhite-color);
+}
+details[open] .faq-toggle-label .toggle-show { display: none; }
+details:not([open]) .faq-toggle-label .toggle-hide { display: none; }
+details[open] .faq-toggle-label .toggle-arrow {
+  transform: rotate(180deg);
 }
 
-.accordion summary:hover {
-  background-color: var(--background-color);
-  box-shadow: 3px 3px 12px rgba(45, 106, 156, 0.15);
+/* Answer panel */
+.faq-answer {
+  padding: 1.5rem 1.8rem 1.6rem;
+  border-top: 1.5px solid rgba(45, 106, 156, 0.15);
+  background: var(--background-color);
 }
-
-.accordion details[open] > summary {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-color: transparent;
-  background-color: var(--thirty-percent);
-  color: var(--text-color);
+.faq-answer p {
+  font-size: var(--font-md);
+  line-height: 1.85;
+  color: var(--text-color-dark);
+  margin-bottom: 0.75rem;
 }
-
-.accordion details[open] > summary::after {
-  color: var(--text-color);
+.faq-answer p:last-child { margin-bottom: 0; }
+.faq-answer ul {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.65rem;
+  padding-left: 0;
+  list-style: none;
+  margin-top: 0.75rem;
 }
-
-.accordion details {
-  margin-bottom: 0.6rem;
-}
-
-
-/* ══════════════════════════════════════════════
-   EXPANDED CONTENT PANEL
-   ══════════════════════════════════════════════ */
-
-.accordion-content {
-  border: 1px solid rgba(45, 106, 156, 0.25);
-  border-top: none;
-  padding: 1.2rem 1.6rem;
-  background-color: var(--background-color);
-  border-radius: 0 0 12px 12px;
-  box-shadow: 3px 6px 10px #02020210;
-}
-
-.accordion-content p {
+.faq-answer li {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  column-gap: 0.65rem;
   font-family: var(--paragraph-font);
   font-size: var(--font-md);
-  font-weight: 400;
+  line-height: 1.75;
   color: var(--text-color-dark);
-  margin-top: 0;
+  padding: 0;
 }
-
-.accordion-content strong {
-  font-size: var(--font-nm);
+.faq-answer li i {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  color: var(--thirty-percent);
+}
+.faq-answer strong {
+  font-size: inherit;
   font-weight: 700;
   color: var(--ten-percent);
 }
 
-.accordion-content ul {
-  margin-top: 0.6rem;
-  padding-left: 1rem;
-  font-family: var(--paragraph-font);
-  font-size: var(--font-nm);
-  color: var(--text-color-dark);
-}
-
-.accordion-content li {
+/* Help banner */
+.faq-help-banner {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  column-gap: 0.5rem;
-  margin-bottom: 0.6rem;
-  overflow-wrap: break-word;
-  white-space: normal;
-  padding: 0.3rem 0;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
 }
-
-.accordion-content li::before {
-  content: "›";
-  color: var(--accent-color);
+.faq-help-banner h3 {
+  font-family: var(--title-font);
+  font-size: var(--font-xl);
+  color: var(--purewhite-color);
+  margin: 0 0 0.4rem;
+}
+.faq-help-banner p {
+  font-size: var(--font-md);
+  color: rgba(231, 239, 247, 0.88);
+  margin: 0;
+  line-height: 1.6;
+}
+.faq-help-btn {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0.6rem;
+  background: var(--accent-color);
+  color: var(--text-color-dark);
+  font-family: var(--main-font);
   font-size: var(--font-md);
   font-weight: 700;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.2s;
   flex-shrink: 0;
-  line-height: 1.4;
+}
+.faq-help-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+
+@media (max-width: 768px) {
+  .faq-item summary {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  column-gap: 1rem;
+  padding: 1rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 500;
+  color: var(--ten-percent);
+  background: var(--purewhite-color);
+  transition: background 0.2s;
+  /* min-height: 64px; */
+  }
+}
+.faq-toggle-label {
+  margin-top: 0.5rem;
+}
+
+.faq-help-btn {
+  font-weight: 500;
+  padding: 0.45rem 1rem;
 }

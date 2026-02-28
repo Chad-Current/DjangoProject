@@ -1,277 +1,237 @@
-{% extends "dashboard/dashboard.html" %}
+{% extends "dashboard/base_dashboard.html" %}
 {% load static %}
 
-{% block title %}FAQs{% endblock %}
+{% block title %}Help & FAQs{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'faqs/css/accordion.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="main container py-4">
+<div class="main container py-4 faq-page">
 
-    <!-- Page Header -->
-    <div class="delegation-header">
-        <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
-        <div class="subtitle">Everything you need to know about managing your digital estate</div>
+  <!-- Page Introduction -->
+  <div class="faq-intro">
+    <h1><i class="fas fa-hands-helping"></i> Help &amp; Common Questions</h1>
+    <p>
+      Click any question below to read the answer.
+      If you need more help, scroll to the bottom of the page and we'll get back to you.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       CATEGORY 1: Keeping Your Information Safe
+       ═══════════════════════════════════════ -->
+  <div class="faq-category-label">
+    <i class="fas fa-lock"></i> Keeping Your Information Safe
+  </div>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-shield-alt"></i>
+        Is my personal information safe on this website?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Yes — your information is kept private and secure. Here is how we protect you:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span>Your documents are mailed in using a prepaid envelope — nothing is sent over the internet.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Only one person handles your paperwork. No outside companies or extra staff are involved.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Please only send <strong>copies</strong> of your documents, not originals. Any original accidentally sent will be returned to you unopened.</span></li>
+      </ul>
     </div>
+  </details>
 
-    <!-- Quick Nav Stats -->
-    <div class="summary-stats">
-        <div class="stat-item">
-            <div>
-                <div class="stat-number">3</div>
-                <div class="stat-label">Topics</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div>
-                <div class="stat-number">4</div>
-                <div class="stat-label">Security FAQs</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div>
-                <div class="stat-number">4</div>
-                <div class="stat-label">Process FAQs</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div>
-                <div class="stat-number">4</div>
-                <div class="stat-label">Technical FAQs</div>
-            </div>
-        </div>
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-eye-slash"></i>
+        Can anyone else see my passwords?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>No. Only you can see your passwords and private account details.</p>
+      <p>We cannot see them either. The only people who can access your information are the trusted family members or friends that <strong>you choose</strong> to share specific items with.</p>
     </div>
+  </details>
 
-    <div class="row">
-
-        <!-- Left Column: Sidebar / Topic Nav -->
-        <div class="col-lg-4">
-            <div class="info-card">
-                <div class="mt-3">
-                    <h3><i class="fas fa-list-ul"></i> Topics</h3>
-                    <ul class="list-unstyled mt-3" style="display: flex; flex-direction: column; row-gap: 0.75rem;">
-                        <li>
-                            <a href="#security" class="d-flex align-items-center" style="column-gap: 0.6rem; text-decoration: none;">
-                                <i class="fas fa-lock" style="color: var(--thirty-percent);"></i>
-                                <span>Security &amp; Privacy</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#process" class="d-flex align-items-center" style="column-gap: 0.6rem; text-decoration: none;">
-                                <i class="fas fa-clock" style="color: var(--thirty-percent);"></i>
-                                <span>Process &amp; Timeline</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#technical" class="d-flex align-items-center" style="column-gap: 0.6rem; text-decoration: none;">
-                                <i class="fas fa-cogs" style="color: var(--thirty-percent);"></i>
-                                <span>Technical Questions</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Still have questions? -->
-            <div class="info-card">
-                <div class="mt-3">
-                    <h3><i class="fas fa-comment-dots"></i> Still Have Questions?</h3>
-                    <p class="mt-2" style="font-size: 0.95rem; color: #6b7280;">
-                        Can't find what you're looking for? Reach out directly and we'll get back to you.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: FAQ Cards -->
-        <div class="col-lg-8">
-
-            <!-- Security & Privacy -->
-            <div class="info-card" id="security">
-                <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#securityFaqs" aria-expanded="true" aria-controls="securityFaqs">
-                    <h3>
-                        <i class="fas fa-lock"></i> Security &amp; Privacy
-                        <span class="section-count">4</span>
-                    </h3>
-                    <i class="fas fa-chevron-down collapse-icon"></i>
-                </div>
-
-                <div id="securityFaqs" class="collapse show collapsible-content">
-                    <div class="mt-3">
-
-                        <details class="document-item" style="border-left: 4px solid var(--thirty-percent);">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-shield-alt" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i> How do I know my information is safe?</span>
-                                <i class="fas fa-chevron-down" style="color: var(--thirty-percent); font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Your privacy and security are taken seriously at every step of the process.</p>
-                                <ul class="mt-2" style="display: flex; flex-direction: column; row-gap: 0.5rem; padding-left: 0; list-style: none;">
-                                    <li><i class="fas fa-check-circle" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i><strong>Mail-only intake:</strong> All documents are sent using a prepaid USPS Priority Mail envelope with tracking — no email, no uploads, no online portals.</li>
-                                    <li><i class="fas fa-check-circle" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i><strong>Single-handler process:</strong> Your documents are handled by one person only. No assistants, contractors, or third-party scanning services.</li>
-                                    <li><i class="fas fa-check-circle" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i><strong>Private handling:</strong> Documents are opened and processed in a private, controlled workspace.</li>
-                                    <li><i class="fas fa-check-circle" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i><strong>No originals kept:</strong> Send copies only. If an original is accidentally included, it is not scanned and is returned immediately.</li>
-                                </ul>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid var(--thirty-percent);">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-key" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i> Who can see my passwords and stored credentials?</span>
-                                <i class="fas fa-chevron-down" style="color: var(--thirty-percent); font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Only you. We do not have access to any passwords or sensitive credentials stored in your account. All sensitive data is encrypted and accessible only to the account owner and contacts you explicitly delegate access to.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid var(--thirty-percent);">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-user-secret" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i> What happens to my data when I pass away?</span>
-                                <i class="fas fa-chevron-down" style="color: var(--thirty-percent); font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Your designated Digital Executor and delegated contacts will be granted access to the items you've assigned to them. Only the information you've explicitly shared will be visible — nothing more. Your account remains otherwise private and protected.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid var(--thirty-percent);">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-lock-open" style="color: var(--thirty-percent); margin-right: 0.5rem;"></i> What if I forget my master password?</span>
-                                <i class="fas fa-chevron-down" style="color: var(--thirty-percent); font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Use the <strong>Forgot Password</strong> link on the login page. A reset link will be sent to your registered email address. If you no longer have access to that email, contact us directly for identity-verified account recovery.</p>
-                            </div>
-                        </details>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Process & Timeline -->
-            <div class="info-card" id="process">
-                <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#processFaqs" aria-expanded="true" aria-controls="processFaqs">
-                    <h3>
-                        <i class="fas fa-clock"></i> Process &amp; Timeline
-                        <span class="section-count">4</span>
-                    </h3>
-                    <i class="fas fa-chevron-down collapse-icon"></i>
-                </div>
-
-                <div id="processFaqs" class="collapse show collapsible-content">
-                    <div class="mt-3">
-
-                        <details class="document-item" style="border-left: 4px solid #f59e0b;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-paper-plane" style="color: #f59e0b; margin-right: 0.5rem;"></i> How do I get started?</span>
-                                <i class="fas fa-chevron-down" style="color: #f59e0b; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Getting started takes just a few steps:</p>
-                                <ul class="mt-2" style="display: flex; flex-direction: column; row-gap: 0.5rem; padding-left: 0; list-style: none;">
-                                    <li><i class="fas fa-circle" style="color: #f59e0b; font-size: 0.5rem; margin-right: 0.5rem; vertical-align: middle;"></i> Create your account and complete your profile.</li>
-                                    <li><i class="fas fa-circle" style="color: #f59e0b; font-size: 0.5rem; margin-right: 0.5rem; vertical-align: middle;"></i> Add your contacts and assign roles (Emergency Contact, Digital Executor, Caregiver).</li>
-                                    <li><i class="fas fa-circle" style="color: #f59e0b; font-size: 0.5rem; margin-right: 0.5rem; vertical-align: middle;"></i> Begin adding accounts, devices, and documents, delegating each to a contact.</li>
-                                    <li><i class="fas fa-circle" style="color: #f59e0b; font-size: 0.5rem; margin-right: 0.5rem; vertical-align: middle;"></i> Review your dashboard regularly to keep everything up to date.</li>
-                                </ul>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #f59e0b;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-envelope-open-text" style="color: #f59e0b; margin-right: 0.5rem;"></i> How does the mail-in document process work?</span>
-                                <i class="fas fa-chevron-down" style="color: #f59e0b; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Once you sign up, you'll receive a prepaid USPS Priority Mail envelope. Mail in <strong>copies</strong> of your documents — never originals. Documents are processed by a single handler, digitized, and linked to your account within 5–7 business days. You'll receive a confirmation email once complete.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #f59e0b;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-sync-alt" style="color: #f59e0b; margin-right: 0.5rem;"></i> How often should I update my information?</span>
-                                <i class="fas fa-chevron-down" style="color: #f59e0b; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>We recommend reviewing your account at least once a year or after any major life event — a move, new account, change in relationship, or updated legal document. Your dashboard shows the last updated date on every item to help you stay current.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #f59e0b;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-user-friends" style="color: #f59e0b; margin-right: 0.5rem;"></i> How will my contacts be notified when the time comes?</span>
-                                <i class="fas fa-chevron-down" style="color: #f59e0b; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Your Digital Executor is responsible for notifying your contacts and initiating the access process. We provide a clear, step-by-step guide your executor can follow. Each delegated contact will only see the specific items assigned to them — nothing else in your account.</p>
-                            </div>
-                        </details>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Technical Questions -->
-            <div class="info-card" id="technical">
-                <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#technicalFaqs" aria-expanded="true" aria-controls="technicalFaqs">
-                    <h3>
-                        <i class="fas fa-cogs"></i> Technical Questions
-                        <span class="section-count">4</span>
-                    </h3>
-                    <i class="fas fa-chevron-down collapse-icon"></i>
-                </div>
-
-                <div id="technicalFaqs" class="collapse show collapsible-content">
-                    <div class="mt-3">
-
-                        <details class="document-item" style="border-left: 4px solid #8b5cf6;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-mobile-alt" style="color: #8b5cf6; margin-right: 0.5rem;"></i> What devices and browsers are supported?</span>
-                                <i class="fas fa-chevron-down" style="color: #8b5cf6; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>The platform is fully responsive and works on desktop, tablet, and mobile devices. We support all modern browsers including Chrome, Firefox, Safari, and Edge. For the best experience, keep your browser updated to its latest version.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #8b5cf6;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-file-upload" style="color: #8b5cf6; margin-right: 0.5rem;"></i> What file types can I upload to my documents?</span>
-                                <i class="fas fa-chevron-down" style="color: #8b5cf6; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>You can upload PDFs, JPEGs, and PNGs for estate documents and important documents. Files are stored securely and accessible only to you and your delegated contacts. Individual file size is limited to 10MB.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #8b5cf6;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-shield-alt" style="color: #8b5cf6; margin-right: 0.5rem;"></i> Does the platform support two-factor authentication?</span>
-                                <i class="fas fa-chevron-down" style="color: #8b5cf6; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Yes. Two-factor authentication (2FA) is available and strongly recommended for all accounts. You can enable it in your account settings. When flagging devices in your dashboard, you can also note which device is used for 2FA so your executor knows to locate it.</p>
-                            </div>
-                        </details>
-
-                        <details class="document-item mt-3" style="border-left: 4px solid #8b5cf6;">
-                            <summary style="cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fas fa-trash-restore" style="color: #8b5cf6; margin-right: 0.5rem;"></i> Can I delete my account and all my data?</span>
-                                <i class="fas fa-chevron-down" style="color: #8b5cf6; font-size: 0.85rem;"></i>
-                            </summary>
-                            <div class="instructions-box mt-3">
-                                <p>Yes. You can request full account deletion from your account settings. All stored data, documents, and delegations will be permanently removed within 30 days. This action is irreversible, so we recommend exporting any information you wish to keep beforehand.</p>
-                            </div>
-                        </details>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-key"></i>
+        What if I forget my password to log in?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>No problem — it happens to everyone. On the login page, click the <strong>"Forgot Password"</strong> link. We will send a reset link to your email address.</p>
+      <p>If you no longer have access to your email address, please contact us directly and we will help you recover your account safely.</p>
     </div>
+  </details>
+
+
+  <!-- ═══════════════════════════════════════
+       CATEGORY 2: Your Family After You're Gone
+       ═══════════════════════════════════════ -->
+  <div class="faq-category-label">
+    <i class="fas fa-heart"></i> Your Family After You're Gone
+  </div>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-users"></i>
+        Who will be able to see my information when I pass away?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Only the people <strong>you choose</strong>. You decide exactly which family members or trusted friends can see which items — such as a specific bank account, a document, or a device.</p>
+      <p>Nobody else will be able to see anything in your account. Everything else stays completely private.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-user-friends"></i>
+        How will my family know what to do?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>You can appoint a trusted person — like a family member or close friend — to be the main person who manages things after you're gone. We provide them with clear, simple instructions on what to do and what to pass on to others.</p>
+      <p>Each person you've shared items with will only see what you've given them access to — nothing more.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-comment-alt"></i>
+        Can I leave a personal message for my family?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Yes. When you add a contact, there is a space where you can write a personal message or special instructions just for them.</p>
+      <p>This might be something like: <em>"The insurance documents are in the blue folder in my filing cabinet"</em> — whatever would be most helpful for them to know.</p>
+    </div>
+  </details>
+
+
+  <!-- ═══════════════════════════════════════
+       CATEGORY 3: Using This Website
+       ═══════════════════════════════════════ -->
+  <div class="faq-category-label">
+    <i class="fas fa-laptop"></i> Using This Website
+  </div>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-play-circle"></i>
+        How do I get started?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Getting set up is straightforward and you can go at your own pace. Here is the order we suggest:</p>
+      <ul>
+        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>First, add the names and contact details of your trusted family members or friends.</span></li>
+        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>Then add your important documents, accounts, and devices one at a time.</span></li>
+        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>For each item, you can choose which person should have access to it.</span></li>
+        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>There is no rush — you can update or add things any time.</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-sync-alt"></i>
+        How often do I need to update my information?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>We suggest checking your information once a year — for example, around the new year or your birthday. It is also a good idea to update things after any big changes in your life, such as:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span>Moving to a new home</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Opening or closing a bank account</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>A change in your family situation</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Updating a legal document like a will</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-mobile-alt"></i>
+        Can I use this on my phone or tablet?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Yes. This website works on phones, tablets, and computers. You do not need to download any separate app.</p>
+      <p>If you find the text too small, you can make it larger in your phone or browser settings. On most devices, you can also pinch the screen to zoom in.</p>
+    </div>
+  </details>
+
+
+  <!-- ═══════════════════════════════════════
+       HELP BANNER
+       ═══════════════════════════════════════ -->
+  <div class="faq-help-banner">
+    <div>
+      <h3><i class="fas fa-phone-alt"></i> Still have a question?</h3>
+      <p>We're happy to help. Send us a message and someone will get back to you as soon as possible.</p>
+    </div>
+    <a href="{% url 'baseapp:home' %}" class="faq-help-btn">
+      <i class="fas fa-envelope"></i> Send Us a Message
+    </a>
+  </div>
+
 </div>
 {% endblock %}

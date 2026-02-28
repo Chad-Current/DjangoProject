@@ -1,117 +1,170 @@
 {% load static %}
 <!DOCTYPE html>
-<html="en">
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <linkh
-            href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-            rel="stylesheet">
-    </head>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <title>Choose Your Plan</title>
+  </head>
 
-    <body>
-{% include 'baseapp/navbar.html' %}
-{% block content %}
-<div class="payment-container">
-    <h1 style="text-align: center; margin-bottom: 10px;">Choose Your Plan</h1>
-    <p style="text-align: center; color: #666; margin-bottom: 40px;">
-        Select the subscription tier that best fits your needs
-    </p>
-    
-    {% if messages %}
+  <body class="payment-page">
+    {% include 'baseapp/navbar.html' %}
+
+    <!-- Page Header -->
+    <div class="payment-header">
+      <h1>Choose Your Plan</h1>
+      <p>A one-time payment — no subscriptions, no surprises.</p>
+    </div>
+
+    <div class="payment-wrapper">
+
+      {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          <div class="alert alert-{{ message.tags }}">
+            <i class="fas fa-info-circle"></i> {{ message }}
+          </div>
         {% endfor %}
-    {% endif %}
-    
-    <div class="pricing-cards">
-        <!-- Essentials Tier -->
+      {% endif %}
+
+      <!-- Pricing Cards -->
+      <div class="pricing-cards">
+
+        <!-- Essentials -->
         <div class="pricing-card">
-            <div class="tier-name">Essentials</div>
-            <div class="tier-price">
-                <span class="currency">$</span>297
-                <div class="period">one-time payment</div>
-            </div>
-            
-            <ul class="tier-features">
-                <li>Full edit access for 1 year</li>
-                <li>Add, change, and delete data</li>
-                <li>View-only access forever after 1 year</li>
-                <li>Email support</li>
-                <li>Regular updates</li>
-            </ul>
-            
-            <button class="select-tier-btn essentials-btn" onclick="openPaymentModal('essentials', 99.99)">
-                Select Essentials
-            </button>
+          <div class="tier-name">Essentials</div>
+          <div class="tier-price">
+            <span class="currency">$</span>
+            <span class="price-amount">297</span>
+          </div>
+          <div class="period">one-time payment</div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li><i class="fas fa-check-circle"></i> Full edit access for 1 year</li>
+            <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
+            <li><i class="fas fa-check-circle"></i> View-only access forever after 1 year</li>
+            <li><i class="fas fa-check-circle"></i> Email support</li>
+            <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
+          </ul>
+          <button class="select-tier-btn essentials-btn" onclick="openPaymentModal('essentials', 297)">
+            Get Essentials
+          </button>
         </div>
-        
-        <!-- Legacy Tier -->
+
+        <!-- Legacy (recommended) -->
         <div class="pricing-card recommended">
-            <div class="tier-name">Legacy</div>
-            <div class="tier-price">
-                <span class="currency">$</span>597
-                <div class="period">one-time payment</div>
-            </div>
-            
-            <ul class="tier-features">
-                <li>Lifetime full access</li>
-                <li>Add, change, and delete data forever</li>
-                <li>Never lose edit permissions</li>
-                <li>Priority email support</li>
-                <li>All future updates included</li>
-                <li>Best value for long-term use</li>
-            </ul>
-            
-            <button class="select-tier-btn legacy-btn" onclick="openPaymentModal('legacy', 299.99)">
-                Select Legacy
-            </button>
+          <div class="recommended-badge">Best Value</div>
+          <div class="tier-name">Legacy</div>
+          <div class="tier-price">
+            <span class="currency">$</span>
+            <span class="price-amount">597</span>
+          </div>
+          <div class="period">one-time payment</div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li><i class="fas fa-check-circle"></i> Lifetime full access — forever</li>
+            <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
+            <li><i class="fas fa-check-circle"></i> Edit permissions never expire</li>
+            <li><i class="fas fa-check-circle"></i> Priority email support</li>
+            <li><i class="fas fa-check-circle"></i> All future updates included</li>
+            <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
+          </ul>
+          <button class="select-tier-btn legacy-btn" onclick="openPaymentModal('legacy', 597)">
+            Get Legacy
+          </button>
         </div>
-    </div>
-</div>
 
-<!-- Payment Modal -->
-<div id="paymentModal" class="payment-modal">
-    <div class="payment-modal-content">
-        <span class="close-modal" onclick="closePaymentModal()">&times;</span>
-        <h2 id="modal-title">Complete Your Purchase</h2>
-        <p id="modal-description"></p>
-        
+      </div>
+
+      <!-- Trust Strip -->
+      <div class="trust-strip">
+        <div class="trust-item">
+          <i class="fas fa-lock"></i> Secured by Stripe
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-shield-alt"></i> Encrypted payment
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-redo"></i> No recurring charges
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-headset"></i> Support included
+        </div>
+      </div>
+
+    </div><!-- /.payment-wrapper -->
+
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+      <div class="payment-modal-content">
+        <span class="close-modal" onclick="closePaymentModal()" aria-label="Close">&times;</span>
+
+        <div class="modal-header">
+          <h2><i class="fas fa-credit-card"></i> Complete Your Purchase</h2>
+          <p>Enter your card details below to get started.</p>
+        </div>
+
+        <!-- Plan summary row -->
+        <div class="modal-plan-summary">
+          <span class="modal-plan-name" id="modal-plan-name">—</span>
+          <span class="modal-plan-price" id="modal-plan-price">—</span>
+        </div>
+
         <form id="payment-form">
-            {% csrf_token %}
-            <input type="hidden" id="selected-tier" name="tier_choice" value="">
-            
+          {% csrf_token %}
+          <input type="hidden" id="selected-tier" name="tier_choice" value="">
+
+          <div class="card-element-wrapper">
             <div id="card-element"></div>
-            <div id="card-errors" class="card-errors" role="alert"></div>
-            
-            <div class="spinner" id="loading-spinner"></div>
-            
-            <button type="submit" id="submit-payment">
-                <span id="button-text">Pay Now</span>
-            </button>
+          </div>
+          <div id="card-errors" class="card-errors" role="alert"></div>
+
+          <div class="spinner" id="loading-spinner"></div>
+
+          <button type="submit" id="submit-payment">
+            <span id="button-text"><i class="fas fa-lock"></i> &nbsp;Pay Now</span>
+          </button>
         </form>
-        
-        <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
-            Secured by Stripe. Your payment information is encrypted.
-        </p>
+
+        <div class="modal-secure-note">
+          <i class="fas fa-lock"></i>
+          Your payment information is encrypted and never stored on our servers.
+        </div>
+      </div>
     </div>
-</div>
-{% endblock %}
-
-        {% include "baseapp/footer.html" %}
 
 
-        <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-        <script src="{% static 'baseapp/js/index.js' %}"></script>
-        <script src="{% static 'accounts/js/payment.js' %}"></script>
-        <!-- End body-->
-    </body>
+    {% include "baseapp/footer.html" %}
 
+    <script src="{% static 'baseapp/js/index.js' %}"></script>
+    <script src="{% static 'accounts/js/payment.js' %}"></script>
+    <script>
+      function openPaymentModal(tier, price) {
+        const names = { essentials: 'Essentials Plan', legacy: 'Legacy Plan' };
+        document.getElementById('modal-plan-name').textContent  = names[tier] || tier;
+        document.getElementById('modal-plan-price').textContent = '$' + price.toLocaleString();
+        document.getElementById('selected-tier').value = tier;
+        document.getElementById('paymentModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closePaymentModal() {
+        document.getElementById('paymentModal').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      // Close on backdrop click
+      document.getElementById('paymentModal').addEventListener('click', function(e) {
+        if (e.target === this) closePaymentModal();
+      });
+    </script>
+  </body>
 
-    </html>
+</html>
