@@ -1,420 +1,402 @@
 {% extends 'baseapp/base.html' %}
-{% load static % }
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block content %}
 
 
-    <title>Digital Estate Management & Family Access Planning</title>
 
-</head>
-
-<body>
-    {% block content %}
-    <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-left">
-                    <div class="trust-badge">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M16.7 5.3L8.5 13.5L3.3 8.3" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" />
-                        </svg>
-                        Trusted by 500+ Families
-                    </div>
-                    <h1>Digital Estate Management & Family Access Planning</h1>
-                    <p class="hero-subtitle">
-                        A secure system that organizes your digital life, assigns responsibility, and ensures your
-                        family knows exactly what to do in the unfortunate event of death or incapacitation — without
-                        confusion, delay, or chaos.
-                    </p>
-                    <p class="hero-credential">
-                        <strong>Built on a structure where every account, device and document is assigned to a personal
-                            contact when added — not just a checklist.</strong>
-                    </p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">Request Information</button>
-                        <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Guide</a>
-                    </div>
-                </div>
-                <div class="hero-right">
-                    <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
-                </div>
-            </div>
+<!-- ─── HERO ──────────────────────────────────────────────────────── -->
+<section class="idx-section idx-section--light">
+  <div class="idx-container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-eyebrow">Trusted by 500+ Families</span>
+        <h1 class="hero-h1">Make sure your family has a plan, not a puzzle.</em></h1>
+        <p class="hero-lead">
+          A secure system that organizes your digital life, assigns responsibility, and ensures your family
+          knows exactly what to do — without confusion, delay, or chaos.
+        </p>
+        <p class="hero-pull">
+          Every account, device, and document assigned to a person when added — not left as a checklist no one knows how to follow.
+        </p>
+        <div class="flex-row wrap" style="gap:1rem;">
+          <button class="idx-btn idx-btn--primary">Request Information</button>
+          <a href="{% url 'baseapp:checklist_email' %}" class="idx-btn idx-btn--outline">Download the Free Guide</a>
         </div>
-    </section>
-
-    <!-- MORE THAN PASSWORD STORAGE -->
-    <section class="value-proposition">
-        <div class="container">
-            <div class="section-header">
-                <h2>Your Family Doesn't Just Need Passwords.<br>They Need A Plan.</h2>
-                <p class="section-subtitle">Organization without delegation still creates confusion.</p>
+      </div>
+      <div>
+        <div class="hero-photo-wrap">
+          <img
+            src="{% static 'baseapp/images/coverphoto.svg' %}"
+            alt="Multi-generational family with digital planning icons"
+            class="hero-photo"
+          >
+          <div class="hero-stats-float">
+            <div class="hero-stat">
+              <span class="hero-stat-num">500+</span>
+              <span class="hero-stat-label">Families organized & at peace</span>
             </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3>Who handles what</h3>
-                    <p>Clear role assignments for digital executor, caregivers, and emergency contacts</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Which accounts close vs stay active</h3>
-                    <p>Decommission instructions for each account — nothing left to guesswork</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚖️</div>
-                    <h3>Who becomes digital executor</h3>
-                    <p>Formal contact designation with delegated access and authority</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>When documents apply</h3>
-                    <p>Legal documents tagged for death, incapacity, or immediate use</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Where devices and 2FA are located</h3>
-                    <p>Complete device inventory with physical locations and access methods</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <h3>What needs review and when</h3>
-                    <p>Built-in relevance review cycles — nothing gets outdated or forgotten</p>
-                </div>
+            <div class="hero-stat">
+              <span class="hero-stat-num">100+</span>
+              <span class="hero-stat-label">Avg. hours saved for loved ones</span>
             </div>
+          </div>
         </div>
-    </section>
-
-    <!-- PLATFORM ARCHITECTURE -->
-    <section class="platform-architecture">
-        <div class="container">
-            <div class="section-header">
-                <h2>A Complete Digital Estate Management System</h2>
-                <p class="section-subtitle">Five integrated modules that work together to provide clarity, control, and
-                    accountability</p>
-            </div>
-
-            <div class="modules-grid">
-                <div class="module-card">
-                    <div class="module-number">1</div>
-                    <h3>Identity & Profile</h3>
-                    <p class="module-desc">Personal details. Legal structure. Centralized ownership.</p>
-                    <ul class="module-features">
-                        <li>Complete profile management</li>
-                        <li>Legal name and identifiers</li>
-                        <li>Estate structure documentation</li>
-                    </ul>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-number">2</div>
-                    <h3>Role-Based Contacts</h3>
-                    <p class="module-desc">Emergency contacts. Digital executor. Caregiver. Delegated access.</p>
-                    <ul class="module-features">
-                        <li>Emergency contact hierarchy</li>
-                        <li>Digital executor assignment</li>
-                        <li>Caregiver coordination</li>
-                        <li>Delegated access tracking</li>
-                    </ul>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-number">3</div>
-                    <h3>Digital Accounts & Devices</h3>
-                    <p class="module-desc">Banking. Email. Subscriptions. 2FA Devices.</p>
-                    <ul class="module-features">
-                        <li>Complete account inventory</li>
-                        <li>Device tracking with locations</li>
-                        <li>2FA backup methods</li>
-                        <li>Close vs preserve logic</li>
-                    </ul>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-number">4</div>
-                    <h3>Legal Documents</h3>
-                    <p class="module-desc">Healthcare directives. Financial POA. Trust documents. Wills.</p>
-                    <ul class="module-features">
-                        <li>Document categorization</li>
-                        <li>Death vs incapacity logic</li>
-                        <li>Immediate access items</li>
-                        <li>Secure encrypted storage</li>
-                    </ul>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-number">5</div>
-                    <h3>Relevance Reviews</h3>
-                    <p class="module-desc">Scheduled intervals. Lifecycle management. Nothing gets outdated.</p>
-                    <ul class="module-features">
-                        <li>Automated review scheduling</li>
-                        <li>Still matters? What changed?</li>
-                        <li>Built-in maintenance system</li>
-                        <li>Quarterly and annual cycles</li>
-                    </ul>
-                </div>
-
-                <div class="module-card module-highlight">
-                    <div class="module-number">⚡</div>
-                    <h3>Three Activation Modes</h3>
-                    <p class="module-desc">Your documents activate when appropriate:</p>
-                    <ul class="activation-modes">
-                        <li><span class="mode-indicator immediate"></span><strong>Immediate:</strong> Available right
-                            now</li>
-                        <li><span class="mode-indicator incapacity"></span><strong>Incapacity:</strong> Healthcare, POA
-                        </li>
-                        <li><span class="mode-indicator death"></span><strong>Death:</strong> Estate settlement</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="hero-quote-mini">
+          "I wish we'd done this sooner. When my dad had his stroke, we couldn't access anything."
+          <cite>— Jennifer T., Des Moines</cite>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- PROBLEMS WITHOUT A PLAN -->
-    <section class="problems">
-        <div class="container">
-            <div class="section-header">
-                <h2>Without A Plan, Your Family Faces These Challenges</h2>
+<!-- ─── VALUE PROPOSITION ─────────────────────────────────────────── -->
+<section class="idx-section idx-section--mid">
+  <div class="idx-container">
+    <div class="idx-section-header">
+      <span class="idx-section-label">What This Gives You</span>
+      <h2 class="idx-section-title">Your Family Doesn't Just Need Passwords.<br>They Need A Plan.</h2>
+      <p class="idx-section-sub">Organization without delegation still creates confusion. Here's what changes:</p>
+    </div>
+    <div class="idx-features-grid">
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">👥</div>
+        <h3>Who handles what</h3>
+        <p>Clear role assignments for digital executor, caregivers, and emergency contacts</p>
+      </div>
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">🔒</div>
+        <h3>Which accounts close vs stay active</h3>
+        <p>Decommission instructions for each account — nothing left to guesswork</p>
+      </div>
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">⚖️</div>
+        <h3>Who becomes digital executor</h3>
+        <p>Formal contact designation with delegated access and authority</p>
+      </div>
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">📋</div>
+        <h3>When documents apply</h3>
+        <p>Legal documents tagged for death, incapacity, or immediate use</p>
+      </div>
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">📱</div>
+        <h3>Where devices and 2FA are located</h3>
+        <p>Complete device inventory with physical locations and access methods</p>
+      </div>
+      <div class="idx-feature-card">
+        <div class="idx-feature-icon">🔄</div>
+        <h3>What needs review and when</h3>
+        <p>Built-in relevance review cycles — nothing gets outdated or forgotten</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PLATFORM ARCHITECTURE ─────────────────────────────────────── -->
+<section class="idx-section idx-section--light">
+  <div class="idx-container">
+    <div class="idx-section-header">
+      <span class="idx-section-label">The System</span>
+      <h2 class="idx-section-title">Five Modules. One Complete Picture.</h2>
+      <p class="idx-section-sub">Integrated tools that bring clarity, control, and accountability to your digital life.</p>
+    </div>
+    <div class="idx-modules-grid">
+      <div class="idx-module-card">
+        <div class="idx-module-num">01</div>
+        <h3>Identity & Profile</h3>
+        <p class="idx-module-desc">Personal details. Legal structure. Centralized ownership.</p>
+        <ul class="idx-module-list">
+          <li>Complete profile management</li>
+          <li>Legal name and identifiers</li>
+          <li>Estate structure documentation</li>
+        </ul>
+      </div>
+      <div class="idx-module-card">
+        <div class="idx-module-num">02</div>
+        <h3>Role-Based Contacts</h3>
+        <p class="idx-module-desc">Emergency contacts. Digital executor. Caregiver. Delegated access.</p>
+        <ul class="idx-module-list">
+          <li>Emergency contact hierarchy</li>
+          <li>Digital executor assignment</li>
+          <li>Caregiver coordination</li>
+          <li>Delegated access tracking</li>
+        </ul>
+      </div>
+      <div class="idx-module-card">
+        <div class="idx-module-num">03</div>
+        <h3>Digital Accounts & Devices</h3>
+        <p class="idx-module-desc">Banking. Email. Subscriptions. 2FA Devices.</p>
+        <ul class="idx-module-list">
+          <li>Complete account inventory</li>
+          <li>Device tracking with locations</li>
+          <li>2FA backup methods</li>
+          <li>Close vs preserve logic</li>
+        </ul>
+      </div>
+      <div class="idx-module-card">
+        <div class="idx-module-num">04</div>
+        <h3>Legal Documents</h3>
+        <p class="idx-module-desc">Healthcare directives. Financial POA. Trust documents. Wills.</p>
+        <ul class="idx-module-list">
+          <li>Document categorization</li>
+          <li>Death vs incapacity logic</li>
+          <li>Immediate access items</li>
+          <li>Secure encrypted storage</li>
+        </ul>
+      </div>
+      <div class="idx-module-card">
+        <div class="idx-module-num">05</div>
+        <h3>Relevance Reviews</h3>
+        <p class="idx-module-desc">Scheduled intervals. Lifecycle management. Nothing gets outdated.</p>
+        <ul class="idx-module-list">
+          <li>Automated review scheduling</li>
+          <li>Still matters? What changed?</li>
+          <li>Built-in maintenance system</li>
+          <li>Quarterly and annual cycles</li>
+        </ul>
+      </div>
+      <div class="idx-module-card idx-module-card--dark">
+        <div class="idx-module-num">⚡</div>
+        <h3>Three Activation Modes</h3>
+        <p class="idx-module-desc">Documents activate when — and only when — appropriate:</p>
+        <ul class="idx-activation-list">
+          <li><span class="idx-mode-dot idx-mode-dot--a"></span><strong>Immediate</strong> — available right now</li>
+          <li><span class="idx-mode-dot idx-mode-dot--b"></span><strong>Incapacity</strong> — healthcare, POA</li>
+          <li><span class="idx-mode-dot idx-mode-dot--c"></span><strong>Death</strong> — estate settlement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEMS ──────────────────────────────────────────────────── -->
+<section class="idx-section idx-section--dark">
+  <div class="idx-container">
+    <div class="idx-section-header">
+      <span class="idx-section-label">A Story We Hear Too Often</span>
+      <h2 class="idx-section-title">What Happens Without a Plan</h2>
+    </div>
+    <div class="idx-story-grid">
+      <div>
+        <blockquote class="idx-blockquote">
+          When Mom passed, we spent 6 months trying to access her accounts. We never found her investment login, and her digital photos are gone forever. I don't want my kids to go through that.
+        </blockquote>
+        <p class="idx-story-author">
+          <strong>— Sarah M.</strong>
+          Des Moines, Iowa
+        </p>
+      </div>
+      <div>
+        <ul class="idx-consequence-list">
+          <li class="idx-consequence-item">
+            <div class="idx-consequence-icon">⏱️</div>
+            <div>
+              <h4>100+ Hours of Searching</h4>
+              <p>Families spend an average of 100+ hours trying to recover digital assets during an already devastating time.</p>
             </div>
-
-            <div class="problems-grid">
-                <div class="problem-card">
-                    <div class="problem-icon">
-                        <img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" alt="Time wasted">
-                    </div>
-                    <h3>100+ Hours Wasted</h3>
-                    <p>Families spend an average of 100+ hours trying to recover digital assets and access accounts</p>
-                </div>
-
-                <div class="problem-card">
-                    <div class="problem-icon">
-                        <img src="/static/baseapp/images/Payment-Recieve-7--Streamline-Plump.svg" alt="Money lost">
-                    </div>
-                    <h3>Subscriptions Keep Charging</h3>
-                    <p>Forgotten subscriptions drain hundreds or thousands of dollars after someone passes</p>
-                </div>
-
-                <div class="problem-card">
-                    <div class="problem-icon">
-                        <img src="/static/baseapp/images/Gallery-2--Streamline-Plump.svg" alt="Memories lost">
-                    </div>
-                    <h3>Memories Lost Forever</h3>
-                    <p>Precious photos and videos locked in forgotten accounts disappear permanently</p>
-                </div>
+          </li>
+          <li class="idx-consequence-item">
+            <div class="idx-consequence-icon">💳</div>
+            <div>
+              <h4>Subscriptions Keep Charging</h4>
+              <p>Forgotten subscriptions drain hundreds — sometimes thousands — of dollars from the estate before anyone notices.</p>
             </div>
-
-            <div class="testimonial-box">
-                <p class="testimonial-quote">
-                    "When Mom passed, we spent 6 months trying to access her accounts. We never did find her investment
-                    account login, and her digital photos are gone forever. I don't want my kids to go through that."
-                </p>
-                <p class="testimonial-author">— Sarah M., Des Moines</p>
+          </li>
+          <li class="idx-consequence-item">
+            <div class="idx-consequence-icon">🖼️</div>
+            <div>
+              <h4>Memories Lost Forever</h4>
+              <p>Precious photos and videos locked in forgotten accounts can disappear permanently — with no recovery possible.</p>
             </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ──────────────────────────────────────────────── -->
+<section class="idx-section idx-section--light">
+  <div class="idx-container">
+    <div class="idx-section-header">
+      <span class="idx-section-label">Your Path to Peace of Mind</span>
+      <h2 class="idx-section-title">Three Steps. Complete Clarity.</h2>
+      <p class="idx-section-sub">Most families are fully organized within a single afternoon.</p>
+    </div>
+    <div class="idx-journey">
+      <div class="idx-journey-step">
+        <div class="idx-step-orb"><span class="idx-step-num">1</span></div>
+        <h3>Discover</h3>
+        <p>We help surface every digital account — even the ones long forgotten. Banking, utilities, social media, subscriptions, and more.</p>
+        <ul class="idx-step-details">
+          <li>Account discovery audit</li>
+          <li>Subscription identification</li>
+          <li>Device & 2FA inventory</li>
+        </ul>
+      </div>
+      <div class="idx-journey-step">
+        <div class="idx-step-orb"><span class="idx-step-num">2</span></div>
+        <h3>Secure</h3>
+        <p>Build your personal encrypted vault with role-based access for your executor and family, plus activation logic for every scenario.</p>
+        <ul class="idx-step-details">
+          <li>Encrypted vault setup</li>
+          <li>Role & contact assignment</li>
+          <li>Activation logic per account</li>
+        </ul>
+      </div>
+      <div class="idx-journey-step">
+        <div class="idx-step-orb"><span class="idx-step-num">3</span></div>
+        <h3>Organize</h3>
+        <p>We deliver your complete digital estate plan — clear delegation, decommission instructions, and review cycles built in from day one.</p>
+        <ul class="idx-step-details">
+          <li>Full delegation map</li>
+          <li>Legal document tagging</li>
+          <li>Ongoing review schedule</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOR ADULT CHILDREN ────────────────────────────────────────── -->
+<section class="idx-section idx-section--mid">
+  <div class="idx-container">
+    <div class="idx-two-col">
+      <div>
+        <span class="idx-section-label">For Adult Children</span>
+        <h2 class="idx-section-title">How to Start the Conversation with Your Parents</h2>
+        <p class="idx-section-sub">Talking about digital estate planning can feel awkward. Here are three ways to open the door:</p>
+        <div class="flex-col" style="gap:1rem; margin-top:1.75rem;">
+          <div class="idx-tip-card">
+            <h4>Frame it as a gift</h4>
+            <p>"I want to make sure I can help you if anything happens to your computer or phone."</p>
+          </div>
+          <div class="idx-tip-card">
+            <h4>Share your own experience</h4>
+            <p>"I just organized my own accounts and it felt so good to have everything in one place."</p>
+          </div>
+          <div class="idx-tip-card">
+            <h4>Offer to do it together</h4>
+            <p>"Let's get set up with help from professionals — it'll give us both peace of mind."</p>
+          </div>
         </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2>How It Works: Simple 3-Step Process</h2>
-                <p class="section-subtitle">Complete peace of mind in just a few hours</p>
-            </div>
-
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-image">
-                        <img src="/static/baseapp/images/1.svg" alt="Step 1">
-                    </div>
-                    <h3>Discover</h3>
-                    <p>We help find all your digital accounts—even the ones you forgot about. Banking, utilities, social
-                        media, subscriptions, and more.</p>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-image">
-                        <img src="/static/baseapp/images/2.svg" alt="Step 2">
-                    </div>
-                    <h3>Secure</h3>
-                    <p>Set up your personal encrypted vault with role-based access for your digital executor and family
-                        members, plus activation logic for different scenarios.</p>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-image">
-                        <img src="/static/baseapp/images/3.svg" alt="Step 3">
-                    </div>
-                    <h3>Organize</h3>
-                    <p>We create your complete digital estate management plan with clear delegation, decommission
-                        instructions, and ongoing review cycles.</p>
-                </div>
-            </div>
+      </div>
+      <div>
+        <div class="idx-testimonial">
+          <p>"I wish we'd done this sooner. When my dad had his stroke, we couldn't access anything. This service was a lifesaver for our family."</p>
+          <cite>— Jennifer T., Des Moines</cite>
         </div>
-    </section>
-
-    <!-- FOR ADULT CHILDREN -->
-    <section class="adult-children">
-        <div class="container">
-            <div class="two-column">
-                <div class="column-left">
-                    <div class="section-tag">For Adult Children</div>
-                    <h2>How to Start the Conversation with Your Parents</h2>
-                    <p class="intro-text">Talking about digital estate planning can feel awkward. Here's how to approach
-                        it with care:</p>
-
-                    <div class="conversation-tips">
-                        <div class="tip">
-                            <h4>Frame it as a gift:</h4>
-                            <p>"I want to make sure I can help you if anything happens to your computer or phone."</p>
-                        </div>
-
-                        <div class="tip">
-                            <h4>Share your own experience:</h4>
-                            <p>"I just organized my own accounts and it felt so good to have everything in one place."
-                            </p>
-                        </div>
-
-                        <div class="tip">
-                            <h4>Offer to do it together:</h4>
-                            <p>"Let's get you set up with help from professionals—it'll give us both peace of mind."</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column-right">
-                    <div class="testimonial-card">
-                        <p class="testimonial-quote-large">
-                            "I wish we'd done this sooner. When my dad had his stroke, we couldn't access anything. This
-                            service was a lifesaver for our family."
-                        </p>
-                        <p class="testimonial-author">— Jennifer T., Des Moines</p>
-                    </div>
-
-                    <div class="objections-box">
-                        <h3>Common Objections & Answers:</h3>
-                        <div class="objection">
-                            <strong>"I'm not good with computers"</strong>
-                            <p>We do all the technical work for you</p>
-                        </div>
-                        <div class="objection">
-                            <strong>"This seems depressing"</strong>
-                            <p>It's empowering—you stay in control</p>
-                        </div>
-                        <div class="objection">
-                            <strong>"I don't have many accounts"</strong>
-                            <p>Most people have 80-100+ digital accounts</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="idx-objections">
+          <h3>Common Concerns, Answered</h3>
+          <div class="idx-objection">
+            <strong>"I'm not good with computers"</strong>
+            <p>We handle all the technical work for you.</p>
+          </div>
+          <div class="idx-objection">
+            <strong>"This seems depressing"</strong>
+            <p>It's empowering — you stay in control.</p>
+          </div>
+          <div class="idx-objection">
+            <strong>"I don't have many accounts"</strong>
+            <p>Most people have 80–100+ they've forgotten about.</p>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Pricing Section -->
-
-    <div class="payment-wrapper">
-
-        <!-- Pricing Cards -->
-        <div class="pricing-cards">
-
-            <!-- Essentials -->
-            <div class="pricing-card">
-                <div class="tier-name">Essentials</div>
-                <div class="tier-price">
-                    <span class="currency">$</span>
-                    <span class="price-amount">297</span>
-                </div>
-                <div class="period">one-time payment</div>
-                <div class="add-on">
-                    <div class="add-on-label">Optional Add-on</div>
-                    <div class="add-on-body">
-                        <span class="add-on-icon">🔑</span>
-                        <div class="add-on-text">
-                            <span class="add-on-name">Password Storage</span>
-                            <span class="add-on-price"><strong>+$10</strong> / month</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="tier-divider"></div>
-                <ul class="tier-features">
-                    <li><i class="fas fa-check-circle"></i> Full edit access for 1 year</li>
-                    <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
-                    <li><i class="fas fa-check-circle"></i> Automatic emails to review information for 1st year</li>
-                    <li><i class="fas fa-check-circle"></i> View-only access forever after 1 year</li>
-                    <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
-                </ul>
-            </div>
-
-            <!-- Legacy (recommended) -->
-            <div class="pricing-card recommended">
-                <div class="recommended-badge">Best Value</div>
-                <div class="tier-name">Legacy</div>
-                <div class="tier-price">
-                    <span class="currency">$</span>
-                    <span class="price-amount">597</span>
-                </div>
-                <div class="period">one-time payment</div>
-                <div class="add-on">
-                    <div class="add-on-label">Optional Add-on</div>
-                    <div class="add-on-body">
-                        <span class="add-on-icon">🔑</span>
-                        <div class="add-on-text">
-                            <span class="add-on-name">Password Storage</span>
-                            <span class="add-on-price"><strong>+$10</strong> / month</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="tier-divider"></div>
-                <ul class="tier-features">
-                    <li><i class="fas fa-check-circle"></i> Lifetime full access — forever</li>
-                    <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
-                    <li><i class="fas fa-check-circle"></i> Edit permissions never expire</li>
-                    <li><i class="fas fa-check-circle"></i> Includes detailed funeral planning</li>
-                    <li><i class="fas fa-check-circle"></i> Priority email support</li>
-                    <li><i class="fas fa-check-circle"></i> All future updates included</li>
-                    <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- Trust Strip -->
-        <div class="trust-strip">
-            <div class="trust-item">
-                <i class="fas fa-lock"></i> Secured by Stripe
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-shield-alt"></i> Encrypted payment
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-redo"></i> No recurring charges
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-headset"></i> Support included
-            </div>
-        </div>
+<!-- ─── PRICING ───────────────────────────────────────────────────── -->
+<section class="idx-section idx-section--light">
+  <div class="idx-container">
+    <div class="idx-section-header" style="text-align:center;">
+      <span class="idx-section-label">Simple, Honest Pricing</span>
+      <h2 class="idx-section-title">One payment. A lifetime of clarity.</h2>
     </div>
 
-    </section>
-    <!-- CLOSING CTA -->
-    <section class="closing-cta">
-        <div class="container">
-            <h2 class="closing-headline">Your family doesn't need access.<br>They need direction.</h2>
+    <div class="payment-wrapper">
+      <div class="pricing-cards">
+
+        <!-- Essentials -->
+        <div class="pricing-card">
+          <div class="tier-name">Essentials</div>
+          <div class="tier-price">
+            <span class="currency">$</span>
+            <span class="price-amount">297</span>
+          </div>
+          <div class="period">one-time payment</div>
+          <div class="add-on">
+            <div class="add-on-label">Optional Add-on</div>
+            <div class="add-on-body">
+              <span class="add-on-icon">🔑</span>
+              <div class="add-on-text">
+                <span class="add-on-name">Password Storage</span>
+                <span class="add-on-price"><strong>+$10</strong> / month</span>
+              </div>
+            </div>
+          </div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li><i class="fas fa-check-circle"></i> Full edit access for 1 year</li>
+            <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
+            <li><i class="fas fa-check-circle"></i> Automatic review reminders for year 1</li>
+            <li><i class="fas fa-check-circle"></i> View-only access forever after year 1</li>
+            <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
+          </ul>
+          <a href="#" class="select-tier-btn essentials-btn" style="margin-top:auto;">Get Started</a>
         </div>
-    </section>
 
-    {% endblock %}
-</body>
+        <!-- Legacy -->
+        <div class="pricing-card recommended">
+          <div class="recommended-badge">Best Value</div>
+          <div class="tier-name">Legacy</div>
+          <div class="tier-price">
+            <span class="currency">$</span>
+            <span class="price-amount">597</span>
+          </div>
+          <div class="period">one-time payment</div>
+          <div class="add-on">
+            <div class="add-on-label">Optional Add-on</div>
+            <div class="add-on-body">
+              <span class="add-on-icon">🔑</span>
+              <div class="add-on-text">
+                <span class="add-on-name">Password Storage</span>
+                <span class="add-on-price"><strong>+$10</strong> / month</span>
+              </div>
+            </div>
+          </div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li><i class="fas fa-check-circle"></i> Lifetime full access — forever</li>
+            <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
+            <li><i class="fas fa-check-circle"></i> Edit permissions never expire</li>
+            <li><i class="fas fa-check-circle"></i> Includes detailed funeral planning</li>
+            <li><i class="fas fa-check-circle"></i> Priority email support</li>
+            <li><i class="fas fa-check-circle"></i> All future updates included</li>
+          </ul>
+          <a href="#" class="select-tier-btn legacy-btn" style="margin-top:auto;">Get Lifetime Access</a>
+        </div>
 
-</html>
+      </div>
+
+      <div class="trust-strip">
+        <div class="trust-item"><i class="fas fa-lock"></i> Secured by Stripe</div>
+        <div class="trust-item"><i class="fas fa-shield-alt"></i> Encrypted payment</div>
+        <div class="trust-item"><i class="fas fa-redo"></i> No recurring charges</div>
+        <div class="trust-item"><i class="fas fa-headset"></i> Support included</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CLOSING CTA ───────────────────────────────────────────────── -->
+<section class="idx-section idx-section--accent idx-closing" style="text-align:center;">
+  <div class="idx-container">
+    <h2>Your family doesn't need access.<br><em>They need direction.</em></h2>
+    <button class="idx-btn idx-btn--ghost">Get Started Today</button>
+  </div>
+</section>
+
+{% endblock %}

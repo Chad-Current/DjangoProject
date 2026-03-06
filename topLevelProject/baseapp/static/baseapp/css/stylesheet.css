@@ -726,7 +726,8 @@ PAYMENT CARD AREA
   flex-wrap: wrap;
   gap: 1.5rem 2.5rem;
   background: var(--purewhite-color);
-  border-radius: 16px 16px 0px 0px;
+  /* border-radius: 16px 16px 0px 0px; */
+  border-radius: 20px;
   padding: 1.4rem 2rem;
   box-shadow: 2px 4px 12px rgba(2, 2, 2, 0.05);
 }
