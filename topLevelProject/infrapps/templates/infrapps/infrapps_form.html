@@ -1,0 +1,194 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
+
+
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
+
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+
+  <form method="post" novalidate autocomplete="off">
+    {% csrf_token %}
+
+    <!-- ══════════════════════════════════════════
+         ENTRY DETAILS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Vault Entry Details</legend>
+
+      <div class="form-field{% if form.entry_type.errors %} has-error{% endif %}">
+        <label for="{{ form.entry_type.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Whether this password belongs to a digital account, a device, or is a standalone entry.">
+          Entry Type <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Whether this password belongs to a digital account, a device, or is standalone.</span>
+        </label>
+        {{ form.entry_type }}
+        {% if form.entry_type.errors %}
+          <div class="error" role="alert">{{ form.entry_type.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.label.errors %} has-error{% endif %}">
+        <label for="{{ form.label.id_for_label }}"
+          class="ob-label-tooltip"
+          title="A short descriptive name for this credential — e.g. 'Gmail master password' or 'iPhone PIN'.">
+          Label <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">A short descriptive name for this credential — e.g. 'Gmail master password' or 'iPhone PIN'.</span>
+        </label>
+        {{ form.label }}
+        {% if form.label.errors %}
+          <div class="error" role="alert">{{ form.label.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         LINK TO ACCOUNT OR DEVICE
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Link to Account or Device</legend>
+
+      <div class="alert alert-warning">
+        <strong>Optional:</strong> Link this password to one of your existing accounts or devices,
+        or leave both blank for a standalone entry. Do not link to both at the same time.
+      </div>
+
+      <div class="form-field{% if form.linked_account.errors %} has-error{% endif %}">
+        <label for="{{ form.linked_account.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Select a digital account this password belongs to. Leave blank if linking to a device or creating a standalone entry.">
+          Link to Account
+          <span class="ob-tip" role="tooltip">Select a digital account this password belongs to. Leave blank if not applicable.</span>
+        </label>
+        {{ form.linked_account }}
+        {% if form.linked_account.errors %}
+          <div class="error" role="alert">{{ form.linked_account.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.linked_device.errors %} has-error{% endif %}">
+        <label for="{{ form.linked_device.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Select a device this PIN or password belongs to. Leave blank if linking to an account or creating a standalone entry.">
+          Link to Device
+          <span class="ob-tip" role="tooltip">Select a device this PIN or password belongs to. Leave blank if not applicable.</span>
+        </label>
+        {{ form.linked_device }}
+        {% if form.linked_device.errors %}
+          <div class="error" role="alert">{{ form.linked_device.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         CREDENTIALS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Credentials</legend>
+
+      <div class="form-field{% if form.username_or_email.errors %} has-error{% endif %}">
+        <label for="{{ form.username_or_email.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The username or email used to log in — not the password itself.">
+          Username or Email
+          <span class="ob-tip" role="tooltip">The username or email used to log in — not the password itself.</span>
+        </label>
+        {{ form.username_or_email }}
+        {% if form.username_or_email.errors %}
+          <div class="error" role="alert">{{ form.username_or_email.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field">
+        <label for="id_raw_password"
+          class="ob-label-tooltip"
+          title="The password or PIN to encrypt and store. It will never be visible after saving.{% if password_optional %} Leave blank to keep the existing password.{% endif %}">
+          Password / PIN
+          {% if not password_optional %}<span class="req" aria-hidden="true">*</span>{% endif %}
+          <span class="ob-tip" role="tooltip">
+            Encrypted immediately on save and never stored in plain text.
+            {% if password_optional %}Leave blank to keep the existing password unchanged.{% endif %}
+          </span>
+        </label>
+        <div class="vault-pw-row">
+          <input
+            type="password"
+            name="raw_password"
+            id="id_raw_password"
+            class="textinput"
+            autocomplete="new-password"
+            {% if not password_optional %}required{% endif %}
+          >
+          <button type="button" id="vault-toggle-pw" class="btn btn-secondary" aria-label="Show password">Show</button>
+        </div>
+        {% if password_optional %}
+          <p class="vault-hint">Leave blank to keep the current password unchanged.</p>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         NOTES
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Additional Notes</legend>
+
+      <div class="form-field{% if form.notes.errors %} has-error{% endif %}">
+        <label for="{{ form.notes.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Recovery codes, security questions, or any other context your family may need to access this credential.">
+          Notes
+          <span class="ob-tip" role="tooltip">Recovery codes, security questions, or any relevant context for your family.</span>
+        </label>
+        {{ form.notes }}
+        {% if form.notes.errors %}
+          <div class="error" role="alert">{{ form.notes.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         SECURITY NOTICE
+    ══════════════════════════════════════════ -->
+    <div class="alert alert-warning">
+      <strong>Security notice:</strong> Your password is encrypted with AES-256 (Fernet) before being saved.
+      It is never stored in plain text and is only decrypted on explicit request within your authenticated session.
+    </div>
+
+    <!-- ── ACTIONS ─────────────────────────────── -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
+    </div>
+
+  </form>
+</div>
+</div>
+
+
+<script>
+(function () {
+  const btn   = document.getElementById('vault-toggle-pw');
+  const input = document.getElementById('id_raw_password');
+  if (!btn || !input) return;
+  btn.addEventListener('click', function () {
+    const hidden    = input.type === 'password';
+    input.type      = hidden ? 'text' : 'password';
+    btn.textContent = hidden ? 'Hide' : 'Show';
+    btn.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+  });
+})();
+</script>
+{% endblock %}

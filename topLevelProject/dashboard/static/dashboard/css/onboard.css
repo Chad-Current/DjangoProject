@@ -217,7 +217,8 @@
 
 /* ── Form card ──────────────────────────────────────────────── */
 .ob-form-card {
-  background: var(--purewhite-color);
+  /* background: var(--purewhite-color); */
+  border: solid 2px var(--thirty-percent);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.08);

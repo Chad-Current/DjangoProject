@@ -1,0 +1,64 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
+
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
+
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- ══════════════════════════════════════════
+       ENTRY SUMMARY
+  ══════════════════════════════════════════ -->
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Delete Vault Entry</legend>
+
+    <div class="alert alert-warning">
+      <strong>Warning:</strong> This action is permanent. The encrypted password will be destroyed
+      and cannot be recovered.
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="The label of the entry being deleted.">Label</label>
+      <p><strong>{{ object.label }}</strong></p>
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="The type of vault entry.">Entry Type</label>
+      <p>{{ object.get_entry_type_display }}</p>
+    </div>
+
+    {% if object.has_linked_source %}
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="The account or device this entry was linked to.">Linked to</label>
+      <p>{{ object.source_name }}</p>
+    </div>
+    {% endif %}
+
+    {% if object.username_or_email %}
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="The username or email stored with this entry.">Username / Email</label>
+      <p>{{ object.username_or_email }}</p>
+    </div>
+    {% endif %}
+
+  </fieldset>
+
+  <!-- ── ACTIONS ─────────────────────────────── -->
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="button-group">
+      <button type="submit" class="btn btn-danger">Yes, delete permanently</button>
+      <a href="{% url 'vault:vault_detail' object.slug %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+
+</div>
+</div>
+{% endblock %}

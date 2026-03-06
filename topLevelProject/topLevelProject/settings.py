@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'faqs.apps.FaqsConfig',
     'recovery.apps.RecoveryConfig',
+    'infrapps.apps.InfrappsConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

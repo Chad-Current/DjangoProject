@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <title>Add-On Subscription</title>
+</head>
+
+<body class="payment-page">
+    {% include 'baseapp/navbar.html' %}
+
+    <!-- Page Header -->
+    <div class="payment-header">
+        <h1>Add-On Subscription</h1>
+        <p>Extend your plan with extra features — billed annually, no surprises.</p>
+    </div>
+
+    <div class="payment-wrapper">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Active status banner -->
+        {% if already_active %}
+        <div class="alert alert-success" style="justify-content: flex-start; column-gap: 0.75rem;">
+            <i class="fas fa-check-circle"></i>
+            Your add-on is currently active.
+            {% if days_remaining > 0 %}
+                <strong>{{ days_remaining }} day{{ days_remaining|pluralize }} remaining.</strong>
+            {% endif %}
+            Renewing now will extend your access by another year.
+        </div>
+        {% endif %}
+
+        <!-- Add-On Card -->
+        <div class="pricing-cards" style="max-width: 480px; margin-left: auto; margin-right: auto;">
+            <div class="pricing-card recommended" style="width: 100%;">
+
+                <div class="recommended-badge">Add-On</div>
+
+                <div class="tier-name">Premium Add-On</div>
+
+                <div class="tier-price">
+                    <span class="currency">$</span>
+                    <span class="price-amount">{{ addon_price|default:"99.99"|stringformat:"s"|slice:":2" }}</span>
+                    <span class="currency" style="align-self: flex-end; margin-bottom: 0.4rem;">.99</span>
+                </div>
+                <div class="period">per year</div>
+
+                <div class="tier-divider"></div>
+
+                <ul class="tier-features">
+                    <li><i class="fas fa-check-circle"></i> Password Storage for Accounts & Devices</li>
+                    <li><i class="fas fa-check-circle"></i> 1 year of access from purchase date</li>
+                    <li><i class="fas fa-check-circle"></i> Renewable annually</li>
+                    <li><i class="fas fa-check-circle"></i> Compatible with Essentials &amp; Legacy plans</li>
+                </ul>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="select-tier-btn legacy-btn" type="submit">
+                        {% if already_active %}
+                            <i class="fas fa-redo"></i>&nbsp; Renew Add-On
+                        {% else %}
+                            <i class="fas fa-plus-circle"></i>&nbsp; Activate Add-On — ${{ addon_price }}
+                        {% endif %}
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Trust Strip -->
+        <div class="trust-strip" style="margin-top: 2rem;">
+            <div class="trust-item"><i class="fas fa-lock"></i> Secured by Stripe</div>
+            <div class="trust-item"><i class="fas fa-shield-alt"></i> Encrypted payment</div>
+            <div class="trust-item"><i class="fas fa-redo"></i> No recurring charges</div>
+            <div class="trust-item"><i class="fas fa-headset"></i> Support included</div>
+        </div>
+
+        <!-- Back link -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'dashboard:dashboard_home' %}" class="btn btn-secondary" style="width: auto; display: inline-flex;">
+                <i class="fas fa-arrow-left"></i>&nbsp; Back to Dashboard
+            </a>
+        </div>
+
+    </div><!-- /.payment-wrapper -->
+
+    {% include "baseapp/footer.html" %}
+
+    <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
+
+</html>

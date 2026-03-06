@@ -169,6 +169,42 @@ class PaymentView(LoginRequiredMixin, View):
             return redirect('accounts:payment')
 
 
+class AddonView(LoginRequiredMixin, View):
+    """
+    Lets eligible paying users purchase or renew the add-on subscription.
+    Non-paying users are redirected to the main payment page.
+    """
+    template_name = 'accounts/addon.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_eligible_for_addon():
+            messages.warning(
+                request,
+                'You need an Essentials or Legacy subscription before purchasing an add-on.'
+            )
+            return redirect('accounts:payment')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        context = {
+            'user': request.user,
+            'addon_price': 99.99,           # set your price here
+            'already_active': request.user.can_access_addon(),
+            'days_remaining': request.user.days_until_addon_expires(),
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        try:
+            request.user.activate_addon()
+            logger.info(f'User {request.user.email} activated add-on subscription')
+            messages.success(request, 'Add-on subscription activated for 1 year!')
+            return redirect('dashboard:dashboard_home')
+        except PermissionError as e:
+            messages.error(request, str(e))
+            return redirect('accounts:addon')
+
 # Password Reset Views
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'accounts/password_reset.html'
@@ -205,6 +241,7 @@ register_view = RegisterView.as_view()
 login_view = LoginView.as_view()
 logout_view = LogoutView.as_view()
 payment_view = PaymentView.as_view()
+addon_view = AddonView.as_view()
 password_reset_view = CustomPasswordResetView.as_view()
 password_reset_done_view = CustomPasswordResetDoneView.as_view()
 password_reset_confirm_view = CustomPasswordResetConfirmView.as_view()

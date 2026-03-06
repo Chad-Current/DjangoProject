@@ -12,7 +12,7 @@ urlpatterns = [
     # Dashboard and Payment
     # path('dashboard/', views.dashboard_view, name='account_dashboard'),
     path('payment/', views.payment_view, name='payment'),
-    
+    path('addon/', views.addon_view, name='addon'),
     # Password Reset
     path('password-reset/', views.password_reset_view, name='password_reset'),
     path('password-reset/done/', views.password_reset_done_view, name='password_reset_done'),

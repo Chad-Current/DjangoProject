@@ -444,6 +444,7 @@ li {
   font-size: var(--font-nm);
   font-weight: 600;
   margin: 1.25rem auto;
+
 }
 .ob-alert-success { background: rgba(98, 162, 206, 0.1); border-radius: 12px; color: #62a2ce; border: 2px solid rgba(98, 162, 206, 0.32); padding: 0.45rem;}
 .ob-alert-warning { background: rgba(255, 166, 43, 0.1); border-radius: 12px;color: #9a5e10;  border: 2px solid rgba(255, 166, 43, 0.32); padding: 0.45rem;}
@@ -481,7 +482,6 @@ PAYMENT CARD AREA
 
 .pricing-card {
   flex-direction: column;
-  background: var(--purewhite-color);
   border-radius: 20px;
   padding: 2.5rem 2rem;
   display: flex;
@@ -500,6 +500,82 @@ PAYMENT CARD AREA
 .pricing-card.recommended {
   border-color: var(--thirty-percent);
   border-width: 2px;
+}
+
+
+/* -- Add-on badge -- */
+/* ── Add-on callout ── */
+.add-on {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, rgba(98, 162, 206, 0.08), rgba(45, 106, 156, 0.12));
+    border: 1.5px dashed rgba(45, 106, 156, 0.3);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    position: static; /* removes absolute positioning */
+}
+
+.add-on-label {
+    font-family: var(--main-font);
+    font-size: var(--font-sm);
+    font-weight: 800;
+    color: var(--thirty-percent);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.add-on-body {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.add-on-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.add-on-text {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex: 1;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.add-on-name {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-nm);
+    color: var(--text-color-dark);
+    font-weight: 500;
+}
+
+.add-on-price {
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    color: var(--text-color-dark-muted);
+    white-space: nowrap;
+}
+
+.add-on-price strong {
+    font-size: var(--font-nm);
+    font-weight: 800;
+    color: var(--thirty-percent);
+}
+
+/* On recommended card, accent the border */
+.pricing-card.recommended .add-on {
+    background: linear-gradient(135deg, rgba(255, 166, 43, 0.07), rgba(255, 166, 43, 0.13));
+    border-color: rgba(255, 166, 43, 0.4);
+}
+
+.pricing-card.recommended .add-on-label,
+.pricing-card.recommended .add-on-price strong {
+    color: #b06000;
 }
 
 /* ── Recommended badge ── */

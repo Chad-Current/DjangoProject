@@ -22,26 +22,26 @@
 
 /* ── Info icon rendered via ::after ─────────────── */
 
-.ob-label-tooltip::after {
+/* .ob-label-tooltip::after {
   content: "?";
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width:  1.1em;
-  height: 1.1em;
+  width: 1.5em;
+  height: 1.5em;
   border-radius: 50%;
-  background-color: var(--sixty-percent);
-  color: var(--purewhite-color);
+  background-color: var(--thirty-percent);
+  color: var(--text-color);
   font-family: var(--main-font);
   font-size: 0.65em;
-  font-weight: 700;
+  font-weight: 900;
   flex-shrink: 0;
   transition: background-color 0.2s ease;
 }
 
 .ob-label-tooltip:hover::after {
   background-color: var(--ten-percent);
-}
+} */
 
 
 /* ── Tooltip bubble ──────────────────────────────── */

@@ -22,9 +22,16 @@
   justify-content: flex-start;
   min-height: 100vh;
   padding: 1.25rem 1rem 3rem;
-  background: var(--background-color);
+  /* background: var(--background-color); */
 }
 
+.form-container-no {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1.25rem 1rem 3rem;
+}
 
 /* ══════════════════════════════════════════════
    FORM CARD
@@ -33,7 +40,8 @@
 .form-wrapper {
   width: 100%;
   max-width: 780px;
-  background: var(--purewhite-color);
+  /* background: var(--purewhite-color); */
+  border: solid 2px var(--thirty-percent);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(22, 40, 59, 0.10);
   overflow: hidden;
@@ -167,6 +175,7 @@ label.requiredField::after {
   color: var(--ten-percent);
   margin: 0.75em 0 0;
 }
+
 
 /* ══════════════════════════════════════════════
    TEXT INPUTS

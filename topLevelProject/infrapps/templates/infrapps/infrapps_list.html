@@ -1,0 +1,191 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'infrapps/stylesheet.css' %}" type="text/css">
+
+{% block content %}
+<div class="form-container-no">
+<div class="form-wrapper">
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Password Vault</legend>
+
+    <div class="vault-list-header">
+      <p>
+        {{ total_entries }} encrypted entr{{ total_entries|pluralize:"y,ies" }} stored securely.
+      </p>
+      {% if can_modify and addon_active %}
+        <a href="{% url 'vault:vault_create' %}" class="btn btn-primary">+ Add Entry</a>
+      {% endif %}
+    </div>
+
+    <!-- Type filter -->
+    <div class="vault-filter-row">
+      <a href="{% url 'vault:vault_list' %}"
+         class="btn {% if not current_type %}btn-primary{% else %}btn-secondary{% endif %}">
+        All
+      </a>
+      <a href="{% url 'vault:vault_list' %}?type=account"
+         class="btn {% if current_type == 'account' %}btn-primary{% else %}btn-secondary{% endif %}">
+        Accounts
+      </a>
+      <a href="{% url 'vault:vault_list' %}?type=device"
+         class="btn {% if current_type == 'device' %}btn-primary{% else %}btn-secondary{% endif %}">
+        Devices
+      </a>
+      <a href="{% url 'vault:vault_list' %}?type=other"
+         class="btn {% if current_type == 'other' %}btn-primary{% else %}btn-secondary{% endif %}">
+        Other
+      </a>
+    </div>
+
+  </fieldset>
+
+  <!-- ══════════════════════════════════════════
+       ENTRIES
+  ══════════════════════════════════════════ -->
+  {% if entries %}
+
+    {% for entry in entries %}
+    <fieldset class="form-fieldset vault-entry-card">
+      <legend class="form-fieldset-legend vault-entry-legend">
+        {{ entry.label }}
+        <span class="vault-type-badge vault-type-{{ entry.entry_type }}">
+          {{ entry.get_entry_type_display }}
+        </span>
+      </legend>
+
+      {% if entry.has_linked_source %}
+      <div class="form-field">
+        <span class="ob-label-tooltip">Linked to</span>
+        <p>{{ entry.source_name }}</p>
+      </div>
+      {% endif %}
+
+      {% if entry.username_or_email %}
+      <div class="form-field">
+        <span class="ob-label-tooltip">Username / Email</span>
+        <p>{{ entry.username_or_email }}</p>
+      </div>
+      {% endif %}
+
+      <div class="form-field">
+        <label class="ob-label-tooltip"
+          title="Click Reveal to decrypt and display the password for 15 seconds.">
+          Password
+          <span class="ob-tip" role="tooltip">Click Reveal to decrypt and display for 15 seconds.</span>
+        </label>
+        <div class="vault-pw-row">
+          <input type="password"
+                 id="pw-{{ entry.slug }}"
+                 value="••••••••"
+                 readonly
+                 class="textinput"
+                 aria-label="Password for {{ entry.label }}">
+          <button type="button"
+                  class="btn btn-secondary vault-reveal-btn"
+                  data-slug="{{ entry.slug }}"
+                  data-field="pw-{{ entry.slug }}"
+                  data-csrf="{{ csrf_token }}">
+            Reveal
+          </button>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <a href="{% url 'vault:vault_detail' entry.slug %}" class="btn btn-secondary">View</a>
+        {% if can_modify %}
+          <a href="{% url 'vault:vault_update' entry.slug %}" class="btn btn-secondary">Edit</a>
+          <a href="{% url 'vault:vault_delete' entry.slug %}" class="btn btn-danger">Delete</a>
+        {% endif %}
+      </div>
+
+    </fieldset>
+    {% endfor %}
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="button-group" style="justify-content:center;">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}"
+           class="btn btn-secondary">← Previous</a>
+      {% endif %}
+      <span class="vault-page-indicator">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}"
+           class="btn btn-secondary">Next →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  {% else %}
+    <div class="alert alert-warning">
+      No vault entries yet.
+      {% if can_modify and addon_active %}
+        <a href="{% url 'vault:vault_create' %}" class="btn btn-primary" style="margin-left:0.75rem;">Add your first entry</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+</div>
+
+
+<script>
+document.querySelectorAll('.vault-reveal-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    const slug  = btn.dataset.slug;
+    const field = document.getElementById(btn.dataset.field);
+    const csrf  = btn.dataset.csrf;
+    if (!slug || !field) return;
+
+    // If already revealed, hide immediately
+    if (field.type === 'text') {
+      field.type         = 'password';
+      field.value        = '••••••••';
+      btn.textContent    = 'Reveal';
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Loading…';
+
+    fetch('/vault/' + slug + '/reveal/', {
+      method:  'POST',
+      headers: {
+        'X-CSRFToken':      csrf,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      btn.disabled = false;
+      if (data.success) {
+        field.type      = 'text';
+        field.value     = data.password;
+        btn.textContent = 'Hide';
+        // Auto-mask after 15 s
+        setTimeout(function () {
+          field.type      = 'password';
+          field.value     = '••••••••';
+          btn.textContent = 'Reveal';
+        }, 15000);
+      } else {
+        btn.textContent = 'Error';
+        alert(data.error || 'Could not reveal password.');
+      }
+    })
+    .catch(function (err) {
+      console.error(err);
+      btn.disabled    = false;
+      btn.textContent = 'Error';
+    });
+  });
+});
+</script>
+{% endblock %}

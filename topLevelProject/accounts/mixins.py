@@ -20,7 +20,38 @@ class PaidUserRequiredMixin(UserPassesTestMixin):
             return redirect('accounts:payment')
         return redirect('accounts:login')
 
+class AddonRequiredMixin(LoginRequiredMixin):
+    """
+    Restricts a view to users who have an active add-on subscription.
+    - Non-paying users  → redirected to payment page
+    - Paying users without add-on → redirected to addon purchase page
+    - Expired add-on → redirected to addon purchase page with warning
+    """
+    login_url = '/accounts/login/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        if not request.user.is_eligible_for_addon():
+            # Has no paid tier at all
+            messages.warning(
+                request,
+                'You need an active subscription (Essentials or Legacy) before adding an add-on.'
+            )
+            return redirect('accounts:payment')
+
+        if not request.user.can_access_addon():
+            # Eligible but hasn't purchased, or it expired
+            messages.warning(
+                request,
+                'This feature requires the add-on subscription.'
+            )
+            return redirect('accounts:addon')
+
+        return super().dispatch(request, *args, **kwargs)
+    
+    
 class ViewOnlyMixin(UserPassesTestMixin):
     """
     Mixin for views that only require view access.
@@ -133,3 +164,4 @@ class DeleteAccessMixin(LoginRequiredMixin):
         if owner != self.request.user:
             raise Http404("You don't have permission to delete this object")
         return obj
+    

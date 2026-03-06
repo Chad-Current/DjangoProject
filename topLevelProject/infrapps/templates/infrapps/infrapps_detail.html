@@ -1,0 +1,274 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
+
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- ══════════════════════════════════════════
+       IDENTITY
+  ══════════════════════════════════════════ -->
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">
+      {{ entry.label }}
+      <span class="vault-type-badge vault-type-{{ entry.entry_type }}">
+        {{ entry.get_entry_type_display }}
+      </span>
+    </legend>
+
+    {% if entry.has_linked_source %}
+    <div class="form-field">
+      <label class="ob-label-tooltip"
+        title="The account or device this credential is linked to.">
+        Linked to
+        <span class="ob-tip" role="tooltip">The account or device this credential is linked to.</span>
+      </label>
+      <p>{{ entry.source_name }}</p>
+    </div>
+    {% endif %}
+
+    {% if entry.username_or_email %}
+    <div class="form-field">
+      <label class="ob-label-tooltip"
+        title="The username or email associated with this credential.">
+        Username / Email
+        <span class="ob-tip" role="tooltip">The username or email associated with this credential.</span>
+      </label>
+      <p>{{ entry.username_or_email }}</p>
+    </div>
+    {% endif %}
+
+  </fieldset>
+
+  <!-- ══════════════════════════════════════════
+       LINKED SOURCE DETAILS
+  ══════════════════════════════════════════ -->
+  {% if entry.linked_account %}
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Linked Account Details</legend>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="Provider name.">Provider</label>
+      <p>{{ entry.linked_account.account_name_or_provider }}</p>
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="Account category.">Category</label>
+      <p>{{ entry.linked_account.account_category }}</p>
+    </div>
+
+    {% if entry.linked_account.website_url %}
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="Login URL.">Website URL</label>
+      <p>
+        <a href="{{ entry.linked_account.website_url }}" target="_blank" rel="noopener noreferrer">
+          {{ entry.linked_account.website_url }}
+        </a>
+      </p>
+    </div>
+    {% endif %}
+
+  </fieldset>
+  {% endif %}
+
+  {% if entry.linked_device %}
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Linked Device Details</legend>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="Device name.">Device Name</label>
+      <p>{{ entry.linked_device.device_name }}</p>
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="Type of device.">Device Type</label>
+      <p>{{ entry.linked_device.device_type }}</p>
+    </div>
+
+  </fieldset>
+  {% endif %}
+
+  <!-- ══════════════════════════════════════════
+       PASSWORD REVEAL
+  ══════════════════════════════════════════ -->
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Encrypted Credential</legend>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip"
+        title="Click Reveal Password to decrypt and display for 15 seconds. The password auto-hides and is never stored in plain text.">
+        Password / PIN
+        <span class="ob-tip" role="tooltip">
+          Click Reveal Password to decrypt and display for 15 seconds.
+          Auto-hides after the timer expires.
+        </span>
+      </label>
+
+      <div class="vault-pw-row">
+        <input type="password"
+               id="pw-detail"
+               value="••••••••"
+               readonly
+               class="textinput"
+               aria-label="Encrypted password">
+        <button type="button"
+                id="vault-reveal-btn"
+                class="btn btn-secondary"
+                data-slug="{{ entry.slug }}"
+                data-csrf="{{ csrf_token }}">
+          Reveal Password
+        </button>
+        <button type="button"
+                id="vault-copy-btn"
+                class="btn btn-secondary"
+                style="display:none;"
+                aria-label="Copy password to clipboard">
+          Copy
+        </button>
+      </div>
+
+      <p id="vault-countdown-msg" class="vault-hint" style="display:none;">
+        Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
+      </p>
+    </div>
+
+  </fieldset>
+
+  <!-- ══════════════════════════════════════════
+       NOTES
+  ══════════════════════════════════════════ -->
+  {% if entry.notes %}
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Notes</legend>
+
+    <div class="form-field">
+      <p style="white-space: pre-wrap;">{{ entry.notes }}</p>
+    </div>
+
+  </fieldset>
+  {% endif %}
+
+  <!-- ══════════════════════════════════════════
+       AUDIT
+  ══════════════════════════════════════════ -->
+  <fieldset class="form-fieldset">
+    <legend class="form-fieldset-legend">Audit</legend>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="When this entry was first created.">Created</label>
+      <p>{{ entry.created_at|date:"N j, Y \a\t g:i A" }}</p>
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="When this entry was last edited.">Last Modified</label>
+      <p>{{ entry.updated_at|date:"N j, Y \a\t g:i A" }}</p>
+    </div>
+
+    <div class="form-field">
+      <label class="ob-label-tooltip" title="When this password was last decrypted and revealed.">Last Accessed</label>
+      <p>{% if entry.last_accessed %}{{ entry.last_accessed|date:"N j, Y \a\t g:i A" }}{% else %}Never{% endif %}</p>
+    </div>
+
+  </fieldset>
+
+  <!-- ── ACTIONS ─────────────────────────────── -->
+  <div class="button-group">
+    <a href="{% url 'vault:vault_list' %}" class="btn btn-secondary">Back to Vault</a>
+    {% if can_modify %}
+      <a href="{% url 'vault:vault_update' entry.slug %}" class="btn btn-primary">Edit Entry</a>
+      <a href="{% url 'vault:vault_delete' entry.slug %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+
+
+<script>
+(function () {
+  const revealBtn    = document.getElementById('vault-reveal-btn');
+  const copyBtn      = document.getElementById('vault-copy-btn');
+  const pwField      = document.getElementById('pw-detail');
+  const countdownMsg = document.getElementById('vault-countdown-msg');
+  const countdownEl  = document.getElementById('vault-countdown');
+
+  if (!revealBtn || !pwField) return;
+
+  let autoHide, ticker, secs = 15;
+
+  function mask() {
+    pwField.type       = 'password';
+    pwField.value      = '••••••••';
+    revealBtn.textContent = 'Reveal Password';
+    if (copyBtn)      copyBtn.style.display = 'none';
+    if (countdownMsg) countdownMsg.style.display = 'none';
+    clearTimeout(autoHide);
+    clearInterval(ticker);
+    secs = 15;
+  }
+
+  revealBtn.addEventListener('click', function () {
+    if (pwField.type === 'text') { mask(); return; }
+
+    const slug = revealBtn.dataset.slug;
+    const csrf = revealBtn.dataset.csrf;
+
+    revealBtn.disabled    = true;
+    revealBtn.textContent = 'Loading…';
+
+    fetch('/vault/' + slug + '/reveal/', {
+      method:  'POST',
+      headers: {
+        'X-CSRFToken':      csrf,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      revealBtn.disabled = false;
+      if (data.success) {
+        pwField.type          = 'text';
+        pwField.value         = data.password;
+        revealBtn.textContent = 'Hide Password';
+        if (copyBtn)      copyBtn.style.display = 'inline-flex';
+        if (countdownMsg) { countdownMsg.style.display = 'block'; countdownEl.textContent = secs; }
+
+        ticker   = setInterval(function () {
+          secs -= 1;
+          if (countdownEl) countdownEl.textContent = secs;
+          if (secs <= 0) clearInterval(ticker);
+        }, 1000);
+        autoHide = setTimeout(mask, 15000);
+      } else {
+        revealBtn.textContent = 'Error — try again';
+        alert(data.error || 'Could not reveal password.');
+      }
+    })
+    .catch(function (err) {
+      console.error(err);
+      revealBtn.disabled    = false;
+      revealBtn.textContent = 'Error — try again';
+    });
+  });
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      if (!pwField.value || pwField.type !== 'text') return;
+      navigator.clipboard.writeText(pwField.value).then(function () {
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function () { copyBtn.textContent = orig; }, 2000);
+      });
+    });
+  }
+})();
+</script>
+{% endblock %}

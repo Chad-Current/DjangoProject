@@ -13,6 +13,7 @@ urlpatterns = [
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('faqs/', include('faqs.urls', namespace='faqs_page')),
     path('recovery/', include('recovery.urls', namespace="recovery")),
+    path('vault/', include('infrapps.urls', namespace='vault')),
 ]
 
 # handler500 = base_views.error_500

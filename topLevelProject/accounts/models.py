@@ -55,7 +55,21 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text="When legacy access was granted"
     )
-    
+    # Add-on subscription (available to any paying user)
+    addon_active = models.BooleanField(
+        default=False,
+        help_text="User has an active add-on subscription"
+    )
+    addon_payment_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date the add-on was purchased"
+    )
+    addon_expires = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the add-on subscription expires (1 year from purchase, renewable)"
+    )
     # Fix for reverse accessor clashes
     groups = models.ManyToManyField(
         'auth.Group',
@@ -161,7 +175,45 @@ class CustomUser(AbstractUser):
         self.payment_date = timezone.now()
         self.legacy_granted_date = timezone.now()
         self.save()
-    
+
+    def can_access_addon(self):
+        """
+        Check if user has an active add-on.
+        Requires has_paid=True AND addon_active=True AND not expired.
+        """
+        if not self.has_paid or not self.addon_active:
+            return False
+        if self.addon_expires and timezone.now() > self.addon_expires:
+            return False
+        return True
+
+    def is_eligible_for_addon(self):
+        """
+        Only paying users (essentials or legacy) may purchase the add-on.
+        Non-paying users are never eligible.
+        """
+        return self.has_paid and self.subscription_tier in ('essentials', 'legacy')
+
+    def days_until_addon_expires(self):
+        """Days remaining on the add-on subscription."""
+        if not self.addon_expires:
+            return 0
+        delta = self.addon_expires - timezone.now()
+        return max(0, delta.days)
+
+    def activate_addon(self):
+        """Purchase / renew the add-on for 1 year."""
+        if not self.is_eligible_for_addon():
+            raise PermissionError("User is not eligible for the add-on subscription.")
+        self.addon_active = True
+        self.addon_payment_date = timezone.now()
+        self.addon_expires = timezone.now() + timedelta(days=365)
+        self.save()
+
+    def deactivate_addon(self):
+        """Administratively remove add-on access."""
+        self.addon_active = False
+        self.save()
     class Meta:
         db_table = 'users'
         permissions = [
