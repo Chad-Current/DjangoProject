@@ -336,7 +336,7 @@
 }
 .feature-card p {
     font-size: var(--font-nm);
-    color: var(--text-color-dark-muted);
+    color: var(--fifty-percent);
     line-height: 1.6;
     margin: 0;
 }
@@ -394,7 +394,7 @@
 .module-desc {
     font-family: var(--paragraph-font);
     font-size: var(--font-sm);
-    color: rgba(237,231,227,.5);
+    color: rgba(237,231,227,.7);
     font-style: italic;
     margin: 0 0 .85rem;
 }
@@ -499,7 +499,7 @@
 .problem-card p {
     font-family: var(--paragraph-font);
     font-size: var(--font-nm);
-    color: var(--text-color-dark-muted);
+    color: var(--fifty-percent);;
     line-height: 1.6;
     margin: 0;
 }
@@ -590,7 +590,7 @@
 }
 .idx-consequence-item p {
     font-size: var(--font-nm);
-    color: rgba(237,231,227,.5);
+    color: var(--fifty-percent);
     line-height: 1.6;
     margin: 0;
 }
@@ -660,7 +660,7 @@
 }
 .step-card p {
     font-size: var(--font-nm);
-    color: var(--text-color-dark-muted);
+    color: var(--fifty-percent);
     line-height: 1.7;
     max-width: 260px;
     margin: 0;
@@ -720,7 +720,7 @@
 }
 .tip p {
     font-size: var(--font-nm);
-    color: var(--text-color-dark-muted);
+    color: var(--fifty-percent);
     font-style: italic;
     line-height: 1.55;
     margin: 0;
