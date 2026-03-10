@@ -4,6 +4,7 @@ from . import views
 app_name = 'infrapps'
 
 urlpatterns = [
+    path("infrastructure/",           views.AWSArchitectureView.as_view(),      name="aws_architecture"),
     path('',                          views.VaultListView.as_view(),            name='vault_list'),
     path('add/',                      views.VaultCreateView.as_view(),          name='vault_create'),
     path('<slug:slug>/',              views.VaultDetailView.as_view(),          name='vault_detail'),

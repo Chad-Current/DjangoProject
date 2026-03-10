@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Architecture — Estate Planning App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & root ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #060a12;
+  --bg-panel:     #0b1120;
+  --bg-card:      #0f1929;
+  --bg-card-h:    #131e30;
+  --border:       rgba(255,255,255,0.07);
+  --border-bright:rgba(255,255,255,0.15);
+  --text:         #c8d8ea;
+  --text-dim:     #4a5e73;
+  --text-bright:  #e8f4ff;
+  --mono:         'IBM Plex Mono', monospace;
+  --sans:         'IBM Plex Sans', sans-serif;
+
+  --c-edge:    #f97316;
+  --c-waf:     #ef4444;
+  --c-alb:     #a855f7;
+  --c-app:     #3b82f6;
+  --c-data:    #10b981;
+  --c-storage: #f59e0b;
+  --c-obs:     #06b6d4;
+  --c-cicd:    #ec4899;
+  --c-internet:#64748b;
+}
+
+html { font-size: 14px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    linear-gradient(rgba(6,182,212,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Page wrapper ──────────────────────────────────────────────────────── */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 20px 56px;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.hd {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+.hd-rule { height: 1px; flex: 1; background: linear-gradient(to right, transparent, var(--c-edge)); }
+.hd-rule.right { background: linear-gradient(to left, transparent, var(--c-edge)); }
+.hd-title {
+  padding: 0 20px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-bright);
+  white-space: nowrap;
+}
+.hd-badge {
+  display: inline-block;
+  border: 1px solid rgba(239,68,68,0.4);
+  color: #ef4444;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+.hd-sub {
+  text-align: center;
+  font-size: 0.64rem;
+  color: var(--text-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+/* ── Cost ticker ──────────────────────────────────────────────────────── */
+.cost-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  animation: fadeSlideDown 0.3s ease both;
+}
+.cost-chip {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 3px;
+  padding: 4px 12px;
+  font-size: 0.59rem;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cost-chip .label { color: var(--text-dim); }
+.cost-chip .val { color: var(--text-bright); font-weight: 700; }
+.cost-chip .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ── Layer filter pills ────────────────────────────────────────────────── */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+  justify-content: center;
+}
+.filter-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-dim);
+  padding: 3px 11px;
+  border-radius: 2px;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  font-family: var(--mono);
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+}
+.filter-btn:hover, .filter-btn.active {
+  color: var(--text-bright);
+}
+
+/* ── Internet node ─────────────────────────────────────────────────────── */
+.internet-node { text-align: center; margin-bottom: 0; animation: fadeSlideDown 0.3s ease both; }
+.internet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(100,116,139,0.1);
+  border: 1px dashed rgba(100,116,139,0.35);
+  border-radius: 4px;
+  padding: 7px 22px;
+  font-size: 0.7rem;
+  color: var(--c-internet);
+  letter-spacing: 0.1em;
+}
+.internet-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-internet); animation: pulse 2s ease infinite; }
+
+/* ── Connector ─────────────────────────────────────────────────────────── */
+.connector {
+  display: flex; flex-direction: column; align-items: center;
+  height: 30px; position: relative; margin: 0;
+}
+.connector-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.conn-line { width: 1px; }
+.connector-label { font-size: 0.54rem; letter-spacing: 0.1em; color: var(--text-dim); margin: 1px 0; }
+.arrow { font-size: 0.7rem; color: var(--text-dim); line-height: 1; }
+
+/* ── Band ──────────────────────────────────────────────────────────────── */
+.band {
+  border-radius: 5px;
+  padding: 11px 13px;
+  border: 1px solid;
+  border-left-width: 3px;
+  transition: opacity 0.2s ease;
+  animation: fadeSlideDown 0.4s ease both;
+  margin-bottom: 0;
+}
+.band.dimmed { opacity: 0.14; pointer-events: none; }
+
+.band-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+.band-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.band-cost {
+  font-size: 0.57rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.band-services { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── Service card ──────────────────────────────────────────────────────── */
+.svc {
+  flex: 1 1 148px;
+  min-width: 134px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 9px 11px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+.svc::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.svc:hover::before { opacity: 1; }
+.svc:hover { background: var(--bg-card-h); transform: translateY(-1px); }
+.svc:focus-visible { outline: 2px solid rgba(255,255,255,0.3); outline-offset: 2px; }
+
+.svc-icon { font-size: 1rem; line-height: 1; margin-bottom: 5px; display: block; }
+.svc-name { font-size: 0.67rem; font-weight: 700; color: var(--text-bright); letter-spacing: 0.03em; margin-bottom: 3px; line-height: 1.3; }
+.svc-sub { font-size: 0.57rem; color: var(--text-dim); line-height: 1.45; }
+.svc-tag {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-dim);
+}
+
+/* ── VPC bar ───────────────────────────────────────────────────────────── */
+.vpc-bar {
+  margin-top: 14px;
+  border: 1px dashed rgba(59,130,246,0.28);
+  border-radius: 5px;
+  background: rgba(59,130,246,0.03);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  animation: fadeSlideDown 0.5s 0.35s ease both;
+}
+.vpc-cidr { font-size: 0.67rem; color: #3b82f6; font-weight: 700; letter-spacing: 0.1em; white-space: nowrap; }
+.vpc-note { font-size: 0.6rem; color: var(--text-dim); }
+.vpc-sg {
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.vpc-sg span {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 2px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.vpc-dr { margin-left: auto; font-size: 0.6rem; color: var(--text-dim); white-space: nowrap; }
+
+/* ── Security pillars ──────────────────────────────────────────────────── */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+  animation: fadeSlideDown 0.5s 0.45s ease both;
+}
+@media (max-width: 700px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+.pillar {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 9px;
+}
+.pillar-lbl { font-size: 0.61rem; color: var(--text-bright); font-weight: 600; margin-bottom: 2px; letter-spacing: 0.04em; }
+.pillar-val { font-size: 0.56rem; color: var(--text-dim); line-height: 1.5; }
+
+/* ── Scale path ────────────────────────────────────────────────────────── */
+.scale-bar {
+  margin-top: 8px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  animation: fadeSlideDown 0.5s 0.5s ease both;
+  overflow-x: auto;
+}
+.scale-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+.scale-year {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.scale-users { font-size: 0.58rem; color: var(--text-dim); }
+.scale-cost { font-size: 0.62rem; font-weight: 700; margin-top: 2px; }
+.scale-sep {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.08), rgba(255,255,255,0.08));
+  position: relative;
+  min-width: 30px;
+}
+.scale-sep::after {
+  content: '→';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  background: var(--bg);
+  padding: 0 3px;
+}
+
+/* ── Tooltip ───────────────────────────────────────────────────────────── */
+#tooltip {
+  position: fixed;
+  background: #090f1c;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 5px;
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  max-width: 260px;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.8);
+  display: none;
+}
+#tooltip.visible { display: block; animation: tooltipIn 0.1s ease; }
+#tooltip-title { font-weight: 700; color: var(--text-bright); margin-bottom: 7px; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+#tooltip-tier { font-size: 0.57rem; color: var(--text-dim); margin-bottom: 7px; }
+.tt-row { display: flex; gap: 6px; margin-bottom: 4px; line-height: 1.45; }
+.tt-arrow { color: #06b6d4; flex-shrink: 0; }
+.tt-text { color: #8faec8; }
+.tt-cost { color: #10b981; font-weight: 600; margin-top: 7px; padding-top: 6px; border-top: 1px solid var(--border); font-size: 0.6rem; }
+
+/* ── Hint bar ──────────────────────────────────────────────────────────── */
+.hint {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.57rem;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  animation: fadeSlideDown 0.5s 0.55s ease both;
+}
+
+/* ── Animations ────────────────────────────────────────────────────────── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes tooltipIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.band:nth-child(odd)  { animation-delay: 0.05s; }
+.band:nth-child(even) { animation-delay: 0.12s; }
+
+@media (max-width: 600px) {
+  .hd-title { font-size: 0.85rem; letter-spacing: 0.12em; }
+  .svc { flex: 1 1 100%; }
+  .cost-bar { gap: 5px; }
+}
+</style>
+</head>
+<body>
+
+<div id="tooltip" role="tooltip" aria-live="polite">
+  <div id="tooltip-title"></div>
+  <div id="tooltip-tier"></div>
+  <div id="tooltip-body"></div>
+</div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="hd">
+    <div class="hd-rule"></div>
+    <div class="hd-title">AWS ARCHITECTURE<span class="hd-badge">PRODUCTION</span></div>
+    <div class="hd-rule right"></div>
+  </div>
+  <p class="hd-sub">Digital Estate Planning &mdash; Django + PostgreSQL + Redis &mdash; us-east-1 Primary</p>
+
+  <!-- Cost tickers -->
+  <div class="cost-bar" id="cost-bar"></div>
+
+  <!-- Filters -->
+  <div class="filters" id="filters" role="group" aria-label="Filter by layer"></div>
+
+  <!-- Internet -->
+  <div class="internet-node">
+    <div class="internet-chip">
+      <span class="dot"></span>
+      CLIENT BROWSERS &mdash; HTTPS / TLS 1.2+ ENFORCED &mdash; PORT 443 ONLY
+    </div>
+  </div>
+
+  <!-- Bands -->
+  <div id="bands"></div>
+
+  <!-- VPC bar -->
+  <div class="vpc-bar" id="vpc-bar"></div>
+
+  <!-- Pillars -->
+  <div class="pillars" id="pillars"></div>
+
+  <!-- Scale path -->
+  <div class="scale-bar" id="scale-bar"></div>
+
+  <p class="hint">HOVER ANY SERVICE FOR CONFIGURATION DETAILS &nbsp;·&nbsp; CLICK A LAYER TO ISOLATE THAT TIER</p>
+
+</div>
+
+<script>
+// ============================================================
+// DATA — matches Django view context (or hardcoded standalone)
+// ============================================================
+
+const COST_CHIPS = [
+  { label: "Year 1 / month", val: "~$115", color: "#10b981" },
+  { label: "Year 3 / month", val: "~$280", color: "#3b82f6" },
+  { label: "Env",            val: "us-east-1", color: "#a855f7" },
+  { label: "Users Y1",       val: "50",    color: "#f59e0b" },
+  { label: "Users Y3",       val: "500",   color: "#f97316" },
+  { label: "Uptime SLA",     val: "99.9%", color: "#06b6d4" },
+];
+
+const LAYERS = [
+  { key: "edge",    label: "Edge",        color: "#f97316" },
+  { key: "waf",     label: "Security",    color: "#ef4444" },
+  { key: "alb",     label: "Load Balancer",color: "#a855f7" },
+  { key: "app",     label: "Application", color: "#3b82f6" },
+  { key: "data",    label: "Data",        color: "#10b981" },
+  { key: "storage", label: "Storage",     color: "#f59e0b" },
+  { key: "obs",     label: "Observability",color: "#06b6d4" },
+  { key: "cicd",    label: "CI/CD",       color: "#ec4899" },
+];
+
+const BANDS = [
+  {
+    key: "edge", label: "// LAYER 1 — EDGE & DNS", cost: "~$3/mo",
+    services: [
+      {
+        id: "route53", icon: "🌐", name: "Route 53",
+        sub: "DNS + Health Checks", tier: "Standard — $0.50/hosted zone",
+        tag: "DNS",
+        details: [
+          "Hosted zone: yourdomain.com",
+          "A record → ALB DNS name (alias)",
+          "www CNAME → yourdomain.com",
+          "SPF/DKIM/DMARC TXT records for SES",
+          "Health check: $0.50/check/month",
+          "Failover routing to DR region",
+        ]
+      },
+      {
+        id: "cloudfront", icon: "⚡", name: "CloudFront",
+        sub: "CDN — Static assets", tier: "Standard — $0.0085/10k req",
+        tag: "CDN",
+        details: [
+          "Origin: yourapp-static S3 bucket",
+          "Origin Access Control — direct S3 blocked",
+          "Price class: North America + Europe",
+          "Compress objects: enabled",
+          "Cache policy: CachingOptimized",
+          "HTTPS only — HTTP redirects to HTTPS",
+          "Serves CSS, JS, images — ~$2/mo",
+        ]
+      },
+    ]
+  },
+  {
+    key: "waf", label: "// LAYER 2 — WEB APPLICATION FIREWALL", cost: "~$8/mo",
+    services: [
+      {
+        id: "waf", icon: "🛡️", name: "AWS WAF",
+        sub: "OWASP Top 10 + Rate Limit", tier: "Standard — $5/ACL + $1/rule/mo",
+        tag: "SECURITY",
+        details: [
+          "Attached to ALB (not CloudFront)",
+          "Rule: AWSManagedRulesCommonRuleSet (XSS, SQLi)",
+          "Rule: AWSManagedRulesKnownBadInputsRuleSet",
+          "Rule: AWSManagedRulesAmazonIpReputationList",
+          "Rate limit: 2,000 req/5 min per IP → Block",
+          "Admin path /admin/ → restrict to VPN IP",
+          "Logs sent to CloudWatch for analysis",
+        ]
+      },
+      {
+        id: "shield", icon: "🔰", name: "Shield Standard",
+        sub: "DDoS Protection", tier: "Free — auto-enabled",
+        tag: "FREE",
+        details: [
+          "Automatically protects ALB and CloudFront",
+          "Layer 3/4 DDoS mitigation included free",
+          "Upgrade to Shield Advanced ($3k/mo) only if targeted attacks occur",
+          "Covers volumetric and state-exhaustion attacks",
+        ]
+      },
+    ]
+  },
+  {
+    key: "alb", label: "// LAYER 3 — LOAD BALANCER & TLS TERMINATION", cost: "~$18/mo",
+    services: [
+      {
+        id: "acm", icon: "🔒", name: "ACM Certificate",
+        sub: "SSL/TLS — auto-renews", tier: "Free for ALB-attached certs",
+        tag: "FREE",
+        details: [
+          "Domain: yourdomain.com + www.yourdomain.com",
+          "DNS validation via Route 53 CNAME",
+          "Auto-renews 60 days before expiry",
+          "TLS 1.2+ only — policy: TLS13-1-2-2021-06",
+          "No manual renewal needed ever",
+        ]
+      },
+      {
+        id: "alb", icon: "⚖️", name: "App Load Balancer",
+        sub: "HTTP→HTTPS redirect + routing", tier: "~$16/mo base + LCU",
+        tag: "ALB",
+        details: [
+          "Port 80 listener: 301 redirect to HTTPS",
+          "Port 443 listener: forward to EC2 target group",
+          "Target group: yourapp-ec2-targets (port 8000)",
+          "Health check: GET /accounts/login/ → 200",
+          "Healthy threshold: 2, Unhealthy: 3",
+          "Spans public-1a + public-1b (2 AZs)",
+          "Cross-zone load balancing enabled",
+          "Sticky sessions: disabled (Redis handles state)",
+        ]
+      },
+    ]
+  },
+  {
+    key: "app", label: "// LAYER 4 — APPLICATION TIER (PRIVATE SUBNET VIA NAT)", cost: "~$50/mo",
+    services: [
+      {
+        id: "ec2", icon: "🖥️", name: "EC2 Auto Scaling",
+        sub: "Django + Gunicorn", tier: "t3.small ($15/mo) × 1–4 instances",
+        tag: "COMPUTE",
+        details: [
+          "AMI: Amazon Linux 2023",
+          "Instance: t3.small (2vCPU, 2GB) Year 1",
+          "Scale up: t3.medium (Year 3)",
+          "Min: 1, Desired: 2, Max: 4 instances",
+          "CPU > 70% triggers scale-out",
+          "ASG spans public-1a + public-1b",
+          "IAM role: yourapp-ec2-role (no stored creds)",
+          "EBS: 20GB gp3 — KMS encrypted",
+        ]
+      },
+      {
+        id: "gunicorn", icon: "🐍", name: "Django / Gunicorn",
+        sub: "Python WSGI — 3 workers", tier: "App code on EC2",
+        tag: "APP",
+        details: [
+          "Django 4.x — DEBUG=False in production",
+          "Gunicorn: 3 workers, port 8000, timeout 120s",
+          "Custom user model with Essentials/Legacy tiers",
+          "Subscription gate: PaidUserRequiredMixin",
+          "Slug-based URLs for all resources",
+          "ALLOWED_HOSTS locked to yourdomain.com",
+          "Secrets loaded from Secrets Manager on startup",
+        ]
+      },
+      {
+        id: "nat", icon: "🔁", name: "NAT Gateway",
+        sub: "Outbound internet for private subnets", tier: "$0.045/hr → ~$33/mo",
+        tag: "NETWORK",
+        details: [
+          "Placed in public-1a subnet",
+          "Routes outbound traffic for RDS patching, SES, etc.",
+          "LARGEST single cost item Year 1 (~$33/mo)",
+          "Year 1 alternative: NAT Instance (t3.nano) saves ~$30/mo",
+          "S3/SES VPC endpoints bypass NAT entirely",
+          "Upgrade to 2 NAT GWs (one per AZ) for HA in Year 2",
+        ]
+      },
+    ]
+  },
+  {
+    key: "data", label: "// LAYER 5 — DATA TIER (PRIVATE SUBNET — NO INTERNET ACCESS)", cost: "~$28/mo",
+    services: [
+      {
+        id: "rds", icon: "🗄️", name: "RDS PostgreSQL",
+        sub: "db.t3.micro — KMS encrypted", tier: "~$15/mo + $2.30 storage",
+        tag: "DATABASE",
+        details: [
+          "Engine: PostgreSQL 16.x",
+          "Instance: db.t3.micro → db.t3.small (Year 3)",
+          "Storage: 20GB gp3, autoscale to 100GB",
+          "Public Access: NO — private subnet only",
+          "Multi-AZ: disabled Year 1, enable Year 2+",
+          "Backups: 7-day retention, 02:00 UTC window",
+          "KMS encryption: your CMK alias/yourapp-production",
+          "SSL required: sslmode=require in Django",
+          "Deletion protection: enabled",
+        ]
+      },
+      {
+        id: "redis", icon: "🔴", name: "ElastiCache Redis",
+        sub: "Sessions + caching", tier: "cache.t3.micro — ~$13/mo",
+        tag: "CACHE",
+        details: [
+          "Replaces Django DB-backed sessions",
+          "SESSION_ENGINE = django.contrib.sessions.backends.cache",
+          "SESSION_COOKIE_AGE = 3600 (1 hour)",
+          "In-transit encryption: TLS enabled",
+          "At-rest encryption: enabled",
+          "Auth token required for connection",
+          "Private subnet only — sg-cache",
+          "1-day backup retention",
+        ]
+      },
+    ]
+  },
+  {
+    key: "storage", label: "// LAYER 6 — STORAGE, SECRETS & ENCRYPTION", cost: "~$12/mo",
+    services: [
+      {
+        id: "s3-media", icon: "📁", name: "S3 Media Bucket",
+        sub: "Estate docs — private + versioned", tier: "$0.023/GB/mo",
+        tag: "PRIVATE",
+        details: [
+          "yourapp-media-production",
+          "All public access: BLOCKED",
+          "KMS encryption: SSE-KMS with CMK",
+          "Versioning: enabled (accidental delete recovery)",
+          "Cross-region replication → us-west-2",
+          "Serves: estate_file, important_file uploads",
+          "Access: pre-signed URLs (1 hour expiry)",
+          "Object Lock: consider for compliance",
+        ]
+      },
+      {
+        id: "s3-static", icon: "📦", name: "S3 Static Bucket",
+        sub: "CSS, JS, images — public CDN", tier: "$0.023/GB/mo",
+        tag: "PUBLIC",
+        details: [
+          "yourapp-static-production",
+          "Served via CloudFront (not direct S3)",
+          "SSE-S3 encryption (public files)",
+          "Django collectstatic → S3 on deploy",
+          "Cache-Control: max-age=86400",
+          "django-storages + boto3",
+        ]
+      },
+      {
+        id: "secrets", icon: "🔑", name: "Secrets Manager",
+        sub: "All credentials — no hardcoding", tier: "$0.40/secret + API calls",
+        tag: "SECRETS",
+        details: [
+          "Secret: yourapp/production/config",
+          "Stores: DJANGO_SECRET_KEY, DB_PASSWORD",
+          "Stores: DB_HOST, REDIS_URL, KMS_KEY_ID",
+          "Stores: SES credentials, S3 bucket names",
+          "Loaded at Django startup — set as env vars",
+          "Rotation: manual (set up auto-rotate for DB)",
+          "EC2 role has read access — no keys on disk",
+        ]
+      },
+      {
+        id: "kms", icon: "🛡", name: "KMS",
+        sub: "CMK — encrypts RDS + S3", tier: "$1/key/mo + $0.03/10k calls",
+        tag: "ENCRYPT",
+        details: [
+          "Alias: alias/yourapp-production",
+          "Type: Symmetric AES-256",
+          "Encrypts: RDS database at rest",
+          "Encrypts: S3 media bucket (SSE-KMS)",
+          "Encrypts: EBS volumes on EC2",
+          "Encrypts: Secrets Manager secrets",
+          "Key admin: your IAM admin user",
+          "Key user: yourapp-ec2-role",
+        ]
+      },
+    ]
+  },
+  {
+    key: "obs", label: "// LAYER 7 — OBSERVABILITY, LOGGING & EMAIL", cost: "~$8/mo",
+    services: [
+      {
+        id: "cloudwatch", icon: "📊", name: "CloudWatch",
+        sub: "Logs + Alarms + Metrics", tier: "$0.50/GB ingested",
+        tag: "MONITORING",
+        details: [
+          "Log groups: /yourapp/production/django",
+          "Log groups: gunicorn, nginx, rds/postgresql",
+          "Alarms: ALB 5xx > 10/min, CPU > 80%",
+          "Alarm: RDS FreeStorage < 2GB",
+          "Alarm: Failed logins > 50/hour (metric filter)",
+          "SNS topic → your email for all alerts",
+          "Watchtower library for Django → CloudWatch",
+          "python-json-logger for structured logs",
+        ]
+      },
+      {
+        id: "cloudtrail", icon: "📋", name: "CloudTrail",
+        sub: "Full API audit log — all regions", tier: "~$2/mo after free tier",
+        tag: "AUDIT",
+        details: [
+          "Trail: production-audit-trail",
+          "All regions: enabled",
+          "S3 bucket: yourapp-cloudtrail-logs",
+          "CloudWatch Logs integration: enabled",
+          "Logs every AWS API call made in account",
+          "Required for security incident investigation",
+          "Retention: 90 days CloudWatch, indefinite S3",
+        ]
+      },
+      {
+        id: "ses", icon: "📧", name: "Amazon SES",
+        sub: "Transactional email", tier: "Free for <62k emails/mo from EC2",
+        tag: "EMAIL",
+        details: [
+          "Domain verified: yourdomain.com",
+          "DKIM, SPF, DMARC records in Route 53",
+          "Replaces console EMAIL_BACKEND in production",
+          "Sends: tier upgrade confirmations",
+          "Sends: Essentials expiry warnings (30/7/1 days)",
+          "Sends: password reset emails",
+          "Sends: checklist PDF to prospects",
+          "Request production access — sandbox blocks new emails",
+        ]
+      },
+    ]
+  },
+  {
+    key: "cicd", label: "// LAYER 8 — CI/CD & DEPLOYMENT PIPELINE", cost: "~$2/mo",
+    services: [
+      {
+        id: "codepipeline", icon: "🔄", name: "CodePipeline",
+        sub: "GitHub → deploy on push", tier: "$1/active pipeline/mo",
+        tag: "PIPELINE",
+        details: [
+          "Source: GitHub main branch",
+          "Trigger: push to main auto-deploys",
+          "Build: CodeBuild (optional — runs tests)",
+          "Deploy: CodeDeploy to ASG (rolling)",
+          "Zero-downtime: OneAtATime deployment config",
+          "Hooks: stop → install deps → migrate → collectstatic → start",
+          "appspec.yml in repo root",
+        ]
+      },
+      {
+        id: "codedeploy", icon: "🚀", name: "CodeDeploy",
+        sub: "Rolling deploy to ASG", tier: "Free for EC2",
+        tag: "DEPLOY",
+        details: [
+          "Application: yourapp-production",
+          "Deployment group: yourapp-production-group",
+          "Deployment type: In-place rolling",
+          "Hooks run: migrations, collectstatic",
+          "Rollback: automatic on health check failure",
+          "Agent installed on EC2 via User Data",
+        ]
+      },
+      {
+        id: "backup", icon: "💾", name: "AWS Backup",
+        sub: "RDS + EBS — automated", tier: "$0.05/GB/mo",
+        tag: "BACKUP",
+        details: [
+          "Daily backups: 7-day retention",
+          "Weekly backups: 1-month retention",
+          "Monthly backups: 1-year retention",
+          "Cross-region copy → us-west-2 (DR)",
+          "Vault encrypted with KMS CMK",
+          "RDS PITR: restore to any second in 7 days",
+          "S3 versioning covers file-level recovery",
+        ]
+      },
+    ]
+  },
+];
+
+const VPC = {
+  cidr: "10.0.0.0/16",
+  region_primary: "us-east-1",
+  azs: "us-east-1a + us-east-1b",
+  note: "Public subnets: EC2 + ALB  ·  Private subnets: RDS + Redis",
+  region_dr: "us-west-2",
+  sgs: ["sg-alb: port 443 inbound", "sg-app: port 8000 from ALB only", "sg-db: port 5432 from app only", "sg-cache: port 6379 from app only"],
+};
+
+const PILLARS = [
+  { icon: "🔒", label: "Encryption",    value: "KMS CMK — RDS, S3, EBS, Redis, Secrets at rest + TLS in transit" },
+  { icon: "🛡️", label: "Network",       value: "VPC isolation — DB never reachable from internet, sg least-privilege" },
+  { icon: "🔑", label: "Auth",          value: "IAM roles on EC2 — zero stored credentials, Secrets Manager for all secrets" },
+  { icon: "📊", label: "Observability", value: "CloudWatch logs + alarms, CloudTrail full audit, failed-login metric filter" },
+  { icon: "♻️", label: "Recovery",      value: "RDS PITR 7 days, S3 versioning, cross-region backup to us-west-2" },
+];
+
+const SCALE_PATH = [
+  { year: "LAUNCH",  users: "50 users",  cost: "~$115/mo", color: "#10b981" },
+  { year: "YEAR 1",  users: "100 users", cost: "~$140/mo", color: "#3b82f6" },
+  { year: "YEAR 2",  users: "250 users", cost: "~$200/mo", color: "#a855f7" },
+  { year: "YEAR 3",  users: "500 users", cost: "~$280/mo", color: "#f97316" },
+];
+
+// ============================================================
+// BUILD UI
+// ============================================================
+
+const colorOf = {};
+LAYERS.forEach(l => colorOf[l.key] = l.color);
+
+// Cost chips
+const costBarEl = document.getElementById('cost-bar');
+COST_CHIPS.forEach(c => {
+  const el = document.createElement('div');
+  el.className = 'cost-chip';
+  el.innerHTML = `<span class="dot" style="color:${c.color}"></span><span class="label">${escHtml(c.label)}</span><span class="val" style="color:${c.color}">${escHtml(c.val)}</span>`;
+  costBarEl.appendChild(el);
+});
+
+// Filter pills
+const filtersEl = document.getElementById('filters');
+const allBtn = document.createElement('button');
+allBtn.className = 'filter-btn active';
+allBtn.dataset.layer = 'all';
+allBtn.textContent = 'ALL LAYERS';
+allBtn.setAttribute('aria-pressed', 'true');
+filtersEl.appendChild(allBtn);
+
+LAYERS.forEach(l => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.layer = l.key;
+  btn.textContent = l.label.toUpperCase();
+  btn.setAttribute('aria-pressed', 'false');
+  filtersEl.appendChild(btn);
+});
+
+// Connector
+function makeConnector(label) {
+  const c = document.createElement('div');
+  c.className = 'connector';
+  c.innerHTML = `
+    <div class="conn-line" style="background:rgba(255,255,255,0.07);width:1px;height:12px;"></div>
+    ${label ? `<span class="connector-label">${escHtml(label)}</span>` : ''}
+    <span class="arrow">▾</span>
+    <div class="conn-line" style="background:rgba(255,255,255,0.03);width:1px;height:8px;"></div>
+  `;
+  return c;
+}
+
+// Bands
+const bandsEl = document.getElementById('bands');
+const connLabels = ['HTTPS ▸ 443', '', 'TLS TERMINATE', '', 'PRIVATE NETWORK', '', '', ''];
+
+BANDS.forEach((band, bi) => {
+  const color = colorOf[band.key] || '#888';
+  bandsEl.appendChild(makeConnector(bi === 0 ? 'HTTPS ▸ PORT 443' : (bi === 2 ? 'TLS TERMINATES HERE' : '')));
+
+  const bandEl = document.createElement('div');
+  bandEl.className = 'band';
+  bandEl.dataset.layer = band.key;
+  bandEl.style.cssText = `background:${color}0a;border-color:${color}28;border-left-color:${color};`;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'band-header';
+  hdr.innerHTML = `<div class="band-label" style="color:${color}">${escHtml(band.label)}</div><div class="band-cost">${escHtml(band.cost)}</div>`;
+  bandEl.appendChild(hdr);
+
+  const row = document.createElement('div');
+  row.className = 'band-services';
+
+  band.services.forEach(svc => {
+    const card = document.createElement('button');
+    card.className = 'svc';
+    card.id = `svc-${svc.id}`;
+    card.setAttribute('aria-label', `${svc.name}: ${svc.sub}`);
+    card.innerHTML = `
+      <style>#svc-${svc.id}::before{background:${color};}</style>
+      <span class="svc-icon" style="color:${color}">${svc.icon}</span>
+      <div class="svc-name">${escHtml(svc.name)}</div>
+      <div class="svc-sub">${escHtml(svc.sub)}</div>
+      <span class="svc-tag" style="color:${color};border-color:${color}30;background:${color}10">${escHtml(svc.tag)}</span>
+    `;
+    card.addEventListener('mouseenter', e => showTip(e, svc, color));
+    card.addEventListener('mousemove',  positionTip);
+    card.addEventListener('mouseleave', hideTip);
+    card.addEventListener('focus',      e => showTip(e, svc, color));
+    card.addEventListener('blur',       hideTip);
+    row.appendChild(card);
+  });
+
+  bandEl.appendChild(row);
+  bandsEl.appendChild(bandEl);
+});
+
+// VPC bar
+const vpcBar = document.getElementById('vpc-bar');
+vpcBar.innerHTML = `
+  <span class="vpc-cidr">VPC ${escHtml(VPC.cidr)}</span>
+  <span class="vpc-note">${escHtml(VPC.region_primary)} &nbsp;·&nbsp; ${escHtml(VPC.azs)}</span>
+  <div class="vpc-sg">${VPC.sgs.map(s => `<span>${escHtml(s)}</span>`).join('')}</div>
+  <span class="vpc-dr">DR → ${escHtml(VPC.region_dr)}</span>
+`;
+
+// Pillars
+const pillarsEl = document.getElementById('pillars');
+PILLARS.forEach(p => {
+  const el = document.createElement('div');
+  el.className = 'pillar';
+  el.innerHTML = `<div class="pillar-lbl">${escHtml(p.icon)} ${escHtml(p.label)}</div><div class="pillar-val">${escHtml(p.value)}</div>`;
+  pillarsEl.appendChild(el);
+});
+
+// Scale bar
+const scaleBarEl = document.getElementById('scale-bar');
+SCALE_PATH.forEach((s, i) => {
+  const item = document.createElement('div');
+  item.className = 'scale-item';
+  item.innerHTML = `<div class="scale-year" style="color:${s.color}">${escHtml(s.year)}</div><div class="scale-users">${escHtml(s.users)}</div><div class="scale-cost" style="color:${s.color}">${escHtml(s.cost)}</div>`;
+  scaleBarEl.appendChild(item);
+  if (i < SCALE_PATH.length - 1) {
+    const sep = document.createElement('div');
+    sep.className = 'scale-sep';
+    scaleBarEl.appendChild(sep);
+  }
+});
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+const ttTitle = document.getElementById('tooltip-title');
+const ttTier  = document.getElementById('tooltip-tier');
+const ttBody  = document.getElementById('tooltip-body');
+
+function showTip(e, svc, color) {
+  ttTitle.textContent = svc.name;
+  ttTitle.style.color = color;
+  ttTier.textContent  = svc.tier || '';
+  ttBody.innerHTML = (svc.details || []).map(d =>
+    `<div class="tt-row"><span class="tt-arrow">›</span><span class="tt-text">${escHtml(d)}</span></div>`
+  ).join('');
+  tooltip.classList.add('visible');
+  positionTip(e);
+}
+function positionTip(e) {
+  const pad = 14, tw = 268, th = 160;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  if (x + tw > window.innerWidth)  x = e.clientX - tw - pad;
+  if (y + th > window.innerHeight) y = e.clientY - th - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top  = y + 'px';
+}
+function hideTip() { tooltip.classList.remove('visible'); }
+
+// Filter
+let activeLayer = 'all';
+document.getElementById('filters').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  activeLayer = btn.dataset.layer;
+
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    const on = b.dataset.layer === activeLayer;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    const c = colorOf[b.dataset.layer];
+    if (on && c) {
+      b.style.borderColor = c; b.style.color = c; b.style.background = c + '18';
+    } else {
+      b.style.borderColor = ''; b.style.color = ''; b.style.background = '';
+    }
+  });
+
+  document.querySelectorAll('.band').forEach(band => {
+    band.classList.toggle('dimmed', activeLayer !== 'all' && band.dataset.layer !== activeLayer);
+  });
+});
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
