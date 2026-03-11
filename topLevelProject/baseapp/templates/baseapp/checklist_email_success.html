@@ -1,106 +1,100 @@
-{% extends "baseapp/base.html" %}
-{% block title %}Checklist Sent — Digital Estate Plan{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="form-container">
-  <div class="form-wrapper" style="max-width:560px;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/checklist.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <title>Checklist Sent — Digital Estate Plan</title>
+</head>
 
-    <!-- Header -->
-    <div class="form-wrapper-header" style="text-align:center;">
-      <div style="font-size:2.75rem;line-height:1;margin-bottom:0.75rem;" role="img" aria-label="Check mark">✅</div>
-      <h2 style="margin:0 0 0.35rem;color:var(--text-color);">Check Your Inbox</h2>
-      <p style="color:rgba(231,239,247,0.75);margin:0;font-size:var(--font-sm);">
-        Your
-        <strong style="color:var(--purewhite-color);font-size:var(--font-sm);font-weight:600;">
-          Digital Estate Readiness Checklist
-        </strong>
-        is on its way. If you don't see it in a couple of minutes, check your spam or junk folder.
-      </p>
-    </div>
-
-    <!-- What to do next -->
-    <div class="form-wrapper-body">
-
-      <p style="font-family:var(--title-font);font-size:var(--font-lg);font-weight:700;
-                color:var(--ten-percent);margin:0 0 1rem;border-bottom:2px solid var(--background-color);
-                padding-bottom:0.6rem;">
-        What to do next
-      </p>
-
-      <ul style="padding:0;margin:0 0 1.5rem;display:flex;flex-direction:column;gap:0.6rem;">
-
-        <li style="display:flex;flex-direction:row;align-items:flex-start;gap:0.85rem;
-                   padding:0.75rem 1rem;background:var(--background-color);
-                   border-radius:10px;white-space:normal;">
-          <span style="font-size:1.25rem;flex-shrink:0;line-height:1.4;" aria-hidden="true">📄</span>
-          <span style="font-family:var(--main-font);font-size:var(--font-nm);
-                       font-weight:600;color:var(--text-color-dark);line-height:1.4;">
-            Print the checklist or save it somewhere safe.
-          </span>
-        </li>
-
-        <li style="display:flex;flex-direction:row;align-items:flex-start;gap:0.85rem;
-                   padding:0.75rem 1rem;background:var(--background-color);
-                   border-radius:10px;white-space:normal;">
-          <span style="font-size:1.25rem;flex-shrink:0;line-height:1.4;" aria-hidden="true">✔️</span>
-          <span style="font-family:var(--main-font);font-size:var(--font-nm);
-                       font-weight:600;color:var(--text-color-dark);line-height:1.4;">
-            Work through each section at your own pace.
-          </span>
-        </li>
-
-        <li style="display:flex;flex-direction:row;align-items:flex-start;gap:0.85rem;
-                   padding:0.75rem 1rem;background:var(--background-color);
-                   border-radius:10px;white-space:normal;">
-          <span style="font-size:1.25rem;flex-shrink:0;line-height:1.4;" aria-hidden="true">🔒</span>
-          <span style="font-family:var(--main-font);font-size:var(--font-nm);
-                       font-weight:600;color:var(--text-color-dark);line-height:1.4;">
-            Store it alongside your important documents.
-          </span>
-        </li>
-
-        <li style="display:flex;flex-direction:row;align-items:flex-start;gap:0.85rem;
-                   padding:0.75rem 1rem;background:var(--background-color);
-                   border-radius:10px;white-space:normal;">
-          <span style="font-size:1.25rem;flex-shrink:0;line-height:1.4;" aria-hidden="true">🤝</span>
-          <span style="font-family:var(--main-font);font-size:var(--font-nm);
-                       font-weight:600;color:var(--text-color-dark);line-height:1.4;">
-            Tell a trusted person that the plan exists and where it is.
-          </span>
-        </li>
-
-      </ul>
-
-      <!-- CTA -->
-      <p style="font-family:var(--paragraph-font);font-size:var(--font-sm);font-weight:300;
-                color:var(--thirty-percent);text-align:center;margin-bottom:1rem;">
-        Ready to turn your checklist into a full secure digital plan?
-      </p>
-
-      <div class="button-group" style="border-top:none;padding-top:0;margin-top:0;">
-        <a href="{% url 'accounts:register' %}" class="btn btn-primary">
-          Create a Free Account &rarr;
-        </a>
+<body>
+    {% include "baseapp/navbar.html" %}
+    <div class="ob-alert">
+    {% if messages %}
+    {% for message in messages %}
+      <div class="ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
+        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
+        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
+        {% else %}<i class="fas fa-info-circle"></i>
+        {% endif %}
+        {{ message }}
       </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="form-container">
+        <div class="checklist-wrapper">
 
+            <!-- Icon + title -->
+            <div class="cl-header">
+                <div class="cl-icon-tile">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="form-section-title">Check Your Inbox</h1>
+                <span class="cl-pill cl-pill-green">Email sent ✓</span>
+            </div>
+
+            <div class="cl-divider"></div>
+
+            <!-- What to do next -->
+            <p class="form-section-title">What to do next</p>
+
+            <ul class="cl-steps">
+                <li class="cl-step">
+                    <i class="fas fa-print cl-step-icon"></i>
+                    <span class="cl-step-text">Print the checklist or save it somewhere safe.</span>
+                </li>
+                <li class="cl-step">
+                    <i class="fas fa-tasks cl-step-icon"></i>
+                    <span class="cl-step-text">Work through each section at your own pace.</span>
+                </li>
+                <li class="cl-step">
+                    <i class="fas fa-lock cl-step-icon"></i>
+                    <span class="cl-step-text">Store it alongside your important documents.</span>
+                </li>
+                <li class="cl-step">
+                    <i class="fas fa-user-friends cl-step-icon"></i>
+                    <span class="cl-step-text">Tell a trusted person that the plan exists and where it is.</span>
+                </li>
+            </ul>
+
+            <p class="field-help-text cl-cta-nudge">
+                Ready to turn your checklist into a full secure digital plan?
+            </p>
+
+            <div class="button-group cl-cta-group">
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Create a Free Account &rarr;
+                </a>
+            </div>
+
+            <div class="text-center">
+                <p class="field-help-text">
+                    <a href="{% url 'baseapp:checklist_email' %}">Send to a different address</a>
+                    &nbsp;&middot;&nbsp;
+                    <a href="{% url 'baseapp:checklist_download' %}">Download PDF directly</a>
+                </p>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Secondary links -->
-    <div style="padding:0 1.25rem 1.75rem;text-align:center;
-                border-top:1px solid var(--background-color);">
-      <p style="margin:1rem 0 0;font-size:var(--font-sm);">
-        <a href="{% url 'baseapp:checklist_email' %}"
-           style="font-size:var(--font-sm);color:var(--thirty-percent);font-weight:600;">
-          Send to a different address
-        </a>
-        <span style="color:var(--sixty-percent);margin:0 0.5rem;">&middot;</span>
-        <a href="{% url 'baseapp:checklist_download' %}"
-           style="font-size:var(--font-sm);color:var(--thirty-percent);font-weight:600;">
-          Download PDF directly
-        </a>
-      </p>
-    </div>
+    {% include "baseapp/footer.html" %}
 
-  </div>
-</div>
-{% endblock %}
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
+
+</html>

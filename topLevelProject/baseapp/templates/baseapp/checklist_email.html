@@ -1,103 +1,105 @@
-{% extends "baseapp/base.html" %}
-{% block title %}Get the Free Checklist — Digital Estate Plan{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="form-container">
-  <div class="loginform-wrapper">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/checklist.css' %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <title>Get the Free Checklist — Digital Estate Plan</title>
+</head>
 
-    <!-- Icon + title -->
-    <div style="text-align:center; padding: 2rem 1.25rem 0;">
-      <div style="
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        width:56px; height:56px;
-        background:linear-gradient(135deg, var(--sixty-percent), var(--thirty-percent));
-        border-radius:16px;
-        margin-bottom:1.25rem;
-        box-shadow: 0 4px 14px rgba(45,106,156,0.25);
-      ">
-        <i class="fas fa-file-alt" style="color:var(--text-color); font-size:1.5rem;"></i>
+<body>
+    {% include "baseapp/navbar.html" %}
+    <div class="ob-alert">
+    {% if messages %}
+    {% for message in messages %}
+      <div class="ob-alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+        {% if 'success' in message.tags %}<i class="fas fa-check-circle"></i>
+        {% elif 'warning' in message.tags %}<i class="fas fa-exclamation-triangle"></i>
+        {% elif 'error'   in message.tags %}<i class="fas fa-times-circle"></i>
+        {% else %}<i class="fas fa-info-circle"></i>
+        {% endif %}
+        {{ message }}
       </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="form-container">
+        <div class="checklist-wrapper">
 
-      <h2 style="
-        font-family:var(--title-font);
-        font-size:var(--font-xl);
-        color:var(--ten-percent);
-        margin:0 0 0.6rem;
-      ">Free Estate Checklist</h2>
+            <!-- Icon + title -->
+            <div class="cl-header">
+                <div class="cl-icon-tile">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h1 class="form-section-title">Free Estate Checklist</h1>
+                <p class="cl-subtitle">9 sections to help you and your family stay organised.</p>
+                <span class="cl-pill cl-pill-amber">No account needed</span>
+            </div>
 
-      <p style="
-        font-family:var(--paragraph-font);
-        font-size:var(--font-nm);
-        color:var(--text-color-dark-muted);
-        margin:0 0 0.5rem;
-        font-weight:300;
-      ">9 sections to help you and your family stay organised.</p>
+            <div class="cl-divider"></div>
 
-      <!-- Accent pill -->
-      <span style="
-        display:inline-block;
-        background:rgba(43, 188, 255, 0.12);
-        border:1.5px solid rgba(43, 110, 255, 0.4);
-        color:#10479a;
-        font-family:var(--main-font);
-        font-size:var(--font-sm);
-        font-weight:700;
-        padding:0.25rem 0.85rem;
-        border-radius:50px;
-        margin-bottom:0.5rem;
-      ">No account needed</span>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-field">
+                    <label for="{{ form.first_name.id_for_label }}">
+                        First name
+                        <span class="helptext">(optional)</span>
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="error">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.email.id_for_label }}" class="requiredField">
+                        Email address
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="error">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Me the Checklist
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center">
+                <p class="field-help-text">We won't spam you &nbsp;·&nbsp; Unsubscribe any time.</p>
+                <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Divider -->
-    <div style="height:1.5px; background:var(--background-color); margin:1.5rem 0;"></div>
+    {% include "baseapp/footer.html" %}
 
-    <!-- Form -->
-    <div style="padding: 0 1.25rem;">
-      <form method="post" novalidate>
-        {% csrf_token %}
+    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
 
-        <div class="form-group">
-          <label for="{{ form.first_name.id_for_label }}">
-            First name
-            <span class="helptext">(optional)</span>
-          </label>
-          {{ form.first_name }}
-          {% if form.first_name.errors %}
-            <ul class="errorlist">
-              {% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-
-        <div class="form-group">
-          <label for="{{ form.email.id_for_label }}" class="requiredField">
-            Email address
-          </label>
-          {{ form.email }}
-          {% if form.email.errors %}
-            <ul class="errorlist">
-              {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-
-        <div class="button-group">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i> Send Me the Checklist
-          </button>
-        </div>
-
-      </form>
-    </div>
-
-    <!-- Footer -->
-    <div class="text-center">
-      <p class="field-help-text">We won't spam you &nbsp;·&nbsp; Unsubscribe any time.</p>
-      <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
-    </div>
-
-  </div>
-</div>
-{% endblock %}
+</html>
