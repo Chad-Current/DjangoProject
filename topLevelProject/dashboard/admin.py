@@ -331,6 +331,7 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
         'is_social_media',
         'is_photos_or_files',
         'is_data_retention_preferences',
+        'is_other',
         'created_at',
     )
     search_fields = ('relation__first_name', 'relation__last_name', 'content')
@@ -347,6 +348,7 @@ class FamilyNeedsToKnowSectionAdmin(admin.ModelAdmin):
                 'is_social_media',
                 'is_photos_or_files',
                 'is_data_retention_preferences',
+                'is_other',
             )
         }),
         ('Timestamps', {
@@ -695,9 +697,9 @@ class FuneralPlanAdmin(admin.ModelAdmin):
 class RelevanceReviewAdmin(admin.ModelAdmin):
     list_display = (
         'get_item_name', 'get_item_type',
-        'reviewer', 'matters', 'review_date', 'next_review_due',
+        'reviewer', 'review_date', 'next_review_due',
     )
-    list_filter = ('matters', 'review_date', 'next_review_due')
+    list_filter = ('review_date', 'next_review_due')
     search_fields = (
         'account_review__account_name_or_provider',
         'device_review__device_name',
@@ -714,7 +716,7 @@ class RelevanceReviewAdmin(admin.ModelAdmin):
             'description': 'Select exactly ONE item to review.'
         }),
         ('Review Information', {
-            'fields': ('reviewer', 'matters', 'review_date', 'next_review_due')
+            'fields': ('reviewer', 'review_date', 'next_review_due')
         }),
         ('Details', {
             'fields': ('reasoning',)

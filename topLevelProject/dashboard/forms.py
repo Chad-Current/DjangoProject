@@ -575,6 +575,7 @@ FAMILY_CHECKBOX_FIELDS = [
     'is_social_media',
     'is_photos_or_files',
     'is_data_retention_preferences',
+    'is_other',
 ]
 
 
@@ -589,6 +590,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             "is_social_media",
             "is_photos_or_files",
             "is_data_retention_preferences",
+            "is_other",
         ]
         labels = {
             "relation": "Who Needs To Be Informed",
@@ -598,6 +600,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
             "is_social_media": "How To Handle Social Media Accounts",
             "is_photos_or_files": "What To Do With Photos Or Files",
             "is_data_retention_preferences": "How Long Do You Wish To Retain Information",
+            "is_other" : "Other",
         }
 
     def __init__(self, *args, **kwargs):
@@ -632,6 +635,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
                 Field('is_social_media', css_class='checkboxinput form-check-input'),
                 Field('is_photos_or_files', css_class='checkboxinput form-check-input'),
                 Field('is_data_retention_preferences', css_class='checkboxinput form-check-input'),
+                Field('is_other', css_class='checkboxinput form-check-input'),
                 css_class='checkbox-grid'
             ),
             Div(
@@ -1196,7 +1200,7 @@ class RelevanceReviewForm(forms.ModelForm):
             "device_review",
             "estate_review",
             "important_document_review",
-            "matters",
+            # "matters",
             "reasoning",
             "next_review_due",
         ]
@@ -1249,7 +1253,7 @@ class RelevanceReviewForm(forms.ModelForm):
             ),
             Fieldset(
                 'Review Details',
-                Field('matters', css_class='select'),
+                # Field('matters', css_class='select'),
                 Field('next_review_due', css_class='dateinput'),
                 Field('reasoning', css_class='textarea'),
             ),

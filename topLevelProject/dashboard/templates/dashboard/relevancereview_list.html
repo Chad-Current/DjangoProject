@@ -35,8 +35,8 @@
                                     <th>Type</th>
                                     <th>Review Date</th>
                                     <th>Next Review Due</th>
-                                    <th>Matters</th>
-                                    <th class="text-end">Actions</th>
+                                    <!-- <th>Matters</th> -->
+                                    <th class="text-end">View</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,25 +75,25 @@
                                             {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         {% if review.matters %}
                                             <span class="badge bg-success">Yes</span>
                                         {% else %}
                                             <span class="badge bg-secondary">No</span>
                                         {% endif %}
-                                    </td>
+                                    </td> -->
                                     <td>
                                         {% if can_modify %}
                                         <div class="action-buttons">
                                             <a href="{% url 'dashboard:relevancereview_detail' review.slug %}"
                                                 class="btn-action btn-view" title="View review">
-                                                <i class="fas fa-pen"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <!-- <a href="{% url 'dashboard:relevancereview_update' review.slug %}"
                                                 class="btn-action btn-edit" title="Edit review">
                                                 <i class="fas fa-edit"></i>
-                                            </a> -->
-                                            <!-- <a href="{% url 'dashboard:relevancereview_delete' review.slug %}"
+                                            </a>
+                                            <a href="{% url 'dashboard:relevancereview_delete' review.slug %}"
                                                 class="btn-action btn-delete" title="Delete review">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a> -->

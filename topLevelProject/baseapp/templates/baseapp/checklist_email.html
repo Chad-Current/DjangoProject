@@ -2,37 +2,66 @@
 {% block title %}Get the Free Checklist — Digital Estate Plan{% endblock %}
 
 {% block content %}
-    <!-- Flash messages -->
-    
-    <div class="form-container">
-      <div class="form-wrapper" style="max-width:520px;">
-        
+<div class="form-container">
+  <div class="loginform-wrapper">
 
+    <!-- Icon + title -->
+    <div style="text-align:center; padding: 2rem 1.25rem 0;">
+      <div style="
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:56px; height:56px;
+        background:linear-gradient(135deg, var(--sixty-percent), var(--thirty-percent));
+        border-radius:16px;
+        margin-bottom:1.25rem;
+        box-shadow: 0 4px 14px rgba(45,106,156,0.25);
+      ">
+        <i class="fas fa-file-alt" style="color:var(--text-color); font-size:1.5rem;"></i>
+      </div>
 
-    <!-- Header -->
-    <div class="form-wrapper-header" style="text-align:center;">
-      <h2 style="margin:0 0 0.35rem;color:var(--text-color);">Get Your Free Checklist</h2>
-      <p style="color:rgba(231,239,247,0.75);margin:0;font-size:var(--font-sm);">
-        We'll email you the
-        <strong style="color:var(--purewhite-color);font-size:var(--font-sm);font-weight:600;">
-          Digital Estate Readiness Checklist
-        </strong>
-        — 9 sections to help you and your family stay organised.
-      </p>
+      <h2 style="
+        font-family:var(--title-font);
+        font-size:var(--font-xl);
+        color:var(--ten-percent);
+        margin:0 0 0.6rem;
+      ">Free Estate Checklist</h2>
+
+      <p style="
+        font-family:var(--paragraph-font);
+        font-size:var(--font-nm);
+        color:var(--text-color-dark-muted);
+        margin:0 0 0.5rem;
+        font-weight:300;
+      ">9 sections to help you and your family stay organised.</p>
+
+      <!-- Accent pill -->
+      <span style="
+        display:inline-block;
+        background:rgba(43, 188, 255, 0.12);
+        border:1.5px solid rgba(43, 110, 255, 0.4);
+        color:#10479a;
+        font-family:var(--main-font);
+        font-size:var(--font-sm);
+        font-weight:700;
+        padding:0.25rem 0.85rem;
+        border-radius:50px;
+        margin-bottom:0.5rem;
+      ">No account needed</span>
     </div>
 
+    <!-- Divider -->
+    <div style="height:1.5px; background:var(--background-color); margin:1.5rem 0;"></div>
 
-
-    <!-- Form body -->
-    <div class="form-wrapper-body">
+    <!-- Form -->
+    <div style="padding: 0 1.25rem;">
       <form method="post" novalidate>
         {% csrf_token %}
 
-        <!-- First name -->
         <div class="form-group">
           <label for="{{ form.first_name.id_for_label }}">
             First name
-            <span style="font-weight:300;color:var(--sixty-percent);font-size:var(--font-sm);">(optional)</span>
+            <span class="helptext">(optional)</span>
           </label>
           {{ form.first_name }}
           {% if form.first_name.errors %}
@@ -42,7 +71,6 @@
           {% endif %}
         </div>
 
-        <!-- Email -->
         <div class="form-group">
           <label for="{{ form.email.id_for_label }}" class="requiredField">
             Email address
@@ -55,25 +83,19 @@
           {% endif %}
         </div>
 
-        <!-- Submit -->
         <div class="button-group">
           <button type="submit" class="btn btn-primary">
-            Send Me the Checklist
+            <i class="fas fa-paper-plane"></i> Send Me the Checklist
           </button>
         </div>
 
       </form>
     </div>
 
-    <!-- Footer reassurance -->
-    <div style="padding:0 1.25rem 1.75rem;text-align:center;">
-      <p style="font-size:var(--font-sm);color:var(--thirty-percent);font-weight:300;margin-bottom:0.4rem;">
-        No account required &nbsp;·&nbsp; We won't spam you.
-      </p>
-      <p style="font-size:var(--font-sm);margin:0;">
-        Already have an account?
-        <a href="{% url 'accounts:login' %}" style="font-size:var(--font-sm);">Sign in</a>
-      </p>
+    <!-- Footer -->
+    <div class="text-center">
+      <p class="field-help-text">We won't spam you &nbsp;·&nbsp; Unsubscribe any time.</p>
+      <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
     </div>
 
   </div>

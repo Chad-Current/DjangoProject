@@ -460,6 +460,7 @@ class FamilyNeedsToKnowSection(models.Model):
     is_social_media             = models.BooleanField(default=False)
     is_photos_or_files          = models.BooleanField(default=False)
     is_data_retention_preferences = models.BooleanField(default=False)
+    is_other                    = models.BooleanField(default=False)
     created_at                  = models.DateTimeField(default=timezone.now)
     updated_at                  = models.DateTimeField(auto_now=True)
 
@@ -686,7 +687,7 @@ class RelevanceReview(models.Model):
     )
 
     slug           = models.SlugField(max_length=80, unique=True, null=True, blank=True, db_index=True)
-    matters        = models.BooleanField(default=True, help_text="Does this still matter?")
+    # matters        = models.BooleanField(default=True, help_text="Does this still matter?")
     review_date    = models.DateTimeField(auto_now_add=True)
     reasoning      = models.TextField(blank=True, help_text="Why does this still matter or not?")
     next_review_due= models.DateField(null=True, blank=True)

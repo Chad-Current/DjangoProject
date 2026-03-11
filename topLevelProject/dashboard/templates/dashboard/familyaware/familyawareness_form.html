@@ -63,7 +63,7 @@
           <label class="ob-check-row ob-label-tooltip"
             title="Check this if this note describes where your legal will is physically stored — e.g. safe deposit box, attorney's office, or filing cabinet.">
             {{ form.is_location_of_legal_will }}
-            <span class="ob-check-label">For Location Of Will?</span>
+            <span class="ob-check-label">Location Of Will?</span>
             <span class="ob-tip" role="tooltip">Check this if this note describes where your legal will is physically stored — e.g. safe deposit box, attorney's office, or filing cabinet.</span>
           </label>
           {% if form.is_location_of_legal_will.errors %}
@@ -116,6 +116,18 @@
           </label>
           {% if form.is_data_retention_preferences.errors %}
             <div class="error" role="alert">{{ form.is_data_retention_preferences.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field{% if form.is_other.errors %} has-error{% endif %}">
+          <label class="ob-check-row ob-label-tooltip"
+            title="Check this if this note expresses something other than the checkbox listed. ">
+            {{ form.is_other }}
+            <span class="ob-check-label">Other</span>
+            <span class="ob-tip" role="tooltip">Check this if this note expresses something other than the checkbox listed. </span>
+          </label>
+          {% if form.is_data_retention_preferences.errors %}
+            <div class="error" role="alert">{{ form.is_other.errors }}</div>
           {% endif %}
         </div>
 
