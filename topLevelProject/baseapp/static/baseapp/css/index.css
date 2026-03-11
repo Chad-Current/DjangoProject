@@ -321,10 +321,12 @@
     border-top: 3px solid transparent;
     transition: border-color .2s, box-shadow .2s;
 }
+
 .feature-card:hover {
     border-color: var(--thirty-percent);
-    box-shadow: 4px 6px 24px rgba(45,106,156,.1);
+    box-shadow: 4px 10px 24px rgba(45,106,156,.1);
 }
+
 .feature-icon { font-size: 1.6rem; margin-bottom: .8rem; }
 
 .feature-card h3 {
