@@ -39,7 +39,6 @@ def create_account_relevance_review(sender, instance, created, **kwargs):
         RelevanceReview.objects.create(
             account_review=instance,
             reviewer=user,
-            matters=True,
             reasoning=f"Account: {instance.account_name_or_provider}",
             next_review_due=next_review
         )
@@ -72,7 +71,6 @@ def create_account_relevance_review(sender, instance, created, **kwargs):
                 RelevanceReview.objects.create(
                     account_review=instance,
                     reviewer=user,
-                    matters=True,
                     reasoning=f"Review time changed: {instance.account_name_or_provider}",
                     next_review_due=next_review
                 )
@@ -110,7 +108,6 @@ def create_device_relevance_review(sender, instance, created, **kwargs):
         RelevanceReview.objects.create(
             device_review=instance,
             reviewer=user,
-            matters=True,
             reasoning=f"Device: {instance.device_name}",
             next_review_due=next_review
         )
@@ -142,7 +139,6 @@ def create_device_relevance_review(sender, instance, created, **kwargs):
                 RelevanceReview.objects.create(
                     device_review=instance,
                     reviewer=user,
-                    matters=True,
                     reasoning=f"Review time changed: {instance.device_name}",
                     next_review_due=next_review
                 )
@@ -180,7 +176,6 @@ def create_estate_relevance_review(sender, instance, created, **kwargs):
         RelevanceReview.objects.create(
             estate_review=instance,
             reviewer=user,
-            matters=True,
             reasoning=f"Estate Document: {instance.name_or_title}",
             next_review_due=next_review
         )
@@ -212,7 +207,6 @@ def create_estate_relevance_review(sender, instance, created, **kwargs):
                 RelevanceReview.objects.create(
                     estate_review=instance,
                     reviewer=user,
-                    matters=True,
                     reasoning=f"Review time changed: {instance.name_or_title}",
                     next_review_due=next_review
                 )
@@ -250,7 +244,6 @@ def create_important_doc_relevance_review(sender, instance, created, **kwargs):
         RelevanceReview.objects.create(
             important_document_review=instance,
             reviewer=user,
-            matters=True,
             reasoning=f"Important Document: {instance.name_or_title}",
             next_review_due=next_review
         )
@@ -282,7 +275,6 @@ def create_important_doc_relevance_review(sender, instance, created, **kwargs):
                 RelevanceReview.objects.create(
                     important_document_review=instance,
                     reviewer=user,
-                    matters=True,
                     reasoning=f"Review time changed: {instance.name_or_title}",
                     next_review_due=next_review
                 )
