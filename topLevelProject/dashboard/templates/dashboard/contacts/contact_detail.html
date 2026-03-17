@@ -9,6 +9,7 @@
 
 {% block content %}
    <div class="main container py-4">
+
         <!-- Contact Header -->
         <div class="delegation-header">
             <h1><i class="fas fa-user-circle"></i> {{ contact.first_name }} {{ contact.last_name }}</h1>
@@ -19,81 +20,60 @@
         {% if delegated_estate_documents or delegated_important_documents or delegated_accounts or delegated_devices %}
         <div class="summary-stats">
             <div class="stat-item">
-                <div>
-                    <div class="stat-number">{{ total_assignments|default:0 }}</div>
-                    <div class="stat-label">Total Assigned Items</div>
-                </div>
+                <div class="stat-number">{{ total_assignments|default:0 }}</div>
+                <div class="stat-label">Total Assigned Items</div>
             </div>
             <div class="stat-item">
-                <div>
-                    <div class="stat-number">{{ delegated_estate_documents|length }}</div>
-                    <div class="stat-label">Estate Documents</div>
-                </div>
+                <div class="stat-number">{{ delegated_estate_documents|length }}</div>
+                <div class="stat-label">Estate Documents</div>
             </div>
             <div class="stat-item">
-                <div>
-                    <div class="stat-number">{{ delegated_important_documents|length }}</div>
-                    <div class="stat-label">Important Documents</div>
-                </div>
+                <div class="stat-number">{{ delegated_important_documents|length }}</div>
+                <div class="stat-label">Important Documents</div>
             </div>
             <div class="stat-item">
-                <div>
-                    <div class="stat-number">{{ delegated_devices|length }}</div>
-                    <div class="stat-label">Devices</div>
-                </div>
+                <div class="stat-number">{{ delegated_devices|length }}</div>
+                <div class="stat-label">Devices</div>
             </div>
             <div class="stat-item">
-                <div>
-                    <div class="stat-number">{{ delegated_accounts|length }}</div>
-                    <div class="stat-label">Accounts</div>
-                </div>
+                <div class="stat-number">{{ delegated_accounts|length }}</div>
+                <div class="stat-label">Accounts</div>
             </div>
         </div>
         {% endif %}
 
         <div class="row">
             <div class="col-lg-5">
+
                 <!-- Contact Information Card -->
                 <div class="info-card">
-                    <div id="contactInfo" class="collapse show collapsible-content">
+                    <div class="collapsible-header" aria-expanded="true">
+                        <h3><i class="fas fa-address-card"></i> Contact Information</h3>
+                        <i class="fas fa-chevron-down collapse-icon"></i>
+                    </div>
+                    <div class="collapsible-content">
                         <div class="mt-3">
-                            <h3><i class="fas fa-address-card"></i> Contact Information</h3>
                             {% if contact.email %}
                             <div class="info-row">
-                                <div class="info-label">
-                                    <i class="fas fa-envelope"></i> Email
-                                </div>
-                                <div class="info-value">
-                                    <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
-                                </div>
+                                <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                                <div class="info-value"><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></div>
                             </div>
                             {% endif %}
-
                             {% if contact.phone %}
                             <div class="info-row">
-                                <div class="info-label">
-                                    <i class="fas fa-phone"></i> Phone
-                                </div>
-                                <div class="info-value">
-                                    <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
-                                </div>
+                                <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                                <div class="info-value"><a href="tel:{{ contact.phone }}">{{ contact.phone }}</a></div>
                             </div>
                             {% endif %}
-
                             {% if contact.address %}
                             <div class="info-row">
-                                <div class="info-label">
-                                    <i class="fas fa-map-marker-alt"></i> Address
-                                </div>
+                                <div class="info-label"><i class="fas fa-map-marker-alt"></i> Address</div>
                                 <div class="info-value">{{ contact.address }}</div>
                             </div>
                             {% endif %}
-
                             {% if contact.contact_relation %}
                             <div class="info-row">
-                                <div class="info-label">
-                                    <i class="fas fa-heart"></i> Relationship
-                                </div>
+                                <div class="info-label"><i class="fas fa-heart"></i> Relationship</div>
                                 <div class="info-value">{{ contact.get_contact_relation_display }}</div>
                             </div>
                             {% endif %}
@@ -103,27 +83,27 @@
 
                 <!-- Roles Card -->
                 <div class="info-card">
-                    <div id="rolesInfo" class="collapse show collapsible-content">
+                    <div class="collapsible-header" aria-expanded="true">
+                        <h3><i class="fas fa-user-tag"></i> Roles &amp; Responsibilities</h3>
+                        <i class="fas fa-chevron-down collapse-icon"></i>
+                    </div>
+                    <div class="collapsible-content">
                         <div class="mt-3">
-                            <h3><i class="fas fa-user-tag"></i> Roles & Responsibilities</h3>
                             {% if contact.is_emergency_contact %}
                             <span class="badge-role badge-emergency">
                                 <i class="fas fa-exclamation-triangle"></i> Emergency Contact
                             </span>
                             {% endif %}
-
                             {% if contact.is_digital_executor %}
                             <span class="badge-role badge-executor">
                                 <i class="fas fa-gavel"></i> Digital Executor
                             </span>
                             {% endif %}
-
                             {% if contact.is_caregiver %}
                             <span class="badge-role badge-caregiver">
                                 <i class="fas fa-hands-helping"></i> Caregiver
                             </span>
                             {% endif %}
-
                             {% if not contact.is_emergency_contact and not contact.is_digital_executor and not contact.is_caregiver %}
                             <p class="text-muted mb-0">No special roles assigned</p>
                             {% endif %}
@@ -134,90 +114,79 @@
                 <!-- Emergency Message -->
                 {% if contact.body %}
                 <div class="info-card">
-                    <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#emergencyMessage" aria-expanded="true" aria-controls="emergencyMessage">
+                    <div class="collapsible-header" aria-expanded="true">
                         <h3><i class="fas fa-comment-medical"></i> Emergency Message</h3>
                         <i class="fas fa-chevron-down collapse-icon"></i>
                     </div>
-                    
-                    <div id="emergencyMessage" class="collapse show collapsible-content">
+                    <div class="collapsible-content">
                         <div class="instructions-box mt-3">
                             <p>{{ contact.body|linebreaks }}</p>
                         </div>
                     </div>
                 </div>
                 {% endif %}
+
             </div>
 
             <div class="col-lg-7">
+
                 <!-- Estate Documents -->
                 <div class="info-card">
-                    <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#estateDocuments" aria-expanded="true" aria-controls="estateDocuments">
+                    <div class="collapsible-header" aria-expanded="true">
                         <h3>
                             <i class="fas fa-file-contract"></i> Delegated Estate Documents
                             <span class="section-count">{{ delegated_estate_documents|length }}</span>
                         </h3>
                         <i class="fas fa-chevron-down collapse-icon"></i>
                     </div>
-                    
-                    <div id="estateDocuments" class="collapse show collapsible-content">
+                    <div class="collapsible-content">
                         <div class="mt-3">
                             {% if delegated_estate_documents %}
                                 {% for doc in delegated_estate_documents %}
                                 <div class="document-item estate-doc">
                                     <h5>
-                                        <i class="fas fa-file-contract"></i> 
-                                        <a href="{% url 'dashboard:estate_detail' doc.slug %}">
-                                            {{ doc.name_or_title }}
-                                        </a>
+                                        <i class="fas fa-file-contract"></i>
+                                        <a href="{% url 'dashboard:estate_detail' doc.slug %}">{{ doc.name_or_title }}</a>
                                     </h5>
-                                    
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
-                                        <span style="font-size: 0.9rem;">{{ doc.get_estate_category_display }}</span>
+                                        <strong class="text-muted">Category:</strong>
+                                        <span>{{ doc.get_estate_category_display }}</span>
                                     </div>
-
                                     {% if doc.estate_overall_instructions %}
                                     <div class="instructions-box mt-3">
-                                        <strong style="font-size: 0.9rem;">Instructions:</strong>
+                                        <strong>Instructions:</strong>
                                         <p class="mt-1">{{ doc.estate_overall_instructions }}</p>
                                     </div>
                                     {% endif %}
-
-                                    <!-- Document Locations -->
                                     {% if doc.estate_physical_location or doc.estate_digital_location or doc.estate_file %}
                                     <div class="mt-3">
-                                        <strong style="font-size: 0.9rem; color: #6b7280;">Locations:</strong>
-                                        <div class="mt-2">
-                                            {% if doc.estate_physical_location %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                Physical: {{ doc.estate_physical_location }}
-                                            </span>
-                                            {% endif %}
-                                            {% if doc.estate_digital_location %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-cloud"></i>
-                                                Digital: {{ doc.estate_digital_location }}
-                                            </span>
-                                            {% endif %}
-                                            {% if doc.estate_file %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-file-download"></i>
-                                                <a href="{{ doc.estate_file.url }}" target="_blank">Download File</a>
-                                            </span>
-                                            {% endif %}
+                                        {% if doc.estate_physical_location %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <div><strong>Physical:</strong> {{ doc.estate_physical_location }}</div>
                                         </div>
+                                        {% endif %}
+                                        {% if doc.estate_digital_location %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-cloud"></i>
+                                            <div><strong>Digital:</strong> {{ doc.estate_digital_location }}</div>
+                                        </div>
+                                        {% endif %}
+                                        {% if doc.estate_file %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-file-download"></i>
+                                            <div><a href="{{ doc.estate_file.url }}" target="_blank">Download File</a></div>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                     {% endif %}
-
                                     <div class="document-meta">
                                         <div class="document-meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            Updated {{ doc.updated_at|date:"M d, Y" }}
+                                            <i class="fas fa-calendar"></i> Updated {{ doc.updated_at|date:"M d, Y" }}
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:estate_update' doc.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:estate_update' doc.slug %}">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -237,76 +206,63 @@
 
                 <!-- Important Documents -->
                 <div class="info-card">
-                    <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#importantDocuments" aria-expanded="true" aria-controls="importantDocuments">
+                    <div class="collapsible-header" aria-expanded="true">
                         <h3>
                             <i class="fas fa-file-alt"></i> Delegated Important Documents
                             <span class="section-count">{{ delegated_important_documents|length }}</span>
                         </h3>
                         <i class="fas fa-chevron-down collapse-icon"></i>
                     </div>
-                    
-                    <div id="importantDocuments" class="collapse show collapsible-content">
+                    <div class="collapsible-content">
                         <div class="mt-3">
                             {% if delegated_important_documents %}
                                 {% for doc in delegated_important_documents %}
                                 <div class="document-item important-doc">
                                     <h5>
-                                        <i class="fas fa-file-alt"></i> 
-                                        <a href="{% url 'dashboard:importantdocument_detail' doc.slug %}">
-                                            {{ doc.name_or_title }}
-                                        </a>
+                                        <i class="fas fa-file-alt"></i>
+                                        <a href="{% url 'dashboard:importantdocument_detail' doc.slug %}">{{ doc.name_or_title }}</a>
                                     </h5>
-                                    
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
-                                        <span style="font-size: 0.9rem;">{{ doc.get_document_category_display }}</span>
+                                        <strong class="text-muted">Category:</strong>
+                                        <span>{{ doc.get_document_category_display }}</span>
                                     </div>
-
                                     {% if doc.description %}
-                                    <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6b7280;">{{ doc.description }}</p>
+                                    <p class="mt-2 mb-0">{{ doc.description }}</p>
                                     {% endif %}
-
-                                    <!-- Document Locations -->
                                     {% if doc.physical_location or doc.digital_location or doc.important_file %}
                                     <div class="mt-3">
-                                        <strong style="font-size: 0.9rem; color: #6b7280;">Locations:</strong>
-                                        <div class="mt-2">
-                                            {% if doc.physical_location %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                Physical: {{ doc.physical_location }}
-                                            </span>
-                                            {% endif %}
-                                            {% if doc.digital_location %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-cloud"></i>
-                                                Digital: {{ doc.digital_location }}
-                                            </span>
-                                            {% endif %}
-                                            {% if doc.important_file %}
-                                            <span class="location-badge">
-                                                <i class="fas fa-file-download"></i>
-                                                <a href="{{ doc.important_file.url }}" target="_blank">Download File</a>
-                                            </span>
-                                            {% endif %}
+                                        {% if doc.physical_location %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <div><strong>Physical:</strong> {{ doc.physical_location }}</div>
                                         </div>
+                                        {% endif %}
+                                        {% if doc.digital_location %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-cloud"></i>
+                                            <div><strong>Digital:</strong> {{ doc.digital_location }}</div>
+                                        </div>
+                                        {% endif %}
+                                        {% if doc.important_file %}
+                                        <div class="location-badge mb-2">
+                                            <i class="fas fa-file-download"></i>
+                                            <div><a href="{{ doc.important_file.url }}" target="_blank">Download File</a></div>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                     {% endif %}
-
                                     <div class="document-meta">
                                         <div class="document-meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            Updated {{ doc.updated_at|date:"M d, Y" }}
+                                            <i class="fas fa-calendar"></i> Updated {{ doc.updated_at|date:"M d, Y" }}
                                         </div>
                                         {% if doc.requires_legal_review %}
-                                        <div class="document-meta-item" style="color: #dc2626;">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                            Requires Legal Review
+                                        <div class="document-meta-item document-meta-item--warning">
+                                            <i class="fas fa-exclamation-triangle"></i> Requires Legal Review
                                         </div>
                                         {% endif %}
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:importantdocument_update' doc.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:importantdocument_update' doc.slug %}">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -326,77 +282,64 @@
 
                 <!-- Delegated Devices -->
                 <div class="info-card">
-                    <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#delegatedDevices" aria-expanded="true" aria-controls="delegatedDevices">
+                    <div class="collapsible-header" aria-expanded="true">
                         <h3>
                             <i class="fas fa-laptop"></i> Delegated Devices
                             <span class="section-count">{{ delegated_devices|length }}</span>
                         </h3>
                         <i class="fas fa-chevron-down collapse-icon"></i>
                     </div>
-                    
-                    <div id="delegatedDevices" class="collapse show collapsible-content">
+                    <div class="collapsible-content">
                         <div class="mt-3">
                             {% if delegated_devices %}
                                 {% for device in delegated_devices %}
-                                <div class="document-item" style="border-left: 4px solid #8b5cf6;">
+                                <div class="document-item document-item--device">
                                     <h5>
                                         <i class="fas fa-{% if device.device_type == 'Phone' %}mobile-alt{% elif device.device_type == 'Laptop' %}laptop{% elif device.device_type == 'Tablet' %}tablet-alt{% elif device.device_type == 'Desktop' %}desktop{% elif device.device_type == 'Smart Watch' %}clock{% else %}microchip{% endif %}"></i>
-                                        <a href="{% url 'dashboard:device_detail' device.slug %}">
-                                            {{ device.device_name }}
-                                        </a>
+                                        <a href="{% url 'dashboard:device_detail' device.slug %}">{{ device.device_name }}</a>
                                     </h5>
-                                    
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Type:</strong>
-                                        <span style="font-size: 0.9rem;">{{ device.get_device_type_display }}</span>
+                                        <strong class="text-muted">Type:</strong>
+                                        <span>{{ device.get_device_type_display }}</span>
                                     </div>
-
                                     {% if device.owner_label %}
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Owner Label:</strong>
-                                        <span style="font-size: 0.9rem;">{{ device.owner_label }}</span>
+                                        <strong class="text-muted">Owner Label:</strong>
+                                        <span>{{ device.owner_label }}</span>
                                     </div>
                                     {% endif %}
-
                                     {% if device.location_description %}
-                                    <div class="mt-2">
-                                        <span class="location-badge">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            Location: {{ device.location_description }}
-                                        </span>
+                                    <div class="location-badge mt-2">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div><strong>Location:</strong> {{ device.location_description }}</div>
                                     </div>
                                     {% endif %}
-
                                     {% if device.used_for_2fa %}
                                     <div class="mt-2">
-                                        <span class="badge bg-warning text-dark">
+                                        <span class="badge-role badge-emergency">
                                             <i class="fas fa-shield-alt"></i> Used for 2FA
                                         </span>
                                     </div>
                                     {% endif %}
-
                                     {% if device.unlock_method_description %}
                                     <div class="instructions-box mt-3">
-                                        <strong style="font-size: 0.9rem;">Unlock Method:</strong>
+                                        <strong>Unlock Method:</strong>
                                         <p class="mt-1">{{ device.unlock_method_description }}</p>
                                     </div>
                                     {% endif %}
-
                                     {% if device.decommission_instruction %}
                                     <div class="instructions-box mt-3">
-                                        <strong style="font-size: 0.9rem;">Decommission Instructions:</strong>
+                                        <strong>Decommission Instructions:</strong>
                                         <p class="mt-1">{{ device.decommission_instruction }}</p>
                                     </div>
                                     {% endif %}
-
                                     <div class="document-meta">
                                         <div class="document-meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            Updated {{ device.updated_at|date:"M d, Y" }}
+                                            <i class="fas fa-calendar"></i> Updated {{ device.updated_at|date:"M d, Y" }}
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:device_update' device.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:device_update' device.slug %}">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -416,81 +359,64 @@
 
                 <!-- Delegated Accounts -->
                 <div class="info-card">
-                    <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#delegatedAccounts" aria-expanded="true" aria-controls="delegatedAccounts">
+                    <div class="collapsible-header" aria-expanded="true">
                         <h3>
                             <i class="fas fa-user-shield"></i> Delegated Accounts
                             <span class="section-count">{{ delegated_accounts|length }}</span>
                         </h3>
                         <i class="fas fa-chevron-down collapse-icon"></i>
                     </div>
-                    
-                    <div id="delegatedAccounts" class="collapse show collapsible-content">
+                    <div class="collapsible-content">
                         <div class="mt-3">
                             {% if delegated_accounts %}
                                 {% for account in delegated_accounts %}
-                                <div class="document-item" style="border-left: 4px solid #0ea5e9;">
+                                <div class="document-item document-item--account">
                                     <h5>
                                         <i class="fas fa-user-circle"></i>
-                                        <a href="{% url 'dashboard:account_detail' account.slug %}">
-                                            {{ account.account_name_or_provider }}
-                                        </a>
+                                        <a href="{% url 'dashboard:account_detail' account.slug %}">{{ account.account_name_or_provider }}</a>
                                         {% if account.is_critical %}
-                                        <span class="badge bg-danger ms-2">Critical</span>
+                                        <span class="badge-role badge-emergency ms-1">Critical</span>
                                         {% endif %}
                                     </h5>
-                                    
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Category:</strong>
-                                        <span style="font-size: 0.9rem;">{{ account.get_account_category_display }}</span>
+                                        <strong class="text-muted">Category:</strong>
+                                        <span>{{ account.get_account_category_display }}</span>
                                     </div>
-
                                     {% if account.username_or_email %}
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Username/Email:</strong>
-                                        <span style="font-size: 0.9rem;">{{ account.username_or_email }}</span>
+                                        <strong class="text-muted">Username/Email:</strong>
+                                        <span>{{ account.username_or_email }}</span>
                                     </div>
                                     {% endif %}
-
                                     {% if account.website_url %}
-                                    <div class="mt-2">
-                                        <span class="location-badge">
-                                            <i class="fas fa-globe"></i>
-                                            <a href="{{ account.website_url }}" target="_blank" rel="noopener">{{ account.website_url|truncatechars:50 }}</a>
-                                        </span>
+                                    <div class="location-badge mt-2">
+                                        <i class="fas fa-globe"></i>
+                                        <div><a href="{{ account.website_url }}" target="_blank" rel="noopener">{{ account.website_url|truncatechars:50 }}</a></div>
                                     </div>
                                     {% endif %}
-
                                     {% if account.credential_storage_location %}
-                                    <div class="mt-2">
-                                        <span class="location-badge">
-                                            <i class="fas fa-key"></i>
-                                            Password: {{ account.credential_storage_location }}
-                                        </span>
+                                    <div class="location-badge mt-2">
+                                        <i class="fas fa-key"></i>
+                                        <div><strong>Password:</strong> {{ account.credential_storage_location }}</div>
                                     </div>
                                     {% endif %}
-
                                     <div class="mt-2">
-                                        <strong class="text-muted" style="font-size: 0.9rem;">Instruction:</strong>
-                                        <span class="badge" style="background-color: #6366f1; color: white;">
-                                            {{ account.get_keep_or_close_instruction_display }}
-                                        </span>
+                                        <strong class="text-muted">Instruction:</strong>
+                                        <span class="badge-role badge-executor ms-1">{{ account.get_keep_or_close_instruction_display }}</span>
                                     </div>
-
                                     {% if account.notes_for_family %}
                                     <div class="instructions-box mt-3">
-                                        <strong style="font-size: 0.9rem;">Notes for Family:</strong>
+                                        <strong>Notes for Family:</strong>
                                         <p class="mt-1">{{ account.notes_for_family }}</p>
                                     </div>
                                     {% endif %}
-
                                     <div class="document-meta">
                                         <div class="document-meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            Updated {{ account.updated_at|date:"M d, Y" }}
+                                            <i class="fas fa-calendar"></i> Updated {{ account.updated_at|date:"M d, Y" }}
                                         </div>
                                         {% if can_modify %}
                                         <div class="document-meta-item">
-                                            <a href="{% url 'dashboard:account_update' account.slug %}" class="text-primary">
+                                            <a href="{% url 'dashboard:account_update' account.slug %}">
                                                 <i class="fas fa-edit"></i> Edit/Reassign
                                             </a>
                                         </div>
@@ -507,23 +433,21 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Deletion Warning Section -->
+        <!-- Deletion Warning -->
         {% if total_assignments > 0 %}
-        <div class="info-card mt-4" style="border-left: 4px solid #ef4444;">
-            <div class="collapsible-header" data-bs-toggle="collapse" data-bs-target="#deletionWarning" aria-expanded="true" aria-controls="deletionWarning">
-                <h5 class="text-danger mb-0">
-                    <i class="fas fa-exclamation-triangle"></i> Deletion Protection
-                </h5>
+        <div class="info-card info-card--danger mt-4">
+            <div class="collapsible-header" aria-expanded="true">
+                <h3 class="text-danger"><i class="fas fa-exclamation-triangle"></i> Deletion Protection</h3>
                 <i class="fas fa-chevron-down collapse-icon"></i>
             </div>
-            
-            <div id="deletionWarning" class="collapse show collapsible-content">
-                <div class="alert alert-danger mb-0 mt-3">
+            <div class="collapsible-content">
+                <div class="alert-box mt-3">
                     <i class="fas fa-info-circle"></i>
-                    This contact has <strong>{{ total_assignments }}</strong> item(s) assigned and cannot be deleted until all items are reassigned to another contact.
+                    <p>This contact has <strong>{{ total_assignments }}</strong> item(s) assigned and cannot be deleted until all items are reassigned to another contact.</p>
                 </div>
             </div>
         </div>
@@ -549,9 +473,49 @@
             </a>
         </div>
         {% endif %}
-    </div>
 
-</body>
+    </div>
 {% endblock %}
 
-</html>
+{% block extra_js %}
+<script>
+/* Self-contained collapse — no Bootstrap JS dependency */
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.collapsible-header').forEach(function (header) {
+        var content = header.nextElementSibling;
+        if (!content || !content.classList.contains('collapsible-content')) return;
+
+        /* Set initial max-height so the open state is correct */
+        if (header.getAttribute('aria-expanded') === 'true') {
+            content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+            content.style.maxHeight = '0';
+            content.style.overflow = 'hidden';
+        }
+
+        header.addEventListener('click', function () {
+            var expanded = this.getAttribute('aria-expanded') === 'true';
+
+            if (expanded) {
+                /* Collapse: snapshot current height, then animate to 0 */
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.overflow = 'hidden';
+                requestAnimationFrame(function () {
+                    content.style.maxHeight = '0';
+                });
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                /* Expand: animate to full scroll height, then remove cap */
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.addEventListener('transitionend', function onEnd() {
+                    content.style.maxHeight = 'none';   /* allow dynamic resize */
+                    content.style.overflow = 'visible';
+                    content.removeEventListener('transitionend', onEnd);
+                });
+                header.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

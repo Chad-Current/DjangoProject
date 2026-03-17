@@ -1,56 +1,85 @@
+/* ═══════════════════════════════════════════════════════════════════
+   collapse.css — Collapsible info-card sections
+   JS engine: vanilla (contact_detail.html {% block extra_js %})
+   Does NOT rely on Bootstrap's collapse JS.
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════
+   COLLAPSIBLE HEADER
+   ══════════════════════════════════════════════ */
+
 .collapsible-header {
   cursor: pointer;
   user-select: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
+  width: 100%;
+  padding: 0 0 0.65rem;
   margin: 0;
-  transition: all 0.2s ease;
+  border-bottom: 2px solid var(--background-color);
+  transition: opacity 0.2s ease;
 }
 
 .collapsible-header:hover {
-  opacity: 0.8;
+  opacity: 0.82;
 }
 
-.collapsible-header h3 {
-  margin: 0;
+/* Strip the standalone h3/h5 margins and borders —
+   the header row owns the border now. */
+.collapsible-header h3,
+.collapsible-header h5 {
   flex: 1;
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
+
+.collapsible-header h5 {
+  font-family: var(--title-font);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--ten-percent);
+}
+
+
+/* ══════════════════════════════════════════════
+   COLLAPSE ICON
+   ══════════════════════════════════════════════ */
 
 .collapse-icon {
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
-  color: #6b7280;
-  margin-left: 10px;
+  font-size: var(--font-md);
+  color: var(--sixty-percent);
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+  align-self: center;
+  transition: transform 0.28s ease, color 0.2s ease;
 }
 
-.collapsible-header[aria-expanded="false"] .collapse-icon {
-  transform: rotate(-90deg);
+.collapsible-header:hover .collapse-icon {
+  color: var(--ten-percent);
 }
+
+.collapsible-header[aria-expanded="true"]  .collapse-icon { transform: rotate(0deg);   }
+.collapsible-header[aria-expanded="false"] .collapse-icon { transform: rotate(-90deg); }
+
+
+/* ══════════════════════════════════════════════
+   COLLAPSIBLE CONTENT
+   max-height animation driven by vanilla JS.
+   Transition must be on the element itself.
+   ══════════════════════════════════════════════ */
 
 .collapsible-content {
-  transition: all 0.3s ease;
-}
-
-/* Ensure smooth collapse animation */
-.collapse:not(.show) {
-  display: none;
-}
-
-.collapsing {
-  height: 0;
   overflow: hidden;
-  transition: height 0.35s ease;
+  max-height: 9999px;          /* JS sets this to scrollHeight or 0 */
+  transition: max-height 0.32s ease, opacity 0.28s ease;
+  opacity: 1;
 }
 
-/* Add subtle animation to cards */
-.info-card {
-  transition: box-shadow 0.2s ease;
-}
-
-.info-card:hover {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* When JS sets max-height: 0 the content disappears;
+   match with a slight opacity fade for polish. */
+.collapsible-header[aria-expanded="false"] + .collapsible-content {
+  opacity: 0;
 }

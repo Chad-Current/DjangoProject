@@ -158,6 +158,10 @@ fieldset legend::before {
   display: inline;
 }
 
+.form-field span {
+  font-size: var(--font-nm);
+  font-weight: 700;
+}
 label.requiredField::after {
   content: " *";
   color: #c0392b;

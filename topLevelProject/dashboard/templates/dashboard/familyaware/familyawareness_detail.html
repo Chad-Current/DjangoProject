@@ -10,150 +10,139 @@
 {% block content %}
 <div class="main container py-4">
 
-    <!-- Document Header -->
+    <!-- Header -->
     <div class="document-header">
         <h1><i class="fas fa-users"></i> Family Note</h1>
         <div class="subtitle">For {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}</div>
     </div>
 
     <div class="row">
-        <!-- Left Column: Note Content & Categories -->
+        <!-- Left Column -->
         <div class="col-lg-6">
 
-            <!-- Note Content Card -->
+            <!-- Note Content -->
             <div class="info-card">
-                <h3><i class="fas fa-sticky-note"></i> Note Content</h3>
-                <div class="description-box">
-                    <p>{{ familyawareness.content|linebreaks }}</p>
+                <div class="collapsible-header" aria-expanded="true">
+                    <h3><i class="fas fa-sticky-note"></i> Note Content</h3>
+                    <i class="fas fa-chevron-down collapse-icon"></i>
+                </div>
+                <div class="collapsible-content">
+                    <div class="description-box dv-mt-2">
+                        <p>{{ familyawareness.content|linebreaks }}</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Categories Card -->
+            <!-- Categories -->
             <div class="info-card">
-                <h3><i class="fas fa-tags"></i> This Note Covers</h3>
-
-                <div class="condition-item {% if familyawareness.is_location_of_legal_will %}active{% else %}inactive{% endif %}">
-                    <div>
-                        <i class="fas {% if familyawareness.is_location_of_legal_will %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        <strong class="ms-2">Location of Legal Will</strong>
-                    </div>
-                    {% if familyawareness.is_location_of_legal_will %}
-                    <span class="condition-badge">Yes</span>
-                    {% endif %}
+                <div class="collapsible-header" aria-expanded="true">
+                    <h3><i class="fas fa-tags"></i> This Note Covers</h3>
+                    <i class="fas fa-chevron-down collapse-icon"></i>
                 </div>
-
-                <div class="condition-item {% if familyawareness.is_password_manager %}active{% else %}inactive{% endif %}">
-                    <div>
-                        <i class="fas {% if familyawareness.is_password_manager %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        <strong class="ms-2">Password Manager Information</strong>
+                <div class="collapsible-content">
+                    <div class="dv-mt-2">
+                        <div class="condition-item {% if familyawareness.is_location_of_legal_will %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_location_of_legal_will %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong style="margin-left:0.5rem;">Location of Legal Will</strong>
+                            </div>
+                            {% if familyawareness.is_location_of_legal_will %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
+                        <div class="condition-item {% if familyawareness.is_password_manager %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_password_manager %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong style="margin-left:0.5rem;">Password Manager Information</strong>
+                            </div>
+                            {% if familyawareness.is_password_manager %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
+                        <div class="condition-item {% if familyawareness.is_social_media %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_social_media %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong style="margin-left:0.5rem;">How to Handle Social Media Accounts</strong>
+                            </div>
+                            {% if familyawareness.is_social_media %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
+                        <div class="condition-item {% if familyawareness.is_photos_or_files %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_photos_or_files %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong style="margin-left:0.5rem;">What to Do with Photos or Files</strong>
+                            </div>
+                            {% if familyawareness.is_photos_or_files %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
+                        <div class="condition-item {% if familyawareness.is_data_retention_preferences %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_data_retention_preferences %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong style="margin-left:0.5rem;">Data Retention Preferences</strong>
+                            </div>
+                            {% if familyawareness.is_data_retention_preferences %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
                     </div>
-                    {% if familyawareness.is_password_manager %}
-                    <span class="condition-badge">Yes</span>
-                    {% endif %}
-                </div>
-
-                <div class="condition-item {% if familyawareness.is_social_media %}active{% else %}inactive{% endif %}">
-                    <div>
-                        <i class="fas {% if familyawareness.is_social_media %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        <strong class="ms-2">How to Handle Social Media Accounts</strong>
-                    </div>
-                    {% if familyawareness.is_social_media %}
-                    <span class="condition-badge">Yes</span>
-                    {% endif %}
-                </div>
-
-                <div class="condition-item {% if familyawareness.is_photos_or_files %}active{% else %}inactive{% endif %}">
-                    <div>
-                        <i class="fas {% if familyawareness.is_photos_or_files %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        <strong class="ms-2">What to Do with Photos or Files</strong>
-                    </div>
-                    {% if familyawareness.is_photos_or_files %}
-                    <span class="condition-badge">Yes</span>
-                    {% endif %}
-                </div>
-
-                <div class="condition-item {% if familyawareness.is_data_retention_preferences %}active{% else %}inactive{% endif %}">
-                    <div>
-                        <i class="fas {% if familyawareness.is_data_retention_preferences %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        <strong class="ms-2">Data Retention Preferences</strong>
-                    </div>
-                    {% if familyawareness.is_data_retention_preferences %}
-                    <span class="condition-badge">Yes</span>
-                    {% endif %}
                 </div>
             </div>
 
         </div>
 
-        <!-- Right Column: Contact Info -->
+        <!-- Right Column -->
         <div class="col-lg-6">
 
-            <!-- Intended For Card -->
+            <!-- Intended For -->
             <div class="info-card">
-                <h3><i class="fas fa-user-check"></i> Intended For</h3>
-
-                <div class="contact-card">
-                    <h5>
-                        <i class="fas fa-user-circle"></i>
-                        <a href="{% url 'dashboard:contact_detail' familyawareness.relation.slug %}">
-                            {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}
-                        </a>
-                    </h5>
-
-                    <div class="contact-info">
-                        {% if familyawareness.relation.contact_relation %}
-                        <div class="contact-info-item">
-                            <i class="fas fa-heart"></i>
-                            <span>{{ familyawareness.relation.get_contact_relation_display }}</span>
-                        </div>
-                        {% endif %}
-
-                        {% if familyawareness.relation.email %}
-                        <div class="contact-info-item">
-                            <i class="fas fa-envelope"></i>
-                            <a href="mailto:{{ familyawareness.relation.email }}">{{ familyawareness.relation.email }}</a>
-                        </div>
-                        {% endif %}
-
-                        {% if familyawareness.relation.phone %}
-                        <div class="contact-info-item">
-                            <i class="fas fa-phone"></i>
-                            <a href="tel:{{ familyawareness.relation.phone }}">{{ familyawareness.relation.phone }}</a>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Contact Roles -->
-                    {% if familyawareness.relation.is_emergency_contact or familyawareness.relation.is_digital_executor or familyawareness.relation.is_caregiver %}
-                    <div class="mt-2">
-                        {% if familyawareness.relation.is_emergency_contact %}
-                        <span class="badge-role badge-emergency">
-                            <i class="fas fa-exclamation-triangle"></i> Emergency Contact
-                        </span>
-                        {% endif %}
-
-                        {% if familyawareness.relation.is_digital_executor %}
-                        <span class="badge-role badge-executor">
-                            <i class="fas fa-gavel"></i> Digital Executor
-                        </span>
-                        {% endif %}
-
-                        {% if familyawareness.relation.is_caregiver %}
-                        <span class="badge-role badge-caregiver">
-                            <i class="fas fa-hands-helping"></i> Caregiver
-                        </span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
+                <div class="collapsible-header" aria-expanded="true">
+                    <h3><i class="fas fa-user-check"></i> Intended For</h3>
+                    <i class="fas fa-chevron-down collapse-icon"></i>
                 </div>
-
-                <div class="description-box mt-3">
-                    <p>
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Note:</strong> This message is intended for
-                        {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}
-                        ({{ familyawareness.relation.get_contact_relation_display }}).
-                    </p>
+                <div class="collapsible-content">
+                    <div class="dv-mt-2">
+                        <div class="contact-card">
+                            <h5>
+                                <i class="fas fa-user-circle"></i>
+                                <a href="{% url 'dashboard:contact_detail' familyawareness.relation.slug %}">
+                                    {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}
+                                </a>
+                            </h5>
+                            <div class="contact-info">
+                                {% if familyawareness.relation.contact_relation %}
+                                <div class="contact-info-item">
+                                    <i class="fas fa-heart"></i>
+                                    <span>{{ familyawareness.relation.get_contact_relation_display }}</span>
+                                </div>
+                                {% endif %}
+                                {% if familyawareness.relation.email %}
+                                <div class="contact-info-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <a href="mailto:{{ familyawareness.relation.email }}">{{ familyawareness.relation.email }}</a>
+                                </div>
+                                {% endif %}
+                                {% if familyawareness.relation.phone %}
+                                <div class="contact-info-item">
+                                    <i class="fas fa-phone"></i>
+                                    <a href="tel:{{ familyawareness.relation.phone }}">{{ familyawareness.relation.phone }}</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% if familyawareness.relation.is_emergency_contact or familyawareness.relation.is_digital_executor or familyawareness.relation.is_caregiver %}
+                            <div class="dv-mt-2">
+                                {% if familyawareness.relation.is_emergency_contact %}
+                                <span class="badge-role badge-emergency"><i class="fas fa-exclamation-triangle"></i> Emergency Contact</span>
+                                {% endif %}
+                                {% if familyawareness.relation.is_digital_executor %}
+                                <span class="badge-role badge-executor"><i class="fas fa-gavel"></i> Digital Executor</span>
+                                {% endif %}
+                                {% if familyawareness.relation.is_caregiver %}
+                                <span class="badge-role badge-caregiver"><i class="fas fa-hands-helping"></i> Caregiver</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="description-box dv-mt-2">
+                            <p>
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Note:</strong> This message is intended for
+                                {{ familyawareness.relation.first_name }} {{ familyawareness.relation.last_name }}
+                                ({{ familyawareness.relation.get_contact_relation_display }}).
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -167,7 +156,7 @@
                 <i class="fas fa-calendar-plus"></i>
                 <strong>Created:</strong> {{ familyawareness.created_at|date:"F d, Y g:i A" }}
             </div>
-            <div class="col-md-6 meta-item text-md-end">
+            <div class="col-md-6 meta-item meta-right">
                 <i class="fas fa-calendar-check"></i>
                 <strong>Last Updated:</strong> {{ familyawareness.updated_at|date:"F d, Y g:i A" }}
             </div>
@@ -196,4 +185,38 @@
     {% endif %}
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.collapsible-header').forEach(function (header) {
+        var content = header.nextElementSibling;
+        if (!content || !content.classList.contains('collapsible-content')) return;
+        if (header.getAttribute('aria-expanded') === 'true') {
+            content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+            content.style.maxHeight = '0';
+            content.style.overflow = 'hidden';
+        }
+        header.addEventListener('click', function () {
+            var expanded = this.getAttribute('aria-expanded') === 'true';
+            if (expanded) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.overflow = 'hidden';
+                requestAnimationFrame(function () { content.style.maxHeight = '0'; });
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.addEventListener('transitionend', function onEnd() {
+                    content.style.maxHeight = 'none';
+                    content.style.overflow = 'visible';
+                    content.removeEventListener('transitionend', onEnd);
+                });
+                header.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

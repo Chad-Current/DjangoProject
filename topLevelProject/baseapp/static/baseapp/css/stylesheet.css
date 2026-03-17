@@ -44,7 +44,7 @@
   --background-color-dark: #16283b;
   --text-color:            #ede7e3;
   --text-color-dark:       #16283b;
-  --text-color-dark-muted: #16283b86;
+  --text-color-dark-muted: #16283ba6;
   --seventy-percent:       #c9ddee; 
   --sixty-percent:         #99c2e0;
   --fifty-percent:         #62a2ce; 
@@ -54,6 +54,7 @@
   --ten-percent:           #26567e;
   --zero-percent:          #223e58; 
   --accent-color:          #ffa62b;
+  --green-tag:             #9affdb;
 }
 
 
@@ -62,7 +63,7 @@
    ══════════════════════════════════════════════ */
 
 body {
-  max-height: 100svh;
+  min-height: 100svh;
   margin: 0 auto;
   scroll-behavior: smooth;
 }
@@ -77,7 +78,7 @@ body::-webkit-scrollbar-thumb { background: var(--text-color-dark); }
    ══════════════════════════════════════════════ */
 
 a {
-  font-size: var(--font-lg);
+  font-size: var(--font-nm);
   font-family: var(--main-font);
   font-weight: 700;
   text-decoration: none;
@@ -153,6 +154,12 @@ li {
   padding: 0.5rem;
 }
 
+span {
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--thirty-percent);
+}
 
 /* ══════════════════════════════════════════════
    GLOBAL UTILITIES

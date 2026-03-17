@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="main">
-        <div class="listin-container">
+        <div class="listing-container">
             <!-- Header Section -->
             <div class="page-header">
                 <div class="header-content">
@@ -25,6 +25,7 @@
             <!-- Content Section -->
             <div class="contacts-content">
                 {% if reviews %}
+
                 <!-- Desktop Table View -->
                 <div class="table-view d-none d-md-block">
                     <div class="table-responsive">
@@ -35,7 +36,6 @@
                                     <th>Type</th>
                                     <th>Review Date</th>
                                     <th>Next Review Due</th>
-                                    <!-- <th>Matters</th> -->
                                     <th class="text-end">View</th>
                                 </tr>
                             </thead>
@@ -61,27 +61,16 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span>
-                                            {{ review.get_item_type }}
-                                        </span>
+                                        <span>{{ review.get_item_type }}</span>
                                     </td>
                                     <td>
-                                        <span>
-                                            {{ review.review_date|date:"M d, Y" }}
-                                        </span>
+                                        <span>{{ review.review_date|date:"M d, Y" }}</span>
                                     </td>
                                     <td>
                                         <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}fas fa-exclamation-triangle text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
                                             {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                                         </span>
                                     </td>
-                                    <!-- <td>
-                                        {% if review.matters %}
-                                            <span class="badge bg-success">Yes</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">No</span>
-                                        {% endif %}
-                                    </td> -->
                                     <td>
                                         {% if can_modify %}
                                         <div class="action-buttons">
@@ -89,16 +78,8 @@
                                                 class="btn-action btn-view" title="View review">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <!-- <a href="{% url 'dashboard:relevancereview_update' review.slug %}"
-                                                class="btn-action btn-edit" title="Edit review">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="{% url 'dashboard:relevancereview_delete' review.slug %}"
-                                                class="btn-action btn-delete" title="Delete review">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a> -->
-                                            {% endif %}
                                         </div>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -107,8 +88,7 @@
                     </div>
                 </div>
 
-
-                   <!-- Pagination -->
+                <!-- Pagination -->
                 {% if is_paginated %}
                 <div class="pagination-wrapper">
                     <nav aria-label="Page navigation">
@@ -178,11 +158,12 @@
                     </div>
                 </div>
                 {% endif %}
-                
+
                 <!-- Mobile Card View -->
                 <div class="card-view d-md-none">
                     {% for review in reviews %}
                     <div class="contact-card">
+                        <div class="card-header-section">
                             <div class="contact-avatar">
                                 {% if review.get_item_type == "Account" %}
                                     <i class="fas fa-user-shield"></i>
@@ -210,7 +191,7 @@
                                 <strong>Next Due:</strong> {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                             </div>
                             <div class="info-row">
-                                <strong>Still Matters:</strong> 
+                                <strong>Still Matters:</strong>
                                 {% if review.matters %}
                                     <span class="badge bg-success">Yes</span>
                                 {% else %}
@@ -267,10 +248,8 @@
                     {% endif %}
                 </div>
                 {% endif %}
-            </div>
-        </div>
-    </div>
-{% endblock %}
-</body>
 
-</html>
+            </div><!-- /.contacts-content -->
+        </div><!-- /.listing-container -->
+    </div><!-- /.main -->
+{% endblock %}
