@@ -52,7 +52,7 @@
     border: 1px solid var(--nt-section-border);
     border-radius: 14px;
     padding: 36px 28px 40px;
-    margin-top: 28px;
+    margin: 2em 0;
     position: relative;
     overflow: visible;
 }
@@ -235,7 +235,7 @@
 
 .nt-count {
     background: rgba(255, 255, 255, 0.856);
-    border-radius: 50%;
+    border-radius: 8px;
     padding: 1px 7px;
     font-family: var(--accent-font);
     font-size: var(--font-nm);

@@ -73,7 +73,7 @@
 
 .collapsible-content {
   overflow: hidden;
-  max-height: 9999px;          /* JS sets this to scrollHeight or 0 */
+  max-height: 100svh;          /* JS sets this to scrollHeight or 0 */
   transition: max-height 0.32s ease, opacity 0.28s ease;
   opacity: 1;
 }
