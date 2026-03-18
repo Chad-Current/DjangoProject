@@ -1,0 +1,375 @@
+/* ================================================================
+   contact-node-tree.css
+   Delegation Map — vertical tree for contact_detail.html
+   All classes prefixed with "nt-" to avoid collisions.
+   Depends on: baseapp/css/stylesheet.css, Bootstrap 5, FontAwesome
+   ================================================================ */
+
+/* ── Design Tokens ──────────────────────────────────────────── */
+:root {
+    --nt-line:              var(--seventy-percent);
+    --nt-line-dash:         4 5;
+
+    --nt-root-bg:           var(--background-color-dark);
+    --nt-root-text:         var(--purewhite-color);
+    --nt-root-shadow:       0 6px 28px rgba(22, 40, 59, 0.26);
+
+    --nt-estate-color:      var(--twenty-percent);
+    --nt-estate-bg:         var(--thirty-percent);
+    --nt-estate-light:      var(--background-color);
+
+    --nt-docs-color:        var(--thirty-percent);
+    --nt-docs-bg:           var(--forty-percent);
+    --nt-docs-light:        var(--background-color);
+
+    --nt-devices-color:     var(--zero-percent);
+    --nt-devices-bg:        var(--ten-percent);
+    --nt-devices-light:     var(--background-color);
+
+    --nt-accounts-color:    var(--forty-percent);
+    --nt-accounts-bg:       var(--fifty-percent);
+    --nt-accounts-light:    var(--background-color);
+
+    --nt-item-bg:           var(--purewhite-color);
+    --nt-item-border:       var(--seventy-percent);
+    --nt-item-shadow:       0 2px 8px rgba(22, 40, 59, 0.07);
+    --nt-item-shadow-hover: 0 6px 20px rgba(22, 40, 59, 0.13);
+
+    --nt-section-bg:        var(--background-color);
+    --nt-section-border:    var(--seventy-percent);
+
+    --nt-badge-emergency:   var(--accent-color);
+    --nt-badge-executor:    var(--forty-percent);
+    --nt-badge-caregiver:   var(--green-tag);
+
+    --nt-ease:              cubic-bezier(0.22, 1, 0.36, 1);
+    --nt-ease-out:          cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+/* ── Section wrapper ────────────────────────────────────────── */
+.nt-section {
+    background: var(--nt-section-bg);
+    border: 1px solid var(--nt-section-border);
+    border-radius: 14px;
+    padding: 36px 28px 40px;
+    margin-top: 28px;
+    position: relative;
+    overflow: visible;
+}
+
+/* ── Section header ─────────────────────────────────────────── */
+.nt-section-header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: nt-fade-down 0.45s var(--nt-ease) both;
+}
+
+.nt-section-header h3 {
+    font-family: var(--main-font);
+    font-size: var(--font-md);
+    font-weight: 700;
+    color: var(--ten-percent);
+    margin: 0 0 4px;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.nt-section-header p {
+    font-size: 0.83rem;
+    color: var(--text-color-dark-muted);
+    margin: 0;
+}
+
+/* ── Root contact node ──────────────────────────────────────── */
+.nt-root-row {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+    animation: nt-fade-up 0.5s var(--nt-ease) 0.05s both;
+}
+
+.nt-node--root {
+    background: var(--nt-root-bg);
+    color: var(--nt-root-text);
+    border-radius: 12px;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 340px;
+    width: 100%;
+    box-shadow: var(--nt-root-shadow);
+}
+
+.nt-node-icon {
+    font-size: 1.9rem;
+    opacity: 0.8;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.nt-node-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.nt-node-title {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-node-sub {
+    font-size: 0.76rem;
+    opacity: 0.65;
+    margin-top: 2px;
+}
+
+/* ── Role badges on root node ───────────────────────────────── */
+.nt-node-roles {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.nt-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.nt-badge i { font-size: 0.65rem; }
+
+.nt-badge--emergency { background: var(--nt-badge-emergency); color: var(--text-color-dark); }
+.nt-badge--executor  { background: var(--nt-badge-executor);  color: var(--text-color); }
+.nt-badge--caregiver { background: var(--nt-badge-caregiver); color: var(--text-color-dark); }
+
+/* ── SVG connector overlay ──────────────────────────────────── */
+.nt-connector-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.nt-connector-path {
+    fill: none;
+    stroke: var(--nt-line);
+    stroke-width: 1.75;
+    stroke-dasharray: 5 5;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: nt-line-in 0.5s var(--nt-ease-out) 0.55s forwards;
+}
+
+/* ── Column layout ──────────────────────────────────────────── */
+.nt-columns {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    z-index: 2;
+    margin-top: 0;
+    align-items: flex-start;
+}
+
+.nt-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    gap: 0;
+}
+
+/* ── Category header nodes ──────────────────────────────────── */
+.nt-node--category {
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+    row-gap: 3px;
+    width: 100%;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
+    text-align: center;
+    flex-wrap: wrap;
+    animation: nt-fade-up 0.5s var(--nt-ease) both;
+}
+
+.nt-node--estate   { background: var(--nt-estate-bg);   animation-delay: 0.25s; }
+.nt-node--docs     { background: var(--nt-docs-bg);     animation-delay: 0.32s; }
+.nt-node--devices  { background: var(--nt-devices-bg);  animation-delay: 0.39s; }
+.nt-node--accounts { background: var(--nt-accounts-bg); animation-delay: 0.46s; }
+
+.nt-node--category i {
+    font-size: 0.82rem;
+    opacity: 0.9;
+}
+
+.nt-cat-label {
+    font-size: var(--font-md);
+    font-family: var(--title-font);
+    font-weight: 700;
+    white-space: nowrap;
+    color: #ffffff;
+    letter-spacing: 0.1rem;
+}
+
+.nt-count {
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+    padding: 1px 7px;
+    font-size: var(--font-nm);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+/* ── Items list ─────────────────────────────────────────────── */
+.nt-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* ── Individual item nodes ──────────────────────────────────── */
+.nt-node--item {
+    background: var(--nt-item-bg);
+    border: 1px solid var(--nt-item-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.77rem;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    box-shadow: var(--nt-item-shadow);
+    animation: nt-fade-up 0.42s var(--nt-ease) both;
+}
+
+.nt-node--item:hover {
+    box-shadow: var(--nt-item-shadow-hover);
+    transform: translateY(-2px);
+    z-index: 10;
+}
+
+/* Category-accented left border */
+.nt-node--estate-item  { border-left: 3px solid var(--nt-estate-color);   }
+.nt-node--docs-item    { border-left: 3px solid var(--nt-docs-color);     }
+.nt-node--device-item  { border-left: 3px solid var(--nt-devices-color);  }
+.nt-node--account-item { border-left: 3px solid var(--nt-accounts-color); }
+
+/* Icon color matches category */
+.nt-node--estate-item  > i { color: var(--nt-estate-color);   }
+.nt-node--docs-item    > i { color: var(--nt-docs-color);     }
+.nt-node--device-item  > i { color: var(--nt-devices-color);  }
+.nt-node--account-item > i { color: var(--nt-accounts-color); }
+
+.nt-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    font-size: var(--font-sm);
+}
+
+/* ── Empty column state ─────────────────────────────────────── */
+.nt-node--empty {
+    color: var(--text-color-dark-muted);
+    font-size: 0.74rem;
+    font-style: italic;
+    padding: 10px 8px;
+    text-align: center;
+    width: 100%;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes nt-fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nt-fade-down {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nt-line-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Responsive — stack to vertical list on mobile ──────────── */
+@media (max-width: 767px) {
+    .nt-section {
+        padding: 24px 16px 28px;
+    }
+
+    .nt-connector-svg {
+        display: none;
+    }
+
+    .nt-columns {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .nt-column {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .nt-node--category {
+        justify-content: flex-start;
+        border-radius: 8px 8px 0 0;
+        margin-bottom: 0;
+    }
+
+    .nt-items {
+        border: 1px solid var(--nt-item-border);
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        overflow: hidden;
+    }
+
+    .nt-node--item {
+        border-radius: 0;
+        border-left-width: 3px;
+        border-right: none;
+        border-top: none;
+        box-shadow: none;
+    }
+
+    .nt-node--item:last-child {
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .nt-node--root  { padding: 12px 16px; gap: 10px; }
+    .nt-node-icon   { font-size: 1.5rem; }
+    .nt-node-title  { font-size: 0.9rem; }
+}

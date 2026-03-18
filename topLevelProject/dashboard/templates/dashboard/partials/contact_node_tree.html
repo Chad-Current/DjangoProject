@@ -1,0 +1,235 @@
+{% if delegated_estate_documents or delegated_important_documents or delegated_devices or delegated_accounts %}
+
+<div class="nt-section">
+
+    <div class="nt-section-header">
+        <h3><i class="fas fa-sitemap"></i>&nbsp; Delegation Map</h3>
+    </div>
+
+    <!-- <div class="nt-root-row">
+        <div class="nt-node--root" id="nt-root">
+            <div class="nt-node-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="nt-node-body">
+                <div class="nt-node-title">
+                    {{ contact.first_name }} {{ contact.last_name }}
+                </div>
+                <div class="nt-node-sub">
+                    {{ contact.get_contact_relation_display|default:"Contact" }}
+                </div>
+            </div>
+            {% if contact.is_emergency_contact or contact.is_digital_executor or contact.is_caregiver %}
+            <div class="nt-node-roles">
+                {% if contact.is_emergency_contact %}
+                <span class="nt-badge nt-badge--emergency" title="Emergency Contact">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                {% endif %}
+                {% if contact.is_digital_executor %}
+                <span class="nt-badge nt-badge--executor" title="Digital Executor">
+                    <i class="fas fa-gavel"></i>
+                </span>
+                {% endif %}
+                {% if contact.is_caregiver %}
+                <span class="nt-badge nt-badge--caregiver" title="Caregiver">
+                    <i class="fas fa-hands-helping"></i>
+                </span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div> -->
+
+    <svg class="nt-connector-svg" id="nt-svg" aria-hidden="true"></svg>
+
+    <div class="nt-columns" id="nt-columns">
+
+        <!-- Estate Documents -->
+        <div class="nt-column" id="nt-col-estate">
+            <div class="nt-node--category nt-node--estate" id="nt-cat-estate">
+                <i class="fas fa-file-contract"></i>
+                <span class="nt-cat-label">Estate</span>
+                <span class="nt-count">{{ delegated_estate_documents|length }}</span>
+            </div>
+            <div class="nt-items">
+                {% for doc in delegated_estate_documents %}
+                <div class="nt-node--item nt-node--estate-item"
+                     style="animation-delay: {{ forloop.counter0|add:6 }}00ms"
+                     data-href="{% url 'dashboard:estate_detail' doc.slug %}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="{{ doc.name_or_title }}">
+                    <i class="fas fa-file-contract"></i>
+                    <span class="nt-item-label">{{ doc.name_or_title|truncatechars:28 }}</span>
+                </div>
+                {% empty %}
+                <div class="nt-node--empty">None assigned</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Important Documents -->
+        <div class="nt-column" id="nt-col-docs">
+            <div class="nt-node--category nt-node--docs" id="nt-cat-docs">
+                <i class="fas fa-file-alt"></i>
+                <span class="nt-cat-label">Imp. Docs</span>
+                <span class="nt-count">{{ delegated_important_documents|length }}</span>
+            </div>
+            <div class="nt-items">
+                {% for doc in delegated_important_documents %}
+                <div class="nt-node--item nt-node--docs-item"
+                     style="animation-delay: {{ forloop.counter0|add:7 }}00ms"
+                     data-href="{% url 'dashboard:importantdocument_detail' doc.slug %}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="{{ doc.name_or_title }}">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="nt-item-label">{{ doc.name_or_title|truncatechars:28 }}</span>
+                </div>
+                {% empty %}
+                <div class="nt-node--empty">None assigned</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Devices -->
+        <div class="nt-column" id="nt-col-devices">
+            <div class="nt-node--category nt-node--devices" id="nt-cat-devices">
+                <i class="fas fa-laptop"></i>
+                <span class="nt-cat-label">Devices</span>
+                <span class="nt-count">{{ delegated_devices|length }}</span>
+            </div>
+            <div class="nt-items">
+                {% for device in delegated_devices %}
+                <div class="nt-node--item nt-node--device-item"
+                     style="animation-delay: {{ forloop.counter0|add:8 }}00ms"
+                     data-href="{% url 'dashboard:device_detail' device.slug %}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="{{ device.device_name }}">
+                    <i class="fas fa-{% if device.device_type == 'Phone' %}mobile-alt{% elif device.device_type == 'Laptop' %}laptop{% elif device.device_type == 'Tablet' %}tablet-alt{% elif device.device_type == 'Desktop' %}desktop{% elif device.device_type == 'Smart Watch' %}clock{% else %}microchip{% endif %}"></i>
+                    <span class="nt-item-label">{{ device.device_name|truncatechars:28 }}</span>
+                </div>
+                {% empty %}
+                <div class="nt-node--empty">None assigned</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Accounts -->
+        <div class="nt-column" id="nt-col-accounts">
+            <div class="nt-node--category nt-node--accounts" id="nt-cat-accounts">
+                <i class="fas fa-user-shield"></i>
+                <span class="nt-cat-label">Accounts</span>
+                <span class="nt-count">{{ delegated_accounts|length }}</span>
+            </div>
+            <div class="nt-items">
+                {% for account in delegated_accounts %}
+                <div class="nt-node--item nt-node--account-item"
+                     style="animation-delay: {{ forloop.counter0|add:9 }}00ms"
+                     data-href="{% url 'dashboard:account_detail' account.slug %}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="{{ account.account_name_or_provider }}">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="nt-item-label">{{ account.account_name_or_provider|truncatechars:28 }}</span>
+                </div>
+                {% empty %}
+                <div class="nt-node--empty">None assigned</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    document.querySelectorAll('.nt-node--item[data-href]').forEach(function (node) {
+        node.addEventListener('click', function () {
+            window.location.href = this.dataset.href;
+        });
+        node.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = this.dataset.href;
+            }
+        });
+    });
+
+    function drawTree() {
+        var section = document.querySelector('.nt-section');
+        var svg     = document.getElementById('nt-svg');
+        var rootEl  = document.getElementById('nt-root');
+        var catIds  = ['nt-cat-estate', 'nt-cat-docs', 'nt-cat-devices', 'nt-cat-accounts'];
+        var colIds  = ['nt-col-estate', 'nt-col-docs',  'nt-col-devices',  'nt-col-accounts'];
+
+        if (!section || !svg || !rootEl) return;
+
+        svg.innerHTML = '';
+
+        var sr = section.getBoundingClientRect();
+
+        function rel(el) {
+            var r = el.getBoundingClientRect();
+            return {
+                cx:     r.left - sr.left + r.width  / 2,
+                cy:     r.top  - sr.top  + r.height / 2,
+                top:    r.top    - sr.top,
+                bottom: r.bottom - sr.top
+            };
+        }
+
+        function drawPath(x1, y1, x2, y2, delay) {
+            var midY = (y1 + y2) / 2;
+            var d    = 'M ' + x1 + ' ' + y1 +
+                       ' C ' + x1 + ' ' + midY +
+                       ', '  + x2 + ' ' + midY +
+                       ', '  + x2 + ' ' + y2;
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', d);
+            path.setAttribute('class', 'nt-connector-path');
+            path.style.animationDelay = delay + 'ms';
+            svg.appendChild(path);
+        }
+
+        var root = rel(rootEl);
+
+        catIds.forEach(function (catId, idx) {
+            var catEl = document.getElementById(catId);
+            var colEl = document.getElementById(colIds[idx]);
+            if (!catEl) return;
+
+            var cat = rel(catEl);
+
+            drawPath(root.cx, root.bottom, cat.cx, cat.top, 500 + idx * 60);
+
+            var items = colEl ? colEl.querySelectorAll('.nt-node--item') : [];
+            items.forEach(function (item, iIdx) {
+                var ir = rel(item);
+                drawPath(cat.cx, cat.bottom, ir.cx, ir.top, 650 + idx * 50 + iIdx * 40);
+            });
+        });
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(drawTree, 50);
+    } else {
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(drawTree, 50);
+        });
+    }
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(drawTree, 120);
+    });
+
+}());
+</script>
+
+{% endif %}

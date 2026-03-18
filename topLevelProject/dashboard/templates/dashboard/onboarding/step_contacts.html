@@ -328,11 +328,11 @@
           <i class="fas fa-plus"></i> Add Contact
         </button>
         <div class="ob-spacer"></div>
-        {% if contacts.count > 0 %}
+        <!-- {% if contacts.count > 0 %}
         <a href="{% url 'dashboard:onboarding_accounts' %}" class="ob-btn ob-btn-accent">
           Continue to Accounts <i class="fas fa-arrow-right"></i>
         </a>
-        {% endif %}
+        {% endif %} -->
       </div>
 
     </div>{# end ob-form-card #}
@@ -392,7 +392,7 @@
 
     {% if contacts.count > 0 %}
     <a href="{% url 'dashboard:onboarding_accounts' %}" class="ob-btn ob-btn-blue ob-btn-full">
-      Continue → Accounts <i class="fas fa-arrow-right"></i>
+      Continue to Accounts <i class="fas fa-arrow-right"></i>
     </a>
     {% else %}
     <p style="font-size: var(--font-sm); font-weight: 300; color: var(--thirty-percent); text-align: center; margin: 0;">

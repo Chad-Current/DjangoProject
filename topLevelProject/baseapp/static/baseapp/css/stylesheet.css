@@ -763,7 +763,7 @@ PAYMENT CARD AREA
 .pricing-cards {
   display: flex;
   flex-flow: column wrap;
-  justify-content: center
+  justify-content: center;
   margin-bottom: 2.5rem;
 }
 
@@ -777,5 +777,5 @@ PAYMENT CARD AREA
   position: relative;
   transition: transform 0.25s, box-shadow 0.25s;
   width: 80%;
-}
+  }
 }

@@ -804,7 +804,7 @@
    ══════════════════════════════════════════════ */
 
 .closing-cta {
-    background: linear-gradient(135deg, var(--background-color-dark) 0%, var(--zero-percent) 100%);
+    background: var(--background-color);
     padding: 5rem 0;
     text-align: center;
 }
@@ -812,7 +812,7 @@
     font-family: var(--title-font);
     font-size: var(--font-xxl);
     font-weight: 700;
-    color: var(--text-color);
+    color: var(--thirty-percent);
     line-height: 1.25;
     margin: 0 0 2rem;
 }

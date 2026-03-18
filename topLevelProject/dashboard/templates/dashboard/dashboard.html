@@ -153,6 +153,7 @@
         <div class="protection-layers">
             <h3><i class="fas fa-shield-alt"></i> Protection Layers</h3>
 
+            <!-- Core Identity -->
             <div class="layer legacy">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-user-circle"></i> Core Identity</div>
@@ -169,6 +170,7 @@
                 </div>
             </div>
 
+            <!-- Digital Accounts -->
             <div class="layer accounts">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-shield-alt"></i> Digital Accounts</div>
@@ -185,6 +187,7 @@
                 </div>
             </div>
 
+            <!-- Physical Assets -->
             <div class="layer assets">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-laptop"></i> Physical Assets</div>
@@ -201,6 +204,7 @@
                 </div>
             </div>
 
+            <!-- Estate Documents — FIX: class thresholds now match label logic (max 3) -->
             <div class="layer estate">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-file-contract"></i> Estate Documents</div>
@@ -211,28 +215,30 @@
                 </div>
                 <div class="layer-label">
                     <span>Estate Documents</span>
-                    <span class="layer-rating {% if estates_count >= 8 %}excellent{% elif estates_count >= 5 %}strong{% elif estates_count >= 2 %}moderate{% else %}weak{% endif %}">
+                    <span class="layer-rating {% if estates_count >= 3 %}excellent{% elif estates_count >= 2 %}strong{% elif estates_count >= 1 %}moderate{% else %}weak{% endif %}">
                         {% if estates_count >= 3 %}EXCELLENT{% elif estates_count >= 2 %}STRONG{% elif estates_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>
             </div>
 
+            <!-- Additional Documents — FIX: widthratio denominator corrected from 5 → 8 to match /8 label -->
             <div class="layer documents">
                 <div class="layer-header">
-                    <div class="layer-name"><i class="fas fa-file-contract"></i> Additional Documents</div>
+                    <div class="layer-name"><i class="fas fa-file-alt"></i> Additional Documents</div>
                     <div class="layer-status">{{ documents_count }}/8</div>
                 </div>
                 <div class="layer-strength">
-                    <div class="layer-strength-fill" style="width: {% widthratio documents_count 5 100 %}%"></div>
+                    <div class="layer-strength-fill" style="width: {% widthratio documents_count 8 100 %}%"></div>
                 </div>
                 <div class="layer-label">
                     <span>Important Documents</span>
                     <span class="layer-rating {% if documents_count >= 8 %}excellent{% elif documents_count >= 5 %}strong{% elif documents_count >= 2 %}moderate{% else %}weak{% endif %}">
-                        {% if documents_count >= 5 %}EXCELLENT{% elif documents_count >= 3 %}STRONG{% elif documents_count >= 1 %}MODERATE{% else %}WEAK{% endif %}
+                        {% if documents_count >= 8 %}EXCELLENT{% elif documents_count >= 5 %}STRONG{% elif documents_count >= 2 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>
             </div>
 
+            <!-- Family Guidance — FIX: class thresholds now match label logic (5, 4, 3) -->
             <div class="layer family">
                 <div class="layer-header">
                     <div class="layer-name"><i class="fas fa-users"></i> Family Guidance</div>
@@ -243,7 +249,7 @@
                 </div>
                 <div class="layer-label">
                     <span>Family Notes</span>
-                    <span class="layer-rating {% if family_knows_count >= 5 %}excellent{% elif family_knows_count >= 3 %}strong{% elif family_knows_count >= 1 %}moderate{% else %}weak{% endif %}">
+                    <span class="layer-rating {% if family_knows_count >= 5 %}excellent{% elif family_knows_count >= 4 %}strong{% elif family_knows_count >= 3 %}moderate{% else %}weak{% endif %}">
                         {% if family_knows_count >= 5 %}EXCELLENT{% elif family_knows_count >= 4 %}STRONG{% elif family_knows_count >= 3 %}MODERATE{% else %}WEAK{% endif %}
                     </span>
                 </div>

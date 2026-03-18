@@ -5,6 +5,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/contact-node-tree.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -17,7 +18,7 @@
         </div>
 
         <!-- Summary Statistics -->
-        {% if delegated_estate_documents or delegated_important_documents or delegated_accounts or delegated_devices %}
+        <!-- {% if delegated_estate_documents or delegated_important_documents or delegated_accounts or delegated_devices %}
         <div class="summary-stats">
             <div class="stat-item">
                 <div class="stat-number">{{ total_assignments|default:0 }}</div>
@@ -40,7 +41,12 @@
                 <div class="stat-label">Accounts</div>
             </div>
         </div>
-        {% endif %}
+        {% endif %} -->
+
+
+        {% include "dashboard/partials/contact_node_tree.html" %}
+
+
 
         <div class="row">
             <div class="col-lg-5">

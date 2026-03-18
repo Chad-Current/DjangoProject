@@ -7,7 +7,7 @@
 
 /* ── Outer wrap ─────────────────────────────────────────────── */
 .onboarding-wrap {
-  max-width: 1200px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 2rem;
   display: grid;
@@ -27,7 +27,7 @@
 }
 
 .rail-header {
-  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 100%);
+  background: var(--thirty-percent);  
   border-radius: 20px 20px 0 0;
   padding: 1.75rem 1.5rem 1.5rem;
 }
@@ -59,7 +59,8 @@
 }
 
 .rail-steps {
-  background: var(--purewhite-color);
+  /* background: var(--purewhite-color); */
+  border: solid 2px var(--ten-percent);
   border-radius: 0 0 20px 20px;
   padding: 1.25rem 1.5rem 1.5rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.08);
@@ -134,10 +135,10 @@
   font-family: var(--main-font);
   font-size: var(--font-sm);
   font-weight: 600;
-  color: var(--sixty-percent);
-  background: rgba(98, 162, 206, 0.12);
+  color: var(--text-color-dark);
+  background: var(--seventy-percent);
   padding: 2px 9px;
-  border-radius: 20px;
+  border-radius: 50%;
   align-self: flex-start;
   margin-top: 5px;
   white-space: nowrap;
@@ -178,15 +179,16 @@
 }
 
 .ob-page-header {
-  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 100%);
+  background: var(--thirty-percent);
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 1.75rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 18px rgba(22, 40, 59, 0.07), 0 -1px 8px var(--purewhite-color);
+  border: solid 2px var(--ten-percent);
 }
 .ob-eyebrow {
   font-family: var(--main-font);
-  font-size: var(--font-sm);
+  font-size: var(--font-nm);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -204,7 +206,7 @@
   font-family: var(--paragraph-font);
   font-size: var(--font-nm);
   font-weight: 300;
-  color: rgba(231, 239, 247, 0.8);
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -410,7 +412,11 @@
   background: var(--purewhite-color);
   color: var(--ten-percent);
 }
-.ob-btn-blue { background: var(--sixty-percent); color: var(--text-color); }
+.ob-btn-blue { 
+  background: var(--ten-percent); 
+  color: var(--text-color);   
+  border: solid 2px var(--ten-percent);
+}
 .ob-btn-blue:hover {
   background: var(--thirty-percent);
   color: var(--text-color);
@@ -419,10 +425,15 @@
 .ob-btn-full { width: 100%; justify-content: center; }
 
 /* ── Right panel ────────────────────────────────────────────── */
-.ob-panel { display: flex; flex-direction: column; gap: 1rem; }
+.ob-panel { 
+  display: flex; 
+  flex-direction: 
+  column; gap: 1rem; 
+}
 .ob-panel-card {
-  background: var(--purewhite-color);
+  /* background: var(--purewhite-color); */
   border-radius: 20px;
+  border: solid 2px var(--ten-percent);
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.08);
 }
@@ -443,7 +454,7 @@
   align-items: center;
   gap: 11px;
   padding: 10px 13px;
-  background: var(--background-color);
+  background: var(--purewhite-color);
   border-radius: 12px;
   border-left: 3px solid var(--sixty-percent);
   transition: all 0.2s ease;

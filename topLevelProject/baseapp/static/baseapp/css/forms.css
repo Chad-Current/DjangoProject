@@ -402,7 +402,7 @@ input[type="checkbox"] {
   width: 20px;
   height: 20px;
   min-width: 20px;
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--ten-percent);
   border-radius: 6px;
   background: var(--purewhite-color);
   cursor: pointer;
@@ -415,7 +415,7 @@ input[type="checkbox"] {
 .checkboxinput:hover,
 .form-check-input:hover,
 input[type="checkbox"]:hover {
-  border-color: var(--thirty-percent);
+  border-color: var(--accent-color);
 }
 
 .checkboxinput:checked,

@@ -283,21 +283,21 @@
 }
 
 .badge-emergency {
-  background: rgba(255, 166, 43, 0.12);
-  color: #8a5000;
-  border: 1.5px solid rgba(255, 166, 43, 0.45);
+  background: var(--accent-color);
+  color: var(--text-color-dark);
+  border: 1.5px solid #694411;
 }
 
 .badge-executor {
-  background: rgba(37, 78, 112, 0.12);
-  color: var(--ten-percent);
-  border: 1.5px solid rgba(45, 106, 156, 0.35);
+  background: var(--sixty-percent);
+  color: var(--text-color-dark);
+  border: 1.5px solid #688599;
 }
 
 .badge-caregiver {
-  background: rgba(98, 162, 206, 0.12);
-  color: var(--thirty-percent);
-  border: 1.5px solid rgba(98, 162, 206, 0.35);
+  background: var(--purewhite-color);
+  color: var(--text-color-dark-muted);
+  border: 1.5px solid #55595c;
 }
 
 /* Section count pill — e.g. "(3)" after a card title */
