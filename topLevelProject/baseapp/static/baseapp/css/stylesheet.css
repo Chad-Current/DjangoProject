@@ -3,7 +3,7 @@
    Includes: CSS tokens, typography, utilities, layout components
    Load before forms.css
    ═══════════════════════════════════════════════════════════════════ */
-
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Ultra&display=swap');
 
 /* ══════════════════════════════════════════════
    BOX MODEL RESET
@@ -36,6 +36,8 @@
   --anchor-font:    "Caprasimo";
   --accent-font:    "Comfortaa";
   --paragraph-font: "Inter";
+  --accent-font:    "Lobster Two";
+  --accent-fat-font: "Ultra";
 
   /* Color palette */
   --purewhite-color:       #e7eff7;

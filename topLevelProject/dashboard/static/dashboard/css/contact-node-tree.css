@@ -226,7 +226,7 @@
 
 .nt-cat-label {
     font-size: var(--font-md);
-    font-family: var(--title-font);
+    font-family: var(--main-font);
     font-weight: 700;
     white-space: nowrap;
     color: #ffffff;
@@ -234,12 +234,14 @@
 }
 
 .nt-count {
-    background: rgb(255, 255, 255);
+    background: rgba(255, 255, 255, 0.856);
     border-radius: 50%;
     padding: 1px 7px;
+    font-family: var(--accent-font);
     font-size: var(--font-nm);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.02em;
+    color: var(--ten-percent);
 }
 
 /* ── Items list ─────────────────────────────────────────────── */

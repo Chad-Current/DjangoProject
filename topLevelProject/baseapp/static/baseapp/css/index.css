@@ -662,7 +662,7 @@
 }
 .step-card p {
     font-size: var(--font-nm);
-    color: var(--fifty-percent);
+    color: var(--forty-percent);
     line-height: 1.7;
     max-width: 260px;
     margin: 0;
@@ -684,14 +684,14 @@
 
 .section-tag {
     display: inline-block;
-    background: rgba(255,166,43,.12);
-    border: 1.5px solid rgba(255,166,43,.4);
+    background: var(--seventy-percent);
+    border: solid 1.5px var(--ten-percent);
     border-radius: 50px;
     padding: .3rem 1rem;
     font-family: var(--main-font);
     font-size: var(--font-sm);
     font-weight: 800;
-    color: #b06000;
+    color: var(--ten-percent);
     text-transform: uppercase;
     letter-spacing: .07em;
     margin-bottom: 1rem;
@@ -700,7 +700,7 @@
 .intro-text {
     font-family: var(--paragraph-font);
     font-size: var(--font-nm);
-    color: var(--text-color-dark-muted);
+    color: var(--forty-percent);
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
@@ -755,10 +755,10 @@
 }
 
 .objections-box {
-    background: var(--purewhite-color);
+    background: var(--background-color);
+    border: solid 1.5px var(--thirty-percent);
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1.5px solid rgba(45,106,156,.12);
 }
 .objections-box h3 {
     font-family: var(--main-font);
