@@ -1,65 +1,23 @@
-const openButton = document.getElementById('open-sidebar-button');
-const navbar = document.getElementById('navbar');
-const media = window.matchMedia("(max-width: 780px)");
-const dropdown = document.querySelector('.dropdown');
-const classes = document.querySelector('.classes');
-const margin_left = document.querySelector('.marginLeft');
-const siteTitle = document.getElementById('site-title');
-// const sectionTwo = document.querySelector('.section_two');
-// const sectionTwoMobile = document.querySelector('.section_two_mobile');
-media.addEventListener('change', (e) => updateNavbar(e));
+/* mobile.js
+   openSidebar() and closeSidebar() are defined inline in navbar.html
+   so they are available immediately on page load regardless of this
+   file's load timing. This file only adds enhancement listeners.
+*/
 
-function updateNavbar(e) {
-  const isMobile = e.matches;
-  console.log(isMobile);
-  if (isMobile) {
-    navbar.setAttribute('inert', '');
-    siteTitle.style.display = 'none'; 
-    margin_left.classList.remove('marginLeft');
-    // sectionTwoMobile.style.display = 'block';
-    hideDropdown();
-  } else {
-    // desktop device
-    navbar.removeAttribute('inert');
-    siteTitle.style.display = 'block'; 
-    margin_left.classList.add('marginLeft');
-    // sectionTwo.style.display = 'block';
-    // sectionTwoMobile.style.display = 'none';
-    showDropdown();
+/* Close sidebar on Escape key */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
+    closeSidebar();
   }
-}
+});
 
-function openSidebar() {
-  navbar.classList.add('show');
-  openButton.setAttribute('aria-expanded', 'true');
-  navbar.removeAttribute('inert');
-}
-
-function closeSidebar() {
-  navbar.classList.remove('show');
-  openButton.setAttribute('aria-expanded', 'false');
-  navbar.setAttribute('inert', '');
-}
-
-function hideDropdown() {
-  dropdown.style.display = 'none';
-  classes.style.display = 'block';
-  // dropdownContent.style.display = 'none';
-}
-
-function showDropdown() {
-  dropdown.style.display = 'block';
-  classes.style.display = 'none';
-  // dropdownContent.style.display = 'block';
-}
-
-
-// For Bookmark Links
-// const navLinks = document.querySelectorAll('nav a')
-// navLinks.forEach(link => {
-//   link.addEventListener('click', () => {
-//     closeSidebar()
-//   })
-// })
-
-updateNavbar(media)
+/* Close sidebar when any link inside it is tapped on mobile */
+(function () {
+  var navbar = document.getElementById('navbar');
+  if (!navbar) return;
+  navbar.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      if (window.innerWidth <= 780) closeSidebar();
+    });
+  });
+}());

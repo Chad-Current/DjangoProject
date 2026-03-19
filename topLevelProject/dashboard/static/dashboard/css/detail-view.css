@@ -86,10 +86,10 @@
 
 .info-card h3 {
   font-family: var(--title-font);
-  font-size: var(--font-lg);
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--ten-percent);
-  padding-bottom: 0.65rem;
+  padding: 0.65rem;
   margin-bottom: 1.25rem;
   border-bottom: 2px solid var(--background-color);
   display: flex;
@@ -100,7 +100,7 @@
 
 .info-card h3 i {
   color: var(--thirty-percent);
-  font-size: 0.9em;
+  font-size: var(--font-sm);
   opacity: 0.85;
 }
 
@@ -116,6 +116,18 @@
   margin-top: -1px;
 }
 
+.info-card h5 > a {
+  font-size: var(--font-lg);
+}
+
+.info-card a {
+  text-decoration: none;
+  color: var(--thirty-percent);
+}
+
+.info-card a:hover {
+  color: var(--accent-color);
+}
 
 /* ══════════════════════════════════════════════
    INFO ROWS — label / value pairs
@@ -158,8 +170,8 @@
   flex: 1;
   font-family: var(--paragraph-font);
   font-size: var(--font-nm);
-  font-weight: 400;
-  color: var(--text-color-dark);
+  font-weight: 00;
+  color: var(--thirty-percent);
   word-break: break-word;
   line-height: 1.5;
 }
@@ -325,7 +337,6 @@
   gap: 0.7rem;
   background: rgba(255, 166, 43, 0.1);
   border: 1.5px solid rgba(255, 166, 43, 0.4);
-  border-left: 4px solid var(--accent-color);
   border-radius: 12px;
   padding: 0.85rem 1.1rem;
   margin: 0.75rem 0;
@@ -352,8 +363,7 @@
 
 .description-box {
   background: var(--background-color);
-  border-left: 4px solid var(--thirty-percent);
-  border-radius: 0 12px 12px 0;
+  border-radius: 12px;
   padding: 1rem 1.25rem;
   margin-top: 0.25rem;
 }
@@ -395,11 +405,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  font-size: var(--font-md);
+  color: var(--thirty-percent);
 }
 
 .location-badge strong {
   font-family: var(--main-font);
-  font-size: var(--font-sm);
+  font-size: var(--font-md);
   font-weight: 700;
   color: var(--ten-percent);
 }
@@ -683,20 +695,17 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   background: var(--background-color);
-  border-left: 4px solid var(--thirty-percent);
-  border-radius: 0 12px 12px 0;
+  border-radius: 12px;
   padding: 1rem 1.1rem;
   margin-bottom: 0.75rem;
-  transition: border-color 0.2s, background 0.2s;
+  transition: background 0.2s;
 }
 
 .condition-item.active {
-  border-left-color: var(--accent-color);
   background: rgba(255, 166, 43, 0.05);
 }
 
 .condition-item.inactive {
-  border-left-color: rgba(45, 106, 156, 0.3);
   opacity: 0.6;
 }
 
@@ -713,20 +722,15 @@
 
 .document-item {
   background: var(--background-color);
-  border-left: 4px solid var(--thirty-percent);
-  border-radius: 0 12px 12px 0;
+  border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1rem;
-  transition: box-shadow 0.2s ease, border-color 0.2s;
+  transition: box-shadow 0.2s ease;
 }
 
 .document-item:hover {
   box-shadow: 2px 4px 14px rgba(45, 106, 156, 0.12);
-  border-left-color: var(--sixty-percent);
 }
-
-.document-item.estate-doc  { border-left-color: var(--accent-color); }
-.document-item.important-doc { border-left-color: var(--sixty-percent); }
 
 .document-item h5 {
   font-family: var(--main-font);
@@ -764,8 +768,7 @@
 
 .instructions-box {
   background: rgba(255, 166, 43, 0.05);
-  border-left: 4px solid var(--accent-color);
-  border-radius: 0 12px 12px 0;
+  border-radius: 12px;
   padding: 1rem 1.25rem;
   margin-top: 1rem;
 }

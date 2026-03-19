@@ -1,46 +1,185 @@
 {% load static %}
-  <link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-    rel="stylesheet">
+<link rel="stylesheet" href="{% static 'baseapp/css/navbar.css' %}" type="text/css">
+<link
+  href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+  rel="stylesheet">
 
-  <!-- <a href="#main-content" class="skip-link">Skip to main content</a> -->
+<button id="open-sidebar-button" onclick="openSidebar()" aria-label="Open navigation" aria-expanded="false"
+  aria-controls="navbar">
+  <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons" alt="" />
+</button>
 
-  <button id="open-sidebar-button" onclick="openSidebar()" aria-label="open sidebar" aria-expanded="false"
-    aria-controls="navbar">
-    <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons" />
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <ul>
 
-  </button>
 
-  <nav id="navbar">
-    <ul>
-      <button id="close-sidebar-button" onclick="closeSidebar()" aria-label="close sidebar">
-        <img src="/static/baseapp/images/Close.svg" class="nav-icons" />
+    <li class="sidebar-close-li">
+      <button id="close-sidebar-button" onclick="closeSidebar()" aria-label="Close navigation">
+        <img src="/static/baseapp/images/Close.svg" class="nav-icons" alt="" />
       </button>
-      <li class="classes"><img src="/static/baseapp/images/logo.svg" class="logo" id="site-title" /></li>
-      <li class="classes marginLeft "><a aria-current="page" href="{% url 'baseapp_main:home' %}">Home</a></li>
-      <li class="classes"><a href="{% url 'faqs_page:faqs' %}">FAQs</a></li>
-      <!-- If the user is logged in, show the Logout button/link -->
-        {% if user.is_authenticated and user.can_view_data %}
-      <li><a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a></li>
-      {% endif %}
-      <li class="classes">
-        {% if user.is_authenticated %}
-        <a href="{% url 'accounts:logout' %}">Logout</a>
-        {% else %}
-        <!-- If the user is not logged in, show the Login button/link -->
-        <a href="{% url 'accounts:login' %}">Login</a>
-        {% endif %}
-      </li>
+    </li>
 
-      <!-- <li class="classes login-button"><a href="{% url 'accounts:login' %}">Login</a></li> -->
-    </ul>
-  </nav>
+    {% if user.is_authenticated %}
+    <li class="mobile-only mobile-section-header">
+      <span class="mobile-section-label">Navigation</span>
+    </li>
+    {% endif %}
 
+    {% if user.is_authenticated and user.can_view_data %}
+    <li class="nav-item">
+      <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'faqs_page:faqs' %}">FAQs</a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a href="{% url 'baseapp_main:home' %}">Home</a>
+    </li>
 
-  <div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+    {% if user.is_authenticated %}
+    <li class="mobile-only mobile-divider-li"></li>
+    <li class="mobile-only mobile-section-header">
+      <span class="mobile-section-label">Quick Links</span>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:contact_list' %}">
+        <i class="fas fa-address-book nav-icon" aria-hidden="true"></i>Contacts
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:account_list' %}">
+        <i class="fas fa-user-shield nav-icon" aria-hidden="true"></i>Accounts
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:device_list' %}">
+        <i class="fas fa-laptop nav-icon" aria-hidden="true"></i>Devices
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:estate_list' %}">
+        <i class="fas fa-file-contract nav-icon" aria-hidden="true"></i>Estate Docs
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:importantdocument_list' %}">
+        <i class="fas fa-scroll nav-icon" aria-hidden="true"></i>Important Docs
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:familyawareness_list' %}">
+        <i class="fas fa-users nav-icon" aria-hidden="true"></i>Family Notes
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:funeralplan_index' %}">
+        <i class="fas fa-user-tie nav-icon" aria-hidden="true"></i>Funeral Planning
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:relevancereview_list' %}">
+        <i class="fas fa-calendar-check nav-icon" aria-hidden="true"></i>Review List
+      </a>
+    </li>
+    {% endif %}
 
-  <script src="{% static 'baseapp/js/mobile.js' %}"></script>
-  <script src="{% static 'baseapp/js/login.js' %}"></script>
-  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    {% if user.is_authenticated %}
+    <li class="nav-item desktop-only">
+      <div class="user-menu">
+        <button class="user-menu-trigger" aria-haspopup="true" aria-label="Account menu">
+          <span class="user-avatar">{{ user.username|first|upper }}</span>
+          <span class="user-trigger-name">{{ user.username }}</span>
+          <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="user-menu-content" role="menu">
+          <div class="um-header">
+            <span class="user-avatar user-avatar--lg">{{ user.username|first|upper }}</span>
+            <div>
+              <p class="um-name">{{ user.username }}</p>
+              <p class="um-email">{{ user.email }}</p>
+            </div>
+          </div>
+          <ul class="um-links" role="none">
+            <li role="none">
+              <a href="{% url 'dashboard:profile_update' %}" role="menuitem">
+                <i class="fas fa-user um-icon" aria-hidden="true"></i>My Profile
+              </a>
+            </li>
+            <li role="none">
+              <a href="{% url 'accounts:payment' %}" role="menuitem">
+                <i class="fa-regular fa-credit-card um-icon" aria-hidden="true"></i>Account &amp; Billing
+              </a>
+            </li>
+            <li role="none">
+              <a href="/support/" role="menuitem">
+                <i class="fa-regular fa-headset um-icon" aria-hidden="true"></i>Customer Support
+              </a>
+            </li>
+            <li class="um-divider" role="separator"></li>
+            <li role="none">
+              <a href="{% url 'accounts:logout' %}" class="um-logout" role="menuitem">
+                <i class="fa-solid fa-arrow-right-from-bracket um-icon" aria-hidden="true"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
 
+    <li class="mobile-only mobile-divider-li"></li>
+    <li class="mobile-only mobile-section-header">
+      <span class="mobile-section-label">Account</span>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:profile_update' %}">
+        <i class="fas fa-user nav-icon" aria-hidden="true"></i>My Profile
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="{% url 'accounts:payment' %}">
+        <i class="fa-regular fa-credit-card nav-icon" aria-hidden="true"></i>Account &amp; Billing
+      </a>
+    </li>
+    <li class="mobile-only">
+      <a href="/support/">
+        <i class="fa-regular fa-headset nav-icon" aria-hidden="true"></i>Customer Support
+      </a>
+    </li>
+    <li class="mobile-only mobile-logout">
+      <a href="{% url 'accounts:logout' %}">
+        <i class="fa-solid fa-arrow-right-from-bracket nav-icon" aria-hidden="true"></i>Logout
+      </a>
+    </li>
+
+    {% else %}
+    <li class="nav-item">
+      <a href="{% url 'accounts:login' %}">Login</a>
+    </li>
+    {% endif %}
+
+  </ul>
+</nav>
+
+<div id="overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
+<script>
+  function openSidebar() {
+    document.body.classList.add('nav-open');
+    var btn = document.getElementById('open-sidebar-button');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+  function closeSidebar() {
+    document.body.classList.remove('nav-open');
+    var btn = document.getElementById('open-sidebar-button');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+</script>
+
+<script src="{% static 'baseapp/js/mobile.js' %}"></script>
+<script src="{% static 'baseapp/js/login.js' %}"></script>
+<script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>

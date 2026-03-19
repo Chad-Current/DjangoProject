@@ -34,7 +34,7 @@
   --title-font:     "Crimson";
   --main-font:      "Nunito";
   --anchor-font:    "Caprasimo";
-  --accent-font:    "Comfortaa";
+  /* --accent-font:    "Comfortaa"; */
   --paragraph-font: "Inter";
   --accent-font:    "Lobster Two";
   --accent-fat-font: "Ultra";
@@ -57,6 +57,8 @@
   --zero-percent:          #223e58; 
   --accent-color:          #ffa62b;
   --green-tag:             #9affdb;
+  --hover-color:           #c9ddee;
+
 }
 
 

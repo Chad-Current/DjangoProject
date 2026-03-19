@@ -190,18 +190,6 @@
                             <div class="info-row">
                                 <strong>Next Due:</strong> {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                             </div>
-                            <div class="info-row">
-                                <strong>Still Matters:</strong>
-                                {% if review.matters %}
-                                    <span class="badge bg-success">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">No</span>
-                                {% endif %}
-                            </div>
-                            {% if review.reasoning %}
-                            <div class="info-label mt-2">Reasoning</div>
-                            <p class="contact-info-text">{{ review.reasoning|truncatechars:100 }}</p>
-                            {% endif %}
                         </div>
 
                         <div class="card-actions" onclick="event.stopPropagation();">

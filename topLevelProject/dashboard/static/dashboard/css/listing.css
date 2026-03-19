@@ -223,9 +223,15 @@
   white-space: nowrap;
 }
 
+/* Offset first header to match the icon + gap indent in the Name cell */
+.contacts-table thead th:first-child {
+  padding-left: calc(1.1rem + 1rem + 0.6rem); /* cell-pad + icon-width + gap */
+}
+
 /* ── Table body rows ── */
 .contacts-table tbody tr {
-  border-bottom: 1px solid var(--background-color);
+  background: #fff;
+  border-bottom: solid 2px var(--background-color);
   transition: background-color 0.18s ease;
 }
 
@@ -379,13 +385,16 @@
   color: var(--thirty-percent);
 }
 
-.contact-details { flex: 1; min-width: 0; }
+.contact-details { 
+  flex: 1; 
+  min-width: 0; 
+}
 
 .contact-card-name {
-  font-family: var(--main-font);
-  font-size: var(--font-nm);
+  font-family: var(--title-font);
+  font-size: var(--font-md);
   font-weight: 700;
-  color: var(--text-color-dark);
+  color: var(--ten-percent);
   margin: 0 0 0.3rem;
   word-break: break-word;
 }
@@ -460,32 +469,39 @@
 
 .btn-edit-card,
 .btn-custom.btn-back {
-  background: rgba(98, 162, 206, 0.12);
-  color: var(--thirty-percent);
+  background: linear-gradient(135deg, #1a4a1a, #143414);
+  color: var(--text-color);
+  span {
+    color: var(--text-color);
+  }
 }
 .btn-edit-card:hover,
 .btn-custom.btn-back:hover {
-  background: var(--thirty-percent);
+  background: linear-gradient(135deg, #1a4a1a, #143414);
   color: var(--text-color);
 }
 
 .btn-custom.btn-edit {
-  background: rgba(98, 162, 206, 0.12);
-  color: var(--thirty-percent);
+  background: linear-gradient(135deg, #1a4a1a, #143414);
+  color: var(--text-color);
+
 }
 .btn-custom.btn-edit:hover {
-  background: var(--thirty-percent);
+  background: linear-gradient(135deg, #234f23, #1c3e1c);
   color: var(--text-color);
 }
 
 .btn-delete-card,
 .btn-custom.btn-delete {
-  background: rgba(192, 57, 43, 0.08);
-  color: #c0392b;
+  background: linear-gradient(135deg, #b42942, #8c1f33);
+  color: var(--text-color);
+  span {
+    color: var(--text-color);
+  }
 }
 .btn-delete-card:hover,
 .btn-custom.btn-delete:hover {
-  background: #c0392b;
+  background: linear-gradient(135deg, #c73050, #a02540);
   color: #fff;
 }
 

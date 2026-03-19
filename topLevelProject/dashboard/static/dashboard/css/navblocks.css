@@ -49,8 +49,6 @@
 
 /* ══════════════════════════════════════════════
    SUBNAV ITEM — base
-   border is transparent by default so .attention
-   can add a coloured border without a layout shift
    ══════════════════════════════════════════════ */
 
 .subnav-item {
@@ -60,19 +58,19 @@
     gap: 0.35rem;
     padding: 0.75rem 1.25rem;
     text-decoration: none;
-    color: #4b5563;
+    color: var(--ten-percent);
     font-family: var(--main-font);
     font-size: 0.875rem;
     font-weight: 500;
     border-radius: 12px;
-    border: 2px solid transparent;   
+    border: 2px solid transparent;
     transition: all 0.2s ease;
     white-space: nowrap;
     position: relative;
     background: transparent;
     min-width: fit-content;
     &:hover {
-       box-shadow: 0px 0px 20px 0px #2d6a9c29, inset -1px 4px 20px -4px #44759f56;
+       box-shadow: 0px 0px 20px 0px #2d6a9c00, inset -1px 4px 20px -4px #44759f00;
     }
 }
 
@@ -87,8 +85,8 @@
 }
 
 .subnav-item:hover {
-    background: #f3f4f6;
-    color: #1f2937;
+    box-shadow: 0px 0px 20px 0px #b9d5ec5e, 0px 0px 20px 0px #44759f21;
+    color: var(--thirty-percent);
     transform: translateY(-1px);
 }
 
@@ -98,7 +96,6 @@
 
 /* ══════════════════════════════════════════════
    ATTENTION STATE
-   Shown when a section has no entries yet
    ══════════════════════════════════════════════ */
 
 .subnav-item.attention {
@@ -107,7 +104,6 @@
 
 .subnav-item.attention:hover {
     border-color: var(--ten-percent);
-    /* background-color: var(--sixty-percent); */
     color: var(--text-color-dark);
     transition: all 0.2s ease;
 }
@@ -120,7 +116,6 @@
 
 /* ══════════════════════════════════════════════
    "START" BADGE
-   Shown on empty-section items alongside .attention
    ══════════════════════════════════════════════ */
 
 .nav-badge-empty {
@@ -147,8 +142,7 @@
 
 .subnav-item.active,
 .subnav-item[aria-current="page"] {
-    /* border: solid 4px var(--seventy-percent); */
-    box-shadow: 0px 0px 20px 0px #2d6a9c29, inset -1px 4px 20px -4px #44759f56;
+    box-shadow: 0px 0px 20px 0px #b9d5ec8c, 0px 0px 20px 0px #44759f56;
 }
 
 .subnav-item.active:hover,
@@ -176,23 +170,10 @@
    ══════════════════════════════════════════════ */
 
 @media (max-width: 780px) {
+    /* Hidden on mobile — these links live in the sidebar instead */
     .dashboard-subnav-wrapper {
-        position: static;
+        display: none;
     }
-
-    .subnav-container {
-        justify-content: flex-start;
-        padding: 0.5rem 0;
-        gap: 0.35rem;
-    }
-
-    .subnav-item {
-        padding: 0.6rem 1rem;
-        font-size: 0.813rem;
-    }
-
-    .subnav-item i    { font-size: 1.1rem; }
-    .subnav-item span { font-size: 0.688rem; }
 }
 
 @media (min-width: 781px) and (max-width: 1024px) {
@@ -214,12 +195,12 @@
 
 
 /* ══════════════════════════════════════════════
-   MOBILE SCROLL FADE HINT
+   MOBILE SCROLL FADE HINT (desktop only now)
    ══════════════════════════════════════════════ */
 
-@media (max-width: 780px) {
+@media (min-width: 781px) and (max-width: 1024px) {
     .dashboard-subnav-wrapper {
-        position: relative; /* needed for ::after to anchor correctly */
+        position: relative;
     }
 
     .dashboard-subnav-wrapper::after {
@@ -253,12 +234,6 @@
 .subnav-item:nth-child(8) { animation-delay: 0.045s; }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }

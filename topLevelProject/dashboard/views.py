@@ -78,6 +78,9 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         user = request.user
 
+        if not user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        
         if not getattr(user, "has_paid", False):
             messages.warning(request, "Please complete payment to access your dashboard.")
             return redirect(reverse("accounts:payment"))
@@ -254,7 +257,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
 class ProfileCreateView(LoginRequiredMixin, CreateView):
     model         = Profile
     form_class    = ProfileForm
-    template_name = 'dashboard/profile.html'
+    template_name = 'dashboard/profiles/profile.html'
     success_url   = reverse_lazy('dashboard:dashboard_home')
     login_url     = '/accounts/login/'
 
@@ -291,7 +294,7 @@ class ProfileDetailView(ViewAccessMixin, DetailView):
     current user's profile fetched via get_or_create.
     """
     model               = Profile
-    template_name       = 'dashboard/profile_detail.html'
+    template_name       = 'dashboard/profiles/profile_detail.html'
     context_object_name = 'profile'
     owner_field         = 'user'
 
@@ -303,7 +306,7 @@ class ProfileDetailView(ViewAccessMixin, DetailView):
 class ProfileUpdateView(FullAccessMixin, UpdateView):
     model         = Profile
     form_class    = ProfileForm
-    template_name = 'dashboard/profile_form.html'
+    template_name = 'dashboard/profiles/profile_form.html'
     success_url   = reverse_lazy('dashboard:dashboard_home')
     owner_field   = 'user'
 

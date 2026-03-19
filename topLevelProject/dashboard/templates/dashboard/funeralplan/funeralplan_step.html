@@ -5,8 +5,10 @@
 {% block title %}Step {{ step }} — {{ section_label }} | Funeral Plan{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}">
 <link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}">
 <link rel="stylesheet" href="{% static 'dashboard/css/tooltip_styles.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/funeralplan_mobile.css' %}">
 {% endblock %}
 
 
@@ -23,6 +25,7 @@
       <div class="rail-progress-track">
         <div class="rail-progress-fill" id="fp-rail-fill" style="width: 0%"></div>
       </div>
+      <span class="fp-mobile-step-label" id="fp-mobile-label"></span>
     </div>
 
     <div class="rail-steps">
@@ -256,6 +259,16 @@
     var pct  = Math.round((done / 8) * 100);
     var fill  = document.getElementById('fp-rail-fill');
     if (fill) fill.style.width = pct + '%';
+
+    // Mobile: show active section name in compact rail bar
+    var mobileLabel = document.getElementById('fp-mobile-label');
+    if (mobileLabel) {
+      var labels = [
+        'Personal Information','Service Preferences','Final Disposition',
+        'Ceremony','Reception','Obituary & Memorial','Administrative','Additional Instructions'
+      ];
+      mobileLabel.textContent = 'Now: ' + (labels[{{ step }} - 1] || '');
+    }
   })();
 </script>
 {% endblock %}

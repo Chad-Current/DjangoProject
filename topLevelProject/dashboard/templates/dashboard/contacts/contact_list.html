@@ -42,7 +42,7 @@
                             <td>
                                 <div class="contact-name">
                                     <i class="fas fa-address-book contact-icon"></i>
-                                    <span>{{ contact.contact_name }}</span>
+                                    <span>{{ contact.first_name }} {{ contact.last_name }}</span>
                                 </div>
                             </td>
                             <td><span>{{ contact.contact_relation }}</span></td>
@@ -76,7 +76,7 @@
                 <div class="card-header-section">
                     <div class="contact-avatar"><i class="fas fa-user-circle"></i></div>
                     <div class="contact-details">
-                        <h3 class="contact-card-name">{{ contact.contact_name }}</h3>
+                        <h3 class="contact-card-name">{{ contact.first_name }} {{ contact.last_name }} </h3>
                         <span class="badge-relationship-mobile">{{ contact.contact_relation }}</span>
                     </div>
                 </div>
