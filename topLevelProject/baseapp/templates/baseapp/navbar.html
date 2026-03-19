@@ -25,17 +25,17 @@
     </li>
     {% endif %}
 
-    {% if user.is_authenticated and user.can_view_data %}
     <li class="nav-item">
-      <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
+      <a href="{% url 'baseapp_main:home' %}">Home</a>
     </li>
     <li class="nav-item">
       <a href="{% url 'faqs_page:faqs' %}">FAQs</a>
     </li>
-    {% endif %}
+    {% if user.is_authenticated and user.can_view_data %}
     <li class="nav-item">
-      <a href="{% url 'baseapp_main:home' %}">Home</a>
+      <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
     </li>
+    {% endif %}
 
     {% if user.is_authenticated %}
     <li class="mobile-only mobile-divider-li"></li>
