@@ -1,0 +1,279 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}{{ profile.first_name }} {{ profile.last_name }} — Estate View{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
+<style>
+  .read-only-banner {
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 1.5rem;
+    color: #1e40af;
+    font-size: .9rem;
+  }
+  .section-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: .4rem;
+    margin-bottom: 1rem;
+  }
+  .estate-table th { width: 35%; color: #6b7280; font-weight: 500; }
+  .estate-table td { color: #111827; }
+  .no-items { color: #9ca3af; font-style: italic; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main container py-4">
+
+  <!-- Page Header -->
+  <div class="delegation-header">
+    <h1><i class="fas fa-user-shield"></i> {{ profile.first_name }} {{ profile.last_name }}</h1>
+    <p class="subtitle">Read-only estate view &mdash; granted {{ grant.granted_at|date:"F d, Y" }}</p>
+  </div>
+
+  <div class="read-only-banner">
+    <i class="fas fa-lock me-2"></i>
+    <strong>Read-only access.</strong>
+    You are viewing this estate as a verified family member / executor.
+    No changes can be made from this page.
+    {% if grant.expires_at %}
+      Access expires on <strong>{{ grant.expires_at|date:"F d, Y" }}</strong>.
+    {% endif %}
+  </div>
+
+  <!-- ── PERSONAL PROFILE ──────────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-id-card me-2"></i>Personal Information</div>
+    <table class="table estate-table table-sm table-borderless">
+      <tr><th>Full Name</th><td>{{ profile.first_name }} {{ profile.last_name }}</td></tr>
+      <tr><th>Date of Birth</th><td>{{ profile.date_of_birth|date:"F d, Y"|default:"—" }}</td></tr>
+      <tr><th>Email</th><td>{{ profile.email|default:"—" }}</td></tr>
+      <tr><th>Phone</th><td>{{ profile.phone|default:"—" }}</td></tr>
+      <tr><th>Address</th>
+        <td>
+          {{ profile.address_1 }}{% if profile.address_2 %}, {{ profile.address_2 }}{% endif %}<br>
+          {{ profile.city }}, {{ profile.state }} {{ profile.zipcode|default:"" }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── CONTACTS ─────────────────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-address-book me-2"></i>Contacts ({{ contacts|length }})</div>
+    {% if contacts %}
+      {% for c in contacts %}
+      <div class="p-2 {% if not forloop.last %}border-bottom{% endif %}">
+        <strong>{{ c.first_name }} {{ c.last_name }}</strong>
+        <span class="text-muted ms-2">{{ c.contact_relation }}</span>
+        {% if c.is_digital_executor %}<span class="badge bg-primary ms-1">Digital Executor</span>{% endif %}
+        {% if c.is_legal_executor %}<span class="badge bg-secondary ms-1">Legal Executor</span>{% endif %}
+        {% if c.is_emergency_contact %}<span class="badge bg-danger ms-1">Emergency</span>{% endif %}
+        {% if c.is_memorial_contact %}<span class="badge bg-info ms-1">Memorial</span>{% endif %}
+        <div class="text-muted small mt-1">
+          {% if c.email %}<i class="fas fa-envelope me-1"></i>{{ c.email }}&nbsp;&nbsp;{% endif %}
+          {% if c.phone %}<i class="fas fa-phone me-1"></i>{{ c.phone }}{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-items">No contacts recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── DIGITAL ACCOUNTS ─────────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-globe me-2"></i>Digital Accounts ({{ accounts|length }})</div>
+    {% if accounts %}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Provider / Name</th><th>Category</th><th>Username / Email</th>
+              <th>Credential Location</th><th>Instruction</th><th>Delegated To</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in accounts %}
+            <tr>
+              <td><strong>{{ a.account_name_or_provider }}</strong></td>
+              <td>{{ a.account_category }}</td>
+              <td>{{ a.username_or_email|default:"—" }}</td>
+              <td>{{ a.credential_storage_location|default:"—" }}</td>
+              <td>{{ a.keep_or_close_instruction }}</td>
+              <td>{{ a.delegated_account_to|default:"—" }}</td>
+            </tr>
+            {% if a.notes_for_family %}
+            <tr>
+              <td colspan="6" class="text-muted small ps-3">
+                <i class="fas fa-comment me-1"></i>{{ a.notes_for_family }}
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="no-items">No digital accounts recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── DEVICES ───────────────────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-laptop me-2"></i>Devices ({{ devices|length }})</div>
+    {% if devices %}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th><th>Type</th><th>Location</th>
+              <th>Used for 2FA?</th><th>Delegated To</th><th>Decommission Instruction</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in devices %}
+            <tr>
+              <td><strong>{{ d.device_name }}</strong>{% if d.owner_label %} <span class="text-muted">({{ d.owner_label }})</span>{% endif %}</td>
+              <td>{{ d.device_type }}</td>
+              <td>{{ d.location_description|default:"—" }}</td>
+              <td>{% if d.used_for_2fa %}<span class="text-danger">Yes</span>{% else %}No{% endif %}</td>
+              <td>{{ d.delegated_device_to|default:"—" }}</td>
+              <td>{{ d.decommission_instruction|default:"—"|truncatechars:60 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="no-items">No devices recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── ESTATE DOCUMENTS ─────────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-file-contract me-2"></i>Estate Documents ({{ estate_docs|length }})</div>
+    {% if estate_docs %}
+      {% for doc in estate_docs %}
+      <div class="p-2 {% if not forloop.last %}border-bottom{% endif %}">
+        <strong>{{ doc.name_or_title }}</strong>
+        <span class="text-muted ms-2">{{ doc.estate_category }}</span>
+        {% if doc.applies_on_death %}<span class="badge bg-danger ms-1">On Death</span>{% endif %}
+        {% if doc.applies_on_incapacity %}<span class="badge bg-warning text-dark ms-1">On Incapacity</span>{% endif %}
+        <div class="text-muted small mt-1">
+          {% if doc.estate_physical_location %}<i class="fas fa-map-marker-alt me-1"></i>Physical: {{ doc.estate_physical_location }}&nbsp;&nbsp;{% endif %}
+          {% if doc.estate_digital_location %}<i class="fas fa-hdd me-1"></i>Digital: {{ doc.estate_digital_location }}{% endif %}
+        </div>
+        <div class="text-muted small">Delegated to: {{ doc.delegated_estate_to|default:"—" }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-items">No estate documents recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── IMPORTANT DOCUMENTS ──────────────────────────────────────────── -->
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-folder-open me-2"></i>Important Documents ({{ important_docs|length }})</div>
+    {% if important_docs %}
+      {% for doc in important_docs %}
+      <div class="p-2 {% if not forloop.last %}border-bottom{% endif %}">
+        <strong>{{ doc.name_or_title }}</strong>
+        <span class="text-muted ms-2">{{ doc.document_category }}</span>
+        {% if doc.requires_legal_review %}<span class="badge bg-warning text-dark ms-1">Legal Review Required</span>{% endif %}
+        {% if doc.applies_on_death %}<span class="badge bg-danger ms-1">On Death</span>{% endif %}
+        <div class="text-muted small mt-1">
+          {% if doc.physical_location %}<i class="fas fa-map-marker-alt me-1"></i>Physical: {{ doc.physical_location }}&nbsp;&nbsp;{% endif %}
+          {% if doc.digital_location %}<i class="fas fa-hdd me-1"></i>Digital: {{ doc.digital_location }}{% endif %}
+        </div>
+        <div class="text-muted small">Delegated to: {{ doc.delegated_important_document_to|default:"—" }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-items">No important documents recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── FAMILY NEEDS TO KNOW ─────────────────────────────────────────── -->
+  {% if family_sections %}
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-users me-2"></i>Family Needs to Know</div>
+    {% for section in family_sections %}
+    <div class="p-2 {% if not forloop.last %}border-bottom{% endif %}">
+      <div class="text-muted small mb-1">For: <strong>{{ section.relation }}</strong></div>
+      <p class="mb-1">{{ section.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ── FUNERAL PLAN ──────────────────────────────────────────────────── -->
+  {% if funeral_plan %}
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-dove me-2"></i>Funeral Plan</div>
+    <table class="table estate-table table-sm table-borderless">
+      <tr><th>Disposition Method</th><td>{{ funeral_plan.disposition_method|default:"—" }}</td></tr>
+      <tr><th>Service Type</th><td>{{ funeral_plan.service_type|default:"—" }}</td></tr>
+      <tr><th>Preferred Funeral Home</th><td>{{ funeral_plan.preferred_funeral_home|default:"—" }}</td></tr>
+      <tr><th>Funeral Home Phone</th><td>{{ funeral_plan.funeral_home_phone|default:"—" }}</td></tr>
+      <tr><th>Preferred Venue</th><td>{{ funeral_plan.preferred_venue|default:"—" }}</td></tr>
+      <tr><th>Burial / Interment Location</th><td>{{ funeral_plan.burial_or_interment_location|default:"—" }}</td></tr>
+      <tr><th>Plot / Niche Purchased?</th><td>{% if funeral_plan.burial_plot_or_niche_purchased %}Yes{% else %}No{% endif %}</td></tr>
+      <tr><th>Reception Desired?</th><td>{% if funeral_plan.reception_desired %}Yes{% else %}No{% endif %}</td></tr>
+      <tr><th>Veteran?</th><td>{% if funeral_plan.is_veteran %}Yes — {{ funeral_plan.veteran_branch|default:"" }}{% else %}No{% endif %}</td></tr>
+      {% if funeral_plan.additional_instructions %}
+      <tr><th>Additional Instructions</th><td>{{ funeral_plan.additional_instructions }}</td></tr>
+      {% endif %}
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- ── VAULT ENTRIES (metadata only) ─────────────────────────────────── -->
+  {% if vault_entries %}
+  <div class="info-card mb-4">
+    <div class="section-heading"><i class="fas fa-vault me-2"></i>Stored Credentials ({{ vault_entries|length }})</div>
+    <div class="alert alert-warning py-2 mb-3">
+      <i class="fas fa-lock me-1"></i>
+      Passwords are encrypted and not displayed here.
+      Contact the platform administrator for credential access if required.
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead class="table-light">
+          <tr><th>Label</th><th>Type</th><th>Username / Email</th><th>Linked To</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          {% for v in vault_entries %}
+          <tr>
+            <td><strong>{{ v.label }}</strong></td>
+            <td>{{ v.entry_type }}</td>
+            <td>{{ v.username_or_email|default:"—" }}</td>
+            <td>
+              {% if v.linked_account %}{{ v.linked_account }}
+              {% elif v.linked_device %}{{ v.linked_device }}
+              {% else %}—{% endif %}
+            </td>
+            <td>{{ v.notes|default:"—"|truncatechars:60 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Back link -->
+  <div class="mt-3">
+    <a href="{% url 'dashboard:granted_list' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Back to My Granted Access
+    </a>
+  </div>
+
+</div>
+{% endblock %}

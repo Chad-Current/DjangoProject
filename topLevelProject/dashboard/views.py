@@ -1732,3 +1732,88 @@ class OnboardingCompleteView(OnboardingMixin, TemplateView):
         context['step']        = 7
         context['total_steps'] = 6
         return context
+
+
+# ============================================================================
+# GRANTED ESTATE ACCESS — read-only views for verified family members
+# ============================================================================
+
+class GrantedEstateListView(LoginRequiredMixin, ListView):
+    """
+    Shows all profiles the logged-in user has been granted access to.
+    No subscription required — access is controlled solely by ProfileAccessGrant.
+    """
+    template_name = 'dashboard/granted/grant_list.html'
+    context_object_name = 'grants'
+    login_url = '/accounts/login/'
+
+    def get_queryset(self):
+        from recovery.models import ProfileAccessGrant
+        return (
+            ProfileAccessGrant.objects
+            .filter(granted_to=self.request.user, is_active=True)
+            .select_related('profile', 'recovery_request')
+            .order_by('-granted_at')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Annotate each grant with its validity so the template can flag expired ones
+        from recovery.models import ProfileAccessGrant
+        context['expired_grants'] = (
+            ProfileAccessGrant.objects
+            .filter(granted_to=self.request.user, is_active=True)
+            .exclude(expires_at__isnull=True)
+        )
+        return context
+
+
+class GrantedEstateDetailView(LoginRequiredMixin, TemplateView):
+    """
+    Read-only view of a granted profile's full estate data.
+    Access is allowed only when the logged-in user has a valid ProfileAccessGrant
+    for the requested profile.
+    """
+    template_name = 'dashboard/granted/grant_detail.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        from recovery.models import ProfileAccessGrant
+        self.grant = get_object_or_404(
+            ProfileAccessGrant,
+            profile_id=self.kwargs['profile_pk'],
+            granted_to=request.user,
+            is_active=True,
+        )
+        if self.grant.is_expired():
+            messages.warning(request, 'Your access to this profile has expired.')
+            return redirect(reverse_lazy('dashboard:granted_list'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.grant.profile
+
+        try:
+            from infrapps.models import VaultEntry
+            vault_entries = VaultEntry.objects.filter(profile=profile).select_related(
+                'linked_account', 'linked_device'
+            )
+        except Exception:
+            vault_entries = []
+
+        funeral_plan = FuneralPlan.objects.filter(profile=profile).first()
+
+        context.update({
+            'grant':           self.grant,
+            'profile':         profile,
+            'contacts':        Contact.objects.filter(profile=profile).order_by('last_name'),
+            'accounts':        Account.objects.filter(profile=profile).select_related('delegated_account_to'),
+            'devices':         Device.objects.filter(profile=profile).select_related('delegated_device_to'),
+            'estate_docs':     DigitalEstateDocument.objects.filter(profile=profile).select_related('delegated_estate_to'),
+            'important_docs':  ImportantDocument.objects.filter(profile=profile).select_related('delegated_important_document_to'),
+            'funeral_plan':    funeral_plan,
+            'vault_entries':   vault_entries,
+            'family_sections': FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).select_related('relation'),
+        })
+        return context

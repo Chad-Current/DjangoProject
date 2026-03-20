@@ -226,7 +226,7 @@ class AuthenticationTests(TestCase):
 
     def test_login_with_username(self):
         r = self.c.post(reverse("accounts:login"), {
-            "username": "authuser",
+            "username_or_email": "authuser",
             "password": self.password,
         }, follow=True)
         self.assertTrue(r.wsgi_request.user.is_authenticated)
@@ -234,7 +234,7 @@ class AuthenticationTests(TestCase):
     def test_login_with_email(self):
         """Custom EmailOrUsernameBackend allows login via email address."""
         r = self.c.post(reverse("accounts:login"), {
-            "username": "auth@example.com",
+            "username_or_email": "auth@example.com",
             "password": self.password,
         }, follow=True)
         self.assertTrue(r.wsgi_request.user.is_authenticated)
@@ -422,7 +422,11 @@ class ContactCRUDTests(TestCase):
         self.c.post(reverse("dashboard_home:contact_create"), {
             "first_name": "Alice",
             "last_name": "Wonder",
-            "contact_relation": "Friend",
+            "contact_relation": "Other",
+            "address_1": "111 Plain View",
+            "city": "Des Moines",
+            "state": "Iowa",
+            "is_emergency_contact": True,
         })
         self.assertGreater(
             Contact.objects.filter(profile=self.profile).count(), before
@@ -477,10 +481,10 @@ class AccountCRUDTests(TestCase):
     def test_account_create_post(self):
         self.c.post(reverse("dashboard_home:account_create"), {
             "account_name_or_provider": "Gmail",
-            "account_category": "email",
+            "account_category": "Email Account",
             "username_or_email": "jane@gmail.com",
             "delegated_account_to": self.contact.pk,
-            "keep_or_close_instruction": "close",
+            "keep_or_close_instruction": "Close Account",
             "review_time": 365,
         })
         self.assertTrue(
@@ -679,7 +683,7 @@ class VaultTests(TestCase):
             "label": "My Gmail Password",
             "entry_type": "other",
             "username_or_email": "jane@gmail.com",
-            "password": "SuperSecret99!",
+            "raw_password": "SuperSecret99!",
             "notes": "",
         }, follow=True)
         self.assertTrue(
@@ -707,7 +711,7 @@ class VaultTests(TestCase):
         entry.set_password("LogPass1!")
         entry.save()
         before = VaultAccessLog.objects.filter(entry=entry).count()
-        self.c.get(reverse("vault:vault_reveal", kwargs={"slug": entry.slug}))
+        self.c.post(reverse("vault:vault_reveal", kwargs={"slug": entry.slug}))
         self.assertGreater(
             VaultAccessLog.objects.filter(entry=entry).count(), before
         )
@@ -754,7 +758,7 @@ class RecoveryPublicFlowTests(TestCase):
     def test_external_request_creates_record(self):
         before = RecoveryRequest.objects.count()
         self.c.post(reverse("recovery:external_recovery_request"), {
-            "profile_id": self.target_profile.pk,
+            "deceased_user_email": "target@example.com",
             "requester_first_name": "Family",
             "requester_last_name": "Member",
             "requester_email": "family@example.com",
@@ -762,6 +766,7 @@ class RecoveryPublicFlowTests(TestCase):
             "requester_relationship": "Spouse",
             "reason": "Death",
             "target_description": "Need access to banking details.",
+            "accept_terms": True,
         })
         self.assertGreater(RecoveryRequest.objects.count(), before)
 
@@ -775,6 +780,8 @@ class RecoveryPublicFlowTests(TestCase):
             reason="Death",
             target_description="Test",
         )
+        req.generate_verification_token()
+        req.save()
         token = req.verification_token
         self.c.get(reverse("recovery:verify_recovery_request",
                            kwargs={"token": token}))
@@ -798,7 +805,7 @@ class RecoveryPublicFlowTests(TestCase):
             target_description="Test",
         )
         r = self.c.get(reverse("recovery:recovery_request_status",
-                               kwargs={"pk": req.pk}))
+                               kwargs={"pk": req.pk}) + "?verified=true")
         self.assertEqual(r.status_code, 200)
 
 

@@ -37,7 +37,7 @@
                         <button type="submit" class="btn btn-danger btn-lg">
                             <i class="fas fa-times-circle me-2"></i>Yes, Cancel Request
                         </button>
-                        <a href="{% url 'recovery_request_status' pk=recovery_request.pk %}" 
+                        <a href="{% url 'recovery:recovery_request_status' pk=recovery_request.pk %}"
                            class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>No, Go Back
                         </a>

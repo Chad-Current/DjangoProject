@@ -77,6 +77,10 @@ urlpatterns = [
     path('documents/<slug:slug>/edit/',   views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<slug:slug>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
 
+    # ── Granted Estate Access (family / verified recovery) ────────────────────
+    path('granted/',                          views.GrantedEstateListView.as_view(),   name='granted_list'),
+    path('granted/<int:profile_pk>/',         views.GrantedEstateDetailView.as_view(), name='granted_detail'),
+
     # ── Onboarding ────────────────────────────────────────────────────────────
     path('onboarding/',           views.OnboardingWelcomeView.as_view(),   name='onboarding_welcome'),
     path('onboarding/contacts/',  views.OnboardingContactView.as_view(),   name='onboarding_contacts'),

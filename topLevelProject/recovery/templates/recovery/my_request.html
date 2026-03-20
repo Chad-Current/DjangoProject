@@ -37,7 +37,7 @@
                                     </td>
                                     <td>{{ request.created_at|date:"M d, Y" }}</td>
                                     <td>
-                                        <a href="{% url 'recovery_request_status' pk=request.pk %}" class="btn btn-sm btn-primary">
+                                        <a href="{% url 'recovery:recovery_request_status' pk=request.pk %}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                     </td>

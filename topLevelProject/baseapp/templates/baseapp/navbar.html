@@ -25,17 +25,17 @@
     </li>
     {% endif %}
 
+    {% if user.is_authenticated and user.can_view_data %}
+    <li class="nav-item">
+      <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
+    </li>
+    {% endif %}
     <li class="nav-item">
       <a href="{% url 'baseapp_main:home' %}">Home</a>
     </li>
     <li class="nav-item">
       <a href="{% url 'faqs_page:faqs' %}">FAQs</a>
     </li>
-    {% if user.is_authenticated and user.can_view_data %}
-    <li class="nav-item">
-      <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
-    </li>
-    {% endif %}
 
     {% if user.is_authenticated %}
     <li class="mobile-only mobile-divider-li"></li>
@@ -106,7 +106,7 @@
           </div>
           <ul class="um-links" role="none">
             <li role="none">
-              <a href="{% url 'dashboard:profile_update' %}" role="menuitem">
+              <a href="{% url 'dashboard:profile_detail' %}" role="menuitem">
                 <i class="fas fa-user um-icon" aria-hidden="true"></i>My Profile
               </a>
             </li>

@@ -165,20 +165,6 @@
         </div>
     </div>
 
-    <!-- Metadata Footer -->
-    <div class="metadata-footer">
-        <div class="row">
-            <div class="col-md-6 meta-item">
-                <i class="fas fa-calendar-plus"></i>
-                <strong>Created:</strong> {{ account.created_at|date:"F d, Y g:i A" }}
-            </div>
-            <div class="col-md-6 meta-item meta-right">
-                <i class="fas fa-calendar-check"></i>
-                <strong>Last Updated:</strong> {{ account.updated_at|date:"F d, Y g:i A" }}
-            </div>
-        </div>
-    </div>
-
     <!-- Action Buttons -->
     {% if can_modify %}
     <div class="action-buttons">

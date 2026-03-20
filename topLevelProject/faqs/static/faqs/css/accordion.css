@@ -107,12 +107,12 @@
   font-size: var(--font-sm);
 }
 
-details[open] .faq-item summary {
+details[open] summary {
   background: var(--thirty-percent);
   color: var(--purewhite-color);
 }
-details[open] .faq-item summary .faq-question-text i,
-details[open] .faq-item summary .faq-toggle-label {
+details[open] summary .faq-question-text i,
+details[open] summary .faq-toggle-label {
   color: var(--purewhite-color);
 }
 details[open] .faq-toggle-label .toggle-show { display: none; }
@@ -213,27 +213,27 @@ details[open] .faq-toggle-label .toggle-arrow {
 
 @media (max-width: 768px) {
   .faq-item summary {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  column-gap: 1rem;
-  padding: 1rem 1.3rem;
-  cursor: pointer;
-  font-family: var(--main-font);
-  font-size: var(--font-nm);
-  font-weight: 500;
-  color: var(--ten-percent);
-  background: var(--purewhite-color);
-  transition: background 0.2s;
-  /* min-height: 64px; */
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    column-gap: 1rem;
+    padding: 1rem 1.3rem;
+    cursor: pointer;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 500;
+    color: var(--ten-percent);
+    background: var(--purewhite-color);
+    transition: background 0.2s;
   }
-}
-.faq-toggle-label {
-  margin-top: 0.5rem;
-}
 
-.faq-help-btn {
-  font-weight: 500;
-  padding: 0.45rem 1rem;
+  .faq-toggle-label {
+    margin-top: 0.5rem;
+  }
+
+  .faq-help-btn {
+    font-weight: 500;
+    padding: 0.45rem 1rem;
+  }
 }

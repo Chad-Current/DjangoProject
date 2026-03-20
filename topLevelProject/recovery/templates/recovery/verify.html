@@ -10,7 +10,7 @@
                     <h2>Email Verified!</h2>
                     <p class="lead">Your email address has been successfully verified.</p>
                     <p>Your recovery request is now being reviewed by our team. You will receive updates via email.</p>
-                    <a href="{% url 'recovery_request_status' pk=recovery_request.pk %}" class="btn btn-primary mt-3">
+                    <a href="{% url 'recovery:recovery_request_status' pk=recovery_request.pk %}" class="btn btn-primary mt-3">
                         View Request Status
                     </a>
                 {% else %}
@@ -18,7 +18,7 @@
                     <h2>Verification Failed</h2>
                     <p class="lead">The verification link is invalid or has expired.</p>
                     <p>Please check your email for the most recent verification link or submit a new request.</p>
-                    <a href="{% url 'external_recovery_request' %}" class="btn btn-primary mt-3">
+                    <a href="{% url 'recovery:external_recovery_request' %}" class="btn btn-primary mt-3">
                         Submit New Request
                     </a>
                 {% endif %}

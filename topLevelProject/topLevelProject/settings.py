@@ -207,3 +207,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # DEVELOPMENT change for Production
 SITE_URL    = 'localhost:8000'
 CONTACT_URL = 'localhost/contact/'
+
+
+# Three settings.py changes you'll need when deploying:
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache' + SESSION_CACHE_ALIAS = 'default'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' for media
+# EMAIL_BACKEND = 'django_ses.SESBackend' to replace the console backend

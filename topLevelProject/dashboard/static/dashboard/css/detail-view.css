@@ -587,6 +587,7 @@
   background-color: var(--green-tag);
   margin-top: 2em;
 }
+
 /* ══════════════════════════════════════════════
    SUMMARY STATS STRIP
    ══════════════════════════════════════════════ */
@@ -628,59 +629,7 @@
 }
 
 
-/* ══════════════════════════════════════════════
-   COLLAPSE / COLLAPSIBLE CARDS
-   ══════════════════════════════════════════════ */
-
-.collapsible-header {
-  cursor: pointer;
-  user-select: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  transition: opacity 0.2s ease;
-}
-
-.collapsible-header:hover {
-  opacity: 0.8;
-}
-
-.collapsible-header h3 {
-  margin: 0;
-  flex: 1;
-}
-
-.collapse-icon {
-  font-size: var(--font-md);
-  color: var(--sixty-percent);
-  margin-left: 0.75rem;
-  transition: transform 0.3s ease, color 0.2s;
-  flex-shrink: 0;
-}
-
-.collapsible-header:hover .collapse-icon {
-  color: var(--ten-percent);
-}
-
-.collapsible-header[aria-expanded="false"] .collapse-icon {
-  transform: rotate(-90deg);
-}
-
-.collapsible-content {
-  transition: all 0.3s ease;
-}
-
-.collapse:not(.show) {
-  display: none;
-}
-
-.collapsing {
-  height: 0;
-  overflow: hidden;
-  transition: height 0.35s ease;
-}
+/* Collapse styles live in collapse.css — load that file alongside detail-view.css */
 
 
 /* ══════════════════════════════════════════════

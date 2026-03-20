@@ -1,11 +1,9 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils import timezone
-from .models import RecoveryRequest
+from django.contrib import messages
+from .models import RecoveryRequest, ProfileAccessGrant
 
 
 @admin.register(RecoveryRequest)
@@ -166,24 +164,175 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
         return 'No documents uploaded'
     documents_display.short_description = 'Uploaded Documents'
     
-    actions = ['mark_as_verified', 'mark_as_in_progress', 'mark_as_completed', 'mark_as_denied']
-    
+    actions = [
+        'mark_as_verified', 'mark_as_in_progress',
+        'mark_as_completed', 'mark_as_denied',
+        'grant_profile_access',
+    ]
+
     def mark_as_verified(self, request, queryset):
         updated = queryset.update(status='Verified', verified_at=timezone.now())
         self.message_user(request, f'{updated} request(s) marked as verified.')
     mark_as_verified.short_description = 'Mark selected as Verified'
-    
+
     def mark_as_in_progress(self, request, queryset):
         updated = queryset.update(status='In Progress')
         self.message_user(request, f'{updated} request(s) marked as in progress.')
     mark_as_in_progress.short_description = 'Mark selected as In Progress'
-    
+
     def mark_as_completed(self, request, queryset):
         updated = queryset.update(status='Completed', completed_at=timezone.now())
         self.message_user(request, f'{updated} request(s) marked as completed.')
     mark_as_completed.short_description = 'Mark selected as Completed'
-    
+
     def mark_as_denied(self, request, queryset):
         updated = queryset.update(status='Denied')
         self.message_user(request, f'{updated} request(s) marked as denied.')
     mark_as_denied.short_description = 'Mark selected as Denied'
+
+    def grant_profile_access(self, request, queryset):
+        """
+        Grant the authenticated requester read-only access to the profile.
+
+        Rules enforced here:
+        - Only works on requests where requested_by_user is set (authenticated
+          requester with a site account).  External requesters must be given an
+          account first.
+        - Only Completed or Verified requests are eligible.
+        - Skips and warns if a grant already exists for that profile+user pair.
+        """
+        created = 0
+        skipped = 0
+
+        for rr in queryset.select_related('profile', 'requested_by_user'):
+            if not rr.requested_by_user:
+                self.message_user(
+                    request,
+                    f'Request #{rr.pk}: requester has no site account — '
+                    'create one for them first, then run this action again.',
+                    level=messages.WARNING,
+                )
+                skipped += 1
+                continue
+
+            if rr.status not in ('Verified', 'Completed'):
+                self.message_user(
+                    request,
+                    f'Request #{rr.pk}: status is "{rr.status}" — '
+                    'only Verified or Completed requests can be granted access.',
+                    level=messages.WARNING,
+                )
+                skipped += 1
+                continue
+
+            grant, new = ProfileAccessGrant.objects.get_or_create(
+                profile=rr.profile,
+                granted_to=rr.requested_by_user,
+                defaults={
+                    'recovery_request': rr,
+                    'granted_by': request.user,
+                    'notes': f'Auto-created from recovery request #{rr.pk}.',
+                },
+            )
+
+            if new:
+                created += 1
+                # Mark request completed if it isn't already
+                if rr.status != 'Completed':
+                    rr.status = 'Completed'
+                    rr.completed_at = timezone.now()
+                    rr.save(update_fields=['status', 'completed_at'])
+            else:
+                if not grant.is_active:
+                    grant.is_active = True
+                    grant.save(update_fields=['is_active'])
+                    created += 1
+                else:
+                    skipped += 1
+                    self.message_user(
+                        request,
+                        f'Request #{rr.pk}: {rr.requested_by_user} already has '
+                        'an active grant for this profile.',
+                        level=messages.INFO,
+                    )
+
+        if created:
+            self.message_user(
+                request,
+                f'{created} access grant(s) created successfully.',
+                level=messages.SUCCESS,
+            )
+
+    grant_profile_access.short_description = 'Grant profile access to requester'
+
+
+# =============================================================================
+# PROFILE ACCESS GRANT ADMIN
+# =============================================================================
+
+@admin.register(ProfileAccessGrant)
+class ProfileAccessGrantAdmin(admin.ModelAdmin):
+    list_display = (
+        'granted_to',
+        'profile_link',
+        'recovery_request_link',
+        'granted_by',
+        'granted_at',
+        'expires_at',
+        'is_active',
+        'validity_display',
+    )
+    list_filter = ('is_active', 'granted_at', 'expires_at')
+    search_fields = (
+        'granted_to__username',
+        'granted_to__email',
+        'profile__first_name',
+        'profile__last_name',
+        'granted_by__username',
+    )
+    readonly_fields = ('granted_at', 'granted_by', 'validity_display')
+    ordering = ('-granted_at',)
+
+    fieldsets = (
+        ('Grant', {
+            'fields': ('profile', 'granted_to', 'is_active', 'expires_at'),
+        }),
+        ('Audit', {
+            'fields': ('granted_by', 'granted_at', 'recovery_request', 'notes', 'validity_display'),
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.granted_by = request.user
+        super().save_model(request, obj, form, change)
+
+    @admin.display(description='Profile')
+    def profile_link(self, obj):
+        url = reverse('admin:dashboard_profile_change', args=[obj.profile.pk])
+        return format_html(
+            '<a href="{}">{} {}</a>',
+            url, obj.profile.first_name, obj.profile.last_name,
+        )
+
+    @admin.display(description='Recovery Request')
+    def recovery_request_link(self, obj):
+        if not obj.recovery_request_id:
+            return '—'
+        url = reverse('admin:recovery_recoveryrequest_change', args=[obj.recovery_request_id])
+        return format_html('<a href="{}">Request #{}</a>', url, obj.recovery_request_id)
+
+    @admin.display(description='Valid?')
+    def validity_display(self, obj):
+        if not obj.pk:
+            return '—'
+        if not obj.is_active:
+            return format_html('<span style="color:#b91c1c;font-weight:600;">✘ Revoked</span>')
+        if obj.is_expired():
+            return format_html('<span style="color:#b45309;font-weight:600;">⏰ Expired</span>')
+        return format_html('<span style="color:#15803d;font-weight:600;">✔ Active</span>')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'profile', 'granted_to', 'granted_by', 'recovery_request'
+        )

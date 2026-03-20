@@ -41,6 +41,25 @@
     </div>
 </section>
 
+<!-- FAMILY ACCESS REQUEST -->
+<section class="family-access-section">
+    <div class="container text-center">
+        <h3 class="family-access-heading">
+            Are you a family member of a deceased or incapacitated account holder?
+        </h3>
+        <p class="family-access-body">
+            If a loved one had an account with us, you can submit a verified access request.
+            Our team will review your documentation and grant you access to their estate information.
+        </p>
+        <div class="btn-wrapper">
+            <button class="btn">
+            <a href="{% url 'recovery:external_recovery_request' %}" />
+                Request Estate Access</button>
+            </a>
+        </div>
+    </div>
+</section>
+
 <!-- MORE THAN PASSWORD STORAGE -->
 <section class="value-proposition">
     <div class="container">
@@ -82,6 +101,8 @@
         </div>
     </div>
 </section>
+
+
 
 <!-- PLATFORM ARCHITECTURE -->
 <section class="platform-architecture">
@@ -367,11 +388,13 @@
 </div>
 
 <!-- CLOSING CTA -->
-<!-- <section class="closing-cta">
+<section class="closing-cta">
     <div class="container">
         <h2 class="closing-headline">Your family doesn't need access.<br>They need direction.</h2>
     </div>
-</section> -->
+</section>
+
+
 
 {% endblock %}
 </body>

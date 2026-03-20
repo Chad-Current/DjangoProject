@@ -1,43 +1,95 @@
 {% extends "dashboard/dashboard.html" %}
 {% load static %}
 
-{% block title %}Estate Details{% endblock %}
+{% block title %}My Profile{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
-    <div class="main">
-        <div class="parent">
-        <div class="modify-form">
-            <h1>My Profile</h1>
-            <div>
-                <p><strong>Full Name:</strong> {{ profile.full_name }}</p>
-                <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F d, Y"|default:"Not set" }}</p>
-                <p><strong>Primary Email:</strong> {{ profile.primary_email }}</p>
-                <p><strong>Phone:</strong> {{ profile.phone_number|default:"Not set" }}</p>
+<div class="main container py-4">
 
-                <h2>Digital Executor</h2>
-                <p><strong>Has Executor:</strong> {{ profile.has_digital_executor|yesno:"Yes,No" }}</p>
-                {% if profile.has_digital_executor %}
-                <p><strong>Executor Name:</strong> {{ profile.digital_executor_name }}</p>
-                <p><strong>Executor Contact:</strong> {{ profile.digital_executor_contact }}</p>
-                {% endif %}
+    <!-- Page Header -->
+    <div class="delegation-header">
+        <h1><i class="fas fa-user"></i> {{ profile.first_name }} {{ profile.last_name }}</h1>
+        <p class="subtitle">Personal Profile &amp; Contact Information</p>
+    </div>
 
-                {% if profile.notes %}
-                <h2>Notes</h2>
-                <p>{{ profile.notes|linebreaks }}</p>
-                {% endif %}
+    <div class="row">
+        <div class="col-lg-6">
+
+            <!-- Personal Information Card -->
+            <div class="info-card">
+                <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-user"></i> Full Name</div>
+                    <div class="info-value">{{ profile.first_name }} {{ profile.last_name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-birthday-cake"></i> Date of Birth</div>
+                    <div class="info-value">{{ profile.date_of_birth|date:"F d, Y"|default:"Not set" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-envelope"></i> Primary Email</div>
+                    <div class="info-value">
+                        {% if profile.email %}
+                        <a href="mailto:{{ profile.email }}">{{ profile.email }}</a>
+                        {% else %}
+                        <span class="text-muted">Not set</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                    <div class="info-value">
+                        {% if profile.phone %}
+                        <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a>
+                        {% else %}
+                        <span class="text-muted">Not set</span>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            {% if request.user.can_modify_data %}
-            <a href="{% url 'dashboard:profile_update' %}"><button class="button button-100"> Edit Profile</button></a>
-            {% endif %}
+
         </div>
+        <div class="col-lg-6">
+
+            <!-- Address Card -->
+            <div class="info-card">
+                <h3><i class="fas fa-map-marker-alt"></i> Address</h3>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-home"></i> Address</div>
+                    <div class="info-value">
+                        {{ profile.address_1 }}
+                        {% if profile.address_2 %}, {{ profile.address_2 }}{% endif %}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-city"></i> City</div>
+                    <div class="info-value">{{ profile.city|default:"Not set" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-map"></i> State</div>
+                    <div class="info-value">{{ profile.state|default:"Not set" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-mail-bulk"></i> Zipcode</div>
+                    <div class="info-value">{{ profile.zipcode|default:"Not set" }}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    {% if request.user.can_modify_data %}
+    <div class="action-buttons">
+        <a href="{% url 'dashboard:profile_update' %}" class="btn btn-wrapper btn-custom btn-edit">
+            <i class="fas fa-pen"></i> Edit Profile
+        </a>
+    </div>
+    {% endif %}
 
 
-
-        {% endblock %}
-    </body>
-
-</html>
+</div>
+{% endblock %}

@@ -17,16 +17,164 @@ from .models import (
 )
 
 
+# =============================================================================
+# READ-ONLY INLINES — used on ProfileAdmin for the estate overview screen
+# =============================================================================
+
+class _ReadOnlyInline(admin.TabularInline):
+    """Base mixin: no add/change/delete from the inline."""
+    extra = 0
+    can_delete = False
+    show_change_link = True
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class ContactInline(_ReadOnlyInline):
+    model = Contact
+    verbose_name = 'Contact'
+    verbose_name_plural = 'Contacts'
+    fields = (
+        'first_name', 'last_name', 'contact_relation', 'email', 'phone',
+        'is_digital_executor', 'is_legal_executor', 'is_emergency_contact',
+        'is_memorial_contact',
+    )
+    readonly_fields = fields
+
+
+class AccountInline(_ReadOnlyInline):
+    model = Account
+    verbose_name = 'Digital Account'
+    verbose_name_plural = 'Digital Accounts'
+    fields = (
+        'account_name_or_provider', 'account_category', 'username_or_email',
+        'credential_storage_location', 'keep_or_close_instruction',
+        'delegated_account_to', 'notes_for_family',
+    )
+    readonly_fields = fields
+
+
+class DeviceInline(_ReadOnlyInline):
+    model = Device
+    verbose_name = 'Device'
+    verbose_name_plural = 'Devices'
+    fields = (
+        'device_name', 'device_type', 'owner_label', 'location_description',
+        'used_for_2fa', 'delegated_device_to', 'decommission_instruction',
+    )
+    readonly_fields = fields
+
+
+class DigitalEstateDocumentInline(_ReadOnlyInline):
+    model = DigitalEstateDocument
+    verbose_name = 'Estate Document'
+    verbose_name_plural = 'Estate Documents'
+    fields = (
+        'name_or_title', 'estate_category', 'delegated_estate_to',
+        'estate_physical_location', 'estate_digital_location',
+        'applies_on_death', 'applies_on_incapacity',
+    )
+    readonly_fields = fields
+
+
+class ImportantDocumentInline(_ReadOnlyInline):
+    model = ImportantDocument
+    verbose_name = 'Important Document'
+    verbose_name_plural = 'Important Documents'
+    fields = (
+        'name_or_title', 'document_category', 'delegated_important_document_to',
+        'physical_location', 'digital_location',
+        'applies_on_death', 'requires_legal_review',
+    )
+    readonly_fields = fields
+
+
+class FuneralPlanInline(admin.StackedInline):
+    model = FuneralPlan
+    verbose_name = 'Funeral Plan'
+    verbose_name_plural = 'Funeral Plan'
+    extra = 0
+    can_delete = False
+    show_change_link = True
+    fields = (
+        'disposition_method', 'service_type', 'preferred_funeral_home',
+        'preferred_venue', 'is_veteran', 'marital_status',
+        'burial_or_interment_location', 'reception_desired',
+        'additional_instructions',
+    )
+    readonly_fields = fields
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+def _make_vault_inline():
+    """
+    Build VaultEntryInline lazily to avoid a circular import at module load.
+    Returns None if infrapps is not installed or VaultEntry does not exist.
+    """
+    try:
+        from infrapps.models import VaultEntry
+
+        class VaultEntryInline(_ReadOnlyInline):
+            """Vault credential metadata only — the encrypted token is never shown."""
+            model = VaultEntry
+            verbose_name = 'Vault Entry (metadata only)'
+            verbose_name_plural = 'Vault Entries (metadata only — passwords hidden)'
+            fields = ('label', 'entry_type', 'username_or_email', 'linked_account', 'linked_device', 'notes')
+            readonly_fields = fields
+
+            def get_queryset(self, request):
+                return super().get_queryset(request).select_related('linked_account', 'linked_device')
+
+        return VaultEntryInline
+    except Exception:
+        return None
+
+
+_VaultEntryInline = _make_vault_inline()
+
+
+# =============================================================================
+# PROFILE ADMIN — estate overview hub
+# =============================================================================
+
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'user', 'email', 'created_at')
-    list_filter = ('email', 'created_at')
+    list_display = ('first_name', 'last_name', 'user', 'email', 'estate_summary_counts', 'created_at')
+    list_filter = ('created_at',)
     search_fields = ('first_name', 'last_name', 'user__username', 'email')
-    readonly_fields = ('user', 'created_at', 'updated_at')
+    readonly_fields = ('user', 'created_at', 'updated_at', 'estate_overview')
+    inlines = [
+        x for x in [
+            ContactInline,
+            AccountInline,
+            DeviceInline,
+            DigitalEstateDocumentInline,
+            ImportantDocumentInline,
+            FuneralPlanInline,
+            _VaultEntryInline,
+        ] if x is not None
+    ]
 
     fieldsets = (
-        ('User Information', {
-            'fields': ('user', 'first_name', 'last_name', 'date_of_birth', 'email', 'phone')
+        ('User Account', {
+            'fields': ('user',)
+        }),
+        ('Estate Overview', {
+            'fields': ('estate_overview',),
+            'description': 'Summary of all items recorded by this user. '
+                           'Scroll down to see each section in full.',
+        }),
+        ('Personal Information', {
+            'fields': ('first_name', 'last_name', 'date_of_birth', 'email', 'phone')
         }),
         ('Address', {
             'fields': ('address_1', 'address_2', 'city', 'state', 'zipcode')
@@ -36,6 +184,77 @@ class ProfileAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user').annotate(
+            _contact_count=Count('relation_contacts', distinct=True),
+            _account_count=Count('accounts', distinct=True),
+            _device_count=Count('devices', distinct=True),
+            _estate_doc_count=Count('estate_documents', distinct=True),
+            _important_doc_count=Count('important_documents', distinct=True),
+        )
+
+    @admin.display(description='Items')
+    def estate_summary_counts(self, obj):
+        parts = []
+        counts = {
+            'Contacts': getattr(obj, '_contact_count', '?'),
+            'Accounts': getattr(obj, '_account_count', '?'),
+            'Devices': getattr(obj, '_device_count', '?'),
+            'Estate Docs': getattr(obj, '_estate_doc_count', '?'),
+            'Imp. Docs': getattr(obj, '_important_doc_count', '?'),
+        }
+        for label, n in counts.items():
+            color = '#2e7d32' if n else '#9e9e9e'
+            parts.append(
+                f'<span style="color:{color}; margin-right:8px;">'
+                f'<strong>{n}</strong> {label}</span>'
+            )
+        return format_html(''.join(parts))
+
+    @admin.display(description='Estate Overview')
+    def estate_overview(self, obj):
+        if not obj.pk:
+            return '—'
+
+        try:
+            from infrapps.models import VaultEntry
+            vault_count = VaultEntry.objects.filter(profile=obj).count()
+        except Exception:
+            vault_count = 'N/A'
+
+        has_funeral = FuneralPlan.objects.filter(profile=obj).exists()
+
+        rows = [
+            ('Contacts',           obj.relation_contacts.count()),
+            ('Digital Accounts',   obj.accounts.count()),
+            ('Devices',            obj.devices.count()),
+            ('Estate Documents',   obj.estate_documents.count()),
+            ('Important Documents',obj.important_documents.count()),
+            ('Funeral Plan',       'Yes' if has_funeral else 'No'),
+            ('Vault Entries',      vault_count),
+        ]
+
+        cells = []
+        for label, value in rows:
+            if isinstance(value, int):
+                color = '#2e7d32' if value > 0 else '#9e9e9e'
+            elif value == 'Yes':
+                color = '#2e7d32'
+            else:
+                color = '#9e9e9e'
+            cells.append(
+                f'<div style="display:inline-block; min-width:200px; margin:4px 16px 4px 0;">'
+                f'<strong style="color:{color};">{value}</strong>'
+                f'<span style="color:#555; margin-left:6px;">{label}</span>'
+                f'</div>'
+            )
+
+        return mark_safe(
+            '<div style="line-height:2; padding:4px 0;">'
+            + ''.join(cells)
+            + '</div>'
+        )
 
 
 @admin.register(Contact)

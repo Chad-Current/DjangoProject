@@ -52,41 +52,7 @@
 }
 
 
-/* ══════════════════════════════════════════════
-   ALERT MESSAGES
-   ══════════════════════════════════════════════ */
-
-.alert {
-  font-family: var(--main-font);
-  font-size: var(--font-nm);
-  font-weight: 600;
-  border-radius: 12px;
-  padding: 0.75rem 1.2rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  column-gap: 0.6rem;
-}
-
-.alert-success {
-  background: rgba(98, 162, 206, 0.12);
-  color: #2d6a9c;
-  border: 2px solid rgba(98, 162, 206, 0.3);
-}
-
-.alert-error,
-.alert-danger {
-  background: rgba(192, 57, 43, 0.09);
-  color: #922b21;
-  border: 2px solid rgba(192, 57, 43, 0.28);
-}
-
-.alert-warning {
-  background: rgba(255, 166, 43, 0.1);
-  color: #9a5e10;
-  border: 2px solid rgba(255, 166, 43, 0.32);
-}
-
+/* .alert-* styles consolidated into baseapp/css/stylesheet.css */
 
 /* ══════════════════════════════════════════════
    PRICING CARDS — grid layout

@@ -128,9 +128,7 @@ class ExternalRecoveryRequestForm(forms.ModelForm):
         from django.conf import settings
         from django.urls import reverse
         
-        # NEED TO CHANGE FOR PRODUCTION LEVEL
-        # verification_url = f"{settings.SITE_URL}{reverse('recovery:verify_recovery_request', kwargs={'token': instance.verification_token})}"
-        verification_url = f"http://localhost:8000"
+        verification_url = f"{settings.SITE_URL}{reverse('recovery:verify_recovery_request', kwargs={'token': instance.verification_token})}"
         subject = "Verify Your Account Recovery Request"
         message = f"""
 Dear {instance.requester_first_name} {instance.requester_last_name},

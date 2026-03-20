@@ -205,8 +205,85 @@ class RecoveryRequest(models.Model):
     def clean(self):
         """Validate that either user or external requester info is provided"""
         from django.core.exceptions import ValidationError
-        
+
         if not self.requested_by_user and not (self.requester_email or self.requester_first_name):
             raise ValidationError(
                 "Either an authenticated user or external requester information must be provided."
             )
+
+
+# =============================================================================
+# PROFILE ACCESS GRANT
+# =============================================================================
+
+class ProfileAccessGrant(models.Model):
+    """
+    Grants a verified family member / executor read-only access to a deceased
+    user's estate profile.  Created manually by an admin after a RecoveryRequest
+    is approved.  Entirely separate from subscription access — the grantee does
+    not need a paid tier to use this.
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='access_grants',
+        help_text="The estate profile being shared.",
+    )
+    granted_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile_access_grants',
+        help_text="User who receives read-only access to the profile.",
+    )
+    recovery_request = models.ForeignKey(
+        RecoveryRequest,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='access_grants',
+        help_text="The recovery request that justified this grant (audit trail).",
+    )
+    granted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='grants_issued',
+        help_text="Admin who created this grant.",
+    )
+    granted_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Optional expiry date.  Leave blank for indefinite access.",
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Uncheck to revoke access without deleting the record.",
+    )
+    notes = models.TextField(
+        blank=True,
+        help_text="Internal notes about why this grant was created.",
+    )
+
+    class Meta:
+        db_table = 'profile_access_grants'
+        ordering = ['-granted_at']
+        unique_together = [('profile', 'granted_to')]
+        indexes = [
+            models.Index(fields=['granted_to', 'is_active']),
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.granted_to} → {self.profile.first_name} {self.profile.last_name}"
+            f" ({'active' if self.is_active else 'revoked'})"
+        )
+
+    def is_expired(self):
+        if self.expires_at:
+            return timezone.now() > self.expires_at
+        return False
+
+    def is_valid(self):
+        """True only if the grant is active and not past its expiry date."""
+        return self.is_active and not self.is_expired()

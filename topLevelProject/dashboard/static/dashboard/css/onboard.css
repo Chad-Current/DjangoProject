@@ -24,6 +24,7 @@
   top: 2rem;
   display: flex;
   flex-direction: column;
+  min-width: fit-content;
 }
 
 .rail-header {
@@ -808,4 +809,251 @@
   .ob-count-grid { grid-template-columns: 1fr; }
   .ob-welcome-cta,
   .ob-complete-cta { flex-direction: column; align-items: stretch; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
+   FUNERAL PLAN — MOBILE RESPONSIVE OVERRIDES
+   Consolidated from funeralplan_mobile.css.
+   Breakpoints: ≤ 900px tablet, ≤ 768px large phone, ≤ 480px small phone
+   ════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .onboarding-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .step-rail {
+    width: 100% !important;
+    min-width: unset !important;
+    max-width: 100% !important;
+    flex-shrink: 0;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.85rem 1rem 0.85rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    order: -1;
+    background: transparent !important;
+  }
+
+  .step-rail .rail-header {
+    display: none !important;
+  }
+
+  .step-rail .rail-header h2 {
+    font-size: 0.8rem !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0 0 0.2rem !important;
+  }
+
+  .step-rail .rail-header p {
+    font-size: 0.875rem !important;
+    margin: 0 0 0.5rem !important;
+    font-weight: 500;
+  }
+
+  .step-rail .rail-header .rail-progress-track {
+    margin: 0 !important;
+  }
+
+  .fp-mobile-step-label {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(231, 239, 247, 0.75);
+    letter-spacing: 0.02em;
+  }
+
+  .step-rail .rail-steps {
+    display: none !important;
+  }
+
+  .onboarding-main {
+    min-width: unset !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .ob-tip {
+    margin-top: 1rem;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ob-step-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  .ob-eyebrow {
+    color: var(--accent-color);
+  }
+
+  .ob-step-card {
+    padding: 0.9rem 0.85rem !important;
+  }
+
+  .ob-step-card h4 {
+    font-size: 0.85rem !important;
+  }
+
+  .ob-step-card p {
+    font-size: 0.75rem !important;
+  }
+
+  .ob-step-emoji {
+    font-size: 1.4rem !important;
+  }
+
+  .ob-page-header p:first-child {
+    font-size: var(--font-sm);
+    font-family: var(--main-font);
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  .ob-page-header p:last-child {
+    color: var(--seventy-percent);
+  }
+
+  .ob-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.6rem !important;
+  }
+
+  .ob-actions .ob-btn {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .ob-actions .ob-spacer {
+    display: none !important;
+  }
+
+  .ob-actions .ob-btn-primary,
+  .ob-actions .ob-btn-accent {
+    order: -1;
+  }
+
+  .ob-page-header {
+    padding: 1.25rem 1rem 1rem !important;
+  }
+
+  .ob-page-header h1 {
+    font-size: clamp(1.4rem, 5vw, 2rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .ob-page-header p {
+    font-size: 0.875rem !important;
+  }
+
+  .ob-form-card {
+    padding: 1.1rem 1rem !important;
+  }
+
+  .ob-card-heading {
+    font-size: 0.95rem !important;
+    gap: 0.6rem !important;
+    flex-wrap: wrap;
+  }
+
+  .ob-card-heading .ob-btn {
+    margin-left: 0 !important;
+    align-self: flex-start;
+  }
+
+  .ob-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ob-grid .ob-full {
+    grid-column: 1 !important;
+  }
+
+  .ob-welcome-card,
+  .ob-complete-card {
+    padding: 1.1rem 1rem !important;
+  }
+
+  .ob-welcome-intro h3 {
+    font-size: 1rem !important;
+  }
+
+  .ob-welcome-cta,
+  .ob-complete-cta {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.6rem !important;
+  }
+
+  .ob-welcome-cta .ob-btn,
+  .ob-complete-cta .ob-btn {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .ob-welcome-cta .ob-spacer {
+    display: none !important;
+  }
+
+  .ob-count-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  .ob-count-cell {
+    padding: 0.65rem 0.5rem !important;
+  }
+
+  .ob-count-number {
+    font-size: 1.1rem !important;
+  }
+
+  .ob-count-label {
+    font-size: 0.65rem !important;
+  }
+
+  .ob-alert,
+  .ob-alert-success,
+  .ob-alert-warning,
+  .ob-alert-error,
+  .ob-alert-info {
+    font-size: 0.85rem !important;
+    padding: 0.7rem 0.9rem !important;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ob-count-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .ob-step-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media print {
+  .step-rail,
+  .ob-btn,
+  [onclick] {
+    display: none !important;
+  }
 }
