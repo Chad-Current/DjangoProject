@@ -135,7 +135,7 @@
       </p>
     </div>
 
-    <div class="ob-body" style="grid-template-columns: 1fr;">
+    <div class="ob-body ob-body--single">
       <div>
 
         {% if can_modify %}
@@ -228,7 +228,7 @@
             <div class="ob-alert ob-alert-warning">
               <i class="fas fa-lock"></i>
               <strong>View only.</strong> Your current plan access does not allow editing.
-              <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost" style="margin-left: auto;">
+              <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost ob-btn--ml-auto">
                 <i class="fas fa-arrow-left"></i> Dashboard
               </a>
             </div>

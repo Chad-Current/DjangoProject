@@ -33,7 +33,7 @@
             <form method="post">
                 {% csrf_token %}
 
-                <div class="form-field">
+                <div class="form-field{% if form.username.errors %} has-error{% endif %}">
                     <label for="{{ form.username.id_for_label }}"
                         class="ob-label-tooltip"
                         title="Choose a unique username you'll use to log in. It can contain letters, numbers, and the characters @ . + - _">
@@ -46,7 +46,7 @@
                     {% endif %}
                 </div>
 
-                <div class="form-field">
+                <div class="form-field{% if form.email.errors %} has-error{% endif %}">
                     <label for="{{ form.email.id_for_label }}"
                         class="ob-label-tooltip"
                         title="Your email address — used for account recovery and important notifications. We don't share it with third parties.">
@@ -59,7 +59,7 @@
                     {% endif %}
                 </div>
 
-                <div class="form-field">
+                <div class="form-field{% if form.password1.errors %} has-error{% endif %}">
                     <label for="{{ form.password1.id_for_label }}"
                         class="ob-label-tooltip"
                         title="Choose a strong password — at least 8 characters, not entirely numeric, and not too similar to your username or email.">
@@ -72,7 +72,7 @@
                     {% endif %}
                 </div>
 
-                <div class="form-field">
+                <div class="form-field{% if form.password2.errors %} has-error{% endif %}">
                     <label for="{{ form.password2.id_for_label }}"
                         class="ob-label-tooltip"
                         title="Re-enter your password exactly as above to confirm there are no typos.">

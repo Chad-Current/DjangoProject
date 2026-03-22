@@ -303,6 +303,64 @@
 
 
 /* ══════════════════════════════════════════════
+   2b. FAMILY ACCESS REQUEST
+   ══════════════════════════════════════════════ */
+
+.family-access-section {
+    background: var(--seventy-percent);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.family-access-heading {
+    font-family: var(--main-font);
+    font-size: var(--font-lg);
+    font-weight: 700;
+    color: var(--ten-percent);
+    margin: 0 0 1rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.family-access-body {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-nm);
+    color: var(--forty-percent);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.family-access-section .hero-buttons {
+    justify-content: center;
+}
+
+.family-access-section .hero-buttons a {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 3px 4px 12px rgba(2,2,2,.12);
+    background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
+    color: var(--text-color);
+}
+
+.family-access-section .hero-buttons a:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 3px 6px 18px rgba(2,2,2,.18);
+}
+
+
+/* ══════════════════════════════════════════════
    3. FEATURE CARDS
    ══════════════════════════════════════════════ */
 

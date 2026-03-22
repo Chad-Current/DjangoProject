@@ -1,8 +1,10 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
-
+<link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
+{% endblock %}
 
 {% block content %}
 <div class="form-container">

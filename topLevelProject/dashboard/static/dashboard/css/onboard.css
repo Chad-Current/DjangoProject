@@ -1050,6 +1050,219 @@
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   FUNERAL PLAN — STATIC STYLES
+   Merged from funeralplan.css. Applies to all Funeral Plan pages.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Rail step links ─────────────────────────────────────────── */
+.step-rail a.rail-step {
+  text-decoration: none;
+}
+
+/* ── Check-group spacing modifiers ───────────────────────────── */
+.ob-check-group--mt { margin-top: 1rem; }
+.ob-check-group--mb { margin-bottom: 1rem; }
+
+/* ── Icons inside ob-check-label ─────────────────────────────── */
+.ob-check-icon {
+  margin-right: 6px;
+}
+
+.ob-check-label .fa-medal        { color: var(--ten-percent); }
+.ob-check-label .fa-eye          { color: var(--thirty-percent); }
+.ob-check-label .fa-glass-cheers { color: var(--accent-color); }
+
+/* ── Actions card ────────────────────────────────────────────── */
+.ob-form-card--actions {
+  background: var(--background-color);
+}
+
+.ob-actions--flush {
+  padding: 0;
+}
+
+/* ── Tip list check icons ─────────────────────────────────────── */
+.ob-tip-icon {
+  color: var(--sixty-percent);
+  margin-right: 7px;
+  width: 12px;
+}
+
+/* ── Single-column page layout ───────────────────────────────── */
+.onboarding-wrap--single {
+  grid-template-columns: 1fr;
+  max-width: 960px;
+}
+
+.ob-body--single {
+  grid-template-columns: 1fr;
+}
+
+/* ── Progress bar & label in page header ─────────────────────── */
+.ob-page-header .rail-progress-track {
+  margin-top: 1.25rem;
+}
+
+.fp-progress-label {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: rgba(231, 239, 247, 0.7);
+  margin: 0.4rem 0 0;
+}
+
+/* ── Step grid ───────────────────────────────────────────────── */
+.ob-step-grid--4col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+a.ob-step-card {
+  text-decoration: none;
+}
+
+/* ── Badge inside step card ──────────────────────────────────── */
+.ob-badge--card {
+  margin-top: .5rem;
+  align-self: flex-start;
+}
+
+/* ── Danger-style ghost button ───────────────────────────────── */
+.ob-btn--danger {
+  color: #c0392b;
+  border-color: #fecaca;
+}
+
+/* ── Detail page action & footer bars ────────────────────────── */
+.fp-action-bar {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.fp-footer-bar {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+/* ── Button positioning utilities ────────────────────────────── */
+.ob-btn--edit {
+  margin-left: auto;
+  font-size: var(--font-sm);
+}
+
+.ob-btn--ml-auto {
+  margin-left: auto;
+}
+
+.ob-btn--addnow {
+  margin-top: .75rem;
+}
+
+/* ── Form card top margin ────────────────────────────────────── */
+.ob-form-card--mt {
+  margin-top: 1rem;
+}
+
+/* ── Pre-line text in item names ─────────────────────────────── */
+.ob-item-name--pre {
+  white-space: pre-line;
+}
+
+/* ── Additional instructions text ────────────────────────────── */
+.fp-instructions-text {
+  white-space: pre-line;
+  margin: 0;
+  font-family: var(--paragraph-font);
+  font-size: var(--font-nm);
+  font-weight: 300;
+  color: var(--text-color-dark);
+}
+
+/* ── Confirm-delete page ─────────────────────────────────────── */
+.delete-item-name--badges {
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: 1.25rem 0 1.75rem;
+  justify-content: center;
+}
+
+.fp-empty-label {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  color: #9ca3af;
+}
+
+.fp-delete-form {
+  width: 100%;
+}
+
+.fp-confirm-field {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.fp-confirm-label {
+  display: block;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--ten-percent);
+  margin-bottom: .4rem;
+}
+
+.fp-confirm-code {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: .1rem .4rem;
+  color: #dc2626;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.fp-confirm-input {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1.5px solid #dce6f0;
+  border-radius: 10px;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  color: var(--text-color-dark);
+  background: var(--background-color);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+#confirm_text:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, .1) !important;
+  background: var(--purewhite-color) !important;
+}
+
+.fp-confirm-hint {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  font-weight: 300;
+  color: var(--thirty-percent);
+  margin: .3rem 0 0;
+}
+
+/* ── Section form utilities ──────────────────────────────────── */
+.ob-check-group:empty {
+  display: none;
+}
+
+.ob-grid .ob-field:has(textarea) {
+  grid-column: 1 / -1;
+}
+
+
 @media print {
   .step-rail,
   .ob-btn,

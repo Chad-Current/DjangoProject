@@ -1,6 +1,6 @@
 {% extends 'recovery/base.html' %}
 
-{% block content %}
+{% block recovery_content %}
 <div class="row">
     <div class="col-lg-8">
         <div class="card">
@@ -267,7 +267,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{% url 'admin_recovery_dashboard' %}" class="btn btn-outline-primary">
+                    <a href="{% url 'recovery:admin_recovery_dashboard' %}" class="btn btn-outline-primary">
                         <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                     </a>
                     <a href="mailto:{{ recovery_request.get_requester_email }}" class="btn btn-outline-secondary">
@@ -278,4 +278,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock recovery_content %}

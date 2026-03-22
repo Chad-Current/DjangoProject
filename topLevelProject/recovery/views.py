@@ -1,4 +1,6 @@
 # recovery/views.py
+from datetime import timedelta
+
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -6,6 +8,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import (
     CreateView,
     UpdateView,
@@ -58,6 +61,7 @@ class ExternalRecoveryRequestView(CreateView):
 
     def form_valid(self, form):
         recovery_request = form.save()
+        self.request.session[f'verified_recovery_{recovery_request.pk}'] = True
         messages.success(
             self.request,
             f'Your recovery request has been submitted. Please check your email '
@@ -71,8 +75,10 @@ class VerifyRecoveryRequestView(View):
 
     def get(self, request, token):
         recovery_request = get_object_or_404(RecoveryRequest, verification_token=token)
+        session_key = f'verified_recovery_{recovery_request.pk}'
 
         if recovery_request.is_verified():
+            request.session[session_key] = True
             messages.info(request, 'This request has already been verified.')
             return redirect('recovery:recovery_request_status', pk=recovery_request.pk)
 
@@ -80,12 +86,19 @@ class VerifyRecoveryRequestView(View):
             messages.error(request, 'Too many verification attempts. Please contact support.')
             return redirect('recovery:recovery_request_status', pk=recovery_request.pk)
 
-        recovery_request.verify()
+        if timezone.now() - recovery_request.created_at > timedelta(hours=48):
+            messages.error(
+                request,
+                'This verification link has expired. Please use the resend option to get a new one.'
+            )
+            return redirect('recovery:recovery_request_status', pk=recovery_request.pk)
+
         recovery_request.verification_attempts += 1
-        recovery_request.save()
+        recovery_request.verify()  # sets verified_at, updates status, and saves
 
         _send_admin_notification(recovery_request)
 
+        request.session[session_key] = True
         messages.success(
             request,
             'Your email has been verified! Your request is now being reviewed by our team. '
@@ -161,6 +174,7 @@ class ResendVerificationEmailView(View):
 
         _send_verification_email(recovery_request)
 
+        request.session[f'verified_recovery_{pk}'] = True
         messages.success(
             request,
             f'Verification email has been resent to {recovery_request.requester_email}'

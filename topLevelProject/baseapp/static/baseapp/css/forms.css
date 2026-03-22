@@ -164,7 +164,7 @@ fieldset legend::before {
 }
 label.requiredField::after {
   content: " *";
-  color: #c0392b;
+  color: var(--accent-color);
 }
 
 .asterisk::after {
@@ -219,6 +219,25 @@ input[type="tel"] {
   margin-bottom: 0.25rem;
 }
 
+/* ── Hover state — subtle border lift before focus ────────── */
+.textinput:hover,
+.emailinput:hover,
+.urlinput:hover,
+.numberinput:hover,
+.dateinput:hover,
+.datetimeinput:hover,
+.form-field input:hover,
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="url"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+input[type="datetime-local"]:hover,
+input[type="password"]:hover,
+input[type="tel"]:hover {
+  border-color: var(--sixty-percent);
+}
+
 .textinput:focus,
 .emailinput:focus,
 .urlinput:focus,
@@ -270,6 +289,11 @@ textarea {
   margin-bottom: 0.25rem;
 }
 
+.textarea:hover,
+textarea:hover {
+  border-color: var(--sixty-percent);
+}
+
 .textarea:focus,
 textarea:focus {
   outline: none;
@@ -304,6 +328,11 @@ select {
   appearance: none;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
   margin-bottom: 0.25rem;
+}
+
+.select:hover,
+select:hover {
+  border-color: var(--sixty-percent);
 }
 
 .select:focus,
@@ -373,14 +402,33 @@ button:disabled {
 
 
 /* ══════════════════════════════════════════════
+   READONLY STATE
+   ══════════════════════════════════════════════ */
+
+input[readonly],
+textarea[readonly] {
+  background: #e9ecef;
+  color: var(--text-color-dark-muted);
+  cursor: default;
+  border-color: #dce6f0;
+}
+
+input[readonly]:hover,
+textarea[readonly]:hover {
+  border-color: #dce6f0; /* no hover lift on readonly fields */
+}
+
+
+/* ══════════════════════════════════════════════
    CHECKBOXES
    ══════════════════════════════════════════════ */
 
 .form-check {
-  display: flex;
+  display: flex;          /* overrides Bootstrap's display: block */
   align-items: flex-start;
   gap: 0.65rem;
-  padding: 0.65rem 0.85rem;
+  padding: 0.65rem 0.85rem; /* overrides Bootstrap's padding-left: 1.5em */
+  padding-left: 0.85rem;    /* explicit reset in case specificity wins for Bootstrap */
   background: var(--background-color);
   border: 1.5px solid #dce6f0;
   border-radius: 10px;
@@ -399,6 +447,8 @@ button:disabled {
 input[type="checkbox"] {
   -webkit-appearance: none;
   appearance: none;
+  float: none;        /* reset Bootstrap 5's float: left */
+  margin-left: 0;     /* reset Bootstrap 5's margin-left: -1.5em */
   width: 20px;
   height: 20px;
   min-width: 20px;
@@ -407,7 +457,7 @@ input[type="checkbox"] {
   background: var(--purewhite-color);
   cursor: pointer;
   position: relative;
-  margin: 1px 0 0;
+  margin-top: 1px;
   flex-shrink: 0;
   transition: background 0.2s, border-color 0.2s;
 }
@@ -416,6 +466,13 @@ input[type="checkbox"] {
 .form-check-input:hover,
 input[type="checkbox"]:hover {
   border-color: var(--accent-color);
+}
+
+.checkboxinput:focus-visible,
+.form-check-input:focus-visible,
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--thirty-percent);
+  outline-offset: 2px;
 }
 
 .checkboxinput:checked,
@@ -612,7 +669,7 @@ ul.errorlist li {
 ul.errorlist {
   list-style: none;
   padding: 0;
-  margin: 0.35rem 0 0;
+  margin: 0.35rem 0 0.5rem;
 }
 
 .errorlist li,
@@ -775,6 +832,7 @@ ul.messages li.debug::before { content: "⚙"; color: #6c757d; }
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--sixty-percent);
+  /* border-bottom: 1px solid var(--sixty-percent); */
 }
 
 .text-center p {
@@ -782,7 +840,7 @@ ul.messages li.debug::before { content: "⚙"; color: #6c757d; }
   font-family: var(--main-font);
   font-weight: 400;
   color: var(--text-color-dark);
-  margin: 0;
+  margin: auto;
 }
 
 .text-center a {
@@ -871,6 +929,28 @@ ul.messages li.debug::before { content: "⚙"; color: #6c757d; }
   .form-group { margin-bottom: 1.25rem; }
   .text-center p { font-size: var(--font-sm); }
   .fgp { text-align: center; margin-bottom: 1.25rem; }
+
+  .form-wrapper,
+  .loginform-wrapper { padding: 1.25rem 1rem; }
+
+  .textinput,
+  .emailinput,
+  .urlinput,
+  .numberinput,
+  .dateinput,
+  .datetimeinput,
+  .textarea,
+  textarea,
+  .select,
+  select {
+    padding: 0.55rem 0.75rem;
+    font-size: var(--font-sm);
+  }
+
+  .form-wrapper label,
+  .form-wrapper-body label,
+  .form-group label,
+  .form-field label { font-size: var(--font-sm); }
 }
 
 

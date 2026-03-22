@@ -1,33 +1,178 @@
+{% extends 'dashboard/dashboard.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
+{% block title %}Edit Profile{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
+{% endblock %}
+{% block content %}
+<div class="form-container">
+<div class="form-wrapper">
 
-<!DOCTYPE html>
-<html lang="en">
+  {% if form.non_field_errors %}
+  <ul class="errorlist nonfield" role="alert">
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'dashboard/css/stylesheet.css' %}" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-</head>
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-<body>
-    {% include "baseapp/navbar.html" %}
-    
-    <div class="form-container">
-        {% crispy form %}
+    <!-- ══════════════════════════════════════════
+         PERSONAL INFORMATION
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Personal Information</legend>
+
+      <div class="form-field{% if form.first_name.errors %} has-error{% endif %}">
+        <label for="{{ form.first_name.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your legal first name as it appears on official documents.">
+          First Name <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Your legal first name as it appears on official documents.</span>
+        </label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <div class="error" role="alert">{{ form.first_name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.last_name.errors %} has-error{% endif %}">
+        <label for="{{ form.last_name.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your legal last name or family name.">
+          Last Name <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Your legal last name or family name.</span>
+        </label>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+          <div class="error" role="alert">{{ form.last_name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.date_of_birth.errors %} has-error{% endif %}">
+        <label for="{{ form.date_of_birth.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your date of birth — used in estate documents and obituary preparation.">
+          Date of Birth
+          <span class="ob-tip" role="tooltip">Your date of birth — used in estate documents and obituary preparation.</span>
+        </label>
+        {{ form.date_of_birth }}
+        {% if form.date_of_birth.errors %}
+          <div class="error" role="alert">{{ form.date_of_birth.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.email.errors %} has-error{% endif %}">
+        <label for="{{ form.email.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your personal email address. Used as a contact point for your estate and family access.">
+          Email Address
+          <span class="ob-tip" role="tooltip">Your personal email address. Used as a contact point for your estate and family access.</span>
+        </label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="error" role="alert">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.phone.errors %} has-error{% endif %}">
+        <label for="{{ form.phone.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your primary phone number — mobile preferred so family can reach you or leave an emergency message.">
+          Phone Number
+          <span class="ob-tip" role="tooltip">Your primary phone number — mobile preferred so family can reach you or leave an emergency message.</span>
+        </label>
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <div class="error" role="alert">{{ form.phone.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ADDRESS
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Address</legend>
+
+      <div class="form-field{% if form.address_1.errors %} has-error{% endif %}">
+        <label for="{{ form.address_1.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your current street address — used in estate documents and for legal correspondence.">
+          Street Address <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Your current street address — used in estate documents and for legal correspondence.</span>
+        </label>
+        {{ form.address_1 }}
+        {% if form.address_1.errors %}
+          <div class="error" role="alert">{{ form.address_1.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.address_2.errors %} has-error{% endif %}">
+        <label for="{{ form.address_2.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Apartment, suite, unit, or building number if applicable.">
+          Address Line 2
+          <span class="ob-tip" role="tooltip">Apartment, suite, unit, or building number if applicable.</span>
+        </label>
+        {{ form.address_2 }}
+        {% if form.address_2.errors %}
+          <div class="error" role="alert">{{ form.address_2.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.city.errors %} has-error{% endif %}">
+        <label for="{{ form.city.id_for_label }}"
+          class="ob-label-tooltip"
+          title="The city or town where you currently reside.">
+          City <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The city or town where you currently reside.</span>
+        </label>
+        {{ form.city }}
+        {% if form.city.errors %}
+          <div class="error" role="alert">{{ form.city.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.state.errors %} has-error{% endif %}">
+        <label for="{{ form.state.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your state or province — important for legal jurisdiction in estate matters.">
+          State <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Your state or province — important for legal jurisdiction in estate matters.</span>
+        </label>
+        {{ form.state }}
+        {% if form.state.errors %}
+          <div class="error" role="alert">{{ form.state.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.zipcode.errors %} has-error{% endif %}">
+        <label for="{{ form.zipcode.id_for_label }}"
+          class="ob-label-tooltip"
+          title="Your postal/ZIP code — required for accurate delivery of any legal correspondence.">
+          ZIP Code
+          <span class="ob-tip" role="tooltip">Your postal/ZIP code — required for accurate delivery of any legal correspondence.</span>
+        </label>
+        {{ form.zipcode }}
+        {% if form.zipcode.errors %}
+          <div class="error" role="alert">{{ form.zipcode.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ACTIONS
+    ══════════════════════════════════════════ -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary">Save Profile</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>
     </div>
 
-    {% include "baseapp/footer.html" %}
-    
-    <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
-</body>
-
-</html>
+  </form>
+</div>
+</div>
+{% endblock %}

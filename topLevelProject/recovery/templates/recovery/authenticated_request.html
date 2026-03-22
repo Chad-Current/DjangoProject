@@ -1,6 +1,12 @@
 {% extends 'recovery/base.html' %}
+{% load static %}
 
-{% block content %}
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
+{% endblock %}
+
+{% block recovery_content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card">
@@ -10,103 +16,132 @@
                 </h4>
             </div>
             <div class="card-body">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
+                <div class="ob-alert ob-alert-info" style="margin-bottom:1.25rem;">
+                    <i class="fas fa-info-circle"></i>
                     You are submitting this request as an authorized contact. Your request will be verified automatically.
                 </div>
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <div class="info-section">
-                        <h5><i class="fas fa-clipboard-list me-2"></i>Request Details</h5>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.reason.id_for_label }}" class="form-label required-field">
-                                Reason for Request
+                    <!-- ── Request Details ────────────────────────────── -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-fieldset-legend">Request Details</legend>
+
+                        <div class="form-field{% if form.reason.errors %} has-error{% endif %}">
+                            <label for="{{ form.reason.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Select the primary reason you need access to this account.">
+                                Reason for Request <span class="req" aria-hidden="true">*</span>
+                                <span class="ob-tip" role="tooltip">Select the primary reason you need access to this account.</span>
                             </label>
                             {{ form.reason }}
                             {% if form.reason.errors %}
-                                <div class="text-danger mt-1">{{ form.reason.errors }}</div>
+                                <div class="error" role="alert">{{ form.reason.errors }}</div>
                             {% endif %}
                         </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.target_account.id_for_label }}" class="form-label">
+                        <div class="form-field{% if form.target_account.errors %} has-error{% endif %}">
+                            <label for="{{ form.target_account.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Select a specific account if this request is for a particular account. Leave blank if not applicable.">
                                 Specific Account (Optional)
+                                <span class="ob-tip" role="tooltip">Select a specific account if this request is for a particular account. Leave blank if not applicable.</span>
                             </label>
                             {{ form.target_account }}
+                            <span class="ob-hint">Select a specific account if this request is for a particular account.</span>
                             {% if form.target_account.errors %}
-                                <div class="text-danger mt-1">{{ form.target_account.errors }}</div>
+                                <div class="error" role="alert">{{ form.target_account.errors }}</div>
                             {% endif %}
-                            <small class="form-text text-muted">
-                                Select a specific account if this request is for a particular account.
-                            </small>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.target_description.id_for_label }}" class="form-label required-field">
-                                Description
+                        <div class="form-field{% if form.target_description.errors %} has-error{% endif %}">
+                            <label for="{{ form.target_description.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Describe the specific accounts, documents, or information you need access to.">
+                                Description <span class="req" aria-hidden="true">*</span>
+                                <span class="ob-tip" role="tooltip">Describe the specific accounts, documents, or information you need access to.</span>
                             </label>
                             {{ form.target_description }}
+                            <span class="ob-hint">Describe what you need to access or recover.</span>
                             {% if form.target_description.errors %}
-                                <div class="text-danger mt-1">{{ form.target_description.errors }}</div>
+                                <div class="error" role="alert">{{ form.target_description.errors }}</div>
                             {% endif %}
-                            <small class="form-text text-muted">
-                                Describe what you need to access or recover.
-                            </small>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.additional_notes.id_for_label }}" class="form-label">
+                        <div class="form-field{% if form.additional_notes.errors %} has-error{% endif %}">
+                            <label for="{{ form.additional_notes.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Any other context or information that may help us process your request.">
                                 Additional Notes
+                                <span class="ob-tip" role="tooltip">Any other context or information that may help us process your request.</span>
                             </label>
                             {{ form.additional_notes }}
                             {% if form.additional_notes.errors %}
-                                <div class="text-danger mt-1">{{ form.additional_notes.errors }}</div>
+                                <div class="error" role="alert">{{ form.additional_notes.errors }}</div>
                             {% endif %}
                         </div>
-                    </div>
 
-                    <div class="info-section">
-                        <h5><i class="fas fa-file-upload me-2"></i>Supporting Documentation</h5>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Death Certificate or Medical Documentation</label>
+                    </fieldset>
+
+                    <!-- ── Supporting Documentation ───────────────────── -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-fieldset-legend">Supporting Documentation</legend>
+
+                        <div class="form-field{% if form.death_certificate.errors %} has-error{% endif %}">
+                            <label for="{{ form.death_certificate.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Upload a death certificate or medical documentation confirming the account owner's status.">
+                                Death Certificate or Medical Documentation
+                                <span class="ob-tip" role="tooltip">Upload a death certificate or medical documentation confirming the account owner's status.</span>
+                            </label>
                             {{ form.death_certificate }}
                             {% if form.death_certificate.errors %}
-                                <div class="text-danger mt-1">{{ form.death_certificate.errors }}</div>
+                                <div class="error" role="alert">{{ form.death_certificate.errors }}</div>
                             {% endif %}
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Proof of Relationship</label>
+                        <div class="form-field{% if form.proof_of_relationship.errors %} has-error{% endif %}">
+                            <label for="{{ form.proof_of_relationship.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Upload proof of your relationship to the account owner — e.g. marriage certificate or birth certificate.">
+                                Proof of Relationship
+                                <span class="ob-tip" role="tooltip">Upload proof of your relationship to the account owner — e.g. marriage certificate or birth certificate.</span>
+                            </label>
                             {{ form.proof_of_relationship }}
                             {% if form.proof_of_relationship.errors %}
-                                <div class="text-danger mt-1">{{ form.proof_of_relationship.errors }}</div>
+                                <div class="error" role="alert">{{ form.proof_of_relationship.errors }}</div>
                             {% endif %}
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Legal Authorization</label>
+                        <div class="form-field{% if form.legal_authorization.errors %} has-error{% endif %}">
+                            <label for="{{ form.legal_authorization.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Upload legal authorization documents — e.g. power of attorney, executor papers, or a court order.">
+                                Legal Authorization
+                                <span class="ob-tip" role="tooltip">Upload legal authorization documents — e.g. power of attorney, executor papers, or a court order.</span>
+                            </label>
                             {{ form.legal_authorization }}
                             {% if form.legal_authorization.errors %}
-                                <div class="text-danger mt-1">{{ form.legal_authorization.errors }}</div>
+                                <div class="error" role="alert">{{ form.legal_authorization.errors }}</div>
                             {% endif %}
                         </div>
-                    </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-paper-plane me-2"></i>Submit Recovery Request
+                    </fieldset>
+
+                    <!-- ── Actions ────────────────────────────────────── -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Recovery Request
                         </button>
-                        <a href="{% url 'baseapp:my_recovery_requests' %}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        <a href="{% url 'recovery:my_recovery_requests' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
                         </a>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock recovery_content %}

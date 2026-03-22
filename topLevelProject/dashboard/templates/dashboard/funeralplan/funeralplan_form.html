@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
 {% endblock %}
 
 
@@ -21,56 +22,56 @@
 
     <div class="rail-steps">
 
-      <a href="#section-personal" class="rail-step active" style="text-decoration:none;">
+      <a href="#section-personal" class="rail-step active">
         <div class="rail-dot">1</div>
         <div class="rail-text">
           <span class="rail-label">Personal Info</span>
           <span class="rail-sub">Identity &amp; background</span>
         </div>
       </a>
-      <a href="#section-service" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-service" class="rail-step todo">
         <div class="rail-dot">2</div>
         <div class="rail-text">
           <span class="rail-label">Service</span>
           <span class="rail-sub">Type, venue &amp; timing</span>
         </div>
       </a>
-      <a href="#section-disposition" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-disposition" class="rail-step todo">
         <div class="rail-dot">3</div>
         <div class="rail-text">
           <span class="rail-label">Disposition</span>
           <span class="rail-sub">Burial or cremation</span>
         </div>
       </a>
-      <a href="#section-ceremony" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-ceremony" class="rail-step todo">
         <div class="rail-dot">4</div>
         <div class="rail-text">
           <span class="rail-label">Ceremony</span>
           <span class="rail-sub">Music, readings &amp; customs</span>
         </div>
       </a>
-      <a href="#section-reception" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-reception" class="rail-step todo">
         <div class="rail-dot">5</div>
         <div class="rail-text">
           <span class="rail-label">Reception</span>
           <span class="rail-sub">Gathering preferences</span>
         </div>
       </a>
-      <a href="#section-obituary" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-obituary" class="rail-step todo">
         <div class="rail-dot">6</div>
         <div class="rail-text">
           <span class="rail-label">Obituary</span>
           <span class="rail-sub">Legacy &amp; memorial</span>
         </div>
       </a>
-      <a href="#section-admin" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-admin" class="rail-step todo">
         <div class="rail-dot">7</div>
         <div class="rail-text">
           <span class="rail-label">Administrative</span>
           <span class="rail-sub">Insurance &amp; finances</span>
         </div>
       </a>
-      <a href="#section-instructions" class="rail-step todo" style="text-decoration:none;">
+      <a href="#section-instructions" class="rail-step todo">
         <div class="rail-dot">8</div>
         <div class="rail-text">
           <span class="rail-label">Instructions</span>
@@ -146,11 +147,15 @@
           </div>
         </div>
 
-        <div class="ob-check-group" style="margin-top:1rem;">
-          <label class="ob-check-row">
-            {{ form.is_veteran }}
-            <span class="ob-check-label"><i class="fas fa-medal" style="color:var(--ten-percent); margin-right:6px;"></i>Military Veteran — entitled to veteran burial honours</span>
-          </label>
+        <div class="ob-check-group ob-check-group--mt">
+          <div>
+            <label class="ob-check-row" for="{{ form.is_veteran.id_for_label }}">
+              {{ form.is_veteran }}
+              <span class="ob-check-label"><i class="fas fa-medal ob-check-icon"></i>Military Veteran</span>
+            </label>
+            <span class="ob-hint">{{ form.is_veteran.help_text }}</span>
+            {% if form.is_veteran.errors %}<ul class="errorlist">{% for e in form.is_veteran.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
         </div>
       </div>
 
@@ -200,10 +205,10 @@
           </div>
         </div>
 
-        <div class="ob-check-group" style="margin-top:1rem;">
+        <div class="ob-check-group ob-check-group--mt">
           <label class="ob-check-row">
             {{ form.open_casket_viewing }}
-            <span class="ob-check-label"><i class="fas fa-eye" style="color:var(--thirty-percent); margin-right:6px;"></i>Open casket viewing is desired</span>
+            <span class="ob-check-label"><i class="fas fa-eye ob-check-icon"></i>Open casket viewing is desired</span>
           </label>
         </div>
       </div>
@@ -317,10 +322,10 @@
           <span class="fp-section-hint">Post-service gathering preferences</span>
         </div>
 
-        <div class="ob-check-group" style="margin-bottom:1rem;">
+        <div class="ob-check-group ob-check-group--mb">
           <label class="ob-check-row">
             {{ form.reception_desired }}
-            <span class="ob-check-label"><i class="fas fa-glass-cheers" style="color:var(--accent-color); margin-right:6px;"></i>A reception or gathering after the service is desired</span>
+            <span class="ob-check-label"><i class="fas fa-glass-cheers ob-check-icon"></i>A reception or gathering after the service is desired</span>
           </label>
         </div>
 
@@ -436,8 +441,8 @@
       </div>
 
       <!-- ══ ACTIONS ═══════════════════════════════════════════ -->
-      <div class="ob-form-card" style="background:var(--background-color);">
-        <div class="ob-actions" style="padding:0;">
+      <div class="ob-form-card ob-form-card--actions">
+        <div class="ob-actions ob-actions--flush">
           {% if object %}
           <a href="{% url 'dashboard:funeralplan_detail' object.pk %}" class="ob-btn ob-btn-ghost">
             <i class="fas fa-times"></i> Cancel
@@ -461,10 +466,10 @@
     <div class="ob-tip">
       <div class="ob-tip-title"><i class="fas fa-lightbulb"></i> You don't need to fill everything in at once</div>
       <ul>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Save with as little or as much as you have today</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Come back to add sections as you think of things</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Share the location of this plan with your executor</li>
-        <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Review and update after any major life change</li>
+        <li><i class="fas fa-check ob-tip-icon"></i>Save with as little or as much as you have today</li>
+        <li><i class="fas fa-check ob-tip-icon"></i>Come back to add sections as you think of things</li>
+        <li><i class="fas fa-check ob-tip-icon"></i>Share the location of this plan with your executor</li>
+        <li><i class="fas fa-check ob-tip-icon"></i>Review and update after any major life change</li>
       </ul>
     </div>
 

@@ -1,6 +1,6 @@
 {% extends 'recovery/base.html' %}
 
-{% block content %}
+{% block recovery_content %}
 <div class="row mb-4">
     <div class="col-12">
         <h2><i class="fas fa-tachometer-alt me-2"></i>Recovery Request Dashboard</h2>
@@ -143,7 +143,7 @@
                             </td>
                             <td>{{ request.created_at|date:"M d, Y" }}</td>
                             <td>
-                                <a href="{% url 'admin_review_recovery_request' pk=request.pk %}" 
+                                <a href="{% url 'recovery:admin_review_recovery_request' pk=request.pk %}"
                                    class="btn btn-sm btn-primary">
                                     <i class="fas fa-eye"></i> Review
                                 </a>
@@ -162,4 +162,4 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
+{% endblock recovery_content %}

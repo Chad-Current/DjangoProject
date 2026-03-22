@@ -772,7 +772,7 @@ span {
   border: 1.5px solid rgba(45, 106, 156, 0.15);
   position: relative;
   transition: transform 0.25s, box-shadow 0.25s;
-  width: 40%;
+  /* width: 40%; */
 }
 
 .pricing-card:hover {
@@ -1009,7 +1009,7 @@ span {
 .trust-strip {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   flex-wrap: wrap;
   gap: 1.5rem 2.5rem;
   background: var(--purewhite-color);
@@ -1088,7 +1088,7 @@ span {
    ══════════════════════════════════════════════ */
 
 .family-access-section {
-  background: var(--background-color);
+  background: var(--seventy-percent);
   border-top: 1px solid var(--seventy-percent);
   padding: 48px 0;
   display: flex;

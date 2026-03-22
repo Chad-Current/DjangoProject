@@ -28,7 +28,7 @@
 
 
 {% block content %}
-<div class="onboarding-wrap" style="grid-template-columns: 1fr; max-width: 960px;">
+<div class="onboarding-wrap onboarding-wrap--single">
 
 
   <!-- Page header -->
@@ -36,11 +36,10 @@
     <p class="ob-eyebrow">Estate Planning</p>
     <h1>My Funeral Plan</h1>
     <p>Complete each section at your own pace — your wishes are saved automatically as you go.</p>
-    <div class="rail-progress-track" style="margin-top: 1.25rem;">
+    <div class="rail-progress-track">
       <div class="rail-progress-fill" id="fp-progress-fill" style="width: 0%"></div>
     </div>
-    <p style="font-family: var(--main-font); font-size: var(--font-sm); font-weight: 300;
-              color: rgba(231,239,247,0.7); margin: 0.4rem 0 0;">
+    <p class="fp-progress-label">
       <span id="fp-pct">0</span> of 8 sections complete
     </p>
   </div>
@@ -53,69 +52,69 @@
       <p>Each section covers a different aspect of your service. Edit any section at any time — nothing is final until you choose.</p>
     </div>
 
-    <div class="ob-step-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="ob-step-grid ob-step-grid--4col">
 
-      <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-step-card step-1" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-step-card step-1">
         <div class="ob-step-emoji">🪪</div>
         <h4>Personal Information</h4>
         <p>Preferred name, occupation, religion, veteran status.</p>
-        {% if progress.personal_info %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.personal_info %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-step-card step-2" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-step-card step-2">
         <div class="ob-step-emoji">⛪</div>
         <h4>Service Preferences</h4>
         <p>Type of service, funeral home, venue, officiant.</p>
-        {% if progress.service %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.service %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-step-card step-3" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-step-card step-3">
         <div class="ob-step-emoji">🌿</div>
         <h4>Final Disposition</h4>
         <p>Burial, cremation, location, and inscription wishes.</p>
-        {% if progress.disposition %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.disposition %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-step-card step-4" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-step-card step-4">
         <div class="ob-step-emoji">🎵</div>
         <h4>Ceremony</h4>
         <p>Music, flowers, readings, eulogists, pallbearers.</p>
-        {% if progress.ceremony %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.ceremony %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-step-card step-5" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-step-card step-5">
         <div class="ob-step-emoji">🤝</div>
         <h4>Reception</h4>
         <p>Post-service gathering, food, atmosphere, guests.</p>
-        {% if progress.reception %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.reception %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-step-card step-6" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-step-card step-6">
         <div class="ob-step-emoji">📰</div>
         <h4>Obituary &amp; Memorial</h4>
         <p>Photo, achievements, publications, donations.</p>
-        {% if progress.obituary %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.obituary %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-step-card step-1" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-step-card step-1">
         <div class="ob-step-emoji">📋</div>
         <h4>Administrative</h4>
         <p>Insurance policy, death certificates, payments.</p>
-        {% if progress.admin %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.admin %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
-      <a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-step-card step-2" style="text-decoration:none;">
+      <a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-step-card step-2">
         <div class="ob-step-emoji">✉️</div>
         <h4>Additional Instructions</h4>
         <p>Final wishes, personal messages, guidance.</p>
-        {% if progress.instructions %}<span class="ob-badge badge-blue" style="margin-top:.5rem; align-self:flex-start;">✓ Complete</span>
+        {% if progress.instructions %}<span class="ob-badge badge-blue ob-badge--card">✓ Complete</span>
         {% else %}<span class="ob-step-time">Pending</span>{% endif %}
       </a>
 
@@ -134,7 +133,7 @@
       <span class="ob-spacer"></span>
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_delete' %}"
-           class="ob-btn ob-btn-ghost" style="color: #c0392b; border-color: #fecaca;">
+           class="ob-btn ob-btn-ghost ob-btn--danger">
           <i class="fas fa-trash"></i> Delete Plan
         </a>
       {% endif %}

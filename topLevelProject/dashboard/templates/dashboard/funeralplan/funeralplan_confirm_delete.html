@@ -23,7 +23,7 @@
     </p>
 
     <!-- Sections that will be erased -->
-    <div class="delete-item-name" style="flex-wrap:wrap; gap:.4rem; margin: 1.25rem 0 1.75rem; justify-content: center;">
+    <div class="delete-item-name delete-item-name--badges">
       <i class="fas fa-folder-open"></i>
       {% if progress.personal_info %}<span class="ob-badge badge-blue">Personal Info</span>{% endif %}
       {% if progress.service %}<span class="ob-badge badge-blue">Service Prefs</span>{% endif %}
@@ -34,7 +34,7 @@
       {% if progress.admin %}<span class="ob-badge badge-blue">Admin</span>{% endif %}
       {% if progress.instructions %}<span class="ob-badge badge-blue">Instructions</span>{% endif %}
       {% if not progress.personal_info and not progress.service and not progress.disposition and not progress.ceremony and not progress.reception and not progress.obituary and not progress.admin and not progress.instructions %}
-        <span style="font-family: var(--main-font); font-size: var(--font-sm); color: #9ca3af;">No sections completed yet</span>
+        <span class="fp-empty-label">No sections completed yet</span>
       {% endif %}
     </div>
 
@@ -48,17 +48,14 @@
     </div>
 
     <!-- Single form wrapping BOTH the input and the submit button -->
-    <form method="post" id="deleteForm" style="width: 100%;">
+    <form method="post" id="deleteForm" class="fp-delete-form">
       {% csrf_token %}
 
       <!-- Confirmation input -->
-      <div style="margin-bottom: 1.5rem; text-align: left;">
-        <label for="confirm_text"
-               style="display:block; font-family:var(--main-font); font-size:var(--font-sm);
-                      font-weight:700; color:var(--ten-percent); margin-bottom:.4rem;">
+      <div class="fp-confirm-field">
+        <label for="confirm_text" class="fp-confirm-label">
           Type
-          <code style="background:#f3f4f6; border:1px solid #e5e7eb; border-radius:4px;
-                       padding:.1rem .4rem; color:#dc2626; font-weight:700; letter-spacing:.05em;">DELETE</code>
+          <code class="fp-confirm-code">DELETE</code>
           to confirm
         </label>
         <input
@@ -70,14 +67,10 @@
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
-          style="width:100%; padding:9px 13px; border:1.5px solid #dce6f0; border-radius:10px;
-                 font-family:var(--main-font); font-size:var(--font-nm); color:var(--text-color-dark);
-                 background:var(--background-color); outline:none; box-sizing:border-box;
-                 transition:border-color .2s, box-shadow .2s;"
+          class="fp-confirm-input"
           oninput="document.getElementById('delete-btn').disabled = this.value.trim() !== 'DELETE';"
         >
-        <p style="font-family:var(--paragraph-font); font-size:var(--font-sm); font-weight:300;
-                  color:var(--thirty-percent); margin:.3rem 0 0;">
+        <p class="fp-confirm-hint">
           Must be typed exactly — all capital letters.
         </p>
       </div>
@@ -96,14 +89,6 @@
 
   </div>
 </div><!-- /.delete-view-wrapper -->
-
-<style>
-  #confirm_text:focus {
-    border-color: #dc2626 !important;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, .1) !important;
-    background: var(--purewhite-color) !important;
-  }
-</style>
 
 <script>
   document.getElementById('deleteForm').addEventListener('submit', function () {

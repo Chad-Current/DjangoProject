@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'baseapp/css/index.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'accounts/css/stylesheet.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -23,43 +24,39 @@
     
     <div class="form-container">
         <div class="loginform-wrapper">
-            {% if messages %} 
-                <ul class = "messages" >
+            {% if messages %}
                 {% for message in messages %}
-                <li {% if message.tags %} class = " {{ message.tags }} " {% endif %} >
-                    {{ message }}
-                </li> 
+                <div class="error">{{ message }}</div>
                 {% endfor %}
-                </ul >
             {% endif %}
             <h1 class="form-section-title">Login</h1>
-
-                {% if messages %}
-                {% for message in messages %}              
-                <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                </p>
-                {% if 'log' in message %}
-                {{ message }}
-                {% endif %}
-                    {% endfor %}
-                    {% endif %}
 
                     <form method="post">
                         {% csrf_token %}
 
-                        <div class="form-field">
-                            <label for="{{ form.username_or_email.id_for_label }}">Username or Email:</label>
+                        <div class="form-field{% if form.username_or_email.errors %} has-error{% endif %}">
+                            <label for="{{ form.username_or_email.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Enter your username or the email address you registered with.">
+                                Username or Email
+                                <span class="ob-tip" role="tooltip">Enter your username or the email address you registered with.</span>
+                            </label>
                             {{ form.username_or_email }}
                             {% if form.username_or_email.errors %}
-                            <div class="error">{{ form.username_or_email.errors }}</div>
+                            <div class="error" role="alert">{{ form.username_or_email.errors }}</div>
                             {% endif %}
                         </div>
 
-                        <div class="form-field">
-                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                        <div class="form-field{% if form.password.errors %} has-error{% endif %}">
+                            <label for="{{ form.password.id_for_label }}"
+                                class="ob-label-tooltip"
+                                title="Enter your account password. If you've forgotten it, use the Forgot Password link below.">
+                                Password
+                                <span class="ob-tip" role="tooltip">Enter your account password. If you've forgotten it, use the Forgot Password link below.</span>
+                            </label>
                             {{ form.password }}
                             {% if form.password.errors %}
-                            <div class="error">{{ form.password.errors }}</div>
+                            <div class="error" role="alert">{{ form.password.errors }}</div>
                             {% endif %}
                         </div>
 

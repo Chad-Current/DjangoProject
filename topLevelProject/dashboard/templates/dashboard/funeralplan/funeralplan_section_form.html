@@ -4,6 +4,7 @@
 {% block title %}{{ page_title|default:"Edit Section" }}{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}" type="text/css">
 {% endblock %}
 
@@ -120,7 +121,7 @@
       <p>Update this section of your plan. Changes are saved immediately when you submit — your other sections remain unchanged.</p>
     </div>
 
-    <div class="ob-body" style="grid-template-columns: 1fr;">
+    <div class="ob-body ob-body--single">
 
       <form method="post">
         {% csrf_token %}
@@ -186,16 +187,27 @@
 
           <!-- Checkboxes rendered outside the grid, full-width ── -->
           {% with has_checks=False %}
-          <div class="ob-check-group" style="margin-top:1rem;">
+          <div class="ob-check-group ob-check-group--mt">
             {% for field in form %}
               {% if field.field.widget.input_type == 'checkbox' %}
-              <label class="ob-check-row">
-                {{ field }}
-                <span class="ob-check-label">{{ field.label }}</span>
-              </label>
-              {% if field.errors %}
-                <ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
-              {% endif %}
+                {% if field.html_name == 'is_veteran' %}
+                <div>
+                  <label class="ob-check-row" for="{{ field.id_for_label }}">
+                    {{ field }}
+                    <span class="ob-check-label"><i class="fas fa-medal ob-check-icon"></i>Military Veteran</span>
+                  </label>
+                  <span class="ob-hint">{{ field.help_text }}</span>
+                  {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                {% else %}
+                <label class="ob-check-row">
+                  {{ field }}
+                  <span class="ob-check-label">{{ field.label }}</span>
+                </label>
+                {% if field.errors %}
+                  <ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+                {% endif %}
               {% endif %}
             {% endfor %}
           </div>
@@ -233,36 +245,36 @@
         </div>
         <ul>
           {% if section_label == 'Personal Information' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Used by the funeral home for official records</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Veterans are entitled to specific burial honours — check the box if applicable</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Religious affiliation guides the officiant and ceremony customs</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Used by the funeral home for official records</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Veterans are entitled to specific burial honours — check the box if applicable</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Religious affiliation guides the officiant and ceremony customs</li>
           {% elif section_label == 'Service Preferences' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>A "Celebration of Life" is less formal than a traditional funeral</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Specifying a funeral home avoids family having to make that decision in grief</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>If you've pre-paid, include the policy number in the Administrative section</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>A "Celebration of Life" is less formal than a traditional funeral</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Specifying a funeral home avoids family having to make that decision in grief</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>If you've pre-paid, include the policy number in the Administrative section</li>
           {% elif section_label == 'Final Disposition' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Cremation is chosen by the majority of people today and allows flexibility</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Eco-friendly options (natural burial, water cremation) are increasingly available</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>If you own a plot, include the plot number and cemetery contact</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Cremation is chosen by the majority of people today and allows flexibility</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Eco-friendly options (natural burial, water cremation) are increasingly available</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>If you own a plot, include the plot number and cemetery contact</li>
           {% elif section_label == 'Ceremony Personalization' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Specific song titles and artists remove ambiguity for the family</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>You can write your own eulogy points if you want to guide what's said</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Name pallbearers to avoid last-minute awkwardness for the family</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Specific song titles and artists remove ambiguity for the family</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>You can write your own eulogy points if you want to guide what's said</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Name pallbearers to avoid last-minute awkwardness for the family</li>
           {% elif section_label == 'Reception / Gathering' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>A gathering gives people space to share memories and support each other</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Even a simple home gathering is meaningful — it doesn't need to be formal</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>A gathering gives people space to share memories and support each other</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Even a simple home gathering is meaningful — it doesn't need to be formal</li>
           {% elif section_label == 'Obituary & Memorial' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>An obituary typically runs 300–500 words in a newspaper</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Online obituaries (Legacy.com etc.) stay searchable indefinitely</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Charity donations in lieu of flowers are increasingly preferred</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>An obituary typically runs 300–500 words in a newspaper</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Online obituaries (Legacy.com etc.) stay searchable indefinitely</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Charity donations in lieu of flowers are increasingly preferred</li>
           {% elif section_label == 'Administrative & Financial' %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Most families need 8–10 certified death certificate copies</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Banks, insurers, and government agencies each typically need one original</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>If you have a pre-paid funeral plan, include the provider's name and phone number</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Most families need 8–10 certified death certificate copies</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Banks, insurers, and government agencies each typically need one original</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>If you have a pre-paid funeral plan, include the provider's name and phone number</li>
           {% else %}
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Use this section for anything that doesn't fit elsewhere</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Personal messages to your family can be recorded here</li>
-            <li><i class="fas fa-check" style="color:var(--sixty-percent); margin-right:7px; width:12px;"></i>Note the location of your will, safe, or other important items</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Use this section for anything that doesn't fit elsewhere</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Personal messages to your family can be recorded here</li>
+            <li><i class="fas fa-check ob-tip-icon"></i>Note the location of your will, safe, or other important items</li>
           {% endif %}
         </ul>
       </div>
@@ -271,12 +283,4 @@
   </main>
 </div>
 
-<style>
-/* Suppress empty checkbox group if this section has none */
-.ob-check-group:empty { display: none; }
-.step-rail a.rail-step { text-decoration: none; }
-
-/* textarea detection — crispy renders these with class 'textarea' */
-.ob-grid .ob-field:has(textarea) { grid-column: 1 / -1; }
-</style>
 {% endblock %}
