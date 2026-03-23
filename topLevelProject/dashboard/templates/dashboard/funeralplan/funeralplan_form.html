@@ -81,7 +81,7 @@
 
       <div class="rail-footer">
         {% if object %}
-        <a href="{% url 'dashboard:funeralplan_detail' object.pk %}">
+        <a href="{% url 'dashboard:funeralplan_detail' %}">
           <i class="fas fa-arrow-left"></i> Back to plan
         </a>
         {% else %}
@@ -155,6 +155,15 @@
             </label>
             <span class="ob-hint">{{ form.is_veteran.help_text }}</span>
             {% if form.is_veteran.errors %}<ul class="errorlist">{% for e in form.is_veteran.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+
+        <div class="ob-grid ob-grid--mt">
+          <div class="ob-field">
+            <label for="{{ form.veteran_branch.id_for_label }}">Branch of Service</label>
+            {{ form.veteran_branch }}
+            <span class="ob-hint">{{ form.veteran_branch.help_text }}</span>
+            {% if form.veteran_branch.errors %}<ul class="errorlist">{% for e in form.veteran_branch.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
           </div>
         </div>
       </div>
@@ -233,6 +242,20 @@
             <span class="ob-hint">Cemetery name, pre-purchased plot details, or scatter location</span>
             {% if form.burial_or_interment_location.errors %}<ul class="errorlist">{% for e in form.burial_or_interment_location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
           </div>
+        </div>
+
+        <div class="ob-check-group ob-check-group--mt">
+          <div>
+            <label class="ob-check-row" for="{{ form.burial_plot_or_niche_purchased.id_for_label }}">
+              {{ form.burial_plot_or_niche_purchased }}
+              <span class="ob-check-label"><i class="fas fa-map-marker-alt ob-check-icon"></i>Plot or Niche Already Purchased</span>
+            </label>
+            <span class="ob-hint">{{ form.burial_plot_or_niche_purchased.help_text }}</span>
+            {% if form.burial_plot_or_niche_purchased.errors %}<ul class="errorlist">{% for e in form.burial_plot_or_niche_purchased.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+
+        <div class="ob-grid ob-grid--mt">
           <div class="ob-field">
             <label for="{{ form.casket_type_preference.id_for_label }}">Casket Preference</label>
             {{ form.casket_type_preference }}
@@ -419,6 +442,12 @@
             <span class="ob-hint">How funeral costs should be paid — pre-paid plan details, account to use, etc.</span>
             {% if form.payment_arrangements.errors %}<ul class="errorlist">{% for e in form.payment_arrangements.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
           </div>
+          <div class="ob-field">
+            <label for="{{ form.review_time.id_for_label }}">Review Reminder</label>
+            {{ form.review_time }}
+            <span class="ob-hint">{{ form.review_time.help_text }}</span>
+            {% if form.review_time.errors %}<ul class="errorlist">{% for e in form.review_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
         </div>
       </div>
 
@@ -444,7 +473,7 @@
       <div class="ob-form-card ob-form-card--actions">
         <div class="ob-actions ob-actions--flush">
           {% if object %}
-          <a href="{% url 'dashboard:funeralplan_detail' object.pk %}" class="ob-btn ob-btn-ghost">
+          <a href="{% url 'dashboard:funeralplan_detail' %}" class="ob-btn ob-btn-ghost">
             <i class="fas fa-times"></i> Cancel
           </a>
           {% else %}

@@ -49,6 +49,7 @@ from .forms import (
     FuneralPlanObituaryForm,
     FuneralPlanAdminForm,
     FuneralPlanInstructionsForm,
+    FuneralPlanFullForm,
 )
 
 logger = logging.getLogger(__name__)
@@ -927,7 +928,7 @@ class FuneralPlanMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
+        if not user.can_view_data():
             messages.warning(request, "Please complete payment to access your funeral plan.")
             return redirect(reverse("accounts:payment"))
         try:
@@ -946,13 +947,23 @@ class FuneralPlanMixin(LoginRequiredMixin):
         plan, _ = self.get_or_create_plan()
         return {
             'plan':          plan,
-            'personal_info': bool(plan.preferred_name or plan.occupation or plan.marital_status),
-            'service':       bool(plan.service_type or plan.preferred_funeral_home),
-            'disposition':   bool(plan.disposition_method),
-            'ceremony':      bool(plan.music_choices or plan.flowers_or_colors or plan.readings_poems_or_scriptures),
-            'reception':     plan.reception_desired is not None,
-            'obituary':      bool(plan.obituary_key_achievements or plan.obituary_photo_description),
-            'admin':         bool(plan.payment_arrangements or plan.funeral_insurance_policy_number),
+            'personal_info': any([plan.preferred_name, plan.occupation, plan.marital_status,
+                                  plan.religion_or_spiritual_affiliation, plan.is_veteran]),
+            'service':       any([plan.service_type, plan.preferred_funeral_home,
+                                  plan.preferred_venue, plan.officiant_contact,
+                                  plan.officiant_name_freetext, plan.desired_timing,
+                                  plan.open_casket_viewing]),
+            'disposition':   any([plan.disposition_method, plan.burial_or_interment_location,
+                                  plan.casket_type_preference, plan.urn_type_preference,
+                                  plan.headstone_or_marker_inscription]),
+            'ceremony':      any([plan.music_choices, plan.flowers_or_colors,
+                                  plan.readings_poems_or_scriptures, plan.eulogists_notes,
+                                  plan.pallbearers_notes]),
+            'reception':     plan.reception_desired is not None or bool(plan.reception_location),
+            'obituary':      any([plan.obituary_key_achievements, plan.obituary_photo_description,
+                                  plan.obituary_publications, plan.charitable_donations_in_lieu]),
+            'admin':         any([plan.payment_arrangements, plan.funeral_insurance_policy_number,
+                                  plan.death_certificates_requested]),
             'instructions':  bool(plan.additional_instructions),
             'is_complete':   plan.is_complete,
         }
@@ -1032,13 +1043,14 @@ class FuneralPlanDetailView(FuneralPlanMixin, TemplateView):
 class _FuneralPlanStepBase(FuneralPlanMixin, TemplateView):
     """
     Abstract base for the 8 section step views.
-    Subclasses must define form_class, step, section_label, and next_url.
+    Subclasses must define form_class, step, section_label, next_url, and prev_url.
     """
     template_name = 'dashboard/funeralplan/funeralplan_step.html'
     form_class    = None
     step          = None
     section_label = ''
     next_url      = None
+    prev_url      = None  # None means first step (goes back to overview)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1048,6 +1060,7 @@ class _FuneralPlanStepBase(FuneralPlanMixin, TemplateView):
         context['step']          = self.step
         context['section_label'] = self.section_label
         context['page_title']    = f"Step {self.step} — {self.section_label}"
+        context['prev_url']      = self.prev_url
         if 'form' not in context:
             context['form'] = self.form_class(instance=plan, user=self.request.user)
         return context
@@ -1078,6 +1091,7 @@ class FuneralPlanStep1View(_FuneralPlanStepBase):
     form_class    = FuneralPlanPersonalInfoForm
     step          = 1
     section_label = "Personal Information"
+    prev_url      = None  # first step → overview
     next_url      = 'dashboard:funeralplan_step2'
 
 
@@ -1085,6 +1099,7 @@ class FuneralPlanStep2View(_FuneralPlanStepBase):
     form_class    = FuneralPlanServiceForm
     step          = 2
     section_label = "Service Preferences"
+    prev_url      = 'dashboard:funeralplan_step1'
     next_url      = 'dashboard:funeralplan_step3'
 
 
@@ -1092,6 +1107,7 @@ class FuneralPlanStep3View(_FuneralPlanStepBase):
     form_class    = FuneralPlanDispositionForm
     step          = 3
     section_label = "Final Disposition"
+    prev_url      = 'dashboard:funeralplan_step2'
     next_url      = 'dashboard:funeralplan_step4'
 
 
@@ -1099,6 +1115,7 @@ class FuneralPlanStep4View(_FuneralPlanStepBase):
     form_class    = FuneralPlanCeremonyForm
     step          = 4
     section_label = "Ceremony Personalization"
+    prev_url      = 'dashboard:funeralplan_step3'
     next_url      = 'dashboard:funeralplan_step5'
 
 
@@ -1106,6 +1123,7 @@ class FuneralPlanStep5View(_FuneralPlanStepBase):
     form_class    = FuneralPlanReceptionForm
     step          = 5
     section_label = "Reception / Gathering"
+    prev_url      = 'dashboard:funeralplan_step4'
     next_url      = 'dashboard:funeralplan_step6'
 
 
@@ -1113,6 +1131,7 @@ class FuneralPlanStep6View(_FuneralPlanStepBase):
     form_class    = FuneralPlanObituaryForm
     step          = 6
     section_label = "Obituary & Memorial"
+    prev_url      = 'dashboard:funeralplan_step5'
     next_url      = 'dashboard:funeralplan_step7'
 
 
@@ -1120,6 +1139,7 @@ class FuneralPlanStep7View(_FuneralPlanStepBase):
     form_class    = FuneralPlanAdminForm
     step          = 7
     section_label = "Administrative & Financial"
+    prev_url      = 'dashboard:funeralplan_step6'
     next_url      = 'dashboard:funeralplan_step8'
 
 
@@ -1127,6 +1147,7 @@ class FuneralPlanStep8View(_FuneralPlanStepBase):
     form_class    = FuneralPlanInstructionsForm
     step          = 8
     section_label = "Additional Instructions"
+    prev_url      = 'dashboard:funeralplan_step7'
     next_url      = None  # last step → summary
 
 
@@ -1158,6 +1179,41 @@ class FuneralPlanDeleteView(FuneralPlanMixin, TemplateView):
             messages.info(request, "No funeral plan was found to delete.")
 
         return redirect(reverse('dashboard:funeralplan_index'))
+
+
+class FuneralPlanUpdateView(FuneralPlanMixin, TemplateView):
+    """Full-plan edit view — renders all 8 sections in one scrollable form."""
+    template_name = 'dashboard/funeralplan/funeralplan_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        plan, _ = self.get_or_create_plan()
+        context.update(self._base_context())
+        context['plan']        = plan
+        context['object']      = plan
+        context['page_title']  = "Edit Funeral Plan"
+        context['form_action'] = "Update"
+        if 'form' not in context:
+            context['form'] = FuneralPlanFullForm(instance=plan, user=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.can_modify_data():
+            messages.error(request, "You don't have permission to edit your funeral plan.")
+            return redirect(reverse('dashboard:funeralplan_index'))
+
+        plan, _ = self.get_or_create_plan()
+        form = FuneralPlanFullForm(request.POST, instance=plan, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your funeral plan has been updated.")
+            return redirect(reverse('dashboard:funeralplan_detail'))
+
+        context = self.get_context_data()
+        context['form'] = form
+        messages.error(request, "Please correct the errors below.")
+        return self.render_to_response(context)
 
 
 # ============================================================================

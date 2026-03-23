@@ -28,14 +28,14 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-#FIX ERROR WITH ACCOUNT_DASHBOARD
+#FIX ERROR WITH accounts:login ?? Maybe dispatch redirection doesnt make sense
 class RegisterView(View):
     template_name = 'accounts/register.html'
     form_class = UserRegistrationForm
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('accounts:account_dashboard')
+            return redirect('accounts:login')
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):

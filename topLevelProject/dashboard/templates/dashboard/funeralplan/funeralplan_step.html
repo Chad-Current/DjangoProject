@@ -143,14 +143,14 @@
           <div class="ob-form-card">
             <div class="ob-card-heading">
               <div class="ob-card-icon">
-                {% if step == 1 %}🪪{% endif %}
-                {% if step == 2 %}⛪{% endif %}
-                {% if step == 3 %}🌿{% endif %}
-                {% if step == 4 %}🎵{% endif %}
-                {% if step == 5 %}🤝{% endif %}
-                {% if step == 6 %}📰{% endif %}
-                {% if step == 7 %}📋{% endif %}
-                {% if step == 8 %}✉️{% endif %}
+                {% if step == 1 %}<i class="fas fa-id-card"></i>{% endif %}
+                {% if step == 2 %}<i class="fas fa-church"></i>{% endif %}
+                {% if step == 3 %}<i class="fas fa-leaf"></i>{% endif %}
+                {% if step == 4 %}<i class="fas fa-music"></i>{% endif %}
+                {% if step == 5 %}<i class="fas fa-utensils"></i>{% endif %}
+                {% if step == 6 %}<i class="fas fa-pen-nib"></i>{% endif %}
+                {% if step == 7 %}<i class="fas fa-file-invoice-dollar"></i>{% endif %}
+                {% if step == 8 %}<i class="fas fa-scroll"></i>{% endif %}
               </div>
               {{ section_label }}
             </div>
@@ -160,38 +160,14 @@
               {{ form|crispy }}
 
               <div class="ob-actions">
-                <!-- Previous / Cancel -->
-                {% if step == 1 %}
+                <!-- Previous / Overview -->
+                {% if prev_url %}
+                  <a href="{% url prev_url %}" class="ob-btn ob-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Previous
+                  </a>
+                {% else %}
                   <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-ghost">
                     <i class="fas fa-arrow-left"></i> Overview
-                  </a>
-                {% elif step == 2 %}
-                  <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 3 %}
-                  <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 4 %}
-                  <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 5 %}
-                  <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 6 %}
-                  <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 7 %}
-                  <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
-                  </a>
-                {% elif step == 8 %}
-                  <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost">
-                    <i class="fas fa-arrow-left"></i> Previous
                   </a>
                 {% endif %}
 
@@ -202,16 +178,8 @@
                   Save &amp; Continue <i class="fas fa-arrow-right"></i>
                 </button>
 
-                {% if step < total_steps %}
-                  <!-- Skip -->
-                  {% if step == 1 %}<a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 2 %}<a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 3 %}<a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 4 %}<a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 5 %}<a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 6 %}<a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% elif step == 7 %}<a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost">Skip</a>
-                  {% endif %}
+                {% if next_url %}
+                  <a href="{% url next_url %}" class="ob-btn ob-btn-ghost">Skip</a>
                 {% else %}
                   <a href="{% url 'dashboard:funeralplan_detail' %}" class="ob-btn ob-btn-ghost">
                     View summary <i class="fas fa-eye"></i>

@@ -447,8 +447,8 @@ textarea[readonly]:hover {
 input[type="checkbox"] {
   -webkit-appearance: none;
   appearance: none;
-  float: none;        /* reset Bootstrap 5's float: left */
-  margin-left: 0;     /* reset Bootstrap 5's margin-left: -1.5em */
+  float: none;        
+  margin-left: 0;    
   width: 20px;
   height: 20px;
   min-width: 20px;

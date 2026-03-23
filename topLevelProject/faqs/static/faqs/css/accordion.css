@@ -1,4 +1,3 @@
-
 /* ── Elderly-friendly overrides ── */
 .faq-page {
   max-width: 860px;
@@ -11,11 +10,13 @@
   padding: 2rem 1.5rem 1.5rem;
   margin-bottom: 1.5rem;
 }
+
 .faq-intro h1 {
   font-size: var(--font-xxl);
   color: var(--ten-percent);
   margin-bottom: 0.5rem;
 }
+
 .faq-intro p {
   font-size: var(--font-md);
   color: var(--text-color-dark);
@@ -37,6 +38,7 @@
   padding-bottom: 0.5rem;
   border-bottom: 2px solid rgba(45, 106, 156, 0.18);
 }
+
 .faq-category-label i {
   font-size: var(--font-lg);
   color: var(--thirty-percent);
@@ -52,6 +54,7 @@
   box-shadow: 2px 3px 10px rgba(2, 2, 2, 0.06);
   transition: box-shadow 0.2s;
 }
+
 .faq-item:hover {
   box-shadow: 2px 4px 16px rgba(45, 106, 156, 0.14);
 }
@@ -73,7 +76,11 @@
   transition: background 0.2s;
   min-height: 64px;
 }
-.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
 .faq-item summary:hover {
   background: var(--background-color);
 }
@@ -85,6 +92,7 @@
   flex: 1;
   line-height: 1.45;
 }
+
 .faq-question-text i {
   font-size: var(--font-lg);
   color: var(--thirty-percent);
@@ -102,21 +110,30 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+
 .faq-toggle-label .toggle-arrow {
   transition: transform 0.25s;
   font-size: var(--font-sm);
 }
 
 details[open] summary {
-  background: var(--thirty-percent);
+  background: var(--seventy-percent);
   color: var(--purewhite-color);
 }
+
 details[open] summary .faq-question-text i,
 details[open] summary .faq-toggle-label {
   color: var(--purewhite-color);
 }
-details[open] .faq-toggle-label .toggle-show { display: none; }
-details:not([open]) .faq-toggle-label .toggle-hide { display: none; }
+
+details[open] .faq-toggle-label .toggle-show {
+  display: none;
+}
+
+details:not([open]) .faq-toggle-label .toggle-hide {
+  display: none;
+}
+
 details[open] .faq-toggle-label .toggle-arrow {
   transform: rotate(180deg);
 }
@@ -127,13 +144,18 @@ details[open] .faq-toggle-label .toggle-arrow {
   border-top: 1.5px solid rgba(45, 106, 156, 0.15);
   background: var(--background-color);
 }
+
 .faq-answer p {
   font-size: var(--font-md);
   line-height: 1.85;
   color: var(--text-color-dark);
   margin-bottom: 0.75rem;
 }
-.faq-answer p:last-child { margin-bottom: 0; }
+
+.faq-answer p:last-child {
+  margin-bottom: 0;
+}
+
 .faq-answer ul {
   display: flex;
   flex-direction: column;
@@ -142,6 +164,7 @@ details[open] .faq-toggle-label .toggle-arrow {
   list-style: none;
   margin-top: 0.75rem;
 }
+
 .faq-answer li {
   display: flex;
   flex-flow: row nowrap;
@@ -153,11 +176,13 @@ details[open] .faq-toggle-label .toggle-arrow {
   color: var(--text-color-dark);
   padding: 0;
 }
+
 .faq-answer li i {
   margin-top: 0.2rem;
   flex-shrink: 0;
   color: var(--thirty-percent);
 }
+
 .faq-answer strong {
   font-size: inherit;
   font-weight: 700;
@@ -171,30 +196,35 @@ details[open] .faq-toggle-label .toggle-arrow {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.25rem;
-  background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
+  /* background: linear-gradient(90deg, var(--sixty-percent), var(--seventy-percent)); */
+  box-shadow: 2px 3px 10px rgba(2, 2, 2, 0.06);
+  border: solid 2px var(--fifty-percent);
   border-radius: 16px;
   padding: 2rem 2.5rem;
   margin-top: 3rem;
   margin-bottom: 2rem;
 }
+
 .faq-help-banner h3 {
   font-family: var(--title-font);
   font-size: var(--font-xl);
-  color: var(--purewhite-color);
+  color: var(--forty-percent);
   margin: 0 0 0.4rem;
 }
+
 .faq-help-banner p {
   font-size: var(--font-md);
-  color: rgba(231, 239, 247, 0.88);
+  color: var(--fifty-percent);
   margin: 0;
   line-height: 1.6;
 }
+
 .faq-help-btn {
   display: inline-flex;
   align-items: center;
   column-gap: 0.6rem;
   background: var(--accent-color);
-  color: var(--text-color-dark);
+  color: var(--text-color-dark-muted);
   font-family: var(--main-font);
   font-size: var(--font-md);
   font-weight: 700;
@@ -205,9 +235,11 @@ details[open] .faq-toggle-label .toggle-arrow {
   transition: opacity 0.2s, transform 0.2s;
   flex-shrink: 0;
 }
+
 .faq-help-btn:hover {
   opacity: 0.88;
   transform: translateY(-1px);
+  color: var(--text-color-dark);
 }
 
 

@@ -4,291 +4,382 @@
 {% block extra_css %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/onboard.css' %}" type="text/css">
+<style>
+  /* ── Page layout ───────────────────────────────── */
+  .rr-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  /* ── Page header ───────────────────────────────── */
+  .rr-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .rr-header-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--purewhite-color);
+    font-size: 1.6rem;
+    box-shadow: 0 4px 16px rgba(45,106,156,0.25);
+  }
+  .rr-header h1 {
+    font-family: var(--title-font);
+    font-size: var(--font-xl);
+    color: var(--ten-percent);
+    margin-bottom: 0.5rem;
+  }
+  .rr-header p {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-nm);
+    color: var(--text-color-dark-muted);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ── Section card heading tweaks ───────────────── */
+  .ob-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--main-font);
+    font-size: var(--font-md);
+    font-weight: 700;
+    color: var(--ten-percent);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 2px solid var(--seventy-percent);
+  }
+  .ob-card-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--sixty-percent), var(--thirty-percent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  /* ── File upload zones ─────────────────────────── */
+  .rr-file-zone {
+    cursor: pointer;
+    padding: 1.5rem 1.25rem;
+    background: var(--background-color);
+    border: 2px dashed rgba(45,106,156,0.3);
+    border-radius: 10px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .rr-file-zone:hover {
+    border-color: var(--thirty-percent);
+    background: rgba(45,106,156,0.04);
+  }
+  .rr-file-zone input[type="file"] { display: none; }
+  .rr-file-zone .rr-file-icon { font-size: 1.75rem; color: var(--sixty-percent); margin-bottom: 0.5rem; }
+  .rr-file-zone p  { margin: 0; font-family: var(--main-font); font-size: var(--font-sm); font-weight: 600; color: var(--ten-percent); }
+  .rr-file-zone small { color: var(--text-color-dark-muted); font-size: 0.78rem; }
+  .rr-file-zone.rr-file-selected { border-color: #27ae60; background: rgba(39,174,96,0.06); }
+  .rr-file-zone.rr-file-selected .rr-file-icon { color: #27ae60; }
+  .rr-file-zone.rr-file-selected p { color: #1e8449; }
+
+  /* ── Certification block ───────────────────────── */
+  .rr-cert {
+    background: rgba(19, 224, 46, 0.09);
+    border: 2px solid rgba(11, 90, 0, 0.28);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  /* ── Actions ───────────────────────────────────── */
+  .rr-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── Help card ─────────────────────────────────── */
+  .rr-help {
+    background: var(--background-color);
+    border: 1.5px solid rgba(45,106,156,0.12);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+    margin-top: 1.5rem;
+  }
+  .rr-help h5 {
+    font-family: var(--main-font);
+    font-size: var(--font-nm);
+    font-weight: 700;
+    color: var(--ten-percent);
+    margin-bottom: 0.6rem;
+  }
+  .rr-help ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rr-help ul li {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-sm);
+    color: var(--text-color-dark);
+    padding: 0.3rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .rr-help ul li i { color: var(--thirty-percent); width: 14px; }
+</style>
 {% endblock %}
 
 {% block recovery_content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0"><i class="fas fa-file-medical me-2"></i>Account Recovery Request</h4>
-            </div>
-            <div class="card-body">
-                <div class="ob-alert ob-alert-info" style="margin-bottom:1.25rem;">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Important:</strong> This form is for requesting access to accounts of deceased or incapacitated individuals.
-                    You will need to provide documentation to support your request.
-                </div>
+<div class="rr-wrap">
 
-                <form method="post" enctype="multipart/form-data" id="recoveryForm">
-                    {% csrf_token %}
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="rr-header">
+    <div class="rr-header-icon"><i class="fas fa-shield-alt"></i></div>
+    <h1>Account Recovery Request</h1>
+    <p>Use this form to request access to the digital estate of a deceased or incapacitated individual. All requests are reviewed by our team and require supporting documentation.</p>
+  </div>
 
-                    <!-- ── Account Owner Information ──────────────────── -->
-                    <fieldset class="form-fieldset">
-                        <legend class="form-fieldset-legend">Account Owner Information</legend>
-
-                        <div class="form-field{% if form.deceased_user_email.errors %} has-error{% endif %}">
-                            <label for="{{ form.deceased_user_email.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="The email address the account owner used to register. This is used to locate their account.">
-                                Email of Deceased / Incapacitated Account Owner <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">The email address the account owner used to register. This is used to locate their account.</span>
-                            </label>
-                            {{ form.deceased_user_email }}
-                            <span class="ob-hint">Enter the email address associated with the account owner's profile.</span>
-                            {% if form.deceased_user_email.errors %}
-                                <div class="error" role="alert">{{ form.deceased_user_email.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                    </fieldset>
-
-                    <!-- ── Your Information ───────────────────────────── -->
-                    <fieldset class="form-fieldset">
-                        <legend class="form-fieldset-legend">Your Information</legend>
-
-                        <div class="form-field{% if form.requester_first_name.errors %} has-error{% endif %}">
-                            <label for="{{ form.requester_first_name.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Your legal first name as the person making this recovery request.">
-                                First Name <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">Your legal first name as the person making this recovery request.</span>
-                            </label>
-                            {{ form.requester_first_name }}
-                            {% if form.requester_first_name.errors %}
-                                <div class="error" role="alert">{{ form.requester_first_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.requester_last_name.errors %} has-error{% endif %}">
-                            <label for="{{ form.requester_last_name.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Your legal last name as the person making this recovery request.">
-                                Last Name <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">Your legal last name as the person making this recovery request.</span>
-                            </label>
-                            {{ form.requester_last_name }}
-                            {% if form.requester_last_name.errors %}
-                                <div class="error" role="alert">{{ form.requester_last_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.requester_email.errors %} has-error{% endif %}">
-                            <label for="{{ form.requester_email.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Your personal email address — we will send a verification link here to confirm your identity.">
-                                Your Email Address <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">Your personal email address — we will send a verification link here to confirm your identity.</span>
-                            </label>
-                            {{ form.requester_email }}
-                            <span class="ob-hint">We'll send a verification link to this address.</span>
-                            {% if form.requester_email.errors %}
-                                <div class="error" role="alert">{{ form.requester_email.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.requester_phone.errors %} has-error{% endif %}">
-                            <label for="{{ form.requester_phone.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="A contact phone number in case we need to reach you during the review process.">
-                                Phone Number
-                                <span class="ob-tip" role="tooltip">A contact phone number in case we need to reach you during the review process.</span>
-                            </label>
-                            {{ form.requester_phone }}
-                            {% if form.requester_phone.errors %}
-                                <div class="error" role="alert">{{ form.requester_phone.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.requester_relationship.errors %} has-error{% endif %}">
-                            <label for="{{ form.requester_relationship.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="How you are related to the account owner — e.g. Spouse, Child, Executor, Power of Attorney.">
-                                Relationship to Account Owner <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">How you are related to the account owner — e.g. Spouse, Child, Executor, Power of Attorney.</span>
-                            </label>
-                            {{ form.requester_relationship }}
-                            <span class="ob-hint">e.g., Spouse, Child, Executor, Power of Attorney</span>
-                            {% if form.requester_relationship.errors %}
-                                <div class="error" role="alert">{{ form.requester_relationship.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                    </fieldset>
-
-                    <!-- ── Request Details ────────────────────────────── -->
-                    <fieldset class="form-fieldset">
-                        <legend class="form-fieldset-legend">Request Details</legend>
-
-                        <div class="form-field{% if form.reason.errors %} has-error{% endif %}">
-                            <label for="{{ form.reason.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Select the primary reason you need access to this account.">
-                                Reason for Request <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">Select the primary reason you need access to this account.</span>
-                            </label>
-                            {{ form.reason }}
-                            {% if form.reason.errors %}
-                                <div class="error" role="alert">{{ form.reason.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.target_description.errors %} has-error{% endif %}">
-                            <label for="{{ form.target_description.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Describe the specific accounts, documents, or information you need access to.">
-                                What do you need access to? <span class="req" aria-hidden="true">*</span>
-                                <span class="ob-tip" role="tooltip">Describe the specific accounts, documents, or information you need access to.</span>
-                            </label>
-                            {{ form.target_description }}
-                            <span class="ob-hint">Please describe the specific accounts, documents, or information you need to access.</span>
-                            {% if form.target_description.errors %}
-                                <div class="error" role="alert">{{ form.target_description.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.additional_notes.errors %} has-error{% endif %}">
-                            <label for="{{ form.additional_notes.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Any other context or information that may help us process your request.">
-                                Additional Information
-                                <span class="ob-tip" role="tooltip">Any other context or information that may help us process your request.</span>
-                            </label>
-                            {{ form.additional_notes }}
-                            {% if form.additional_notes.errors %}
-                                <div class="error" role="alert">{{ form.additional_notes.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                    </fieldset>
-
-                    <!-- ── Supporting Documentation ───────────────────── -->
-                    <fieldset class="form-fieldset">
-                        <legend class="form-fieldset-legend">Supporting Documentation</legend>
-                        <p class="ob-hint" style="margin-bottom:1rem;">Please upload documentation to support your request.</p>
-
-                        <div class="form-field{% if form.death_certificate.errors %} has-error{% endif %}">
-                            <label for="{{ form.death_certificate.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Upload a death certificate or medical documentation confirming the account owner's status.">
-                                Death Certificate or Medical Documentation
-                                <span class="ob-tip" role="tooltip">Upload a death certificate or medical documentation confirming the account owner's status.</span>
-                            </label>
-                            <div class="file-upload-label">
-                                {{ form.death_certificate }}
-                                <div class="mt-2">
-                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
-                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
-                                    <small class="text-muted">PDF, JPG, PNG (Max 10MB)</small>
-                                </div>
-                            </div>
-                            {% if form.death_certificate.errors %}
-                                <div class="error" role="alert">{{ form.death_certificate.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.proof_of_relationship.errors %} has-error{% endif %}">
-                            <label for="{{ form.proof_of_relationship.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Upload proof of your relationship to the account owner — e.g. marriage certificate or birth certificate.">
-                                Proof of Relationship
-                                <span class="ob-tip" role="tooltip">Upload proof of your relationship to the account owner — e.g. marriage certificate or birth certificate.</span>
-                            </label>
-                            <div class="file-upload-label">
-                                {{ form.proof_of_relationship }}
-                                <div class="mt-2">
-                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
-                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
-                                    <small class="text-muted">Marriage certificate, birth certificate, etc.</small>
-                                </div>
-                            </div>
-                            {% if form.proof_of_relationship.errors %}
-                                <div class="error" role="alert">{{ form.proof_of_relationship.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-field{% if form.legal_authorization.errors %} has-error{% endif %}">
-                            <label for="{{ form.legal_authorization.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Upload legal authorization documents — e.g. power of attorney, executor papers, or a court order.">
-                                Legal Authorization
-                                <span class="ob-tip" role="tooltip">Upload legal authorization documents — e.g. power of attorney, executor papers, or a court order.</span>
-                            </label>
-                            <div class="file-upload-label">
-                                {{ form.legal_authorization }}
-                                <div class="mt-2">
-                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
-                                    <p class="mb-0 mt-2">Click to upload or drag and drop</p>
-                                    <small class="text-muted">Power of attorney, executor papers, court order, etc.</small>
-                                </div>
-                            </div>
-                            {% if form.legal_authorization.errors %}
-                                <div class="error" role="alert">{{ form.legal_authorization.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                    </fieldset>
-
-                    <!-- ── Certification ──────────────────────────────── -->
-                    <fieldset class="form-fieldset">
-                        <legend class="form-fieldset-legend">Certification</legend>
-
-                        <label class="ob-check-row ob-label-tooltip"
-                            title="By checking this box you certify that all information provided is accurate and that you have legal authority to make this request.">
-                            {{ form.accept_terms }}
-                            <span class="ob-check-label">
-                                I certify that the information provided is accurate and I have legal authority to make this request <span class="req" aria-hidden="true">*</span>
-                            </span>
-                            <span class="ob-tip" role="tooltip">By checking this box you certify that all information provided is accurate and that you have legal authority to make this request.</span>
-                        </label>
-                        {% if form.accept_terms.errors %}
-                            <div class="error" role="alert">{{ form.accept_terms.errors }}</div>
-                        {% endif %}
-
-                    </fieldset>
-
-                    <!-- ── Actions ────────────────────────────────────── -->
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Submit Recovery Request
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-
-        <!-- Help Section -->
-        <div class="card">
-            <div class="card-body">
-                <h5><i class="fas fa-question-circle me-2"></i>Need Help?</h5>
-                <p>If you have questions about the recovery process or need assistance with this form, please contact our support team:</p>
-                <ul>
-                    <li>Email: support@digitalestate.com</li>
-                    <li>Phone: 1-800-XXX-XXXX</li>
-                    <li>Hours: Monday-Friday, 9AM-5PM EST</li>
-                </ul>
-            </div>
-        </div>
+  <!-- ── Info notice ────────────────────────────────────────── -->
+  <div class="ob-alert ob-alert-info" style="margin-bottom: 1.5rem;">
+    <i class="fas fa-info-circle"></i>
+    <div>
+      <strong>Verification required.</strong> </br>After submitting, we'll send a verification email to the address you provide. Your request will be reviewed once your identity is confirmed.
     </div>
-</div>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="recoveryForm">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="ob-alert ob-alert-error" style="margin-bottom:1.25rem;">
+      <i class="fas fa-exclamation-triangle"></i>
+      {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ══ 1. Account Owner ══════════════════════════════════ -->
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-user-circle"></i></div>
+        Account Owner Information
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field ob-full">
+          <label for="{{ form.deceased_user_email.id_for_label }}">
+            Email Address of Account Owner <span class="req">*</span>
+          </label>
+          {{ form.deceased_user_email }}
+          <span class="ob-hint">Enter the email address the account owner used when registering — this is how we locate their profile.</span>
+          {% if form.deceased_user_email.errors %}
+            <ul class="errorlist">{% for e in form.deceased_user_email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 2. Your Information ══════════════════════════════ -->
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-id-card"></i></div>
+        Your Information
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field">
+          <label for="{{ form.requester_first_name.id_for_label }}">First Name <span class="req">*</span></label>
+          {{ form.requester_first_name }}
+          {% if form.requester_first_name.errors %}
+            <ul class="errorlist">{% for e in form.requester_first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.requester_last_name.id_for_label }}">Last Name <span class="req">*</span></label>
+          {{ form.requester_last_name }}
+          {% if form.requester_last_name.errors %}
+            <ul class="errorlist">{% for e in form.requester_last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.requester_email.id_for_label }}">Your Email Address <span class="req">*</span></label>
+          {{ form.requester_email }}
+          <span class="ob-hint">A verification link will be sent here.</span>
+          {% if form.requester_email.errors %}
+            <ul class="errorlist">{% for e in form.requester_email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field">
+          <label for="{{ form.requester_phone.id_for_label }}">Phone Number</label>
+          {{ form.requester_phone }}
+          <span class="ob-hint">Optional — in case we need to reach you.</span>
+          {% if form.requester_phone.errors %}
+            <ul class="errorlist">{% for e in form.requester_phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.requester_relationship.id_for_label }}">Relationship to Account Owner <span class="req">*</span></label>
+          {{ form.requester_relationship }}
+          <span class="ob-hint">e.g. Spouse, Child, Executor, Power of Attorney</span>
+          {% if form.requester_relationship.errors %}
+            <ul class="errorlist">{% for e in form.requester_relationship.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 3. Request Details ════════════════════════════════ -->
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-file-alt"></i></div>
+        Request Details
+      </div>
+
+      <div class="ob-grid">
+        <div class="ob-field ob-full">
+          <label for="{{ form.reason.id_for_label }}">Reason for Request <span class="req">*</span></label>
+          {{ form.reason }}
+          {% if form.reason.errors %}
+            <ul class="errorlist">{% for e in form.reason.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.target_description.id_for_label }}">What do you need access to? <span class="req">*</span></label>
+          {{ form.target_description }}
+          <span class="ob-hint">Describe the specific accounts, documents, or information you need.</span>
+          {% if form.target_description.errors %}
+            <ul class="errorlist">{% for e in form.target_description.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+        <div class="ob-field ob-full">
+          <label for="{{ form.additional_notes.id_for_label }}">Additional Information</label>
+          {{ form.additional_notes }}
+          <span class="ob-hint">Any other context that may help us process your request.</span>
+          {% if form.additional_notes.errors %}
+            <ul class="errorlist">{% for e in form.additional_notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 4. Documentation ══════════════════════════════════ -->
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-paperclip"></i></div>
+        Supporting Documentation
+      </div>
+      <p class="ob-hint" style="margin-bottom: 1.25rem;">Upload documents to support your request. At least one document is recommended. Accepted formats: PDF, JPG, PNG (max 10 MB each).</p>
+
+      <div class="ob-grid">
+        <div class="ob-field">
+          <label for="{{ form.death_certificate.id_for_label }}">Death Certificate or Medical Documentation</label>
+          <label class="rr-file-zone" id="zone-death" for="{{ form.death_certificate.id_for_label }}">
+            {{ form.death_certificate }}
+            <div class="rr-file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <p>Click to upload</p>
+            <small>Death certificate, medical record, etc.</small>
+          </label>
+          {% if form.death_certificate.errors %}
+            <ul class="errorlist">{% for e in form.death_certificate.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+
+        <div class="ob-field">
+          <label for="{{ form.proof_of_relationship.id_for_label }}">Proof of Relationship</label>
+          <label class="rr-file-zone" id="zone-relation" for="{{ form.proof_of_relationship.id_for_label }}">
+            {{ form.proof_of_relationship }}
+            <div class="rr-file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <p>Click to upload</p>
+            <small>Marriage certificate, birth certificate, etc.</small>
+          </label>
+          {% if form.proof_of_relationship.errors %}
+            <ul class="errorlist">{% for e in form.proof_of_relationship.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+
+        <div class="ob-field">
+          <label for="{{ form.legal_authorization.id_for_label }}">Legal Authorization</label>
+          <label class="rr-file-zone" id="zone-legal" for="{{ form.legal_authorization.id_for_label }}">
+            {{ form.legal_authorization }}
+            <div class="rr-file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <p>Click to upload</p>
+            <small>Power of attorney, executor papers, court order, etc.</small>
+          </label>
+          {% if form.legal_authorization.errors %}
+            <ul class="errorlist">{% for e in form.legal_authorization.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 5. Certification ══════════════════════════════════ -->
+    <div class="ob-form-card">
+      <div class="ob-card-heading">
+        <div class="ob-card-icon"><i class="fas fa-signature"></i></div>
+        Certification
+      </div>
+
+      <div class="rr-cert">
+        <label class="ob-check-row" for="{{ form.accept_terms.id_for_label }}">
+          {{ form.accept_terms }}
+          <span class="ob-check-label">
+            I certify that the information provided is accurate and that I have legal authority to make this request. <span class="req">*</span>
+          </span>
+        </label>
+        {% if form.accept_terms.errors %}
+          <ul class="errorlist" style="margin-top: 0.5rem;">{% for e in form.accept_terms.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+
+      <div class="rr-actions" style="margin-top: 1.5rem;">
+        <button type="submit" class="ob-btn ob-btn-accent">
+          <i class="fas fa-paper-plane"></i> Submit Recovery Request
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- ── Help ──────────────────────────────────────────────── -->
+  <div class="rr-help">
+    <h5><i class="fas fa-question-circle me-2"></i>Need Help?</h5>
+    <p style="font-family: var(--paragraph-font); font-size: var(--font-sm); color: var(--text-color-dark-muted); margin-bottom: 0.75rem;">
+      If you have questions about the recovery process or need assistance, please contact our support team:
+    </p>
+    <ul>
+      <li><i class="fas fa-envelope"></i> support@digitalestate.com</li>
+      <li><i class="fas fa-phone"></i> 1-800-XXX-XXXX</li>
+      <li><i class="fas fa-clock"></i> Monday–Friday, 9 AM–5 PM EST</li>
+    </ul>
+  </div>
+
+</div><!-- /.rr-wrap -->
 
 <script>
-    // File upload styling
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', function(e) {
-            const label = this.closest('.file-upload-label');
-            if (this.files.length > 0) {
-                const fileName = this.files[0].name;
-                label.innerHTML = `
-                    <i class="fas fa-file-check fa-2x text-success"></i>
-                    <p class="mb-0 mt-2 text-success">${fileName}</p>
-                    <small class="text-muted">Click to change file</small>
-                `;
-                label.style.borderColor = '#28a745';
-                label.style.backgroundColor = '#d4edda';
-            }
-        });
+  // File upload zone feedback
+  document.querySelectorAll('.rr-file-zone input[type="file"]').forEach(input => {
+    input.addEventListener('change', function () {
+      const zone = this.closest('.rr-file-zone');
+      if (this.files.length > 0) {
+        const name = this.files[0].name;
+        zone.querySelector('.rr-file-icon i').className = 'fas fa-file-check';
+        zone.querySelector('p').textContent = name;
+        zone.querySelector('small').textContent = 'Click to change file';
+        zone.classList.add('rr-file-selected');
+      }
     });
+  });
 </script>
 {% endblock recovery_content %}

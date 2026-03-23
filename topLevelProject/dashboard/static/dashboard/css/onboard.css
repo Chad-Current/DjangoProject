@@ -226,6 +226,9 @@
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.08);
 }
+.ob-form-card .form-check .form-check-input {
+  margin-left: 0;
+}
 .ob-card-heading {
   font-family: var(--main-font);
   font-size: var(--font-md);
@@ -356,6 +359,24 @@
   font-weight: 600;
   color: var(--ten-percent);
   line-height: 1.3;
+}
+.ob-check-group .ob-hint {
+  display: block;
+  margin-top: 0.3rem;
+}
+
+/* Strip the boxed form-check style inside step form cards (crispy always wraps
+   BooleanField checkboxes in .form-check; override the forms.css box here) */
+.ob-form-card .form-check {
+  border: none;
+  background: none;
+  padding: 0.25rem 0;
+  border-radius: 0;
+  margin-bottom: 0.25rem;
+}
+.ob-form-card .form-check:hover {
+  border-color: transparent;
+  background: none;
 }
 
 /* Action bar */

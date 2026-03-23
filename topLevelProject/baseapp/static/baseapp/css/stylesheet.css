@@ -655,6 +655,7 @@ span {
   font-size: var(--font-nm);
   font-weight: 600;
   margin: 1.25rem auto;
+  text-wrap: wrap;
 
 }
 

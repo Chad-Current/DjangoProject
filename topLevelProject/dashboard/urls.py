@@ -59,6 +59,7 @@ urlpatterns = [
     # ── Funeral Planning ──────────────────────────────────────────────────────
     path('funeralplan/',          views.FuneralPlanIndexView.as_view(),  name='funeralplan_index'),
     path('funeralplan/summary/',  views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
+    path('funeralplan/edit/',     views.FuneralPlanUpdateView.as_view(), name='funeralplan_update'),
     path('funeralplan/delete/',   views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),
     # 8 section steps
     path('funeralplan/step/1/',   views.FuneralPlanStep1View.as_view(),  name='funeralplan_step1'),

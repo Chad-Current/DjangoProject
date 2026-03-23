@@ -515,7 +515,7 @@ class FuneralPlan(models.Model):
     ]
     marital_status                 = models.CharField(max_length=50, choices=MARITAL_STATUS_CHOICES, blank=True)
     religion_or_spiritual_affiliation = models.CharField(max_length=200, blank=True, help_text="Religion, denomination, or spiritual tradition (if any).")
-    is_veteran                     = models.BooleanField(default=False, help_text="Did the person serve in the military?")
+    is_veteran                     = models.BooleanField(default=False)
     veteran_branch                 = models.CharField(max_length=100, blank=True, help_text="Branch of military service (e.g., Army, Navy, Air Force).")
 
     # ── 2. Service Preferences ────────────────────────────────────────────────
@@ -633,14 +633,31 @@ class FuneralPlan(models.Model):
     @property
     def is_complete(self):
         """
-        Rough completeness check — returns True when the four most critical
-        sections (disposition, service type, officiant, and payment) are filled.
+        Completeness check — returns True when at least one field in each of
+        the eight sections has been filled.
         """
         return all([
-            self.disposition_method,
-            self.service_type,
-            self.officiant_contact or self.officiant_name_freetext,
-            self.payment_arrangements or self.funeral_insurance_policy_number,
+            # 1. Personal
+            any([self.preferred_name, self.occupation, self.marital_status,
+                 self.religion_or_spiritual_affiliation, self.is_veteran]),
+            # 2. Service
+            any([self.service_type, self.preferred_funeral_home,
+                 self.officiant_contact, self.officiant_name_freetext]),
+            # 3. Disposition
+            any([self.disposition_method, self.burial_or_interment_location]),
+            # 4. Ceremony
+            any([self.music_choices, self.flowers_or_colors,
+                 self.readings_poems_or_scriptures, self.eulogists_notes]),
+            # 5. Reception
+            self.reception_desired is not None or bool(self.reception_location),
+            # 6. Obituary
+            any([self.obituary_key_achievements, self.obituary_photo_description,
+                 self.charitable_donations_in_lieu]),
+            # 7. Administrative
+            any([self.payment_arrangements, self.funeral_insurance_policy_number,
+                 self.death_certificates_requested]),
+            # 8. Instructions
+            bool(self.additional_instructions),
         ])
 
 

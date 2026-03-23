@@ -830,13 +830,8 @@ class FuneralPlanPersonalInfoForm(forms.ModelForm):
                 Field('occupation', css_class='textinput'),
                 Field('marital_status', css_class='select'),
                 Field('religion_or_spiritual_affiliation', css_class='textinput'),
-                Field('is_veteran', css_class='checkboxinput form-check-input'),
+                Field('is_veteran', css_class='checkboxinput'),
                 Field('veteran_branch', css_class='textinput'),
-            ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
             ),
         )
 
@@ -901,11 +896,6 @@ class FuneralPlanServiceForm(forms.ModelForm):
                 Field('desired_timing', css_class='select'),
                 Field('open_casket_viewing', css_class='select'),
             ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
         )
 
     def clean_funeral_home_phone(self):
@@ -960,15 +950,10 @@ class FuneralPlanDispositionForm(forms.ModelForm):
                 'Final Disposition',
                 Field('disposition_method', css_class='select'),
                 Field('burial_or_interment_location', css_class='textinput'),
-                Field('burial_plot_or_niche_purchased', css_class='checkboxinput form-check-input'),
+                Field('burial_plot_or_niche_purchased', css_class='select'),
                 Field('casket_type_preference', css_class='textinput'),
                 Field('urn_type_preference', css_class='textinput'),
                 Field('headstone_or_marker_inscription', css_class='textarea'),
-            ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
             ),
         )
 
@@ -1012,11 +997,6 @@ class FuneralPlanCeremonyForm(forms.ModelForm):
                 Field('religious_cultural_customs', css_class='textarea'),
                 Field('items_to_display', css_class='textarea'),
             ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
         )
 
 
@@ -1048,16 +1028,11 @@ class FuneralPlanReceptionForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Reception / Gathering',
-                Field('reception_desired', css_class='checkboxinput form-check-input'),
+                Field('reception_desired', css_class='select'),
                 Field('reception_location', css_class='textinput'),
                 Field('reception_food_preferences', css_class='textarea'),
                 Field('reception_atmosphere_notes', css_class='textarea'),
                 Field('reception_guest_list_notes', css_class='textarea'),
-            ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
             ),
         )
 
@@ -1100,11 +1075,6 @@ class FuneralPlanObituaryForm(forms.ModelForm):
                 Field('obituary_publications', css_class='textarea'),
                 Field('charitable_donations_in_lieu', css_class='textinput'),
             ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
         )
 
 
@@ -1143,11 +1113,6 @@ class FuneralPlanAdminForm(forms.ModelForm):
                 'Review Settings',
                 Field('review_time', css_class='select'),
             ),
-            Div(
-                Submit('submit', 'Save & Continue', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
         )
 
     def clean_death_certificates_requested(self):
@@ -1181,12 +1146,107 @@ class FuneralPlanInstructionsForm(forms.ModelForm):
                 'Additional Instructions',
                 Field('additional_instructions', css_class='textarea'),
             ),
-            Div(
-                Submit('submit', 'Save & Finish', css_class='btn btn-primary'),
-                Button('back', 'Back', css_class='btn btn-secondary', onclick="history.back();"),
-                css_class='button-group'
-            ),
         )
+
+# ---------------------------------------------------------------------------
+# FuneralPlanFullForm — all sections in one form (used by the full-edit view)
+# ---------------------------------------------------------------------------
+
+class FuneralPlanFullForm(forms.ModelForm):
+    """All funeral plan fields in a single form for the full-plan edit view."""
+
+    class Meta:
+        model = FuneralPlan
+        fields = [
+            # 1. Personal
+            'preferred_name', 'occupation', 'marital_status',
+            'religion_or_spiritual_affiliation', 'is_veteran', 'veteran_branch',
+            # 2. Service
+            'service_type', 'preferred_funeral_home', 'funeral_home_phone',
+            'funeral_home_address', 'preferred_venue',
+            'officiant_contact', 'officiant_name_freetext',
+            'desired_timing', 'open_casket_viewing',
+            # 3. Disposition
+            'disposition_method', 'burial_or_interment_location',
+            'burial_plot_or_niche_purchased', 'casket_type_preference',
+            'urn_type_preference', 'headstone_or_marker_inscription',
+            # 4. Ceremony
+            'music_choices', 'flowers_or_colors', 'readings_poems_or_scriptures',
+            'eulogists_notes', 'pallbearers_notes', 'clothing_or_jewelry_description',
+            'religious_cultural_customs', 'items_to_display',
+            # 5. Reception
+            'reception_desired', 'reception_location', 'reception_food_preferences',
+            'reception_atmosphere_notes', 'reception_guest_list_notes',
+            # 6. Obituary
+            'obituary_photo_description', 'obituary_key_achievements',
+            'obituary_publications', 'charitable_donations_in_lieu',
+            # 7. Administrative
+            'funeral_insurance_policy_number', 'death_certificates_requested',
+            'payment_arrangements', 'review_time',
+            # 8. Instructions
+            'additional_instructions',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['officiant_contact'].required = False
+        self.fields['burial_plot_or_niche_purchased'].required = False
+        self.fields['reception_desired'].required = False
+
+        if self.user:
+            try:
+                profile = Profile.objects.get(user=self.user)
+                self.fields['officiant_contact'].queryset = Contact.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                self.fields['officiant_contact'].queryset = Contact.objects.none()
+
+    def clean_veteran_branch(self):
+        is_veteran = self.cleaned_data.get('is_veteran', False)
+        branch = self.cleaned_data.get('veteran_branch', '').strip()
+        if is_veteran and not branch:
+            raise forms.ValidationError(
+                "Please enter the branch of service, or uncheck the Veteran field."
+            )
+        return '' if not is_veteran else branch
+
+    def clean_funeral_home_phone(self):
+        phone = self.cleaned_data.get('funeral_home_phone', '').strip()
+        if phone:
+            cleaned = re.sub(r'[\s\-().+]', '', phone)
+            if not cleaned.isdigit():
+                raise ValidationError(
+                    "Phone number may only contain digits, spaces, dashes, "
+                    "parentheses, and a leading '+'."
+                )
+        return phone
+
+    def clean_officiant_name_freetext(self):
+        contact = self.cleaned_data.get('officiant_contact')
+        freetext = self.cleaned_data.get('officiant_name_freetext', '').strip()
+        if contact and freetext:
+            raise ValidationError(
+                "Please use either the Contacts list or the free-text field — not both."
+            )
+        return freetext
+
+    def clean_death_certificates_requested(self):
+        count = self.cleaned_data.get('death_certificates_requested')
+        if count is not None and count < 1:
+            raise ValidationError(
+                "Enter a positive number, or leave blank if unknown."
+            )
+        return count
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('reception_desired') and not cleaned_data.get('reception_location'):
+            raise ValidationError(
+                "Please provide a reception location, or uncheck 'Post-Service Gathering Desired'."
+            )
+        return cleaned_data
+
 
 # ---------------------------------------------------------------------------
 # RelevanceReviewForm
