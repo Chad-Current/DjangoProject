@@ -58,6 +58,7 @@ urlpatterns = [
 
     # ── Funeral Planning ──────────────────────────────────────────────────────
     path('funeralplan/',          views.FuneralPlanIndexView.as_view(),  name='funeralplan_index'),
+    path('funeralplan/demo/',     views.FuneralPlanDemoView.as_view(),   name='funeralplan_demo'),
     path('funeralplan/summary/',  views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
     path('funeralplan/edit/',     views.FuneralPlanUpdateView.as_view(), name='funeralplan_update'),
     path('funeralplan/delete/',   views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),

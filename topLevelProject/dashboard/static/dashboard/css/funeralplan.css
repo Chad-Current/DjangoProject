@@ -1,9 +1,126 @@
 /*
- * funeralplan.css — MERGED
+ * funeralplan.css
  *
- * All styles previously in this file have been consolidated into:
- *   dashboard/static/dashboard/css/onboard.css
- *
- * Templates should load onboard.css only. This file is kept as a
- * placeholder to avoid 404s from any cached or missed references.
+ * Styles specific to the funeral plan demo preview page.
+ * Loaded alongside onboard.css in funeralplan_demo.html.
  */
+
+
+/* ══════════════════════════════════════════════
+   LEGACY-ONLY BANNER
+   ══════════════════════════════════════════════ */
+
+.fp-demo-legacy-banner {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    /* background: #2c3e6b; */
+    border: solid 1.5px var(--ten-percent);
+    color: #fff;
+    border-radius: 8px;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: .95rem;
+    a {
+        font-family: var(--main-font);
+        font-size: var(--font-nm);
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--accent-color);
+        transition: 0.2s ;
+        &:hover {
+            color: var(--text-color-dark-muted);
+        }
+    }
+}
+
+.fp-demo-crown-icon {
+    color: #f0c040;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.fp-demo-banner-link {
+    color: #f0c040;
+    text-decoration: underline;
+    margin-left: .35rem;
+}
+
+.fp-demo-banner-link:hover {
+    color: #ffe580;
+}
+
+
+/* ══════════════════════════════════════════════
+   LEGACY-ONLY EYEBROW PILL
+   ══════════════════════════════════════════════ */
+
+.fp-demo-legacy-pill {
+    background: #2c3e6b;
+    color: #fff;
+    font-size: .7rem;
+    padding: .2rem .55rem;
+    border-radius: 20px;
+    vertical-align: middle;
+    letter-spacing: .04em;
+}
+
+
+/* ══════════════════════════════════════════════
+   NON-INTERACTIVE STEP CARDS
+   ══════════════════════════════════════════════ */
+
+.ob-step-card.ob-step-card--static {
+    cursor: default;
+    pointer-events: none;
+}
+
+
+/* ══════════════════════════════════════════════
+   SAMPLE DATA CARD & GRID
+   ══════════════════════════════════════════════ */
+
+.fp-demo-sample-card {
+    margin-top: 1.5rem;
+}
+
+.fp-demo-data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    padding: 0 1rem 1rem;
+}
+
+
+/* ══════════════════════════════════════════════
+   SECTION TILES
+   ══════════════════════════════════════════════ */
+
+.fp-demo-section-tile {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.fp-demo-tile-title {
+    font-weight: 600;
+    margin-bottom: .5rem;
+}
+
+.fp-demo-tile-emoji {
+    margin-right: .4rem;
+}
+
+.fp-demo-tile-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: .9rem;
+    line-height: 1.8;
+}
+
+.fp-demo-tile-text {
+    font-size: .9rem;
+    line-height: 1.6;
+    margin: 0;
+}

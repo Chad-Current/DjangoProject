@@ -23,6 +23,11 @@
     <div class="payment-header">
       <h1>Choose Your Plan</h1>
       <p>A one-time payment — no subscriptions, no surprises.</p>
+      {% if user.can_demo_access %}
+      <div class="centered">
+      <a href="{% url 'dashboard:dashboard_home' %}" class="demo-btn">Demo the website</a>
+      </div>
+      {% endif %}
     </div>
 
     <div class="payment-wrapper">
@@ -165,6 +170,8 @@
         if (e.target === this) closePaymentModal();
       });
     </script>
+
+    
   </body>
 
 </html>

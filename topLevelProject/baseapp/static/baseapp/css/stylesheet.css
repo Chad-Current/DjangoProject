@@ -1005,6 +1005,32 @@ span {
   color: var(--text-color);
 }
 
+.demo-btn {
+  display: block;
+  width: fit-content;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 20px;
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  margin: 0.5em;
+  background: var(--background-color);
+  color: var(--ten-percent);
+  border: 2px solid rgba(45, 106, 156, 0.3);
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 3px 4px 12px rgba(2, 2, 2, 0.1);
+}
+
+.demo-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+  box-shadow: 3px 6px 18px rgba(2, 2, 2, 0.15);
+}
 /* ── Trust strip ── */
 
 .trust-strip {

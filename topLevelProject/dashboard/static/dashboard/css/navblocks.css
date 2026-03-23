@@ -94,45 +94,27 @@
 .subnav-item:active  { transform: translateY(0); }
 
 
-/* ══════════════════════════════════════════════
-   ATTENTION STATE
-   ══════════════════════════════════════════════ */
-
-.subnav-item.attention {
-    border-color: var(--accent-color);
-}
-
-.subnav-item.attention:hover {
-    border-color: var(--ten-percent);
-    color: var(--text-color-dark);
-    transition: all 0.2s ease;
-}
-
-.subnav-item.attention:hover i,
-.subnav-item.attention:hover span {
-    color: var(--text-color-dark);
-}
-
 
 /* ══════════════════════════════════════════════
-   "START" BADGE
+   PULSING ATTENTION DOT
    ══════════════════════════════════════════════ */
 
-.nav-badge-empty {
+.subnav-pulse-dot {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 6px;
+    right: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
     background-color: var(--accent-color);
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 1px 5px;
-    border-radius: 20px;
-    line-height: 1.6;
+    animation: subnav-pulse 1.8s ease-in-out infinite;
     pointer-events: none;
+}
+
+@keyframes subnav-pulse {
+    0%   { transform: scale(1);   opacity: 1; }
+    50%  { transform: scale(1.7); opacity: 0.4; }
+    100% { transform: scale(1);   opacity: 1; }
 }
 
 

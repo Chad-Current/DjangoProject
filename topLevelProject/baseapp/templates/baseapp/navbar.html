@@ -25,7 +25,7 @@
     </li>
     {% endif %}
 
-    {% if user.is_authenticated and user.can_view_data %}
+    {% if user.is_authenticated and user.can_view_data or user.can_demo_access %}
     <li class="nav-item">
       <a href="{% url 'dashboard:dashboard_home' %}">My Dashboard</a>
     </li>
@@ -90,6 +90,7 @@
         <button class="user-menu-trigger" aria-haspopup="true" aria-label="Account menu">
           <span class="user-avatar">{{ user.username|first|upper }}</span>
           <span class="user-trigger-name">{{ user.username }}</span>
+          {% if user.is_demo %}<span class="demo-nav-badge">DEMO</span>{% endif %}
           <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
             aria-hidden="true">
@@ -134,6 +135,7 @@
     <li class="mobile-only mobile-divider-li"></li>
     <li class="mobile-only mobile-section-header">
       <span class="mobile-section-label">Account</span>
+      {% if user.is_demo %}<span class="demo-nav-badge">DEMO</span>{% endif %}
     </li>
     <li class="mobile-only">
       <a href="{% url 'dashboard:profile_update' %}">

@@ -49,9 +49,16 @@ class RegisterView(View):
             if hasattr(user, 'last_login_ip'):
                 user.last_login_ip = get_client_ip(request)
                 user.save(update_fields=['last_login_ip'])
-            logger.info(f'New user registered: {user.email}')
-            messages.success(request, 'Registration successful! Please log in.')
-            return redirect('accounts:login')
+            user.is_demo = True
+            user.save(update_fields=['is_demo'])
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            logger.info(f'New user registered (demo mode): {user.email}')
+            messages.success(
+                request,
+                "Welcome! You're exploring in demo mode \u2014 your data won't be saved. "
+                "Upgrade anytime to keep your information."
+            )
+            return redirect('dashboard:dashboard_home')
         return render(request, self.template_name, {'form': form})
 
 

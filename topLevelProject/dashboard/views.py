@@ -83,6 +83,12 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             return super().dispatch(request, *args, **kwargs)
         
         if not getattr(user, "has_paid", False):
+            if user.can_demo_access():
+                try:
+                    user.profile
+                except Profile.DoesNotExist:
+                    Profile.objects.create(user=user)
+                return super().dispatch(request, *args, **kwargs)
             messages.warning(request, "Please complete payment to access your dashboard.")
             return redirect(reverse("accounts:payment"))
 
@@ -164,6 +170,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['tier_display'] = user.get_tier_display_name()
             context['can_modify']   = user.can_modify_data()
             context['can_view']     = user.can_view_data()
+            context['is_demo']      = user.can_demo_access()
 
             if user.subscription_tier == 'essentials':
                 context['is_edit_active']    = user.is_essentials_edit_active()
@@ -332,6 +339,8 @@ class AccountListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return Account.objects.none()
         try:
             profile  = Profile.objects.get(user=self.request.user)
             queryset = Account.objects.filter(profile=profile)
@@ -349,9 +358,22 @@ class AccountListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_accounts'] = [
+                {'account_category': 'Banking',         'account_name_or_provider': 'Wells Fargo',       'delegated_account_to': 'Sarah Johnson'},
+                {'account_category': 'Email',           'account_name_or_provider': 'Gmail',             'delegated_account_to': 'Michael Johnson'},
+                {'account_category': 'Social Media',    'account_name_or_provider': 'Facebook',          'delegated_account_to': 'Emily Johnson'},
+                {'account_category': 'Utilities',       'account_name_or_provider': 'MidAmerican Energy','delegated_account_to': 'Sarah Johnson'},
+                {'account_category': 'Investment',      'account_name_or_provider': 'Vanguard',          'delegated_account_to': 'Linda Parker'},
+                {'account_category': 'Streaming',       'account_name_or_provider': 'Netflix',           'delegated_account_to': 'Sarah Johnson'},
+                {'account_category': 'Insurance',       'account_name_or_provider': 'State Farm',        'delegated_account_to': 'Linda Parker'},
+            ]
+            return context
         try:
-            profile = Profile.objects.get(user=self.request.user)
+            profile = Profile.objects.get(user=user)
             context['accounts'] = Account.objects.filter(profile=profile)
         except Profile.DoesNotExist:
             context['accounts'] = Account.objects.none()
@@ -429,6 +451,8 @@ class DeviceListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return Device.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return Device.objects.filter(profile=profile).order_by('-created_at')
@@ -437,7 +461,17 @@ class DeviceListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_devices'] = [
+                {'device_type': 'Phone',   'device_name': 'iPhone 15 Pro',        'delegated_device_to': 'Sarah Johnson',  'location_description': 'Bedroom nightstand'},
+                {'device_type': 'Laptop',  'device_name': 'MacBook Pro 14"',      'delegated_device_to': 'Michael Johnson','location_description': 'Home office desk'},
+                {'device_type': 'Desktop', 'device_name': 'Dell Optiplex 7090',   'delegated_device_to': 'Emily Johnson',  'location_description': 'Home office'},
+                {'device_type': 'Tablet',  'device_name': 'iPad Air',             'delegated_device_to': 'Sarah Johnson',  'location_description': 'Living room'},
+                {'device_type': 'Smart Watch', 'device_name': 'Apple Watch Series 9', 'delegated_device_to': 'Sarah Johnson', 'location_description': 'Bedroom dresser'},
+            ]
         return context
 
 
@@ -512,6 +546,8 @@ class EstateListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return DigitalEstateDocument.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return DigitalEstateDocument.objects.filter(profile=profile).order_by('-created_at')
@@ -520,7 +556,17 @@ class EstateListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_estates'] = [
+                {'estate_category': 'Will',                    'name_or_title': 'Last Will and Testament',        'delegated_estate_to': 'Linda Parker (Attorney)'},
+                {'estate_category': 'Trust',                   'name_or_title': 'Johnson Family Revocable Trust', 'delegated_estate_to': 'Sarah Johnson'},
+                {'estate_category': 'Power of Attorney',       'name_or_title': 'Durable Power of Attorney',     'delegated_estate_to': 'Sarah Johnson'},
+                {'estate_category': 'Healthcare Directive',    'name_or_title': 'Living Will / Advance Directive','delegated_estate_to': 'Michael Johnson'},
+                {'estate_category': 'Life Insurance',          'name_or_title': 'Term Life Policy — $500k',       'delegated_estate_to': 'Sarah Johnson'},
+            ]
         return context
 
 
@@ -595,6 +641,8 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return FamilyNeedsToKnowSection.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return FamilyNeedsToKnowSection.objects.filter(
@@ -605,7 +653,17 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_family'] = [
+                {'relation': 'Spouse',   'content': 'Sarah has access to all financial accounts. Joint checking at Wells Fargo, account #XXXX. Safe deposit box key is in the fireproof box in the closet.'},
+                {'relation': 'Son',      'content': 'Michael is to receive the 1967 Ford Mustang and the tools in the garage per the will.'},
+                {'relation': 'Daughter', 'content': "Emily is named as secondary beneficiary on the 401(k). She has a copy of the living will and knows my healthcare wishes."},
+                {'relation': 'Attorney', 'content': 'Linda Parker holds the original signed will and trust documents. Contact her first for estate administration.'},
+                {'relation': 'Executor', 'content': 'James Wilson is named executor. He has login credentials for the estate email account and knows the location of all original documents.'},
+            ]
         return context
 
 
@@ -678,6 +736,8 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return ImportantDocument.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return ImportantDocument.objects.filter(profile=profile).order_by('-created_at')
@@ -686,7 +746,18 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_documents'] = [
+                {'document_category': 'Birth Certificate',   'name_or_title': 'Birth Certificate — Robert Johnson',   'delegated_important_document_to': 'Sarah Johnson', 'description': 'Original stored in fireproof box'},
+                {'document_category': 'Passport',            'name_or_title': 'U.S. Passport',                         'delegated_important_document_to': 'Sarah Johnson', 'description': 'Expires 2029, stored in fireproof box'},
+                {'document_category': 'Social Security',     'name_or_title': 'Social Security Card',                  'delegated_important_document_to': 'Sarah Johnson', 'description': 'Stored in fireproof box with other IDs'},
+                {'document_category': 'Marriage Certificate','name_or_title': 'Marriage Certificate',                   'delegated_important_document_to': 'Sarah Johnson', 'description': 'Original and two certified copies in fireproof box'},
+                {'document_category': 'Vehicle Title',       'name_or_title': '2021 Toyota Camry — Title',             'delegated_important_document_to': 'Michael Johnson','description': 'Title held at First National Bank safe deposit box'},
+                {'document_category': 'Property Deed',       'name_or_title': '123 Elm Street — Warranty Deed',        'delegated_important_document_to': 'Sarah Johnson', 'description': 'Recorded with county; copy in fireproof box'},
+            ]
         return context
 
 
@@ -761,6 +832,8 @@ class ContactListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
+        if self.request.user.can_demo_access():
+            return Contact.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return Contact.objects.filter(profile=profile).order_by('-created_at')
@@ -769,7 +842,17 @@ class ContactListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_modify'] = self.request.user.can_modify_data()
+        user = self.request.user
+        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
+        if user.can_demo_access():
+            context['is_demo'] = True
+            context['demo_contacts'] = [
+                {'first_name': 'Sarah',   'last_name': 'Johnson', 'contact_relation': 'Spouse',   'is_emergency_contact': True,  'phone': '5155550101'},
+                {'first_name': 'Michael', 'last_name': 'Johnson', 'contact_relation': 'Son',       'is_emergency_contact': False, 'phone': '5155550182'},
+                {'first_name': 'Linda',   'last_name': 'Parker',  'contact_relation': 'Attorney',  'is_emergency_contact': False, 'phone': '5155550247'},
+                {'first_name': 'James',   'last_name': 'Wilson',  'contact_relation': 'Accountant','is_emergency_contact': False, 'phone': '5155550319'},
+                {'first_name': 'Emily',   'last_name': 'Johnson', 'contact_relation': 'Daughter',  'is_emergency_contact': True,  'phone': '5155550463'},
+            ]
         return context
 
 
@@ -1149,6 +1232,67 @@ class FuneralPlanStep8View(_FuneralPlanStepBase):
     section_label = "Additional Instructions"
     prev_url      = 'dashboard:funeralplan_step7'
     next_url      = None  # last step → summary
+
+
+class FuneralPlanDemoView(LoginRequiredMixin, TemplateView):
+    """Read-only demo preview of the funeral plan for free/demo users."""
+    template_name = 'dashboard/funeralplan/funeralplan_demo.html'
+    login_url = '/accounts/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('accounts:login'))
+        if not request.user.can_demo_access():
+            return redirect(reverse('dashboard:funeralplan_index'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Funeral Plan — Demo Preview'
+        context['progress'] = {
+            'personal_info': True,
+            'service':       True,
+            'disposition':   True,
+            'ceremony':      True,
+            'reception':     True,
+            'obituary':      True,
+            'admin':         True,
+            'instructions':  True,
+            'is_complete':   True,
+        }
+        context['demo_plan'] = {
+            'preferred_name':                    'Robert',
+            'occupation':                        'Electrical Engineer',
+            'marital_status':                    'Married',
+            'religion_or_spiritual_affiliation': 'Methodist',
+            'is_veteran':                        True,
+            'service_type':                      'Traditional Funeral Service',
+            'preferred_funeral_home':            'Hennessey-Snyder Funeral Home, Ames IA',
+            'preferred_venue':                   'First United Methodist Church, Ames IA',
+            'officiant_name_freetext':           'Rev. Carol Hughes',
+            'desired_timing':                    'Within one week of passing, on a Saturday if possible',
+            'open_casket_viewing':               True,
+            'disposition_method':                'Burial',
+            'burial_or_interment_location':      'Iowa State Cemetery, Ames IA — Family plot, Section C',
+            'casket_type_preference':            'Solid oak, dark finish',
+            'headstone_or_marker_inscription':   '"Beloved Husband, Father & Veteran — He kept us safe."',
+            'music_choices':                     'Amazing Grace (hymn), On Eagle\'s Wings, Danny Boy',
+            'flowers_or_colors':                 'White lilies and blue irises — keep it simple',
+            'readings_poems_or_scriptures':      'Psalm 23, John 14:1-3',
+            'eulogists_notes':                   'Michael Johnson (son) and Emily Johnson (daughter)',
+            'pallbearers_notes':                 'Six nephews — contact Sarah for names',
+            'clothing_or_jewelry_description':   'Navy suit, American flag pin, wedding ring',
+            'reception_desired':                 True,
+            'reception_location':                'Church fellowship hall immediately following burial',
+            'obituary_key_achievements':         '35 years at Alliant Energy; coached little league 12 seasons; Eagle Scout leader',
+            'obituary_publications':             'Ames Tribune, Des Moines Register',
+            'charitable_donations_in_lieu':      'Donations to the Iowa Veterans Home Foundation appreciated',
+            'payment_arrangements':              'Pre-arranged with Hennessey-Snyder; policy on file',
+            'funeral_insurance_policy_number':   'GUL-2847193 — Principal Life Insurance',
+            'death_certificates_requested':      10,
+            'additional_instructions':           'Please play Iowa Fight Song quietly as guests arrive. No black clothing — wear something colorful.',
+        }
+        return context
 
 
 class FuneralPlanDeleteView(FuneralPlanMixin, TemplateView):

@@ -14,4 +14,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (activeItem && window.innerWidth <= 780) {
         activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
+
 });

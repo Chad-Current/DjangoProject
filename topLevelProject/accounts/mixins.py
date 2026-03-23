@@ -1,16 +1,23 @@
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse
 
 class PaidUserRequiredMixin(UserPassesTestMixin):
     """
     Mixin that requires user to have completed payment to access the view.
     User must have either Essentials or Legacy tier.
+    Demo users are allowed through but their form submissions are not saved.
     """
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.can_modify_data()
-    
+        user = self.request.user
+        if user.is_authenticated and user.can_demo_access():
+            self.is_demo_mode = True
+            return True
+        self.is_demo_mode = False
+        return user.is_authenticated and user.can_modify_data()
+
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             if self.request.user.subscription_tier == 'essentials' and not self.request.user.is_essentials_edit_active():
@@ -19,6 +26,19 @@ class PaidUserRequiredMixin(UserPassesTestMixin):
                 messages.warning(self.request, 'Payment required to access this feature. Please choose a subscription tier.')
             return redirect('accounts:payment')
         return redirect('accounts:login')
+
+    def form_valid(self, form):
+        if getattr(self, 'is_demo_mode', False):
+            # Clear any success messages already queued by the subclass form_valid
+            # (e.g. "Contact created successfully.") before adding the demo notice.
+            if hasattr(self.request, '_messages'):
+                self.request._messages._queued_messages = []
+            messages.info(
+                self.request,
+                'Demo mode \u2014 your changes were not saved.'
+            )
+            return HttpResponseRedirect(reverse('dashboard:dashboard_home'))
+        return super().form_valid(form)
 
 class AddonRequiredMixin(LoginRequiredMixin):
     """
@@ -56,10 +76,14 @@ class ViewOnlyMixin(UserPassesTestMixin):
     """
     Mixin for views that only require view access.
     Both active Essentials and Legacy users can access.
+    Demo users are also allowed to browse.
     """
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.can_view_data()
-    
+        user = self.request.user
+        if user.is_authenticated and user.can_demo_access():
+            return True
+        return user.is_authenticated and user.can_view_data()
+
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             messages.warning(self.request, 'You need an active subscription to view this content.')
@@ -134,11 +158,18 @@ class ViewAccessMixin(ViewOnlyMixin, UserOwnsObjectMixin):
 
 class DeleteAccessMixin(LoginRequiredMixin):
     """
-    Mixin specifically for DeleteView - doesn't use form_valid
+    Mixin specifically for DeleteView - doesn't use form_valid.
+    Demo users are allowed through but the delete is intercepted.
     """
     owner_field = 'user'
-    
+
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('accounts:login')
+        if request.user.can_demo_access():
+            self.is_demo_mode = True
+            return super().dispatch(request, *args, **kwargs)
+        self.is_demo_mode = False
         if not request.user.can_modify_data():
             if request.user.subscription_tier == 'essentials' and not request.user.is_essentials_edit_active():
                 messages.warning(request, 'Your Essentials tier edit access has expired.')
@@ -146,6 +177,14 @@ class DeleteAccessMixin(LoginRequiredMixin):
                 messages.warning(request, 'Payment required to delete items.')
             return redirect('payment')
         return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if getattr(self, 'is_demo_mode', False):
+            if hasattr(request, '_messages'):
+                request._messages._queued_messages = []
+            messages.info(request, 'Demo mode \u2014 nothing was deleted. Upgrade to manage real data.')
+            return HttpResponseRedirect(reverse('dashboard:dashboard_home'))
+        return super().delete(request, *args, **kwargs)
     
     def get_queryset(self):
         """Filter queryset to only show objects owned by current user"""

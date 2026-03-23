@@ -70,6 +70,10 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text="When the add-on subscription expires (1 year from purchase, renewable)"
     )
+    is_demo = models.BooleanField(
+        default=False,
+        help_text="User is in demo/free-trial mode — changes are not persisted"
+    )
     # Fix for reverse accessor clashes
     groups = models.ManyToManyField(
         'auth.Group',
@@ -134,6 +138,10 @@ class CustomUser(AbstractUser):
         
         return False
     
+    def can_demo_access(self):
+        """Free users in demo mode — can browse and submit forms but data is not saved."""
+        return self.is_active and self.is_demo and not self.has_paid
+
     def is_essentials_edit_active(self):
         """Check if Essentials tier still has edit access"""
         if self.subscription_tier != 'essentials':
@@ -164,14 +172,16 @@ class CustomUser(AbstractUser):
         """Activate Essentials tier (1 year edit access, then view-only)"""
         self.subscription_tier = 'essentials'
         self.has_paid = True
+        self.is_demo = False
         self.payment_date = timezone.now()
         self.essentials_expires = timezone.now() + timedelta(days=365)
         self.save()
-    
+
     def upgrade_to_legacy(self):
         """Activate Legacy tier (lifetime full access)"""
         self.subscription_tier = 'legacy'
         self.has_paid = True
+        self.is_demo = False
         self.payment_date = timezone.now()
         self.legacy_granted_date = timezone.now()
         self.save()

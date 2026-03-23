@@ -23,7 +23,57 @@
     </div>
 
     <div class="contacts-content">
-        {% if familyawareness_objects %}
+        {% if is_demo and demo_family %}
+        <div class="table-view d-none d-md-block">
+            <div class="table-responsive">
+                <table class="table contacts-table">
+                    <thead>
+                        <tr>
+                            <th>Relationship</th>
+                            <th>Information</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for family in demo_family %}
+                        <tr>
+                            <td>
+                                <i class="fa fa-users contact-icon"></i>
+                                <span>{{ family.relation }}</span>
+                            </td>
+                            <td><span class="contact-info">{{ family.content|truncatechars:50 }}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <span class="btn-action btn-edit"   title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-eye"></i></span>
+                                    <span class="btn-action btn-edit"   title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-edit"></i></span>
+                                    <span class="btn-action btn-delete" title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-trash-alt"></i></span>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-view d-md-none">
+            {% for family in demo_family %}
+            <div class="contact-card">
+                <div class="card-header-section">
+                    <div class="contact-avatar"><i class="fas fa-users contact-icon"></i></div>
+                    <div class="contact-details">
+                        <h3 class="contact-card-name">{{ family.relation }}</h3>
+                    </div>
+                </div>
+                <div class="card-body-section">
+                    <div class="info-label">Information</div>
+                    <p class="contact-info-text">{{ family.content|truncatechars:100 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% elif familyawareness_objects %}
         <div class="table-view d-none d-md-block">
             <div class="table-responsive">
                 <table class="table contacts-table">
