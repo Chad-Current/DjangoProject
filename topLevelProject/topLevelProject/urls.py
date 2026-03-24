@@ -1,8 +1,9 @@
-# toplevel urls 
+# toplevel urls
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+import baseapp.views as base_views
 
 
 urlpatterns = [
@@ -16,8 +17,10 @@ urlpatterns = [
     path('vault/', include('infrapps.urls', namespace='vault')),
 ]
 
-# handler500 = base_views.error_500
-# handler404 = base_views.error_404
+handler400 = base_views.error_400
+handler403 = base_views.error_403
+handler404 = base_views.error_404
+handler500 = base_views.error_500
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

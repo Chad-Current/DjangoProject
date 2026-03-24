@@ -1,0 +1,164 @@
+/* ============================================================
+   vault.css — Password Vault add-on styles
+   Requires stylesheet.css and forms.css to be loaded first
+   (provides design tokens, form layout, button styles).
+
+   Table of contents
+   -----------------
+   1. Password row (form, list, detail)
+   2. Hint & utility text
+   3. Entry type badge
+   4. List page — header & filter row
+   5. List page — entry legend, pagination, empty state
+   6. Detail page — utility classes
+   ============================================================ */
+
+
+/* ============================================================
+   1. PASSWORD ROW
+   Flex container used on every page that shows the password
+   input alongside Reveal / Hide / Copy action buttons.
+   ============================================================ */
+
+.vault-pw-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.vault-pw-row .textinput {
+  flex: 1;
+  min-width: 140px;
+  font-family: monospace;
+}
+
+.vault-pw-row .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   2. HINT & UTILITY TEXT
+   ============================================================ */
+
+.vault-hint {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-sm);
+  color: var(--text-color-dark-muted);
+  margin-top: 0.35rem;
+}
+
+/* Hides an element on initial render; JS removes this or sets display directly */
+.vault-hidden {
+  display: none;
+}
+
+/* Preserves newlines in freeform text fields */
+.vault-pre-wrap {
+  white-space: pre-wrap;
+}
+
+
+/* ============================================================
+   3. ENTRY TYPE BADGE
+   Pill label attached to the legend on list cards and the
+   detail page header.
+   ============================================================ */
+
+.vault-type-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.vault-type-account {
+  background: rgba(39, 174, 96, 0.12);
+  color: #1e8449;
+  border: 1.5px solid rgba(39, 174, 96, 0.3);
+}
+
+.vault-type-device {
+  background: rgba(45, 106, 156, 0.1);
+  color: var(--thirty-percent);
+  border: 1.5px solid rgba(45, 106, 156, 0.3);
+}
+
+.vault-type-other {
+  background: var(--background-color);
+  color: var(--text-color-dark-muted);
+  border: 1.5px solid var(--seventy-percent);
+}
+
+
+/* ============================================================
+   4. LIST PAGE — HEADER & FILTER ROW
+   ============================================================ */
+
+/* Title row: "N entries" text left, "+ Add Entry" button right */
+.vault-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.vault-list-header p {
+  font-family: var(--paragraph-font);
+  font-size: var(--font-nm);
+  color: var(--text-color-dark-muted);
+  margin: 0;
+}
+
+/* All / Accounts / Devices / Other filter buttons */
+.vault-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.vault-filter-row .btn {
+  font-size: 0.85rem;
+}
+
+
+/* ============================================================
+   5. LIST PAGE — ENTRY LEGEND, PAGINATION, EMPTY STATE
+   ============================================================ */
+
+/* Legend inside each per-entry fieldset: label + type badge */
+.vault-entry-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Pagination row — centred buttons */
+.vault-pagination {
+  justify-content: center;
+}
+
+/* "Page N of M" indicator between Previous / Next buttons */
+.vault-page-indicator {
+  padding: 0.45rem 1rem;
+  background: var(--background-color);
+  border: 1.5px solid var(--seventy-percent);
+  border-radius: 6px;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  color: var(--text-color-dark-muted);
+}
+
+/* "Add your first entry" link inside the empty-state alert */
+.vault-add-link {
+  margin-left: 0.75rem;
+}

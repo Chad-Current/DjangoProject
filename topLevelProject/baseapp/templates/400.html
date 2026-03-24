@@ -1,0 +1,24 @@
+{% extends "baseapp/base.html" %}
+
+{% block title %}400 — Bad Request{% endblock %}
+
+{% block content %}
+<div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 3rem 1rem;">
+  <div style="text-align: center; max-width: 520px;">
+    <p style="font-size: 6rem; font-weight: 800; color: var(--primary, #2c5282); line-height: 1; margin: 0 0 0.5rem;">400</p>
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0 0 1rem;">Bad Request</h1>
+    <p style="color: #64748b; margin-bottom: 2rem;">
+      Your request couldn't be understood by the server.
+      This is often caused by a malformed or expired link. Please try again from the beginning.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="/" style="display: inline-block; padding: 0.65rem 1.5rem; background: var(--primary, #2c5282); color: #fff; border-radius: 6px; text-decoration: none; font-weight: 600;">
+        <i class="fa-solid fa-house" style="margin-right: 0.4rem;"></i>Go Home
+      </a>
+      <a href="javascript:history.back()" style="display: inline-block; padding: 0.65rem 1.5rem; background: #f1f5f9; color: #334155; border-radius: 6px; text-decoration: none; font-weight: 600;">
+        <i class="fa-solid fa-arrow-left" style="margin-right: 0.4rem;"></i>Go Back
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

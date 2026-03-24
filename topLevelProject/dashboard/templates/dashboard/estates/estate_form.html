@@ -15,7 +15,7 @@
   </ul>
   {% endif %}
 
-  <form method="post" novalidate>
+  <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
 
     <!-- ══════════════════════════════════════════
@@ -76,13 +76,13 @@
       </div>
 
       <div class="form-field{% if form.estate_file.errors %} has-error{% endif %}">
-        <label for="{{ form.estate_file.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Optionally upload a scanned or digital copy of this document for quick reference. The original signed copy should still be stored securely in its physical location.">
-          Upload File
-          <span class="ob-tip" role="tooltip">Optionally upload a scanned or digital copy for quick reference. The original signed copy should still be stored securely in its physical location.</span>
+        <p class="helptext">Optionally upload a scanned or digital copy for quick reference. PDF, JPG, PNG accepted (max 10 MB). The original signed copy should still be stored securely in its physical location.</p>
+        <label class="rr-file-zone" id="zone-estate-file" for="{{ form.estate_file.id_for_label }}">
+          {{ form.estate_file }}
+          <div class="rr-file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <p>Click to upload</p>
+          <small>PDF, JPG, PNG — max 10 MB</small>
         </label>
-        {{ form.estate_file }}
         {% if form.estate_file.errors %}
           <div class="error" role="alert">{{ form.estate_file.errors }}</div>
         {% endif %}
@@ -218,4 +218,20 @@
   </form>
 </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.rr-file-zone input[type="file"]').forEach(function (input) {
+  input.addEventListener('change', function () {
+    var zone = this.closest('.rr-file-zone');
+    if (this.files.length > 0) {
+      zone.querySelector('.rr-file-icon i').className = 'fas fa-file-check';
+      zone.querySelector('p').textContent = this.files[0].name;
+      zone.querySelector('small').textContent = 'Click to change file';
+      zone.classList.add('rr-file-selected');
+    }
+  });
+});
+</script>
 {% endblock %}

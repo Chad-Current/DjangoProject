@@ -75,6 +75,16 @@
             {% endif %}
             {% endif %}
 
+            {% if request.user.can_access_addon %}
+            <a href="{% url 'vault:vault_list' %}"
+                class="subnav-item"
+                title="Vault Passwords">
+                <i class="fas fa-user-shield"></i>
+                <span>Password</span>
+                <span>Vault</span>
+            </a>
+            {% endif %}
+
             {% if not request.user.is_demo %}
             <a href="{% url 'dashboard:relevancereview_list' %}"
                 class="subnav-item"

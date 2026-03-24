@@ -170,7 +170,7 @@ nav#navbar>ul>li {
 }
 
 .demo-nav-badge {
-  font-size: .6rem;
+  font-size: var(--font-sm);
   font-weight: 700;
   letter-spacing: .06em;
   background: #fff3cd;

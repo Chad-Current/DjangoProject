@@ -1,7 +1,10 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'infrapps/stylesheet.css' %}" type="text/css">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
+{% endblock %}
 
 {% block content %}
 <div class="form-container-no">
@@ -108,7 +111,7 @@
 
     <!-- Pagination -->
     {% if is_paginated %}
-    <div class="button-group" style="justify-content:center;">
+    <div class="button-group vault-pagination">
       {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}"
            class="btn btn-secondary">← Previous</a>
@@ -127,15 +130,16 @@
     <div class="alert alert-warning">
       No vault entries yet.
       {% if can_modify and addon_active %}
-        <a href="{% url 'vault:vault_create' %}" class="btn btn-primary" style="margin-left:0.75rem;">Add your first entry</a>
+        <a href="{% url 'vault:vault_create' %}" class="btn btn-primary vault-add-link">Add your first entry</a>
       {% endif %}
     </div>
   {% endif %}
 
 </div>
 </div>
+{% endblock %}
 
-
+{% block extra_js %}
 <script>
 document.querySelectorAll('.vault-reveal-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {

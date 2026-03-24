@@ -1,7 +1,10 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
+{% endblock %}
 
 {% block content %}
 <div class="form-container">
@@ -128,14 +131,13 @@
         </button>
         <button type="button"
                 id="vault-copy-btn"
-                class="btn btn-secondary"
-                style="display:none;"
+                class="btn btn-secondary vault-hidden"
                 aria-label="Copy password to clipboard">
           Copy
         </button>
       </div>
 
-      <p id="vault-countdown-msg" class="vault-hint" style="display:none;">
+      <p id="vault-countdown-msg" class="vault-hint vault-hidden">
         Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
       </p>
     </div>
@@ -150,7 +152,7 @@
     <legend class="form-fieldset-legend">Notes</legend>
 
     <div class="form-field">
-      <p style="white-space: pre-wrap;">{{ entry.notes }}</p>
+      <p class="vault-pre-wrap">{{ entry.notes }}</p>
     </div>
 
   </fieldset>
@@ -190,8 +192,9 @@
 
 </div>
 </div>
+{% endblock %}
 
-
+{% block extra_js %}
 <script>
 (function () {
   const revealBtn    = document.getElementById('vault-reveal-btn');

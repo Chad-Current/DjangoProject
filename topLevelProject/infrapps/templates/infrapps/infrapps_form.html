@@ -2,8 +2,9 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'infrapps/css/stylesheet.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -178,8 +179,9 @@
   </form>
 </div>
 </div>
+{% endblock %}
 
-
+{% block extra_js %}
 <script>
 (function () {
   const btn   = document.getElementById('vault-toggle-pw');
