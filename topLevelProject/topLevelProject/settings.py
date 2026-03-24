@@ -208,6 +208,19 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_URL    = 'localhost:8000'
 CONTACT_URL = 'localhost/contact/'
 
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+
+# Stripe Price IDs — create these in your Stripe Dashboard and add to .env
+# Essentials: $39.99/year recurring | $3.99/month recurring
+STRIPE_ESSENTIALS_ANNUAL_PRICE_ID = os.environ.get('STRIPE_ESSENTIALS_ANNUAL_PRICE_ID', '')
+STRIPE_ESSENTIALS_MONTHLY_PRICE_ID = os.environ.get('STRIPE_ESSENTIALS_MONTHLY_PRICE_ID', '')
+# Legacy: $59.99/year recurring | $5.99/month recurring
+STRIPE_LEGACY_ANNUAL_PRICE_ID = os.environ.get('STRIPE_LEGACY_ANNUAL_PRICE_ID', '')
+STRIPE_LEGACY_MONTHLY_PRICE_ID = os.environ.get('STRIPE_LEGACY_MONTHLY_PRICE_ID', '')
+
 
 # Three settings.py changes you'll need when deploying:
 

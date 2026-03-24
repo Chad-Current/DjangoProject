@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+  <title>Manage Subscription</title>
+</head>
+
+<body class="payment-page">
+  {% include 'baseapp/navbar.html' %}
+
+  <div class="payment-header">
+    <h1>Manage Subscription</h1>
+    <p>View your plan details or make changes.</p>
+  </div>
+
+  <div class="payment-wrapper" style="max-width: 640px; margin: 0 auto;">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          <i class="fas fa-info-circle"></i> {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if stripe_error %}
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> {{ stripe_error }}
+      </div>
+    {% endif %}
+
+    {% if user.stripe_subscription_id %}
+
+      <div class="pricing-card" style="margin: 0 auto 2rem;">
+        <div class="tier-name">
+          {{ user.subscription_tier|capfirst }} Plan
+          {% if user.subscription_status == 'active' %}
+            <span style="font-size:0.75rem; color:#28a745; margin-left:0.5rem;">
+              <i class="fas fa-circle"></i> Active
+            </span>
+          {% elif user.subscription_status == 'past_due' %}
+            <span style="font-size:0.75rem; color:#dc3545; margin-left:0.5rem;">
+              <i class="fas fa-exclamation-circle"></i> Past Due
+            </span>
+          {% elif user.subscription_status == 'canceled' %}
+            <span style="font-size:0.75rem; color:#6c757d; margin-left:0.5rem;">
+              <i class="fas fa-times-circle"></i> Canceled
+            </span>
+          {% endif %}
+        </div>
+
+        <div style="margin: 1rem 0; color: #555; font-size: 0.95rem; line-height: 1.8;">
+          <p><strong>Billing:</strong> {{ user.subscription_interval|capfirst }}</p>
+          {% if user.subscription_current_period_end %}
+            {% if user.subscription_cancel_at_period_end %}
+              <p><strong>Access ends:</strong>
+                {{ user.subscription_current_period_end|date:"F j, Y" }}
+                <span style="color:#e67e22;">(cancellation scheduled)</span>
+              </p>
+            {% else %}
+              <p><strong>Next renewal:</strong>
+                {{ user.subscription_current_period_end|date:"F j, Y" }}
+                ({{ user.days_until_renewal }} day{{ user.days_until_renewal|pluralize }} away)
+              </p>
+            {% endif %}
+          {% endif %}
+          <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        {% if user.subscription_status == 'active' and not user.subscription_cancel_at_period_end %}
+          <div class="tier-divider"></div>
+          <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+            Canceling will stop automatic renewal. You'll keep full access until
+            <strong>{{ user.subscription_current_period_end|date:"F j, Y" }}</strong>,
+            then switch to view-only.
+          </p>
+          <form method="post" action="{% url 'accounts:subscription_cancel' %}"
+                onsubmit="return confirm('Cancel your subscription? You will keep access until the end of the current billing period.');">
+            {% csrf_token %}
+            <button type="submit" class="select-tier-btn"
+                    style="background: #dc3545; color: #fff; border-color: #dc3545;">
+              <i class="fas fa-times-circle"></i>&nbsp; Cancel Subscription
+            </button>
+          </form>
+        {% elif user.subscription_cancel_at_period_end %}
+          <div class="tier-divider"></div>
+          <div class="alert alert-warning" style="margin: 0.5rem 0 1rem;">
+            <i class="fas fa-info-circle"></i>
+            Your subscription is set to cancel on
+            <strong>{{ user.subscription_current_period_end|date:"F j, Y" }}</strong>.
+            You retain full access until then.
+          </div>
+        {% endif %}
+      </div>
+
+    {% else %}
+      <!-- No Stripe subscription — legacy one-time or no subscription -->
+      <div class="pricing-card" style="margin: 0 auto 2rem;">
+        <div class="tier-name">{{ user.get_tier_display_name }}</div>
+        <div style="margin: 1rem 0; color: #555; font-size: 0.95rem;">
+          {% if user.has_paid %}
+            <p>You are on a legacy plan. Upgrade to a recurring subscription for continuous access.</p>
+          {% else %}
+            <p>You don't have an active subscription.</p>
+          {% endif %}
+        </div>
+        <div class="tier-divider"></div>
+        <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn"
+           style="text-decoration: none; display: block;">
+          <i class="fas fa-arrow-up"></i>&nbsp; View Plans
+        </a>
+      </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 1rem;">
+      <a href="{% url 'dashboard:dashboard_home' %}" style="color: #555; font-size: 0.9rem;">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+
+  {% include "baseapp/footer.html" %}
+  <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
+
+</html>

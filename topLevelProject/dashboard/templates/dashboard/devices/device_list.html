@@ -23,62 +23,7 @@
     </div>
 
     <div class="contacts-content">
-        {% if is_demo and demo_devices %}
-        <div class="table-view d-none d-md-block">
-            <div class="table-responsive">
-                <table class="table contacts-table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Name</th>
-                            <th>Assigned to</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for device in demo_devices %}
-                        <tr>
-                            <td>
-                                <div class="contact-name">
-                                    <i class="fas fa-laptop contact-icon"></i>
-                                    <span>{{ device.device_type }}</span>
-                                </div>
-                            </td>
-                            <td><span>{{ device.device_name }}</span></td>
-                            <td><span class="contact-info">{{ device.delegated_device_to }}</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <span class="btn-action btn-edit"   title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-eye"></i></span>
-                                    <span class="btn-action btn-edit"   title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-edit"></i></span>
-                                    <span class="btn-action btn-delete" title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-trash-alt"></i></span>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card-view d-md-none">
-            {% for device in demo_devices %}
-            <div class="contact-card">
-                <div class="card-header-section">
-                    <div class="contact-avatar"><i class="fas fa-tablet-alt contact-icon"></i></div>
-                    <div class="contact-details">
-                        <h3 class="contact-card-name">{{ device.device_name }}</h3>
-                        <span class="badge-relationship-mobile">{{ device.device_type }}</span>
-                    </div>
-                </div>
-                <div class="card-body-section">
-                    <div class="info-label">Location</div>
-                    <p class="contact-info-text">{{ device.location_description }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        {% elif devices %}
+        {% if devices %}
         <div class="table-view d-none d-md-block">
             <div class="table-responsive">
                 <table class="table contacts-table">

@@ -7,7 +7,7 @@
         <div class="subnav-container">
 
             <a href="{% url 'dashboard:contact_list' %}"
-                class="subnav-item{% if request.user.is_demo %} demo-start-here{% endif %}"
+                class="subnav-item"
                 title="Emergency contacts">
                 {% if contacts_count == 0 %}<span class="subnav-pulse-dot" aria-hidden="true"></span>{% endif %}
                 <i class="fas fa-address-book"></i>
@@ -55,24 +55,14 @@
                 <span> Notes</span>
             </a>
 
-            {% if request.user.subscription_tier == 'legacy' or request.user.is_demo %}
-            {% if request.user.is_demo %}
-            <a href="{% url 'dashboard:funeralplan_demo' %}"
-                class="subnav-item"
-                title="Preview funeral planning">
-                <i class="fas fa-user-tie"></i>
-                <span>Funeral</span>
-                <span>Planning</span>
-            </a>
-            {% else %}
+            {% if request.user.subscription_tier == 'legacy' %}
             <a href="{% url 'dashboard:funeralplan_index' %}"
                 class="subnav-item"
-                title="Funeral planned">
+                title="Funeral planning">
                 <i class="fas fa-user-tie"></i>
                 <span>Funeral</span>
                 <span>Planning</span>
             </a>
-            {% endif %}
             {% endif %}
 
             {% if request.user.can_access_addon %}
@@ -85,7 +75,6 @@
             </a>
             {% endif %}
 
-            {% if not request.user.is_demo %}
             <a href="{% url 'dashboard:relevancereview_list' %}"
                 class="subnav-item"
                 title="Review your accounts">
@@ -93,7 +82,6 @@
                 <span>Review</span>
                 <span>List</span>
             </a>
-            {% endif %}
 
         </div>
     </nav>

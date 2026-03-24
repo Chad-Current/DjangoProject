@@ -1,67 +1,62 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.html import format_html
 from django.utils import timezone
 from .models import CustomUser
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    # list_display = [
-    #     'email', 'username', 'subscription_tier', 'tier_status',
-    #     'is_staff', 'is_active', 'last_login', 'date_joined'
-    # ]
-    list_filter = [
-        'subscription_tier', 'is_staff', 'is_superuser',
-        'is_active', 'email_verified', 'has_paid', 'date_joined'
+    list_display = [
+        'email', 'username', 'subscription_tier', 'subscription_status',
+        'subscription_interval', 'is_staff', 'is_active', 'date_joined',
     ]
-    search_fields = ['email', 'username', 'first_name', 'last_name']
+    list_filter = [
+        'subscription_tier', 'subscription_status', 'subscription_interval',
+        'is_staff', 'is_superuser', 'is_active', 'email_verified', 'has_paid', 'date_joined',
+    ]
+    search_fields = ['email', 'username', 'first_name', 'last_name', 'stripe_customer_id']
     ordering = ['-date_joined']
-    
+
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'email_verified')}),
         ('Permissions', {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
-        ('Subscription Info', {
+        ('Stripe Subscription', {
             'fields': (
+                'stripe_customer_id',
+                'stripe_subscription_id',
                 'subscription_tier',
+                'subscription_status',
+                'subscription_interval',
+                'subscription_current_period_end',
+                'subscription_cancel_at_period_end',
                 'has_paid',
                 'payment_date',
-                'essentials_expires',
-                'legacy_granted_date',
             ),
-            'classes': ('collapse',)
+        }),
+        ('Legacy One-Time Payment Fields', {
+            'fields': ('essentials_expires', 'legacy_granted_date'),
+            'classes': ('collapse',),
+            'description': 'Used only for users who purchased under the old one-time payment model.',
         }),
         ('Add-on Subscription', {
             'fields': ('addon_active', 'addon_payment_date', 'addon_expires'),
         }),
-        ('Security Info', {
+        ('Security', {
             'fields': ('last_login_ip', 'failed_login_attempts', 'account_locked_until'),
-            'classes': ('collapse',)
+            'classes': ('collapse',),
         }),
     )
-    
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_active')
+            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_active'),
         }),
     )
-    
+
     readonly_fields = ['date_joined', 'last_login']
-
-def tier_status(self, obj):
-    if obj.subscription_tier == 'legacy':
-        return "Legacy (Lifetime)"
-    elif obj.subscription_tier == 'essentials':
-        if obj.is_essentials_edit_active():
-            days = obj.days_until_essentials_expires()
-            return f"Essentials ({days} days)"
-        else:
-            return "View-Only"
-    else:
-        return "No Subscription"
-

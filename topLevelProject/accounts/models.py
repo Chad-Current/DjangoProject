@@ -3,78 +3,127 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 
+
 class CustomUser(AbstractUser):
     """
-    Custom user model with two subscription tiers:
-    1. ESSENTIALS - One-time payment, 1 year of edit access, then view-only forever
-    2. LEGACY - Lifetime full access (add, change, delete, view)
+    Custom user model supporting both legacy one-time payments (backward compat)
+    and the current Stripe recurring subscription model.
+
+    Subscription tiers:
+        none        — No active subscription (read-only or no access)
+        essentials  — Full edit access while subscription is active ($39.99/yr or $3.99/mo)
+        legacy      — Full edit access while subscription is active ($59.99/yr or $5.99/mo)
     """
-    
+
     TIER_CHOICES = [
         ('none', 'No Subscription'),
         ('essentials', 'Essentials'),
         ('legacy', 'Legacy'),
     ]
-    
-    # Basic fields
+
+    SUBSCRIPTION_STATUS_CHOICES = [
+        ('', 'Not Set'),
+        ('active', 'Active'),
+        ('past_due', 'Past Due'),
+        ('canceled', 'Canceled'),
+        ('incomplete', 'Incomplete'),
+        ('incomplete_expired', 'Incomplete Expired'),
+        ('trialing', 'Trialing'),
+        ('unpaid', 'Unpaid'),
+    ]
+
+    INTERVAL_CHOICES = [
+        ('', 'Not Set'),
+        ('monthly', 'Monthly'),
+        ('annual', 'Annual'),
+    ]
+
+    FREE_TIER_LIMITS = {
+        'contacts': 3,
+        'accounts': 2,
+        'devices': 2,
+        'estate_documents': 1,
+        'important_documents': 1,
+    }
+
+    # ── Basic fields ──────────────────────────────────────────────────────────
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(default=False)
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
     failed_login_attempts = models.IntegerField(default=0)
     account_locked_until = models.DateTimeField(null=True, blank=True)
-    
-    # Subscription tier
+
+    # ── Subscription tier ─────────────────────────────────────────────────────
     subscription_tier = models.CharField(
         max_length=20,
         choices=TIER_CHOICES,
         default='none',
-        help_text="User's subscription tier"
+        help_text="User's subscription tier",
     )
-    
-    # Payment tracking
+
+    # ── Payment tracking (kept for backward compat with legacy one-time users) ─
     has_paid = models.BooleanField(
         default=False,
-        help_text="User has completed payment"
+        help_text="User has completed at least one payment (used for view-only access after cancellation)",
     )
     payment_date = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Date of payment"
+        null=True, blank=True,
+        help_text="Date of most recent payment or subscription start",
     )
-    
-    # Essentials tier - expires after 1 year
+
+    # ── Legacy one-time fields (backward compat only — not used for new users) ─
     essentials_expires = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="When Essentials tier edit access expires (1 year from payment)"
+        null=True, blank=True,
+        help_text="[Legacy one-time] When Essentials edit access expires",
     )
-    
-    # Legacy tier - lifetime access
     legacy_granted_date = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="When legacy access was granted"
+        null=True, blank=True,
+        help_text="[Legacy one-time] When lifetime legacy access was granted",
     )
-    # Add-on subscription (available to any paying user)
+
+    # ── Stripe subscription fields ────────────────────────────────────────────
+    stripe_customer_id = models.CharField(
+        max_length=100, blank=True, default='',
+        help_text="Stripe customer ID (cus_...)",
+    )
+    stripe_subscription_id = models.CharField(
+        max_length=100, blank=True, default='',
+        help_text="Stripe subscription ID (sub_...)",
+    )
+    subscription_status = models.CharField(
+        max_length=30, blank=True, default='',
+        choices=SUBSCRIPTION_STATUS_CHOICES,
+        help_text="Current Stripe subscription status",
+    )
+    subscription_interval = models.CharField(
+        max_length=10, blank=True, default='',
+        choices=INTERVAL_CHOICES,
+        help_text="Billing interval: monthly or annual",
+    )
+    subscription_current_period_end = models.DateTimeField(
+        null=True, blank=True,
+        help_text="End of current Stripe billing period",
+    )
+    subscription_cancel_at_period_end = models.BooleanField(
+        default=False,
+        help_text="Subscription is set to cancel at end of current billing period",
+    )
+
+    # ── Add-on subscription ───────────────────────────────────────────────────
     addon_active = models.BooleanField(
         default=False,
-        help_text="User has an active add-on subscription"
+        help_text="User has an active add-on subscription",
     )
     addon_payment_date = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Date the add-on was purchased"
+        null=True, blank=True,
+        help_text="Date the add-on was purchased",
     )
     addon_expires = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="When the add-on subscription expires (1 year from purchase, renewable)"
+        null=True, blank=True,
+        help_text="When the add-on subscription expires (1 year from purchase, renewable)",
     )
-    is_demo = models.BooleanField(
-        default=False,
-        help_text="User is in demo/free-trial mode — changes are not persisted"
-    )
-    # Fix for reverse accessor clashes
+
+    # ── Fix for reverse accessor clashes ─────────────────────────────────────
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -89,108 +138,172 @@ class CustomUser(AbstractUser):
         related_name='customuser_set',
         related_query_name='customuser',
     )
-    
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
-    
+
+    # ── Account locking ───────────────────────────────────────────────────────
+
     def is_account_locked(self):
-        """Check if account is temporarily locked due to failed login attempts"""
+        """Check if account is temporarily locked due to failed login attempts."""
         if self.account_locked_until:
             return timezone.now() < self.account_locked_until
         return False
-    
+
+    # ── Access control ────────────────────────────────────────────────────────
+
     def can_view_data(self):
         """
-        Check if user can VIEW data.
-        
-        ESSENTIALS: Can view forever (even after 1 year)
-        LEGACY: Can view forever
+        Returns True if the user may VIEW their data.
+
+        • Active subscription → can view
+        • Previously paid (subscription lapsed/canceled) → view-only forever
+        • Free tier (no subscription, not demo) → can view their limited items
+        • Never paid and not free tier → cannot view
         """
         if not self.is_active:
             return False
-        
-        if self.subscription_tier == 'essentials':
-            return self.has_paid
-        elif self.subscription_tier == 'legacy':
-            return True
-        
-        return False
-    
+        return self.has_paid or self.is_free_tier()
+
     def can_modify_data(self):
         """
-        Check if user can ADD/CHANGE/DELETE data.
-        
-        ESSENTIALS: Can modify for 1 year after payment, then view-only
-        LEGACY: Can modify forever (lifetime access)
+        Returns True if the user may ADD / CHANGE / DELETE data.
+
+        New subscription users:
+            Active subscription → can modify
+            Canceled / lapsed   → cannot modify (view-only)
+
+        Legacy one-time users (no stripe_subscription_id):
+            Essentials: within 1 year of payment
+            Legacy:     forever
         """
         if not self.is_active:
             return False
-        
+
+        # ── Stripe subscription users ─────────────────────────────────────────
+        if self.stripe_subscription_id:
+            return self.subscription_status == 'active'
+
+        # ── Backward compat: legacy one-time payment users ────────────────────
         if self.subscription_tier == 'essentials':
-            # Can modify only within 1 year of payment
-            if self.essentials_expires and timezone.now() < self.essentials_expires:
-                return True
-            return False
-        
-        elif self.subscription_tier == 'legacy':
-            # Legacy users have lifetime modify access
+            return bool(self.essentials_expires and timezone.now() < self.essentials_expires)
+        if self.subscription_tier == 'legacy':
             return True
-        
+
         return False
-    
-    def can_demo_access(self):
-        """Free users in demo mode — can browse and submit forms but data is not saved."""
-        return self.is_active and self.is_demo and not self.has_paid
+
+    def is_free_tier(self):
+        """Active user with no subscription — real saves allowed up to per-category limits."""
+        return self.is_active and not self.has_paid
+
+    # ── Subscription helpers ──────────────────────────────────────────────────
+
+    def is_subscription_active(self):
+        """True when the Stripe subscription is currently active."""
+        return self.stripe_subscription_id != '' and self.subscription_status == 'active'
+
+    def days_until_renewal(self):
+        """Days until the next billing date (0 if not on a subscription)."""
+        if not self.subscription_current_period_end:
+            return 0
+        delta = self.subscription_current_period_end - timezone.now()
+        return max(0, delta.days)
+
+    # ── Legacy one-time helpers (backward compat) ─────────────────────────────
 
     def is_essentials_edit_active(self):
-        """Check if Essentials tier still has edit access"""
+        """[Legacy one-time] Check if Essentials tier still has edit access."""
+        if self.stripe_subscription_id:
+            return self.subscription_status == 'active'
         if self.subscription_tier != 'essentials':
             return False
-        if self.essentials_expires:
-            return timezone.now() < self.essentials_expires
-        return False
-    
+        return bool(self.essentials_expires and timezone.now() < self.essentials_expires)
+
     def days_until_essentials_expires(self):
-        """Calculate days remaining for Essentials edit access"""
+        """[Legacy one-time] Days remaining for Essentials edit access."""
+        if self.stripe_subscription_id:
+            return self.days_until_renewal()
         if self.subscription_tier != 'essentials' or not self.essentials_expires:
             return 0
         delta = self.essentials_expires - timezone.now()
         return max(0, delta.days)
-    
+
     def get_tier_display_name(self):
-        """Get human-readable tier name with status"""
+        """Human-readable tier name with status."""
+        if self.stripe_subscription_id:
+            tier = self.subscription_tier.capitalize()
+            interval = self.subscription_interval.capitalize() if self.subscription_interval else ''
+            if self.subscription_status == 'active':
+                cancel_note = ' — Cancels at period end' if self.subscription_cancel_at_period_end else ''
+                return f"{tier} ({interval} subscription{cancel_note})"
+            return f"{tier} (Subscription {self.subscription_status})"
+        # Legacy one-time
         if self.subscription_tier == 'essentials':
             if self.is_essentials_edit_active():
                 days = self.days_until_essentials_expires()
                 return f"Essentials (Edit access: {days} days remaining)"
             return "Essentials (View-only)"
-        elif self.subscription_tier == 'legacy':
+        if self.subscription_tier == 'legacy':
             return "Legacy (Lifetime Access)"
         return "No Subscription"
-    
+
+    # ── Stripe activation / deactivation ─────────────────────────────────────
+
+    def activate_subscription(self, tier, stripe_customer_id, stripe_subscription_id,
+                              interval, current_period_end, cancel_at_period_end=False):
+        """
+        Called after a Stripe subscription becomes active (initial payment or renewal).
+        Sets all subscription fields and grants modify access.
+        """
+        self.subscription_tier = tier
+        self.stripe_customer_id = stripe_customer_id
+        self.stripe_subscription_id = stripe_subscription_id
+        self.subscription_status = 'active'
+        self.subscription_interval = interval
+        self.subscription_current_period_end = current_period_end
+        self.subscription_cancel_at_period_end = cancel_at_period_end
+        self.has_paid = True
+        self.payment_date = timezone.now()
+        self.save()
+
+    def update_subscription_status(self, status, current_period_end=None, cancel_at_period_end=False):
+        """
+        Called by the Stripe webhook to keep subscription state in sync.
+        """
+        self.subscription_status = status
+        self.subscription_cancel_at_period_end = cancel_at_period_end
+        if current_period_end:
+            self.subscription_current_period_end = current_period_end
+        self.save()
+
+    def deactivate_subscription(self):
+        """Mark the subscription as canceled (user loses modify access)."""
+        self.subscription_status = 'canceled'
+        self.subscription_cancel_at_period_end = False
+        self.save()
+
+    # ── Legacy one-time upgrade methods (kept for backward compat) ─────────────
+
     def upgrade_to_essentials(self):
-        """Activate Essentials tier (1 year edit access, then view-only)"""
+        """[Legacy] Activate Essentials tier with one-time payment."""
         self.subscription_tier = 'essentials'
         self.has_paid = True
-        self.is_demo = False
         self.payment_date = timezone.now()
         self.essentials_expires = timezone.now() + timedelta(days=365)
         self.save()
 
     def upgrade_to_legacy(self):
-        """Activate Legacy tier (lifetime full access)"""
+        """[Legacy] Activate Legacy tier with one-time payment."""
         self.subscription_tier = 'legacy'
         self.has_paid = True
-        self.is_demo = False
         self.payment_date = timezone.now()
         self.legacy_granted_date = timezone.now()
         self.save()
 
+    # ── Add-on subscription ───────────────────────────────────────────────────
+
     def can_access_addon(self):
-        """
-        Check if user has an active add-on.
-        Requires has_paid=True AND addon_active=True AND not expired.
-        """
+        """Check if user has an active add-on."""
         if not self.has_paid or not self.addon_active:
             return False
         if self.addon_expires and timezone.now() > self.addon_expires:
@@ -198,10 +311,7 @@ class CustomUser(AbstractUser):
         return True
 
     def is_eligible_for_addon(self):
-        """
-        Only paying users (essentials or legacy) may purchase the add-on.
-        Non-paying users are never eligible.
-        """
+        """Only paying users (essentials or legacy) may purchase the add-on."""
         return self.has_paid and self.subscription_tier in ('essentials', 'legacy')
 
     def days_until_addon_expires(self):
@@ -224,11 +334,10 @@ class CustomUser(AbstractUser):
         """Administratively remove add-on access."""
         self.addon_active = False
         self.save()
+
     class Meta:
         db_table = 'users'
         permissions = [
             ("can_modify_models", "Can add, change, and delete model data"),
             ("can_view_models", "Can view model data"),
         ]
-
-

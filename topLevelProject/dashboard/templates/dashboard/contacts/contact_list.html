@@ -23,64 +23,7 @@
     </div>
 
     <div class="contacts-content">
-        {% if is_demo and demo_contacts %}
-        <div class="table-view d-none d-md-block">
-            <div class="table-responsive">
-                <table class="table contacts-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Relationship</th>
-                            <th>Emergency Contact</th>
-                            <th>Phone</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for contact in demo_contacts %}
-                        <tr>
-                            <td>
-                                <div class="contact-name">
-                                    <i class="fas fa-address-book contact-icon"></i>
-                                    <span>{{ contact.first_name }} {{ contact.last_name }}</span>
-                                </div>
-                            </td>
-                            <td><span>{{ contact.contact_relation }}</span></td>
-                            <td><span class="contact-info">{{ contact.is_emergency_contact|yesno:"Yes,No" }}</span></td>
-                            <td><span class="contact-info">{{ contact.phone }}</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <span class="btn-action btn-view" title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-eye"></i></span>
-                                    <span class="btn-action btn-edit" title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-edit"></i></span>
-                                    <span class="btn-action btn-delete" title="Not available in demo" style="opacity:.4;cursor:default;"><i class="fas fa-trash-alt"></i></span>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card-view d-md-none">
-            {% for contact in demo_contacts %}
-            <div class="contact-card">
-                <div class="card-header-section">
-                    <div class="contact-avatar"><i class="fas fa-user-circle"></i></div>
-                    <div class="contact-details">
-                        <h3 class="contact-card-name">{{ contact.first_name }} {{ contact.last_name }}</h3>
-                        <span class="badge-relationship-mobile">{{ contact.contact_relation }}</span>
-                    </div>
-                </div>
-                <div class="card-body-section">
-                    <div class="info-label">Phone</div>
-                    <p class="contact-info-text">{{ contact.phone }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        {% elif contacts %}
+        {% if contacts %}
         <div class="table-view d-none d-md-block">
             <div class="table-responsive">
                 <table class="table contacts-table">

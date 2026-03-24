@@ -1,21 +1,45 @@
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.urls import reverse
+
+
+class FreeTierLimitMixin:
+    """
+    Blocks free-tier users from creating items beyond their per-category limit.
+    Set free_tier_item to a key from CustomUser.FREE_TIER_LIMITS on each CreateView.
+    Assumes the model has a profile__user lookup path.
+    """
+    free_tier_item = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_free_tier():
+            key = self.free_tier_item
+            if key:
+                from accounts.models import CustomUser
+                limit = CustomUser.FREE_TIER_LIMITS.get(key, 0)
+                count = self.model.objects.filter(profile__user=request.user).count()
+                if count >= limit:
+                    messages.warning(
+                        request,
+                        f"You've reached the free tier limit ({limit} {key.replace('_', ' ')}). "
+                        "Upgrade your subscription to add more."
+                    )
+                    return redirect(reverse('dashboard:dashboard_home'))
+        return super().dispatch(request, *args, **kwargs)
+
 
 class PaidUserRequiredMixin(UserPassesTestMixin):
     """
-    Mixin that requires user to have completed payment to access the view.
-    User must have either Essentials or Legacy tier.
-    Demo users are allowed through but their form submissions are not saved.
+    Mixin that requires modify access to the view.
+    Free-tier users (no subscription) are allowed through with real saves, subject to per-category limits.
+    Paid subscribers (Essentials/Legacy) are always allowed.
     """
     def test_func(self):
         user = self.request.user
-        if user.is_authenticated and user.can_demo_access():
-            self.is_demo_mode = True
+        if user.is_authenticated and user.is_free_tier():
             return True
-        self.is_demo_mode = False
         return user.is_authenticated and user.can_modify_data()
 
     def handle_no_permission(self):
@@ -23,22 +47,9 @@ class PaidUserRequiredMixin(UserPassesTestMixin):
             if self.request.user.subscription_tier == 'essentials' and not self.request.user.is_essentials_edit_active():
                 messages.warning(self.request, 'Your Essentials tier edit access has expired. You now have view-only access. Upgrade to Legacy for lifetime access.')
             else:
-                messages.warning(self.request, 'Payment required to access this feature. Please choose a subscription tier.')
+                messages.warning(self.request, 'An active subscription is required to access this feature.')
             return redirect('accounts:payment')
         return redirect('accounts:login')
-
-    def form_valid(self, form):
-        if getattr(self, 'is_demo_mode', False):
-            # Clear any success messages already queued by the subclass form_valid
-            # (e.g. "Contact created successfully.") before adding the demo notice.
-            if hasattr(self.request, '_messages'):
-                self.request._messages._queued_messages = []
-            messages.info(
-                self.request,
-                'Demo mode \u2014 your changes were not saved.'
-            )
-            return HttpResponseRedirect(reverse('dashboard:dashboard_home'))
-        return super().form_valid(form)
 
 class AddonRequiredMixin(LoginRequiredMixin):
     """
@@ -75,13 +86,10 @@ class AddonRequiredMixin(LoginRequiredMixin):
 class ViewOnlyMixin(UserPassesTestMixin):
     """
     Mixin for views that only require view access.
-    Both active Essentials and Legacy users can access.
-    Demo users are also allowed to browse.
+    Free-tier users and all paid subscribers can access.
     """
     def test_func(self):
         user = self.request.user
-        if user.is_authenticated and user.can_demo_access():
-            return True
         return user.is_authenticated and user.can_view_data()
 
     def handle_no_permission(self):
@@ -159,32 +167,22 @@ class ViewAccessMixin(ViewOnlyMixin, UserOwnsObjectMixin):
 class DeleteAccessMixin(LoginRequiredMixin):
     """
     Mixin specifically for DeleteView - doesn't use form_valid.
-    Demo users are allowed through but the delete is intercepted.
+    Free-tier users are allowed to delete their own items.
     """
     owner_field = 'user'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('accounts:login')
-        if request.user.can_demo_access():
-            self.is_demo_mode = True
+        if request.user.is_free_tier():
             return super().dispatch(request, *args, **kwargs)
-        self.is_demo_mode = False
         if not request.user.can_modify_data():
             if request.user.subscription_tier == 'essentials' and not request.user.is_essentials_edit_active():
                 messages.warning(request, 'Your Essentials tier edit access has expired.')
             else:
-                messages.warning(request, 'Payment required to delete items.')
-            return redirect('payment')
+                messages.warning(request, 'An active subscription is required to delete items.')
+            return redirect('accounts:payment')
         return super().dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        if getattr(self, 'is_demo_mode', False):
-            if hasattr(request, '_messages'):
-                request._messages._queued_messages = []
-            messages.info(request, 'Demo mode \u2014 nothing was deleted. Upgrade to manage real data.')
-            return HttpResponseRedirect(reverse('dashboard:dashboard_home'))
-        return super().delete(request, *args, **kwargs)
     
     def get_queryset(self):
         """Filter queryset to only show objects owned by current user"""

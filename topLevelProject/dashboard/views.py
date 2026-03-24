@@ -20,7 +20,7 @@ from django.contrib import messages
 from django.db.models import Min, Max
 from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
-from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin
+from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin, FreeTierLimitMixin
 from .models import (
     Profile,
     Contact,
@@ -83,7 +83,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             return super().dispatch(request, *args, **kwargs)
         
         if not getattr(user, "has_paid", False):
-            if user.can_demo_access():
+            if user.is_free_tier():
                 try:
                     user.profile
                 except Profile.DoesNotExist:
@@ -167,10 +167,10 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['today']             = datetime.now().date()
             context['week_from_now']     = datetime.now().date() + timedelta(days=7)
 
-            context['tier_display'] = user.get_tier_display_name()
-            context['can_modify']   = user.can_modify_data()
-            context['can_view']     = user.can_view_data()
-            context['is_demo']      = user.can_demo_access()
+            context['tier_display']  = user.get_tier_display_name()
+            context['can_modify']    = user.can_modify_data()
+            context['can_view']      = user.can_view_data()
+            context['is_free_tier']  = user.is_free_tier()
 
             if user.subscription_tier == 'essentials':
                 context['is_edit_active']    = user.is_essentials_edit_active()
@@ -339,8 +339,6 @@ class AccountListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return Account.objects.none()
         try:
             profile  = Profile.objects.get(user=self.request.user)
             queryset = Account.objects.filter(profile=profile)
@@ -359,19 +357,7 @@ class AccountListView(ViewAccessMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_accounts'] = [
-                {'account_category': 'Banking',         'account_name_or_provider': 'Wells Fargo',       'delegated_account_to': 'Sarah Johnson'},
-                {'account_category': 'Email',           'account_name_or_provider': 'Gmail',             'delegated_account_to': 'Michael Johnson'},
-                {'account_category': 'Social Media',    'account_name_or_provider': 'Facebook',          'delegated_account_to': 'Emily Johnson'},
-                {'account_category': 'Utilities',       'account_name_or_provider': 'MidAmerican Energy','delegated_account_to': 'Sarah Johnson'},
-                {'account_category': 'Investment',      'account_name_or_provider': 'Vanguard',          'delegated_account_to': 'Linda Parker'},
-                {'account_category': 'Streaming',       'account_name_or_provider': 'Netflix',           'delegated_account_to': 'Sarah Johnson'},
-                {'account_category': 'Insurance',       'account_name_or_provider': 'State Farm',        'delegated_account_to': 'Linda Parker'},
-            ]
-            return context
+        context['can_modify'] = user.can_modify_data() or user.is_free_tier()
         try:
             profile = Profile.objects.get(user=user)
             context['accounts'] = Account.objects.filter(profile=profile)
@@ -392,7 +378,8 @@ class AccountDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class AccountCreateView(FullAccessMixin, CreateView):
+class AccountCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    free_tier_item = 'accounts'
     model         = Account
     form_class    = AccountForm
     template_name = 'dashboard/accounts/account_form.html'
@@ -451,8 +438,6 @@ class DeviceListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return Device.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return Device.objects.filter(profile=profile).order_by('-created_at')
@@ -461,17 +446,7 @@ class DeviceListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_devices'] = [
-                {'device_type': 'Phone',   'device_name': 'iPhone 15 Pro',        'delegated_device_to': 'Sarah Johnson',  'location_description': 'Bedroom nightstand'},
-                {'device_type': 'Laptop',  'device_name': 'MacBook Pro 14"',      'delegated_device_to': 'Michael Johnson','location_description': 'Home office desk'},
-                {'device_type': 'Desktop', 'device_name': 'Dell Optiplex 7090',   'delegated_device_to': 'Emily Johnson',  'location_description': 'Home office'},
-                {'device_type': 'Tablet',  'device_name': 'iPad Air',             'delegated_device_to': 'Sarah Johnson',  'location_description': 'Living room'},
-                {'device_type': 'Smart Watch', 'device_name': 'Apple Watch Series 9', 'delegated_device_to': 'Sarah Johnson', 'location_description': 'Bedroom dresser'},
-            ]
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -487,7 +462,8 @@ class DeviceDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class DeviceCreateView(FullAccessMixin, CreateView):
+class DeviceCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    free_tier_item = 'devices'
     model         = Device
     form_class    = DeviceForm
     template_name = 'dashboard/devices/device_form.html'
@@ -546,8 +522,6 @@ class EstateListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return DigitalEstateDocument.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return DigitalEstateDocument.objects.filter(profile=profile).order_by('-created_at')
@@ -556,17 +530,7 @@ class EstateListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_estates'] = [
-                {'estate_category': 'Will',                    'name_or_title': 'Last Will and Testament',        'delegated_estate_to': 'Linda Parker (Attorney)'},
-                {'estate_category': 'Trust',                   'name_or_title': 'Johnson Family Revocable Trust', 'delegated_estate_to': 'Sarah Johnson'},
-                {'estate_category': 'Power of Attorney',       'name_or_title': 'Durable Power of Attorney',     'delegated_estate_to': 'Sarah Johnson'},
-                {'estate_category': 'Healthcare Directive',    'name_or_title': 'Living Will / Advance Directive','delegated_estate_to': 'Michael Johnson'},
-                {'estate_category': 'Life Insurance',          'name_or_title': 'Term Life Policy — $500k',       'delegated_estate_to': 'Sarah Johnson'},
-            ]
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -582,7 +546,8 @@ class EstateDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class EstateCreateView(FullAccessMixin, CreateView):
+class EstateCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    free_tier_item = 'estate_documents'
     model         = DigitalEstateDocument
     form_class    = DigitalEstateDocumentForm
     template_name = 'dashboard/estates/estate_form.html'
@@ -641,8 +606,6 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return FamilyNeedsToKnowSection.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return FamilyNeedsToKnowSection.objects.filter(
@@ -653,17 +616,7 @@ class FamilyAwarenessListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_family'] = [
-                {'relation': 'Spouse',   'content': 'Sarah has access to all financial accounts. Joint checking at Wells Fargo, account #XXXX. Safe deposit box key is in the fireproof box in the closet.'},
-                {'relation': 'Son',      'content': 'Michael is to receive the 1967 Ford Mustang and the tools in the garage per the will.'},
-                {'relation': 'Daughter', 'content': "Emily is named as secondary beneficiary on the 401(k). She has a copy of the living will and knows my healthcare wishes."},
-                {'relation': 'Attorney', 'content': 'Linda Parker holds the original signed will and trust documents. Contact her first for estate administration.'},
-                {'relation': 'Executor', 'content': 'James Wilson is named executor. He has login credentials for the estate email account and knows the location of all original documents.'},
-            ]
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -736,8 +689,6 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return ImportantDocument.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return ImportantDocument.objects.filter(profile=profile).order_by('-created_at')
@@ -746,18 +697,7 @@ class ImportantDocumentListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_documents'] = [
-                {'document_category': 'Birth Certificate',   'name_or_title': 'Birth Certificate — Robert Johnson',   'delegated_important_document_to': 'Sarah Johnson', 'description': 'Original stored in fireproof box'},
-                {'document_category': 'Passport',            'name_or_title': 'U.S. Passport',                         'delegated_important_document_to': 'Sarah Johnson', 'description': 'Expires 2029, stored in fireproof box'},
-                {'document_category': 'Social Security',     'name_or_title': 'Social Security Card',                  'delegated_important_document_to': 'Sarah Johnson', 'description': 'Stored in fireproof box with other IDs'},
-                {'document_category': 'Marriage Certificate','name_or_title': 'Marriage Certificate',                   'delegated_important_document_to': 'Sarah Johnson', 'description': 'Original and two certified copies in fireproof box'},
-                {'document_category': 'Vehicle Title',       'name_or_title': '2021 Toyota Camry — Title',             'delegated_important_document_to': 'Michael Johnson','description': 'Title held at First National Bank safe deposit box'},
-                {'document_category': 'Property Deed',       'name_or_title': '123 Elm Street — Warranty Deed',        'delegated_important_document_to': 'Sarah Johnson', 'description': 'Recorded with county; copy in fireproof box'},
-            ]
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -773,7 +713,8 @@ class ImportantDocumentDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class ImportantDocumentCreateView(FullAccessMixin, CreateView):
+class ImportantDocumentCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    free_tier_item = 'important_documents'
     model         = ImportantDocument
     form_class    = ImportantDocumentForm
     template_name = 'dashboard/importantdocuments/importantdocument_form.html'
@@ -832,8 +773,6 @@ class ContactListView(ViewAccessMixin, ListView):
     paginate_by         = 20
 
     def get_queryset(self):
-        if self.request.user.can_demo_access():
-            return Contact.objects.none()
         try:
             profile = Profile.objects.get(user=self.request.user)
             return Contact.objects.filter(profile=profile).order_by('-created_at')
@@ -842,17 +781,7 @@ class ContactListView(ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.can_demo_access()
-        if user.can_demo_access():
-            context['is_demo'] = True
-            context['demo_contacts'] = [
-                {'first_name': 'Sarah',   'last_name': 'Johnson', 'contact_relation': 'Spouse',   'is_emergency_contact': True,  'phone': '5155550101'},
-                {'first_name': 'Michael', 'last_name': 'Johnson', 'contact_relation': 'Son',       'is_emergency_contact': False, 'phone': '5155550182'},
-                {'first_name': 'Linda',   'last_name': 'Parker',  'contact_relation': 'Attorney',  'is_emergency_contact': False, 'phone': '5155550247'},
-                {'first_name': 'James',   'last_name': 'Wilson',  'contact_relation': 'Accountant','is_emergency_contact': False, 'phone': '5155550319'},
-                {'first_name': 'Emily',   'last_name': 'Johnson', 'contact_relation': 'Daughter',  'is_emergency_contact': True,  'phone': '5155550463'},
-            ]
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -883,7 +812,8 @@ class ContactDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class ContactCreateView(FullAccessMixin, CreateView):
+class ContactCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    free_tier_item = 'contacts'
     model         = Contact
     form_class    = ContactForm
     template_name = 'dashboard/contacts/contact_form.html'
@@ -1240,11 +1170,7 @@ class FuneralPlanDemoView(LoginRequiredMixin, TemplateView):
     login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(reverse('accounts:login'))
-        if not request.user.can_demo_access():
-            return redirect(reverse('dashboard:funeralplan_index'))
-        return super().dispatch(request, *args, **kwargs)
+        return redirect(reverse('dashboard:funeralplan_index'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1372,7 +1298,7 @@ class RelevanceReviewListView(LoginRequiredMixin, ListView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not getattr(request.user, "has_paid", False):
+        if not getattr(request.user, "has_paid", False) and not request.user.is_free_tier():
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -1442,7 +1368,7 @@ class RelevanceReviewDetailView(LoginRequiredMixin, DetailView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not getattr(request.user, "has_paid", False):
+        if not getattr(request.user, "has_paid", False) and not request.user.is_free_tier():
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 

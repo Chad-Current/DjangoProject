@@ -44,6 +44,7 @@ django-ses==4.3.0               # Amazon SES email backend
 # ENVIRONMENT & SECRETS
 # ==============================================================================
 python-decouple==3.8            # .env / environment variable management
+stripe==11.3.0                  # Stripe payment processing
 
 # ==============================================================================
 # SECURITY

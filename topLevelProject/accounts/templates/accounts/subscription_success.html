@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{% static 'baseapp/css/stylesheet.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'accounts/css/payment.css' %}" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+  <title>Subscription Activated</title>
+</head>
+
+<body class="payment-page">
+  {% include 'baseapp/navbar.html' %}
+
+  <div class="payment-header">
+    <h1><i class="fas fa-check-circle" style="color: #28a745;"></i> You're all set!</h1>
+    <p>Your {{ user.get_tier_display_name }} is now active.</p>
+  </div>
+
+  <div class="payment-wrapper" style="max-width: 560px; margin: 0 auto; text-align: center;">
+
+    <div class="pricing-card" style="margin: 0 auto 2rem;">
+      <div class="tier-name">
+        <i class="fas fa-star" style="color: #f0a500; margin-right: 0.4rem;"></i>
+        {{ user.subscription_tier|capfirst }} Plan
+      </div>
+
+      <div style="margin: 1rem 0; color: #555; font-size: 0.95rem;">
+        <p><strong>Billing:</strong> {{ user.subscription_interval|capfirst }}</p>
+        {% if user.subscription_current_period_end %}
+        <p><strong>Next renewal:</strong>
+          {{ user.subscription_current_period_end|date:"F j, Y" }}</p>
+        {% endif %}
+      </div>
+
+      <div class="tier-divider"></div>
+
+      <ul class="tier-features" style="text-align: left;">
+        <li><i class="fas fa-check-circle"></i> Full edit access is active</li>
+        <li><i class="fas fa-check-circle"></i> View-only access preserved if you cancel</li>
+        <li><i class="fas fa-check-circle"></i> Manage your plan anytime</li>
+      </ul>
+
+      <a href="{% url 'dashboard:dashboard_home' %}" class="select-tier-btn legacy-btn"
+         style="text-decoration: none; display: block; margin-top: 1.5rem;">
+        <i class="fas fa-home"></i>&nbsp; Go to Dashboard
+      </a>
+    </div>
+
+    <p style="font-size: 0.85rem; color: #888;">
+      Need to make changes?
+      <a href="{% url 'accounts:subscription_manage' %}">Manage your subscription</a>
+    </p>
+
+  </div>
+
+  {% include "baseapp/footer.html" %}
+  <script src="{% static 'baseapp/js/index.js' %}"></script>
+</body>
+
+</html>

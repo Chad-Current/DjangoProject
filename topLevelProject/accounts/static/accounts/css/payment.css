@@ -443,3 +443,40 @@
 }
 
 .modal-secure-note i { color: var(--thirty-percent); }
+
+
+/* ── Billing interval toggle ─────────────────────────────────────────────── */
+.billing-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem auto 2rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1.5rem;
+  border: 2px solid #3a6ea5;
+  background: transparent;
+  color: #3a6ea5;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.toggle-btn.active {
+  background: #3a6ea5;
+  color: #fff;
+}
+
+.save-badge {
+  background: #28a745;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+}
