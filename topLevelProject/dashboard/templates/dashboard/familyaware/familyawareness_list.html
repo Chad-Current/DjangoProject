@@ -80,9 +80,9 @@
                     <div class="info-label">Information</div>
                     <p class="contact-info-text">{{ family.content|truncatechars:100 }}</p>
                 </div>
-                <a href="{% url 'dashboard:familyawareness_detail' family.slug %}" class="btn-card-action btn-edit-card">
+                <!-- <a href="{% url 'dashboard:familyawareness_detail' family.slug %}" class="btn-card-action btn-edit-card">
                     <i class="fas fa-eye"></i><span>View</span>
-                </a>
+                </a> -->
                 {% if can_modify %}
                 <div class="card-actions">
                     <a href="{% url 'dashboard:familyawareness_update' family.slug %}"

@@ -177,7 +177,7 @@ span {
   font-family: var(--main-font);
   font-size: var(--font-md);
   font-weight: 700;
-  color: var(--thirty-percent);
+  /* color: var(--seventy-percent); */
 }
 
 /* ══════════════════════════════════════════════
@@ -758,7 +758,7 @@ span {
 .pricing-cards {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 2rem;
   max-width: fit-content;
   margin: 0 auto 2.5em;
@@ -773,7 +773,7 @@ span {
   border: 1.5px solid rgba(45, 106, 156, 0.15);
   position: relative;
   transition: transform 0.25s, box-shadow 0.25s;
-  /* width: 40%; */
+  width: 40%;
 }
 
 .pricing-card:hover {
@@ -1005,32 +1005,6 @@ span {
   color: var(--text-color);
 }
 
-.demo-btn {
-  display: block;
-  width: fit-content;
-  padding: 0.5em 1em;
-  border: none;
-  border-radius: 20px;
-  font-family: var(--main-font);
-  font-size: var(--font-nm);
-  font-weight: 700;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  letter-spacing: 0.03em;
-  margin: 0.5em;
-  background: var(--background-color);
-  color: var(--ten-percent);
-  border: 2px solid rgba(45, 106, 156, 0.3);
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 3px 4px 12px rgba(2, 2, 2, 0.1);
-}
-
-.demo-btn:hover {
-  opacity: 0.88;
-  transform: translateY(-2px);
-  box-shadow: 3px 6px 18px rgba(2, 2, 2, 0.15);
-}
 /* ── Trust strip ── */
 
 .trust-strip {
@@ -1137,5 +1111,4 @@ span {
   margin-left: auto;
   margin-right: auto;
 }
-
 

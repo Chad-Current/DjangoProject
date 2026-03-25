@@ -175,7 +175,14 @@
           <i class="fas fa-balance-scale"></i> Legal &amp; Estate
         </div>
         <div class="ob-check-group ob-check-group-4">
-
+          
+          <label class="ob-check-row ob-label-tooltip"
+            title="Responsible for managing digital assets (accounts, passwords, online services) after death.">
+            {{ form.is_digital_executor }}
+            <span class="ob-check-label">Digital Executor</span>
+            <span class="ob-tip" role="tooltip">Responsible for managing digital assets (accounts, passwords, online services) after death.</span>
+          </label>
+          
           <label class="ob-check-row ob-label-tooltip"
             title="Named executor/personal representative to administer overall estate and will.">
             {{ form.is_legal_executor }}
@@ -183,12 +190,6 @@
             <span class="ob-tip" role="tooltip">Named executor/personal representative to administer overall estate and will.</span>
           </label>
 
-          <label class="ob-check-row ob-label-tooltip"
-            title="Responsible for managing digital assets (accounts, passwords, online services) after death.">
-            {{ form.is_digital_executor }}
-            <span class="ob-check-label">Digital Executor</span>
-            <span class="ob-tip" role="tooltip">Responsible for managing digital assets (accounts, passwords, online services) after death.</span>
-          </label>
 
           <label class="ob-check-row ob-label-tooltip"
             title="Manages trusts, distributions, and trust assets according to trust terms.">
@@ -206,7 +207,7 @@
 
         </div>
       </div>
-<hr></hr>
+<hr>
       <!-- Medical & Care -->
       <div class="ob-role-group">
         <div class="ob-role-group-label">
@@ -244,7 +245,7 @@
 
         </div>
       </div>
-<hr></hr>
+<hr>
       <!-- Financial & Access -->
       <div class="ob-role-group">
         <div class="ob-role-group-label">
@@ -282,7 +283,7 @@
 
         </div>
       </div>
-<hr></hr>
+<hr>
       <!-- Personal -->
       <div class="ob-role-group ob-role-group-last">
         <div class="ob-role-group-label">

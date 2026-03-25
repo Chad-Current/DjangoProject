@@ -83,6 +83,8 @@
                 <div class="card-body-section">
                     <div class="info-label">Phone</div>
                     <p class="contact-info-text">{{ contact.phone|phone2numeric }}</p>
+                    <div class="info-label">Email</div>
+                    <p class="contact-info-text">{{ contact.email }}</p>
                 </div>
                 {% if can_modify %}
                 <div class="card-actions">

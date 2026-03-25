@@ -53,8 +53,7 @@
    max-width so the table always fills the .main column.
    ══════════════════════════════════════════════ */
 
-.listing-container,
-.listin-container {         /* covers the typo variant in estate template */
+.listing-container {
   width: 100%;
   padding: 2rem 0;
 }
@@ -101,11 +100,8 @@
   margin: 0;
 }
 
-.header-action { 
-  flex-shrink: 0; 
-  span {
-    color: var(--text-color);
-  }
+.header-action {
+  flex-shrink: 0;
 }
 
 .btn-add-contact {
@@ -262,7 +258,13 @@
   font-weight: 700;
 }
 
-/* ── Row action buttons ── */
+/* ── Row action buttons (System 1 — table icon squares) ──────────────────
+   Used on desktop table rows. 34×34 px icon-only squares.
+   Classes: .btn-action + .btn-view / .btn-edit / .btn-delete
+   NOTE: .btn-edit here is the icon-square style (blue tint, 34px).
+         On detail pages (detail-view.css) .btn-edit is the pill button
+         style. These files are never loaded together — no conflict.
+   ─────────────────────────────────────────────────────────────────────── */
 .action-buttons {
   display: flex;
   gap: 0.4rem;
@@ -400,7 +402,12 @@
   margin: 0;
 }
 
-/* ── Card actions ── */
+/* ── Card actions (System 2 — mobile card pill buttons) ──────────────────
+   Shown on mobile card view (below 768 px). Full-width flex pill buttons.
+   Classes: .btn-card-action + .btn-edit-card / .btn-delete-card
+   Aliased with .btn-custom / .btn-custom.btn-edit / .btn-custom.btn-delete
+   so detail-page buttons adopt the same shape when listing.css loads them.
+   ─────────────────────────────────────────────────────────────────────── */
 .card-actions {
   display: flex;
   gap: 0.6rem;
@@ -428,24 +435,11 @@
 }
 
 .btn-edit-card,
-.btn-custom.btn-back {
-  background: linear-gradient(135deg, #1a4a1a, #143414);
-  color: var(--text-color);
-  span {
-    color: var(--text-color);
-  }
-}
-.btn-edit-card:hover,
-.btn-custom.btn-back:hover {
-  background: linear-gradient(135deg, #1a4a1a, #143414);
-  color: var(--text-color);
-}
-
 .btn-custom.btn-edit {
   background: linear-gradient(135deg, #1a4a1a, #143414);
   color: var(--text-color);
-
 }
+.btn-edit-card:hover,
 .btn-custom.btn-edit:hover {
   background: linear-gradient(135deg, #234f23, #1c3e1c);
   color: var(--text-color);
@@ -455,9 +449,6 @@
 .btn-custom.btn-delete {
   background: linear-gradient(135deg, #b42942, #8c1f33);
   color: var(--text-color);
-  span {
-    color: var(--text-color);
-  }
 }
 .btn-delete-card:hover,
 .btn-custom.btn-delete:hover {
@@ -650,8 +641,7 @@
    ══════════════════════════════════════════════ */
 
 @media (max-width: 767px) {
-  .listing-container,
-  .listin-container {
+  .listing-container {
     padding: 1.25rem 0;
   }
 

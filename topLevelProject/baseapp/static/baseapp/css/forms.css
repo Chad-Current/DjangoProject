@@ -76,6 +76,17 @@
   padding: 1.5rem 1.25rem;
 }
 
+/* Wide variant for legal/content pages — overrides default 780px */
+.form-wrapper--wide {
+  max-width: 860px;
+}
+
+/* Static display variant — removes interactive affordances from .form-check */
+.form-check--static {
+  cursor: default;
+  pointer-events: none;
+}
+
 /* Compact auth card — narrower than full form-wrapper */
 .loginform-wrapper {
   width: 100%;

@@ -5,6 +5,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'dashboard/css/contact-node-tree.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -22,27 +23,7 @@
     <!-- Contact Info Card -->
     <div class="info-card">
 
-        <!-- Card title + role badges on the same line -->
-        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:0.6rem; padding:0.65rem; margin-bottom:1.25rem; border-bottom:2px solid var(--background-color);">
-            <h3 style="margin:0; padding:0; border:none; flex:1;">
-                <i class="fas fa-address-card"></i> Contact Information
-            </h3>
-            {% if contact.is_emergency_contact %}
-            <span class="badge-role badge-emergency">
-                <i class="fas fa-exclamation-triangle"></i> Emergency Contact
-            </span>
-            {% endif %}
-            {% if contact.is_digital_executor %}
-            <span class="badge-role badge-executor">
-                <i class="fas fa-gavel"></i> Digital Executor
-            </span>
-            {% endif %}
-            {% if contact.is_caregiver %}
-            <span class="badge-role badge-caregiver">
-                <i class="fas fa-hands-helping"></i> Caregiver
-            </span>
-            {% endif %}
-        </div>
+        <h3><i class="fas fa-address-card"></i> Contact Information</h3>
 
         {% if contact.email %}
         <div class="info-row">
@@ -77,6 +58,99 @@
         {% endif %}
 
     </div>
+
+    <!-- Assigned Roles Card -->
+    {% if contact.is_digital_executor or contact.is_legal_executor or contact.is_trustee or contact.is_professional_advisor or contact.is_emergency_contact or contact.is_healthcare_proxy or contact.is_caregiver or contact.is_guardian_for_dependents or contact.is_financial_agent or contact.is_legacy_contact or contact.is_knowledge_contact or contact.is_notification_only or contact.is_memorial_contact or contact.is_pet_caregiver %}
+    <div class="info-card">
+        <h3><i class="fas fa-tags"></i> Assigned Roles</h3>
+        <div class="role-badges-grid">
+            {% if contact.is_digital_executor %}
+            <span class="badge-role badge-executor ob-label-tooltip">
+                <i class="fas fa-gavel"></i> Digital Executor
+                <span class="ob-tip" role="tooltip">Responsible for managing digital assets (accounts, passwords, online services) after death.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_legal_executor %}
+            <span class="badge-role badge-legal-executor ob-label-tooltip">
+                <i class="fas fa-balance-scale"></i> Legal Executor
+                <span class="ob-tip" role="tooltip">Named executor/personal representative to administer overall estate and will.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_trustee %}
+            <span class="badge-role badge-trustee ob-label-tooltip">
+                <i class="fas fa-university"></i> Trustee
+                <span class="ob-tip" role="tooltip">Manages trusts, distributions, and trust assets according to trust terms.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_professional_advisor %}
+            <span class="badge-role badge-professional-advisor ob-label-tooltip">
+                <i class="fas fa-briefcase"></i> Professional Advisor
+                <span class="ob-tip" role="tooltip">Attorney, accountant, or advisor to consult for legal/financial guidance.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_emergency_contact %}
+            <span class="badge-role badge-emergency ob-label-tooltip">
+                <i class="fas fa-exclamation-triangle"></i> Emergency Contact
+                <span class="ob-tip" role="tooltip">Contact to notify and provide access during medical emergencies or sudden incapacity.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_healthcare_proxy %}
+            <span class="badge-role badge-healthcare-proxy ob-label-tooltip">
+                <i class="fas fa-heartbeat"></i> Healthcare Proxy
+                <span class="ob-tip" role="tooltip">Makes medical decisions if you're unable to communicate (healthcare power of attorney).</span>
+            </span>
+            {% endif %}
+            {% if contact.is_caregiver %}
+            <span class="badge-role badge-caregiver ob-label-tooltip">
+                <i class="fas fa-hands-helping"></i> Caregiver
+                <span class="ob-tip" role="tooltip">Primary person providing or coordinating long-term care needs and health decisions.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_guardian_for_dependents %}
+            <span class="badge-role badge-guardian ob-label-tooltip">
+                <i class="fas fa-child"></i> Guardian
+                <span class="ob-tip" role="tooltip">Named legal guardian for minor children or dependent adults.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_financial_agent %}
+            <span class="badge-role badge-financial-agent ob-label-tooltip">
+                <i class="fas fa-dollar-sign"></i> Financial Agent
+                <span class="ob-tip" role="tooltip">Authorized under financial power of attorney to handle money/bills if incapacitated.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_legacy_contact %}
+            <span class="badge-role badge-legacy-contact ob-label-tooltip">
+                <i class="fas fa-mobile-alt"></i> Legacy Contact
+                <span class="ob-tip" role="tooltip">Designated for platform-specific legacy access (e.g., Apple, Google, Facebook).</span>
+            </span>
+            {% endif %}
+            {% if contact.is_knowledge_contact %}
+            <span class="badge-role badge-knowledge-contact ob-label-tooltip">
+                <i class="fas fa-book"></i> Knowledge Contact
+                <span class="ob-tip" role="tooltip">Delegated specific knowledge/info (e.g., account locations) but no action required.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_notification_only %}
+            <span class="badge-role badge-notification-only ob-label-tooltip">
+                <i class="fas fa-bell"></i> Notification Only
+                <span class="ob-tip" role="tooltip">Receives notifications and basic info but has no decision-making authority or tasks.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_memorial_contact %}
+            <span class="badge-role badge-memorial ob-label-tooltip">
+                <i class="fas fa-dove"></i> Memorial Contact
+                <span class="ob-tip" role="tooltip">Handles funeral, memorial service, and burial/cremation preferences.</span>
+            </span>
+            {% endif %}
+            {% if contact.is_pet_caregiver %}
+            <span class="badge-role badge-pet-caregiver ob-label-tooltip">
+                <i class="fas fa-paw"></i> Pet Caregiver
+                <span class="ob-tip" role="tooltip">Responsible for pet care, veterinary decisions, and related expenses.</span>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Deletion Warning -->
     {% if total_assignments > 0 %}

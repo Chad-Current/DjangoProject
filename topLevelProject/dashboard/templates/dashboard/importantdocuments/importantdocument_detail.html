@@ -105,21 +105,21 @@
                         <div class="condition-item {% if document.applies_immediately %}active{% else %}inactive{% endif %}">
                             <div>
                                 <i class="fas {% if document.applies_immediately %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                                <strong style="margin-left:0.5rem;">Immediately (Active Now)</strong>
+                                <strong class="dv-ml-2">Immediately (Active Now)</strong>
                             </div>
                             {% if document.applies_immediately %}<span class="condition-badge">Active</span>{% endif %}
                         </div>
                         <div class="condition-item {% if document.applies_on_death %}active{% else %}inactive{% endif %}">
                             <div>
                                 <i class="fas {% if document.applies_on_death %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                                <strong style="margin-left:0.5rem;">Upon Death</strong>
+                                <strong class="dv-ml-2">Upon Death</strong>
                             </div>
                             {% if document.applies_on_death %}<span class="condition-badge">Active</span>{% endif %}
                         </div>
                         <div class="condition-item {% if document.applies_on_incapacity %}active{% else %}inactive{% endif %}">
                             <div>
                                 <i class="fas {% if document.applies_on_incapacity %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                                <strong style="margin-left:0.5rem;">Upon Incapacity</strong>
+                                <strong class="dv-ml-2">Upon Incapacity</strong>
                             </div>
                             {% if document.applies_on_incapacity %}<span class="condition-badge">Active</span>{% endif %}
                         </div>

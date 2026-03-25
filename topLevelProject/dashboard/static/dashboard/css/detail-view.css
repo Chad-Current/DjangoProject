@@ -14,7 +14,6 @@
 .device-header,
 .delegation-header,
 .document-header {
-  /* background: var(--seventy-percent); */
   padding: 2.25rem 2rem 2rem;
   border-radius: 20px;
   margin-bottom: 2rem;
@@ -23,14 +22,13 @@
   overflow: hidden;
 }
 
-/* Subtle radial glow for depth */
+/* Radial glow reserved for depth (not active) */
 .device-header::before,
 .delegation-header::before,
 .document-header::before {
   content: "";
   position: absolute;
   inset: 0;
-  /* background: radial-gradient(ellipse 70% 80% at 80% -10%, rgba(98, 162, 206, 0.22), transparent); */
   pointer-events: none;
 }
 
@@ -71,7 +69,6 @@
    ══════════════════════════════════════════════ */
 
 .info-card {
-  /* background: var(--purewhite-color); */
   border-radius: 20px;
   padding: 1.75rem;
   margin-bottom: 1.5rem;
@@ -129,6 +126,25 @@
   color: var(--accent-color);
 }
 
+/* ── Card title row — h3 + inline badges as flex siblings ── */
+.info-card-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.65rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--background-color);
+}
+
+.info-card-title-row h3 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  flex: 1;
+}
+
+
 /* ══════════════════════════════════════════════
    INFO ROWS — label / value pairs
    ══════════════════════════════════════════════ */
@@ -170,7 +186,7 @@
   flex: 1;
   font-family: var(--paragraph-font);
   font-size: var(--font-nm);
-  font-weight: 00;
+  font-weight: 400;
   color: var(--thirty-percent);
   word-break: break-word;
   line-height: 1.5;
@@ -294,22 +310,100 @@
   white-space: nowrap;
 }
 
-.badge-emergency {
-  background: var(--accent-color);
-  color: var(--text-color-dark);
-  border: 1.5px solid #694411;
-}
-
+/* ── Legal & Estate ── */
 .badge-executor {
   background: var(--sixty-percent);
   color: var(--text-color-dark);
   border: 1.5px solid #688599;
 }
 
+.badge-legal-executor {
+  background: var(--sixty-percent);
+  color: var(--text-color-dark);
+  border: 1.5px solid #688599;
+}
+
+.badge-trustee {
+  background: rgba(45, 106, 156, 0.18);
+  color: var(--ten-percent);
+  border: 1.5px solid rgba(45, 106, 156, 0.4);
+}
+
+.badge-professional-advisor {
+  background: rgba(45, 106, 156, 0.12);
+  color: var(--ten-percent);
+  border: 1.5px solid rgba(45, 106, 156, 0.3);
+}
+
+/* ── Medical & Care ── */
+.badge-emergency {
+  background: var(--accent-color);
+  color: var(--text-color-dark);
+  border: 1.5px solid #694411;
+}
+
+.badge-healthcare-proxy {
+  background: var(--accent-color);
+  color: var(--text-color-dark);
+  border: 1.5px solid #694411;
+}
+
 .badge-caregiver {
   background: var(--purewhite-color);
   color: var(--text-color-dark-muted);
   border: 1.5px solid #55595c;
+}
+
+.badge-guardian {
+  background: rgba(255, 166, 43, 0.2);
+  color: var(--text-color-dark);
+  border: 1.5px solid rgba(255, 166, 43, 0.5);
+}
+
+/* ── Financial & Access ── */
+.badge-financial-agent {
+  background: rgba(22, 163, 74, 0.12);
+  color: #14532d;
+  border: 1.5px solid rgba(22, 163, 74, 0.35);
+}
+
+.badge-legacy-contact {
+  background: rgba(22, 163, 74, 0.08);
+  color: #14532d;
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
+}
+
+.badge-knowledge-contact {
+  background: rgba(22, 163, 74, 0.06);
+  color: #166534;
+  border: 1.5px solid rgba(22, 163, 74, 0.2);
+}
+
+.badge-notification-only {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+}
+
+/* ── Personal ── */
+.badge-memorial {
+  background: var(--purewhite-color);
+  color: var(--text-color-dark-muted);
+  border: 1.5px solid #55595c;
+}
+
+.badge-pet-caregiver {
+  background: var(--background-color);
+  color: var(--text-color-dark-muted);
+  border: 1.5px solid #9ca3af;
+}
+
+/* Badge grid — wrapping container for role badges inside an info-card */
+.role-badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.25rem 0.65rem 0.25rem;
 }
 
 /* Section count pill — e.g. "(3)" after a card title */
@@ -335,8 +429,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.7rem;
-  /* background: var(--seventy-percent); */
-  border: 1.5px solid #dc2626;;
+  border: 1.5px solid #dc2626;
   border-radius: 12px;
   padding: 0.85rem 1.1rem;
   margin: 0.75rem 0;
@@ -511,8 +604,12 @@
 
 
 /* ══════════════════════════════════════════════
-   ACTION BUTTONS
-   Mirrors .button-group from forms.css
+   ACTION BUTTONS  (System 3 — detail page full-width pills)
+   Full-width pill buttons at the bottom of detail pages.
+   Classes: .btn-custom + .btn-edit / .btn-delete / .btn-back
+   NOTE: .btn-edit and .btn-delete here are pill-button styles.
+         listing.css defines icon-square variants with the same names,
+         but those files are never loaded together — no cascade conflict.
    ══════════════════════════════════════════════ */
 
 .action-buttons {
@@ -885,6 +982,7 @@
 .dv-mb-2 { margin-bottom: 1rem; }
 .dv-mb-3 { margin-bottom: 1.5rem; }
 .dv-ml-1 { margin-left: 0.35rem; }
+.dv-ml-2 { margin-left: 0.5rem; }
 
 /* Meta footer right-align on wider screens */
 .meta-right { text-align: right; }
