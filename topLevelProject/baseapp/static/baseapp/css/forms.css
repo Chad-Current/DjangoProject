@@ -157,7 +157,7 @@ fieldset legend::before {
 .form-wrapper-body label,
 .form-group label,
 .form-field label {
-  display: block;
+  display: flex;
   font-family: var(--main-font);
   font-size: var(--font-sm);
   font-weight: 700;

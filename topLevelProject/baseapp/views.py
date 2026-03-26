@@ -20,6 +20,12 @@ logger = logging.getLogger(__name__)
 class HomeView(TemplateView):
     template_name = 'baseapp/index.html'
 
+class AboutView(TemplateView):
+    template_name = 'baseapp/about.html'
+
+class WhatItDoesView(TemplateView):
+    template_name = 'baseapp/what_it_does.html'
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _get_client_ip(request):

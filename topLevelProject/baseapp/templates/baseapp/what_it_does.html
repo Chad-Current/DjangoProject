@@ -1,0 +1,246 @@
+{% extends 'baseapp/base.html' %}
+{% load static %}
+
+<title>{% block title %}How It Works — Digital Estate Planning{% endblock %}</title>
+
+{% block content %}
+
+
+<!-- ═══════════════════════════════════════════════════════
+     ENTRY — PAGE HEADER
+     ═══════════════════════════════════════════════════════ -->
+<div class="page-hero">
+    <div class="container">
+        <span class="idx-section-label">How it works</span>
+        <h1>A complete plan your family can actually use.</h1>
+        <p class="page-hero-subtitle">
+            Most people think digital estate planning means writing down passwords.
+            It means something much bigger — and we built the tool to do it right.
+        </p>
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PROBLEM — A PASSWORD LIST ISN'T A PLAN
+     ═══════════════════════════════════════════════════════ -->
+<section class="idx-section idx-section--dark">
+    <div class="container">
+        <div class="two-column">
+
+            <div>
+                <span class="idx-section-label">The real problem</span>
+                <blockquote class="idx-blockquote">
+                    "A list of passwords is the smallest thing your family will need.
+                    What they actually need is to know who's in charge, what to close,
+                    what to keep, and where everything is."
+                </blockquote>
+                <p class="idx-story-author">
+                    <strong>Without a plan, every one of these questions falls on grieving family members.</strong>
+                    Most of them never get answered.
+                </p>
+            </div>
+
+            <ul class="idx-consequence-list">
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">💳</div>
+                    <div>
+                        <h4>No decommission plan</h4>
+                        <p>Subscriptions keep charging indefinitely because no one knows which services
+                           existed — or how to cancel them</p>
+                    </div>
+                </li>
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">👤</div>
+                    <div>
+                        <h4>No role assignment</h4>
+                        <p>Family members conflict over who has authority — or worse, no one steps up
+                           because no one was ever designated</p>
+                    </div>
+                </li>
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">📄</div>
+                    <div>
+                        <h4>No document tagging</h4>
+                        <p>Legal papers get found too late, misapplied, or not at all — because no one
+                           knew when each document was supposed to be used</p>
+                    </div>
+                </li>
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">📱</div>
+                    <div>
+                        <h4>No device access</h4>
+                        <p>Two-factor authentication codes are locked on a phone no one can unlock —
+                           making every other account inaccessible</p>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT ① — WHAT THE PLATFORM ORGANIZES
+     ═══════════════════════════════════════════════════════ -->
+<section class="value-proposition">
+    <div class="container">
+        <div class="section-header">
+            <span class="idx-section-label">What you organize</span>
+            <h2>Six categories. Every corner of your digital life.</h2>
+            <p class="section-subtitle">Each category is built to answer a specific question your family will have — not just where to log in, but what to do next.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-address-book"></i></div>
+                <h3>Trusted Contacts</h3>
+                <p>Designate who handles what — executor, caregiver, attorney. Roles assigned, authority clear.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                <h3>Digital Accounts</h3>
+                <p>Banking, social, streaming, utilities — each with decommission instructions so nothing lingers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-laptop"></i></div>
+                <h3>Devices</h3>
+                <p>Physical location, PINs, and 2FA access for every phone, computer, and tablet you own.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-contract"></i></div>
+                <h3>Estate Documents</h3>
+                <p>Will, power of attorney, healthcare directive — tagged for exactly when they apply.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-scroll"></i></div>
+                <h3>Important Documents</h3>
+                <p>Insurance, property records, financial accounts — stored where your family can find them.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--accent"><i class="fas fa-user-tie"></i></div>
+                <h3>Funeral Planning <span class="legacy-badge">Legacy</span></h3>
+                <p>Final wishes, arrangements, and instructions — nothing left to guesswork or family disagreement.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT ② — HOW IT WORKS
+     ═══════════════════════════════════════════════════════ -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <span class="idx-section-label">The process</span>
+            <h2>Getting organized is simpler than you think.</h2>
+            <p class="section-subtitle">Most people complete their plan in just a few hours — and feel the relief immediately.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="/static/baseapp/images/1.svg" alt="Step 1">
+                </div>
+                <h3>Discover</h3>
+                <p>Use our guided prompts to uncover every digital account you have — banking, utilities,
+                    social media, subscriptions, and more. You may be surprised how many you find.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="/static/baseapp/images/2.svg" alt="Step 2">
+                </div>
+                <h3>Organize</h3>
+                <p>Assign each account, device, and document to a trusted contact. Decide who gets access,
+                    what they can do, and when — so nothing is left for your family to figure out alone.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="/static/baseapp/images/3.svg" alt="Step 3">
+                </div>
+                <h3>Rest Easy</h3>
+                <p>Your plan is secure and ready. Built-in review reminders keep it current, and your family
+                    has a clear path forward whenever they need it.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     RESULT — WHAT YOUR FAMILY GETS
+     ═══════════════════════════════════════════════════════ -->
+<section class="adult-children">
+    <div class="container">
+        <div class="two-column">
+
+            <div>
+                <span class="section-tag">The result</span>
+                <h2>Your family gets answers, not questions.</h2>
+                <p class="intro-text">
+                    When the time comes, the difference between a plan and no plan is the difference
+                    between your family spending weeks in crisis — or having a clear, calm path forward
+                    from day one.
+                </p>
+                <div class="conversation-tips">
+                    <div class="tip">
+                        <h4>A single source of truth</h4>
+                        <p>Everything is in one place. No one has to search email threads, filing cabinets, or guess.</p>
+                    </div>
+                    <div class="tip">
+                        <h4>Clear authority from the start</h4>
+                        <p>Whoever you designate knows exactly what they're responsible for — and has the information to act.</p>
+                    </div>
+                    <div class="tip">
+                        <h4>A plan that stays current</h4>
+                        <p>Built-in review reminders prompt you to update your plan as your life changes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="testimonial-card">
+                    <p>"I finished my plan in one afternoon. Two hours of work and I know my
+                        kids won't go through what we went through with my father's estate."</p>
+                    <cite class="testimonial-author">— Mark T., Cedar Rapids</cite>
+                </div>
+                <div class="objections-box">
+                    <h3>Common questions</h3>
+                    <div class="objection">
+                        <strong>How long does it take?</strong>
+                        <p>Most people finish in one to two hours. You can also do it in stages and come back anytime.</p>
+                    </div>
+                    <div class="objection">
+                        <strong>Do I need to be technical?</strong>
+                        <p>No. Every section has guided prompts and plain-language instructions. If you can fill out a form, you can do this.</p>
+                    </div>
+                    <div class="objection">
+                        <strong>What if I want to start free?</strong>
+                        <p>Free accounts let you explore every section and save up to the starter limits — no credit card required.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CLOSING CTA
+     ═══════════════════════════════════════════════════════ -->
+<section class="closing-cta">
+    <div class="container text-center">
+        <h2 class="closing-headline">Ready to give your family a clear path forward?</h2>
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:register' %}" class="idx-btn idx-btn--primary">Start Organizing Today</a>
+            <a href="{% url 'accounts:payment' %}" class="idx-btn idx-btn--outline">View Plans &amp; Pricing</a>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+</body>
+
+</html>

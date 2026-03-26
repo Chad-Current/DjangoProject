@@ -7,6 +7,8 @@ app_name = 'baseapp'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('how-it-works/', WhatItDoesView.as_view(), name='what_it_does'),
     path('checklist/download/', ChecklistDownloadView.as_view(), name='checklist_download'),
     path('checklist/email/', ChecklistEmailView.as_view(), name='checklist_email'),
     path('checklist/email/sent/', ChecklistEmailSuccessView.as_view(), name='checklist_email_success'),

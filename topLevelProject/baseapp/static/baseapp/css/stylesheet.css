@@ -760,7 +760,6 @@ span {
   flex-flow: row wrap;
   justify-content: space-around;
   gap: 2rem;
-  max-width: fit-content;
   margin: 0 auto 2.5em;
 }
 

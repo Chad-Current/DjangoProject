@@ -6,41 +6,6 @@
         <h3><i class="fas fa-sitemap"></i>&nbsp; Delegation Map</h3>
     </div>
 
-    <!-- <div class="nt-root-row">
-        <div class="nt-node--root" id="nt-root">
-            <div class="nt-node-icon">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <div class="nt-node-body">
-                <div class="nt-node-title">
-                    {{ contact.first_name }} {{ contact.last_name }}
-                </div>
-                <div class="nt-node-sub">
-                    {{ contact.get_contact_relation_display|default:"Contact" }}
-                </div>
-            </div>
-            {% if contact.is_emergency_contact or contact.is_digital_executor or contact.is_caregiver %}
-            <div class="nt-node-roles">
-                {% if contact.is_emergency_contact %}
-                <span class="nt-badge nt-badge--emergency" title="Emergency Contact">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </span>
-                {% endif %}
-                {% if contact.is_digital_executor %}
-                <span class="nt-badge nt-badge--executor" title="Digital Executor">
-                    <i class="fas fa-gavel"></i>
-                </span>
-                {% endif %}
-                {% if contact.is_caregiver %}
-                <span class="nt-badge nt-badge--caregiver" title="Caregiver">
-                    <i class="fas fa-hands-helping"></i>
-                </span>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-    </div> -->
-
     <svg class="nt-connector-svg" id="nt-svg" aria-hidden="true"></svg>
 
     <div class="nt-columns" id="nt-columns">
@@ -57,6 +22,15 @@
                 <div class="nt-node--item nt-node--estate-item"
                      style="animation-delay: {{ forloop.counter0|add:6 }}00ms"
                      data-href="{% url 'dashboard:estate_detail' doc.slug %}"
+                     data-modal-type="estate"
+                     data-modal-name="{{ doc.name_or_title }}"
+                     data-modal-category="{{ doc.get_estate_category_display }}"
+                     data-modal-physical="{{ doc.estate_physical_location|default:'' }}"
+                     data-modal-digital="{{ doc.estate_digital_location|default:'' }}"
+                     data-modal-instructions="{{ doc.estate_overall_instructions|default:'' }}"
+                     data-modal-immediately="{{ doc.applies_immediately|yesno:'true,false' }}"
+                     data-modal-on-death="{{ doc.applies_on_death|yesno:'true,false' }}"
+                     data-modal-on-incapacity="{{ doc.applies_on_incapacity|yesno:'true,false' }}"
                      role="button"
                      tabindex="0"
                      aria-label="{{ doc.name_or_title }}">
@@ -81,6 +55,15 @@
                 <div class="nt-node--item nt-node--docs-item"
                      style="animation-delay: {{ forloop.counter0|add:7 }}00ms"
                      data-href="{% url 'dashboard:importantdocument_detail' doc.slug %}"
+                     data-modal-type="important"
+                     data-modal-name="{{ doc.name_or_title }}"
+                     data-modal-category="{{ doc.get_document_category_display }}"
+                     data-modal-description="{{ doc.description|default:'' }}"
+                     data-modal-physical="{{ doc.physical_location|default:'' }}"
+                     data-modal-digital="{{ doc.digital_location|default:'' }}"
+                     data-modal-immediately="{{ doc.applies_immediately|yesno:'true,false' }}"
+                     data-modal-on-death="{{ doc.applies_on_death|yesno:'true,false' }}"
+                     data-modal-on-incapacity="{{ doc.applies_on_incapacity|yesno:'true,false' }}"
                      role="button"
                      tabindex="0"
                      aria-label="{{ doc.name_or_title }}">
@@ -105,6 +88,12 @@
                 <div class="nt-node--item nt-node--device-item"
                      style="animation-delay: {{ forloop.counter0|add:8 }}00ms"
                      data-href="{% url 'dashboard:device_detail' device.slug %}"
+                     data-modal-type="device"
+                     data-modal-name="{{ device.device_name }}"
+                     data-modal-device-type="{{ device.get_device_type_display }}"
+                     data-modal-owner="{{ device.owner_label|default:'' }}"
+                     data-modal-location="{{ device.location_description|default:'' }}"
+                     data-modal-2fa="{{ device.used_for_2fa|yesno:'true,false' }}"
                      role="button"
                      tabindex="0"
                      aria-label="{{ device.device_name }}">
@@ -129,6 +118,13 @@
                 <div class="nt-node--item nt-node--account-item"
                      style="animation-delay: {{ forloop.counter0|add:9 }}00ms"
                      data-href="{% url 'dashboard:account_detail' account.slug %}"
+                     data-modal-type="account"
+                     data-modal-name="{{ account.account_name_or_provider }}"
+                     data-modal-category="{{ account.get_account_category_display }}"
+                     data-modal-website="{{ account.website_url|default:'' }}"
+                     data-modal-username="{{ account.username_or_email|default:'' }}"
+                     data-modal-instruction="{{ account.keep_or_close_instruction|default:'' }}"
+                     data-modal-notes="{{ account.notes_for_family|default:'' }}"
                      role="button"
                      tabindex="0"
                      aria-label="{{ account.account_name_or_provider }}">
@@ -142,24 +138,154 @@
         </div>
 
     </div>
+
+    <!-- Node detail modal -->
+    <div id="nt-modal-overlay" class="nt-modal-overlay" hidden aria-hidden="true">
+        <div class="nt-modal" role="dialog" aria-modal="true" aria-labelledby="nt-modal-title" tabindex="-1">
+            <div class="nt-modal-header">
+                <div class="nt-modal-title-group">
+                    <span id="nt-modal-icon" class="nt-modal-icon-badge"></span>
+                    <h4 id="nt-modal-title" class="nt-modal-title-text"></h4>
+                </div>
+                <button class="nt-modal-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="nt-modal-body" id="nt-modal-body"></div>
+            <div class="nt-modal-footer">
+                <a id="nt-modal-view-btn" href="#" class="nt-modal-view-btn">
+                    <i class="fas fa-external-link-alt"></i> View Full Details
+                </a>
+                <button class="nt-modal-cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
 (function () {
     'use strict';
 
+    var overlay    = document.getElementById('nt-modal-overlay');
+    var modalEl    = overlay.querySelector('.nt-modal');
+    var modalIcon  = document.getElementById('nt-modal-icon');
+    var modalTitle = document.getElementById('nt-modal-title');
+    var modalBody  = document.getElementById('nt-modal-body');
+    var viewBtn    = document.getElementById('nt-modal-view-btn');
+
+    /* ── Row builder ── */
+    function row(label, value) {
+        if (!value) return '';
+        return '<div class="nt-modal-row">' +
+               '<span class="nt-modal-label">' + label + '</span>' +
+               '<span class="nt-modal-value">'  + value + '</span>' +
+               '</div>';
+    }
+
+    function whenRow(immediately, onDeath, onIncapacity) {
+        var parts = [];
+        if (immediately  === 'true') parts.push('Immediately');
+        if (onDeath      === 'true') parts.push('Upon Death');
+        if (onIncapacity === 'true') parts.push('Upon Incapacity');
+        return parts.length ? row('When It Applies', parts.join(' &middot; ')) : '';
+    }
+
+    /* ── Body builder per type ── */
+    function buildBody(d) {
+        var html = '';
+        if (d.modalType === 'estate') {
+            html += row('Category',          d.modalCategory);
+            html += row('Physical Location', d.modalPhysical);
+            html += row('Digital Location',  d.modalDigital);
+            html += whenRow(d.modalImmediately, d.modalOnDeath, d.modalOnIncapacity);
+            html += row('Instructions',      d.modalInstructions);
+        } else if (d.modalType === 'important') {
+            html += row('Category',          d.modalCategory);
+            html += row('Description',       d.modalDescription);
+            html += row('Physical Location', d.modalPhysical);
+            html += row('Digital Location',  d.modalDigital);
+            html += whenRow(d.modalImmediately, d.modalOnDeath, d.modalOnIncapacity);
+        } else if (d.modalType === 'device') {
+            html += row('Device Type',  d.modalDeviceType);
+            html += row('Owner Label',  d.modalOwner);
+            html += row('Location',     d.modalLocation);
+            if (d.modal2fa === 'true') {
+                html += '<div class="nt-modal-row">' +
+                        '<span class="nt-modal-label">2FA Device</span>' +
+                        '<span class="nt-modal-value">' +
+                        '<span class="nt-modal-badge-yes">Yes</span>' +
+                        '</span></div>';
+            }
+        } else if (d.modalType === 'account') {
+            html += row('Category',         d.modalCategory);
+            if (d.modalWebsite) {
+                html += row('Website', '<a href="' + d.modalWebsite +
+                            '" target="_blank" rel="noopener noreferrer">' +
+                            d.modalWebsite + '</a>');
+            }
+            html += row('Username / Email', d.modalUsername);
+            html += row('Instruction',      d.modalInstruction);
+            html += row('Notes for Family', d.modalNotes);
+        }
+        return html || '<p class="nt-modal-empty">No additional details recorded.</p>';
+    }
+
+    var typeIcons = {
+        estate:    'fas fa-file-contract',
+        important: 'fas fa-file-alt',
+        device:    'fas fa-laptop',
+        account:   'fas fa-user-circle'
+    };
+
+    var typeColorClass = {
+        estate:    'nt-modal-icon--estate',
+        important: 'nt-modal-icon--docs',
+        device:    'nt-modal-icon--device',
+        account:   'nt-modal-icon--account'
+    };
+
+    /* ── Open / close ── */
+    function openModal(node) {
+        var d = node.dataset;
+        modalTitle.textContent = d.modalName || '';
+        modalIcon.className    = 'nt-modal-icon-badge ' + (typeColorClass[d.modalType] || '');
+        modalIcon.innerHTML    = '<i class="' + (typeIcons[d.modalType] || 'fas fa-circle') + '"></i>';
+        modalBody.innerHTML    = buildBody(d);
+        viewBtn.href           = d.href;
+        overlay.hidden         = false;
+        overlay.setAttribute('aria-hidden', 'false');
+        modalEl.focus();
+    }
+
+    function closeModal() {
+        overlay.hidden = true;
+        overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    /* ── Node click / keyboard ── */
     document.querySelectorAll('.nt-node--item[data-href]').forEach(function (node) {
-        node.addEventListener('click', function () {
-            window.location.href = this.dataset.href;
-        });
+        node.addEventListener('click', function () { openModal(this); });
         node.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                window.location.href = this.dataset.href;
+                openModal(this);
             }
         });
     });
 
+    /* ── Close triggers ── */
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeModal();
+    });
+
+    overlay.querySelectorAll('.nt-modal-close, .nt-modal-cancel-btn').forEach(function (btn) {
+        btn.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    });
+
+    /* ── SVG connector tree ── */
     function drawTree() {
         var section = document.querySelector('.nt-section');
         var svg     = document.getElementById('nt-svg');

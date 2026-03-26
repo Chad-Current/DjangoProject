@@ -30,12 +30,13 @@
   opacity: 0;
   pointer-events: none;
 
-  /* sizing & position */
-  position: absolute;
-  bottom: calc(100% + 0.55em);   /* float above the label              */
-  left: 0;
-  width: clamp(160px, 22vw, 280px);
-  z-index: 100;
+  /* fixed escapes overflow:hidden on any ancestor (form-wrapper, etc.) */
+  position: fixed;
+  /* top/left set by JS positioner — fallback keeps it off-screen */
+  top: -9999px;
+  left: -9999px;
+  width: clamp(200px, 24vw, 300px);
+  z-index: 9999;
 
   /* appearance — uses your palette */
   background-color: var(--background-color-dark);
@@ -45,6 +46,7 @@
   font-weight: 400;
   line-height: 1.45;
   padding: 0.55em 0.8em;
+  text-wrap: auto;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(2, 2, 2, 0.22);
 
@@ -66,23 +68,14 @@
 }
 
 
-/* ── Visible state ───────────────────────────────── */
+/* ── Visible state — toggled by JS positioner ───── */
+/* CSS hover/focus-within can't set top/left for fixed,
+   so visibility is driven entirely by the JS below.    */
 
-.ob-label-tooltip:hover .ob-tip,
-.ob-label-tooltip:focus-within .ob-tip {
+.ob-label-tooltip .ob-tip.ob-tip--visible {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
-}
-
-/* ── Checkbox labels: suppress focus-within so the tip
-   closes immediately on mouse-out after clicking a role.
-   (:hover still works normally for discovery.)          */
-
-.ob-check-row.ob-label-tooltip:focus-within .ob-tip {
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(4px);
 }
 
 

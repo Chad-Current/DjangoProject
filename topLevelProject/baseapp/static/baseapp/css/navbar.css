@@ -614,3 +614,8 @@ nav#navbar>ul>li {
     }
   }
 }
+
+.underline {
+  width: 60%;
+  border-bottom: solid 2px var(--thirty-percent);
+}

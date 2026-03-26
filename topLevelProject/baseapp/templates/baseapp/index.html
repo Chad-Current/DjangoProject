@@ -1,264 +1,335 @@
 {% extends 'baseapp/base.html' %}
 {% load static %}
 
-
 <title>{% block title %}Digital Estate Planning{% endblock %}</title>
 
 {% block content %}
 
 
-<!-- HERO — PROBLEM FIRST -->
+<!-- ═══════════════════════════════════════════════════════
+     PROBLEM ① — HERO
+     Emotional hook. Plant the problem before anything else.
+     ═══════════════════════════════════════════════════════ -->
 <section class="hero">
     <div class="container">
         <div class="hero-content">
+
             <div class="hero-left">
-                <h1>Don’t leave your loved ones locked out of your digital world</h1>
+                <span class="hero-eyebrow">Digital Estate Planning</span>
+                <h1>Don't leave your loved ones locked out of your digital world</h1>
                 <p class="hero-subtitle">
                     When a loved one dies or becomes incapacitated, your family shouldn't have to
                     guess where to start — scrambling through accounts, devices, and documents
                     during one of the hardest moments of their lives.
                 </p>
                 <p class="hero-credential">
-                    <strong>You can change that today. A little time now means your family has
-                        everything they need when it matters most.</strong>
+                    <strong>A little time now means your family has everything they need
+                        when it matters most.</strong>
                 </p>
                 <div class="hero-buttons">
                     <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
                     <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
                 </div>
             </div>
+
             <div class="hero-right">
-                <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
+                <div class="hero-photo-wrap">
+                    <img src="/static/baseapp/images/coverphoto.svg"
+                         alt="Digital Estate Planning" class="hero-image">
+                    <div class="hero-stats-float">
+                        <div class="hero-stat">
+                            <span class="hero-stat-num">100+</span>
+                            <span class="hero-stat-label">hours families spend recovering accounts</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-num">$1,000s</span>
+                            <span class="hero-stat-label">lost to forgotten subscriptions</span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
 
 
-<!-- PROBLEM — THE COST OF NO PLAN -->
-<section class="problems">
+<!-- ═══════════════════════════════════════════════════════
+     PROBLEM ② — THE REAL COST
+     Dark, visceral. Make the problem undeniable.
+     ═══════════════════════════════════════════════════════ -->
+<section class="idx-section idx-section--dark">
     <div class="container">
-        <div class="section-header">
-            <h2>Without a plan, the people you love carry the weight.</h2>
-            <p class="section-subtitle">These aren't worst-case scenarios. They're what most families go through.</p>
-        </div>
-        <div class="problems-grid">
-            <div class="problem-card">
-                <div class="problem-icon">
-                    <img src="/static/baseapp/images/Reset-Clock--Streamline-Plump.svg" alt="Time wasted">
-                </div>
-                <h3>100+ Hours Wasted</h3>
-                <p>Families spend an average of 100+ hours trying to recover digital assets and access accounts</p>
+        <div class="two-column" style="gap: 4rem; align-items: start;">
+
+            <div>
+                <span class="idx-section-label">What families actually face</span>
+                <blockquote class="idx-blockquote">
+                    "When Mom passed, we spent 6 months trying to access her accounts.
+                    We never did find her investment account login — and her digital
+                    photos are gone forever."
+                </blockquote>
+                <p class="idx-story-author">
+                    <strong>— Sarah M., Des Moines</strong>
+                    This isn't rare. It's what most families go through.
+                </p>
             </div>
-            <div class="problem-card">
-                <div class="problem-icon">
-                    <img src="/static/baseapp/images/Payment-Recieve-7--Streamline-Plump.svg" alt="Money lost">
-                </div>
-                <h3>Subscriptions Keep Charging</h3>
-                <p>Forgotten subscriptions drain hundreds or thousands of dollars after someone passes</p>
-            </div>
-            <div class="problem-card">
-                <div class="problem-icon">
-                    <img src="/static/baseapp/images/Gallery-2--Streamline-Plump.svg" alt="Memories lost">
-                </div>
-                <h3>Memories Lost Forever</h3>
-                <p>Precious photos and videos locked in forgotten accounts disappear permanently</p>
-            </div>
-        </div>
-        <div class="testimonial-box">
-            <p class="testimonial-quote">
-                "When Mom passed, we spent 6 months trying to access her accounts. We never did find her investment
-                account login, and her digital photos are gone forever. I don't want my kids to go through that."
-            </p>
-            <p class="testimonial-author">— Sarah M., Des Moines</p>
+
+            <ul class="idx-consequence-list">
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">⏱</div>
+                    <div>
+                        <h4>100+ Hours Wasted</h4>
+                        <p>Families spend an average of 100+ hours trying to recover digital
+                           assets and access accounts that were never documented</p>
+                    </div>
+                </li>
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">💸</div>
+                    <div>
+                        <h4>Subscriptions Keep Charging</h4>
+                        <p>Forgotten subscriptions drain hundreds or thousands of dollars
+                           after someone passes — because no one knew they existed</p>
+                    </div>
+                </li>
+                <li class="idx-consequence-item">
+                    <div class="idx-consequence-icon">📷</div>
+                    <div>
+                        <h4>Memories Lost Forever</h4>
+                        <p>Precious photos and videos locked in forgotten accounts disappear
+                           permanently — irreplaceable, and completely avoidable</p>
+                    </div>
+                </li>
+            </ul>
+
         </div>
     </div>
 </section>
 
 
-<!-- PRODUCT — WHAT CHANGES WITH A PLAN -->
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT ① — WHAT'S INSIDE
+     Introduce the solution. Show what's organized and why.
+     ═══════════════════════════════════════════════════════ -->
 <section class="value-proposition">
     <div class="container">
         <div class="section-header">
             <h2>Your family doesn't just need passwords.<br>They need a plan.</h2>
-            <p class="section-subtitle">Organization without delegation still creates confusion. We give your family both.</p>
+            <p class="section-subtitle">Every corner of your digital life — organized, delegated, and ready.</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>Who handles what</h3>
-                <p>Clear role assignments for your digital executor, caregivers, and emergency contacts</p>
+                <div class="feature-icon"><i class="fas fa-address-book" style="color: var(--thirty-percent);"></i></div>
+                <h3>Trusted Contacts</h3>
+                <p>Designate who handles what — executor, caregiver, attorney. Roles assigned, authority clear.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>Which accounts close vs. stay active</h3>
-                <p>Decommission instructions for each account — nothing left to guesswork</p>
+                <div class="feature-icon"><i class="fas fa-user-shield" style="color: var(--thirty-percent);"></i></div>
+                <h3>Digital Accounts</h3>
+                <p>Banking, social, streaming, utilities — each with decommission instructions so nothing lingers.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">⚖️</div>
-                <h3>Who becomes your digital executor</h3>
-                <p>Formal contact designation with delegated access and clear authority</p>
+                <div class="feature-icon"><i class="fas fa-file-contract" style="color: var(--thirty-percent);"></i></div>
+                <h3>Estate Documents</h3>
+                <p>Will, power of attorney, healthcare directive — tagged for exactly when they apply.</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">📋</div>
-                <h3>When your documents apply</h3>
-                <p>Legal documents tagged for death, incapacity, or immediate use — no ambiguity</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Where devices and 2FA are located</h3>
-                <p>Complete device inventory with physical locations and access methods</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <h3>What needs review and when</h3>
-                <p>Built-in review cycles keep your plan current — nothing gets outdated or forgotten</p>
-            </div>
+        </div>
+        <div class="section-cta">
+            <a href="{% url 'baseapp:what_it_does' %}" class="btn btn-secondary">See How It All Works &rarr;</a>
         </div>
     </div>
 </section>
 
 
-<!-- PRODUCT — HOW IT WORKS -->
-<section class="how-it-works">
+
+<!-- ═══════════════════════════════════════════════════════
+     RESULT ① — WHAT CHANGES
+     Flip the problem. Show the transformation. Build trust.
+     ═══════════════════════════════════════════════════════ -->
+<section class="adult-children">
     <div class="container">
-        <div class="section-header">
-            <h2>Getting organized is simpler than you think.</h2>
-            <p class="section-subtitle">Most people complete their plan in just a few hours — and feel the relief immediately.</p>
-        </div>
-        <div class="steps-grid">
-            <div class="step-card">
-                <div class="step-image">
-                    <img src="/static/baseapp/images/1.svg" alt="Step 1">
+        <div class="two-column">
+
+            <div>
+                <span class="section-tag">The result</span>
+                <h2 style="margin-top: .75rem;">Your family gets a clear path instead of chaos.</h2>
+                <p class="intro-text">
+                    When the time comes — whether that's tomorrow or decades from now — your family
+                    won't have to guess. They'll know exactly who to call, what to do, and where
+                    everything is.
+                </p>
+                <div class="conversation-tips">
+                    <div class="tip">
+                        <h4>No more locked-out accounts</h4>
+                        <p>Every account is documented with instructions. Nothing disappears.</p>
+                    </div>
+                    <div class="tip">
+                        <h4>No more subscription bleeding</h4>
+                        <p>Decommission instructions for every service mean charges stop when they should.</p>
+                    </div>
+                    <div class="tip">
+                        <h4>No more role confusion</h4>
+                        <p>Your executor knows exactly what they're responsible for — and what you wanted done.</p>
+                    </div>
                 </div>
-                <h3>Discover</h3>
-                <p>Use our guided prompts to uncover every digital account you have — banking, utilities,
-                    social media, subscriptions, and more. You may be surprised how many you find.</p>
             </div>
-            <div class="step-card">
-                <div class="step-image">
-                    <img src="/static/baseapp/images/2.svg" alt="Step 2">
+
+            <div>
+                <div class="testimonial-card">
+                    <p>"I finished my plan in one afternoon. Two hours of work and I know my
+                        kids won't go through what we went through with my father's estate."</p>
+                    <cite class="testimonial-author">— Mark T., Cedar Rapids</cite>
                 </div>
-                <h3>Organize</h3>
-                <p>Assign each account, device, and document to a trusted contact. Decide who gets access,
-                    what they can do, and when — so nothing is left for your family to figure out on their own.</p>
-            </div>
-            <div class="step-card">
-                <div class="step-image">
-                    <img src="/static/baseapp/images/3.svg" alt="Step 3">
+                <div class="objections-box">
+                    <h3>Common questions</h3>
+                    <div class="objection">
+                        <strong>Is my information secure?</strong>
+                        <p>Credentials are encrypted before they touch our database. Your data is never stored in plaintext.</p>
+                    </div>
+                    <div class="objection">
+                        <strong>What if things change?</strong>
+                        <p>Built-in review reminders prompt you to update your plan so it never goes stale.</p>
+                    </div>
+                    <div class="objection">
+                        <strong>Can I try it free?</strong>
+                        <p>Yes — free accounts let you explore every section and save up to the starter limits, no card required.</p>
+                    </div>
                 </div>
-                <h3>Rest Easy</h3>
-                <p>Your plan is secure, organized, and ready. Built-in review reminders keep it current,
-                    and your family has a clear path forward whenever they need it.</p>
             </div>
+
         </div>
     </div>
 </section>
 
 
-<!-- RESULT — PRICING -->
+<!-- ═══════════════════════════════════════════════════════
+     RESULT ② — PRICING
+     The natural close after demonstrating value.
+     ═══════════════════════════════════════════════════════ -->
 <div class="payment-wrapper">
     <div class="section-header text-center">
+        <span class="idx-section-label" style="display: block; text-align: center; margin-bottom: .5rem;">Simple pricing</span>
         <h2>Choose the plan that fits your life.</h2>
-        <p class="section-subtitle">One-time payments. No subscriptions. Peace of mind that doesn't expire.</p>
+        <p class="section-subtitle">Simple subscriptions — cancel anytime. Start for as little as $3.99/month.</p>
     </div>
+
+    <div class="billing-toggle">
+        <button class="toggle-btn active" id="index-toggle-annual" onclick="indexSetBilling('annual')">Annual</button>
+        <button class="toggle-btn" id="index-toggle-monthly" onclick="indexSetBilling('monthly')">Monthly</button>
+        <span class="save-badge" id="index-save-badge">Save 2 months</span>
+    </div>
+
     <div class="pricing-cards">
 
-        <!-- Essentials -->
         <div class="pricing-card">
             <div class="tier-name">Essentials</div>
             <div class="tier-price">
                 <span class="currency">$</span>
-                <span class="price-amount">297</span>
+                <span class="price-amount" id="index-essentials-price">39.99</span>
             </div>
-            <div class="period">one-time payment</div>
+            <div class="period" id="index-essentials-period">per year</div>
             <div class="add-on">
                 <div class="add-on-label">Optional Add-on</div>
                 <div class="add-on-body">
                     <span class="add-on-icon">🔑</span>
                     <div class="add-on-text">
                         <span class="add-on-name">Password Storage</span>
-                        <span class="add-on-price"><strong>+$10</strong> / month</span>
+                        <span class="add-on-price"><strong>+$99.99</strong> / year</span>
                     </div>
                 </div>
             </div>
             <div class="tier-divider"></div>
             <ul class="tier-features">
-                <li><i class="fas fa-check-circle"></i> Full edit access for 1 year</li>
+                <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
                 <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
-                <li><i class="fas fa-check-circle"></i> Automatic emails to review information for 1st year</li>
-                <li><i class="fas fa-check-circle"></i> View-only access forever after 1 year</li>
+                <li><i class="fas fa-check-circle"></i> View-only access if you cancel</li>
+                <li><i class="fas fa-check-circle"></i> Email support</li>
                 <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
             </ul>
+            <a href="{% url 'accounts:payment' %}" class="select-tier-btn essentials-btn">Get Essentials</a>
         </div>
 
-        <!-- Legacy (recommended) -->
         <div class="pricing-card recommended">
             <div class="recommended-badge">Best Value</div>
             <div class="tier-name">Legacy</div>
             <div class="tier-price">
                 <span class="currency">$</span>
-                <span class="price-amount">597</span>
+                <span class="price-amount" id="index-legacy-price">59.99</span>
             </div>
-            <div class="period">one-time payment</div>
+            <div class="period" id="index-legacy-period">per year</div>
             <div class="add-on">
                 <div class="add-on-label">Optional Add-on</div>
                 <div class="add-on-body">
                     <span class="add-on-icon">🔑</span>
                     <div class="add-on-text">
                         <span class="add-on-name">Password Storage</span>
-                        <span class="add-on-price"><strong>+$10</strong> / month</span>
+                        <span class="add-on-price"><strong>+$99.99</strong> / year</span>
                     </div>
                 </div>
             </div>
             <div class="tier-divider"></div>
             <ul class="tier-features">
-                <li><i class="fas fa-check-circle"></i> Lifetime full access — forever</li>
+                <li><i class="fas fa-check-circle"></i> Full access while subscribed</li>
                 <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
-                <li><i class="fas fa-check-circle"></i> Edit permissions never expire</li>
+                <li><i class="fas fa-check-circle"></i> View-only access if you cancel</li>
                 <li><i class="fas fa-check-circle"></i> Includes detailed funeral planning</li>
                 <li><i class="fas fa-check-circle"></i> Priority email support</li>
                 <li><i class="fas fa-check-circle"></i> All future updates included</li>
                 <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
             </ul>
+            <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn">Get Legacy</a>
         </div>
 
     </div>
 
-    <!-- Trust Strip -->
-    <div class="main container py-6">
-        <div class="trust-strip">
-            <div class="trust-item">
-                <i class="fas fa-lock"></i> Secured by Stripe
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-shield-alt"></i> Encrypted payment
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-redo"></i> No recurring charges
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-headset"></i> Support included
-            </div>
-        </div>
+    <div class="trust-strip">
+        <div class="trust-item"><i class="fas fa-lock"></i> Secured by Stripe</div>
+        <div class="trust-item"><i class="fas fa-shield-alt"></i> Encrypted payment</div>
+        <div class="trust-item"><i class="fas fa-sync-alt"></i> Cancel anytime</div>
+        <div class="trust-item"><i class="fas fa-headset"></i> Support included</div>
     </div>
 
 </div>
 
+<script>
+    const INDEX_PRICES = {
+        essentials: { annual: '39.99', monthly: '3.99' },
+        legacy:     { annual: '59.99', monthly: '5.99' },
+    };
 
-<!-- CLOSING CTA -->
+    function indexSetBilling(interval) {
+        document.getElementById('index-toggle-annual').classList.toggle('active', interval === 'annual');
+        document.getElementById('index-toggle-monthly').classList.toggle('active', interval === 'monthly');
+        document.getElementById('index-save-badge').style.display = interval === 'annual' ? 'inline-block' : 'none';
+        document.getElementById('index-essentials-price').textContent =
+            interval === 'annual' ? INDEX_PRICES.essentials.annual : INDEX_PRICES.essentials.monthly;
+        document.getElementById('index-legacy-price').textContent =
+            interval === 'annual' ? INDEX_PRICES.legacy.annual : INDEX_PRICES.legacy.monthly;
+        const periodText = interval === 'annual' ? 'per year' : 'per month';
+        document.getElementById('index-essentials-period').textContent = periodText;
+        document.getElementById('index-legacy-period').textContent = periodText;
+    }
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CLOSING CTA
+     ═══════════════════════════════════════════════════════ -->
 <section class="closing-cta">
     <div class="container text-center">
         <h2 class="closing-headline">Your family is going to have enough to carry.<br>Let this not be one of them.</h2>
         <div class="hero-buttons" style="justify-content: center; margin-top: 1.5rem;">
-            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
-            <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+            <a href="{% url 'accounts:register' %}" class="idx-btn idx-btn--primary">Start Organizing Today</a>
+            <a href="{% url 'baseapp:checklist_email' %}" class="idx-btn idx-btn--outline">Download Free Guide</a>
         </div>
     </div>
 </section>
 
 
-<!-- FAMILY ACCESS REQUEST -->
+<!-- ═══════════════════════════════════════════════════════
+     FAMILY ACCESS REQUEST
+     Tertiary audience — placed after all primary CTAs.
+     ═══════════════════════════════════════════════════════ -->
 <section class="family-access-section">
     <div class="container text-center">
         <h3 class="family-access-heading">

@@ -434,6 +434,17 @@
   white-space: nowrap;
 }
 
+.btn-view-card,
+.btn-custom.btn-view {
+  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 100%);
+  color: var(--text-color);
+}
+.btn-view-card:hover,
+.btn-custom.btn-view:hover {
+  background: linear-gradient(135deg, #2f6a9b 0%, #2e6897 100%);
+  color: var(--text-color);
+}
+
 .btn-edit-card,
 .btn-custom.btn-edit {
   background: linear-gradient(135deg, #1a4a1a, #143414);
