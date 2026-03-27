@@ -350,8 +350,55 @@ class VaultRevealPasswordView(VaultAccessMixin, View):
             {'success': False, 'error': 'Use POST to reveal a password.'},
             status=405,
         )
-        
-        
+
+
+# ---------------------------------------------------------------------------
+# GRANTED REVEAL  — for users with a valid ProfileAccessGrant
+# ---------------------------------------------------------------------------
+
+class GrantedVaultRevealView(LoginRequiredMixin, View):
+    """
+    POST /vault/granted/<slug>/reveal/
+
+    Decrypts a vault entry for a user who holds a valid ProfileAccessGrant
+    for the profile that owns the entry.  No add-on subscription is required —
+    the grant alone controls access (estate recovery scenario where the owner
+    may be deceased and their add-on expired).
+    """
+    login_url = '/accounts/login/'
+
+    def post(self, request, slug):
+        from recovery.models import ProfileAccessGrant
+        try:
+            entry = VaultEntry.objects.select_related('profile').get(slug=slug)
+        except VaultEntry.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Entry not found.'}, status=404)
+
+        grant = ProfileAccessGrant.objects.filter(
+            profile=entry.profile,
+            granted_to=request.user,
+            is_active=True,
+        ).first()
+        if not grant or not grant.is_valid():
+            return JsonResponse({'success': False, 'error': 'Access not granted or expired.'}, status=403)
+
+        plaintext = entry.get_password()
+
+        VaultAccessLog.objects.create(
+            entry=entry,
+            accessed_by=request.user,
+            ip_address=_get_client_ip(request),
+        )
+        logger.info(
+            "GrantedVaultReveal: entry %s accessed by %s (grant %s) from %s",
+            entry.pk, request.user.email, grant.pk, _get_client_ip(request),
+        )
+        return JsonResponse({'success': True, 'password': plaintext})
+
+    def get(self, request, slug):
+        return JsonResponse({'success': False, 'error': 'Use POST.'}, status=405)
+
+
 class AWSArchitectureView(LoginRequiredMixin, View):
     """
     Renders the interactive AWS architecture diagram.
