@@ -75,12 +75,7 @@ class RegisterView(View):
                 user.save(update_fields=['last_login_ip'])
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             logger.info(f'New user registered: {user.email}')
-            messages.success(
-                request,
-                "Welcome! You have a free account with limited storage. "
-                "Upgrade anytime to unlock full access."
-            )
-            return redirect('dashboard:dashboard_home')
+            return redirect('dashboard:profile_create')
         return render(request, self.template_name, {'form': form})
 
 

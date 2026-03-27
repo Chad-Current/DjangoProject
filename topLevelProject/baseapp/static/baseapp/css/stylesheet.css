@@ -186,6 +186,7 @@ span {
 
 .main {
   width: 80%;
+  min-height: inherit;
   margin: auto;
 }
 

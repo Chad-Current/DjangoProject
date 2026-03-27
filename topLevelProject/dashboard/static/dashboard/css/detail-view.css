@@ -689,6 +689,7 @@
 .marker {
   background-color: var(--green-tag);
   margin-top: 2em;
+  color: var(--text-color-dark);
 }
 
 /* ══════════════════════════════════════════════

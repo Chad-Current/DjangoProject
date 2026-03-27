@@ -681,6 +681,24 @@
 .status-badge.warning  { background: rgba(255,166,43,0.1);  color: var(--accent-color); }
 .status-badge.upcoming { background: rgba(98,162,206,0.1);  color: var(--thirty-percent); }
 
+.free-banner {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin: auto;
+  padding: 0.5em 1em;
+  width: fit-content;
+  background: var(--green-tag);
+  /* border: solid 3.5px var(--accent-color); */
+  border-radius: 20px;
+  color: var(--text-color-dark);
+  font-weight: 400;
+  strong {
+    color: var(--text-color-dark-muted);
+    font-weight: 700;
+  }
+}
+
 .review-footer {
   margin-top: 1.5rem;
   padding-top: 1rem;

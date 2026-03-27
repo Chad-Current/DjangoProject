@@ -19,14 +19,9 @@
       </button>
     </li>
 
-    {% if user.is_authenticated %}
     <li class="mobile-only mobile-section-header">
       <span class="mobile-section-label">Navigation</span>
     </li>
-    <li class="nav-item">
-      <a href="{% url 'dashboard:dashboard_home' %}">Dashboard</a>
-    </li>
-    {% endif %}
     <li class="nav-item">
       <a href="{% url 'baseapp_main:home' %}">Home</a>
     </li>
@@ -119,7 +114,7 @@
           <ul class="um-links" role="none">
             <li role="none">
               <a href="{% url 'dashboard:dashboard_home' %}" role="menuitem">
-                <i class="fas fa-user um-icon" aria-hidden="true"></i>Dashboard
+                <i class="fas fa-circle um-icon" aria-hidden="true"></i>Dashboard
               </a>
             </li>
             <li role="none">
@@ -152,6 +147,13 @@
     <li class="mobile-only mobile-section-header">
       <span class="mobile-section-label">Account</span>
     </li>
+    {% if user.is_authenticated %}
+    <li class="mobile-only">
+      <a href="{% url 'dashboard:dashboard_home' %}">
+        <i class="fas fa-user nav-icon" aria-hidden="true"></i>Dashboard
+      </a>
+    </li>
+    {% endif %}
     <li class="mobile-only">
       <a href="{% url 'dashboard:profile_update' %}">
         <i class="fas fa-user nav-icon" aria-hidden="true"></i>My Profile

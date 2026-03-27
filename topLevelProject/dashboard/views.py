@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import RedirectView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -266,14 +267,11 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
     model         = Profile
     form_class    = ProfileForm
     template_name = 'dashboard/profiles/profile.html'
-    success_url   = reverse_lazy('dashboard:dashboard_home')
+    success_url   = reverse_lazy('dashboard:onboarding_welcome')
     login_url     = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
-            messages.warning(request, "Please complete payment to create your profile.")
-            return redirect(reverse("accounts:payment"))
         try:
             _ = user.profile
             messages.info(request, "You already have a profile. Use the edit page to make changes.")
@@ -1652,9 +1650,6 @@ class OnboardingMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
-            messages.warning(request, "Please complete payment to access setup.")
-            return redirect(reverse("accounts:payment"))
         try:
             _ = user.profile
         except Exception:

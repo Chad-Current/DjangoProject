@@ -10,12 +10,20 @@
      PROBLEM ① — HERO
      Emotional hook. Plant the problem before anything else.
      ═══════════════════════════════════════════════════════ -->
+
 <section class="hero">
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="{% static '/baseapp/images/bg.mp4' %}" type="video/mp4">
+    </video>
     <div class="container">
         <div class="hero-content">
 
             <div class="hero-left">
                 <span class="hero-eyebrow">Digital Estate Planning</span>
+                <div class="hero-buttons">
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
+                    <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+                </div>
                 <h1>Don't leave your loved ones locked out of your digital world</h1>
                 <p class="hero-subtitle">
                     When a loved one dies or becomes incapacitated, your family shouldn't have to
@@ -26,16 +34,11 @@
                     <strong>A little time now means your family has everything they need
                         when it matters most.</strong>
                 </p>
-                <div class="hero-buttons">
-                    <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
-                    <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
-                </div>
             </div>
 
             <div class="hero-right">
                 <div class="hero-photo-wrap">
-                    <img src="/static/baseapp/images/coverphoto.svg"
-                         alt="Digital Estate Planning" class="hero-image">
+                    <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
                     <div class="hero-stats-float">
                         <div class="hero-stat">
                             <span class="hero-stat-num">100+</span>
@@ -81,7 +84,7 @@
                     <div>
                         <h4>100+ Hours Wasted</h4>
                         <p>Families spend an average of 100+ hours trying to recover digital
-                           assets and access accounts that were never documented</p>
+                            assets and access accounts that were never documented</p>
                     </div>
                 </li>
                 <li class="idx-consequence-item">
@@ -89,7 +92,7 @@
                     <div>
                         <h4>Subscriptions Keep Charging</h4>
                         <p>Forgotten subscriptions drain hundreds or thousands of dollars
-                           after someone passes — because no one knew they existed</p>
+                            after someone passes — because no one knew they existed</p>
                     </div>
                 </li>
                 <li class="idx-consequence-item">
@@ -97,7 +100,7 @@
                     <div>
                         <h4>Memories Lost Forever</h4>
                         <p>Precious photos and videos locked in forgotten accounts disappear
-                           permanently — irreplaceable, and completely avoidable</p>
+                            permanently — irreplaceable, and completely avoidable</p>
                     </div>
                 </li>
             </ul>
@@ -119,7 +122,8 @@
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-address-book" style="color: var(--thirty-percent);"></i></div>
+                <div class="feature-icon"><i class="fas fa-address-book" style="color: var(--thirty-percent);"></i>
+                </div>
                 <h3>Trusted Contacts</h3>
                 <p>Designate who handles what — executor, caregiver, attorney. Roles assigned, authority clear.</p>
             </div>
@@ -129,7 +133,8 @@
                 <p>Banking, social, streaming, utilities — each with decommission instructions so nothing lingers.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-file-contract" style="color: var(--thirty-percent);"></i></div>
+                <div class="feature-icon"><i class="fas fa-file-contract" style="color: var(--thirty-percent);"></i>
+                </div>
                 <h3>Estate Documents</h3>
                 <p>Will, power of attorney, healthcare directive — tagged for exactly when they apply.</p>
             </div>
@@ -184,7 +189,8 @@
                     <h3>Common questions</h3>
                     <div class="objection">
                         <strong>Is my information secure?</strong>
-                        <p>Credentials are encrypted before they touch our database. Your data is never stored in plaintext.</p>
+                        <p>Credentials are encrypted before they touch our database. Your data is never stored in
+                            plaintext.</p>
                     </div>
                     <div class="objection">
                         <strong>What if things change?</strong>
@@ -192,7 +198,8 @@
                     </div>
                     <div class="objection">
                         <strong>Can I try it free?</strong>
-                        <p>Yes — free accounts let you explore every section and save up to the starter limits, no card required.</p>
+                        <p>Yes — free accounts let you explore every section and save up to the starter limits, no card
+                            required.</p>
                     </div>
                 </div>
             </div>
@@ -208,7 +215,8 @@
      ═══════════════════════════════════════════════════════ -->
 <div class="payment-wrapper">
     <div class="section-header text-center">
-        <span class="idx-section-label" style="display: block; text-align: center; margin-bottom: .5rem;">Simple pricing</span>
+        <span class="idx-section-label" style="display: block; text-align: center; margin-bottom: .5rem;">Simple
+            pricing</span>
         <h2>Choose the plan that fits your life.</h2>
         <p class="section-subtitle">Simple subscriptions — cancel anytime. Start for as little as $3.99/month.</p>
     </div>
@@ -246,7 +254,7 @@
                 <li><i class="fas fa-check-circle"></i> Email support</li>
                 <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
             </ul>
-            <a href="{% url 'accounts:payment' %}" class="select-tier-btn essentials-btn">Get Essentials</a>
+            <!-- <a href="{% url 'accounts:payment' %}" class="select-tier-btn essentials-btn">Get Essentials</a> -->
         </div>
 
         <div class="pricing-card recommended">
@@ -277,7 +285,7 @@
                 <li><i class="fas fa-check-circle"></i> All future updates included</li>
                 <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
             </ul>
-            <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn">Get Legacy</a>
+            <!-- <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn">Get Legacy</a> -->
         </div>
 
     </div>
@@ -294,7 +302,7 @@
 <script>
     const INDEX_PRICES = {
         essentials: { annual: '39.99', monthly: '3.99' },
-        legacy:     { annual: '59.99', monthly: '5.99' },
+        legacy: { annual: '59.99', monthly: '5.99' },
     };
 
     function indexSetBilling(interval) {

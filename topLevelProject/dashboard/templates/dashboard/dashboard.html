@@ -15,7 +15,11 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if user.is_free_tier %}
+    <div class="container">
+    <p class="free-banner"><strong>Free Tier -&nbsp</strong> Save up to 3 Contacts, 2 Accounts, 2 Devices, 1 Estate Documents and 1 Important Documents</p>
+    </div>
+    {% endif %}
 <div class="vault-dashboard">
     <!-- Hero Section -->
     <div class="vault-hero">

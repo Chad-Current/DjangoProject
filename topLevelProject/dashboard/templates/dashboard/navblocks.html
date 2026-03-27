@@ -6,59 +6,45 @@
     <nav class="dashboard-subnav" role="navigation" aria-label="Dashboard sections">
         <div class="subnav-container">
 
-            <a href="{% url 'dashboard:contact_list' %}"
-                class="subnav-item"
-                title="Emergency contacts">
+            <a href="{% url 'dashboard:contact_list' %}" class="subnav-item" title="Emergency contacts">
                 {% if contacts_count == 0 %}<span class="subnav-pulse-dot" aria-hidden="true"></span>{% endif %}
                 <i class="fas fa-address-book"></i>
                 <span>Peronal</span>
                 <span>Contacts</span>
             </a>
 
-            <a href="{% url 'dashboard:account_list' %}"
-                class="subnav-item"
-                title="Manage your digital accounts">
+            <a href="{% url 'dashboard:account_list' %}" class="subnav-item" title="Manage your digital accounts">
                 <i class="fas fa-user-shield"></i>
                 <span>Important</span>
                 <span>Accounts</span>
             </a>
 
-            <a href="{% url 'dashboard:device_list' %}"
-                class="subnav-item"
-                title="Track your devices">
+            <a href="{% url 'dashboard:device_list' %}" class="subnav-item" title="Track your devices">
                 <i class="fas fa-laptop"></i>
                 <span>Personal</span>
                 <span>Devices</span>
             </a>
 
-            <a href="{% url 'dashboard:estate_list' %}"
-                class="subnav-item"
-                title="Estate planning documents">
+            <a href="{% url 'dashboard:estate_list' %}" class="subnav-item" title="Estate planning documents">
                 <i class="fas fa-file-contract"></i>
                 <span>Estate</span>
                 <span>Documents</span>
             </a>
 
-            <a href="{% url 'dashboard:importantdocument_list' %}"
-                class="subnav-item"
-                title="Important documents">
+            <a href="{% url 'dashboard:importantdocument_list' %}" class="subnav-item" title="Important documents">
                 <i class="fas fa-scroll"></i>
                 <span>Other</span>
                 <span>Documents</span>
             </a>
 
-            <a href="{% url 'dashboard:familyawareness_list' %}"
-                class="subnav-item"
-                title="Family information">
+            <a href="{% url 'dashboard:familyawareness_list' %}" class="subnav-item" title="Family information">
                 <i class="fas fa-users"></i>
                 <span>Family</span>
                 <span> Notes</span>
             </a>
 
             {% if request.user.subscription_tier == 'legacy' %}
-            <a href="{% url 'dashboard:funeralplan_index' %}"
-                class="subnav-item"
-                title="Funeral planning">
+            <a href="{% url 'dashboard:funeralplan_index' %}" class="subnav-item" title="Funeral planning">
                 <i class="fas fa-user-tie"></i>
                 <span>Funeral</span>
                 <span>Planning</span>
@@ -66,23 +52,18 @@
             {% endif %}
 
             {% if request.user.can_access_addon %}
-            <a href="{% url 'vault:vault_list' %}"
-                class="subnav-item"
-                title="Vault Passwords">
+            <a href="{% url 'vault:vault_list' %}" class="subnav-item" title="Vault Passwords">
                 <i class="fas fa-user-shield"></i>
                 <span>Password</span>
                 <span>Vault</span>
             </a>
             {% endif %}
 
-            <a href="{% url 'dashboard:relevancereview_list' %}"
-                class="subnav-item"
-                title="Review your accounts">
+            <a href="{% url 'dashboard:relevancereview_list' %}" class="subnav-item" title="Review your accounts">
                 <i class="fas fa-calendar-check"></i>
                 <span>Review</span>
                 <span>List</span>
             </a>
-
         </div>
     </nav>
 </div>

@@ -571,10 +571,11 @@
 
 .nt-modal-cancel-btn {
     display: inline-flex;
+    flex:1;
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1.5px solid var(--seventy-percent);
+    border: 1.5px solid var(--thirty-percent);
     color: var(--thirty-percent);
     font-family: var(--main-font);
     font-size: var(--font-sm);

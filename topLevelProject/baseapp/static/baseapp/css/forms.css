@@ -390,6 +390,8 @@ input[type="file"]:hover {
 
 .rr-file-zone {
   display: block;
+  align-items: center;
+  gap: 1em;
   cursor: pointer;
   padding: 1.5rem 1.25rem;
   background: var(--background-color);
@@ -699,7 +701,7 @@ input[type="submit"]:hover,
 .btn-secondary {
   background: var(--purewhite-color);
   color: var(--thirty-percent);
-  border: 1.5px solid #dce6f0;
+  border: 1.5px solid var(--ten-percent);
   box-shadow: none;
 }
 

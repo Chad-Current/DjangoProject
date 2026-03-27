@@ -10,8 +10,8 @@
 
 .dashboard-subnav-wrapper {
     background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border-bottom: 1.5px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
     position: sticky;
     top: 0;
     z-index: 40;

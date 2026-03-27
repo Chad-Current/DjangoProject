@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════════════
+   onboarding_tooltips.css
+   Tooltip styles for onboarding pages.
+
+   Uses position:absolute (not fixed) so that the ob-in animation's
+   transform on .onboarding-main cannot re-contain the tooltip.
+   CSS transforms only trap position:fixed descendants — position:absolute
+   is unaffected, so the tooltip stays anchored to its own wrapper.
+
+   Load this file instead of tooltip_styles.css on onboarding pages.
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ── Wrapper — make it the containing block ──────── */
+
+.ob-label-tooltip {
+  position: relative;   /* absolute .ob-tip children position against this */
+}
+
+
+/* ── Tooltip bubble ──────────────────────────────── */
+
+.ob-label-tooltip .ob-tip {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  position: absolute;           /* relative to .ob-label-tooltip wrapper  */
+  top: -9999px;                 /* JS positioner overwrites this on hover  */
+  left: -9999px;
+  width: clamp(200px, 24vw, 300px);
+  z-index: 9999;
+
+  background-color: var(--background-color-dark);
+  color: var(--text-color);
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 0.55em 0.8em;
+  text-wrap: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(2, 2, 2, 0.22);
+
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  transform: translateY(4px);
+}
+
+
+/* ── Caret pointing down toward the label ───────── */
+
+.ob-label-tooltip .ob-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 1em;
+  border: 6px solid transparent;
+  border-top-color: var(--background-color-dark);
+}
+
+
+/* ── Accent strip on the left edge ──────────────── */
+
+.ob-label-tooltip .ob-tip::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 3px;
+  border-radius: 8px 0 0 8px;
+  background-color: var(--accent-color);
+}
+
+
+/* ── Visible state — toggled by JS positioner ───── */
+
+.ob-label-tooltip .ob-tip.ob-tip--visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── Required-field asterisk ─────────────────────── */
+
+.req {
+  color: var(--accent-color);
+  margin-left: 0.1em;
+}

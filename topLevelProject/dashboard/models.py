@@ -389,6 +389,7 @@ class ImportantDocument(models.Model):
         ("Password Management",             "Password manager info and recovery instructions."),
         ("Personal Identification",         "Driver's license, passport, and other official IDs."),
         ("Personal Property and Valuables", "Inventory of personal valuables."),
+        ('Pet License/Records',             "Pet License/Records"),
         ("Property Deeds and Titles",       "Ownership records for homes, vehicles, or land."),
         ("Safe Deposit Box Information",    "Location, access instructions, and contents list."),
         ("Social Media Accounts",           "Profiles and legacy social media preferences."),
