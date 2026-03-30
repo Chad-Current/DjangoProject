@@ -642,7 +642,10 @@ input[type="checkbox"]:checked::after {
   border-top: 1px solid var(--background-color);
 }
 
-.btn,
+/* Scoped to .button-group so form-specific sizing/color doesn't bleed
+   into marketing-page .btn elements (hero, closing-cta, etc.).
+   button/input[type="submit"] selectors kept as a fallback for bare form elements. */
+.button-group .btn,
 button[type="submit"],
 input[type="submit"] {
   display: inline-flex;
@@ -659,13 +662,13 @@ input[type="submit"] {
   border: none;
   text-decoration: none;
   text-align: center;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.2s;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s, background 0.2s;
   box-shadow: 4px 4px 10px rgba(2, 2, 2, 0.08), 0 -1px 8px var(--purewhite-color);
   -webkit-appearance: none;
   appearance: none;
 }
 
-.btn:active,
+.button-group .btn:active,
 button[type="submit"]:active,
 input[type="submit"]:active {
   transform: translateY(1px);
@@ -673,39 +676,39 @@ input[type="submit"]:active {
 
 button[type="submit"],
 input[type="submit"],
-.btn-primary {
+.button-group .btn-primary {
   background: var(--ten-percent);
   color: var(--text-color);
 }
 
 button[type="submit"]:hover,
 input[type="submit"]:hover,
-.btn-primary:hover {
+.button-group .btn-primary:hover {
   background: var(--thirty-percent);
   color: var(--text-color);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(37, 78, 112, 0.22);
 }
 
-.btn-accent {
+.button-group .btn-accent {
   background: var(--accent-color);
   color: var(--text-color-dark);
 }
 
-.btn-accent:hover {
+.button-group .btn-accent:hover {
   background: #e8921a;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(255, 166, 43, 0.28);
 }
 
-.btn-secondary {
+.button-group .btn-secondary {
   background: var(--purewhite-color);
   color: var(--thirty-percent);
   border: 1.5px solid var(--ten-percent);
   box-shadow: none;
 }
 
-.btn-secondary:hover {
+.button-group .btn-secondary:hover {
   border-color: var(--thirty-percent);
   background: var(--background-color);
   color: var(--ten-percent);
@@ -976,7 +979,7 @@ ul.messages li.debug::before { content: "⚙"; color: #6c757d; }
     align-items: center;
   }
 
-  .btn,
+  .button-group .btn,
   button[type="submit"],
   input[type="submit"] {
     width: auto;

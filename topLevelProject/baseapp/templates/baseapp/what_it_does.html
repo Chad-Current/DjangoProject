@@ -3,6 +3,75 @@
 
 <title>{% block title %}How It Works — Digital Estate Planning{% endblock %}</title>
 
+{% block extra_css %}
+<style>
+/* ── Lightbox overlay ── */
+#tour-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(22, 40, 59, 0.88);
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    cursor: zoom-out;
+    animation: lb-fade-in 0.18s ease;
+}
+
+#tour-lightbox.is-open {
+    display: flex;
+}
+
+@keyframes lb-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#tour-lightbox img {
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    cursor: default;
+    animation: lb-scale-in 0.2s ease;
+}
+
+@keyframes lb-scale-in {
+    from { transform: scale(0.94); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+#tour-lightbox-close {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+#tour-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+/* Pointer on all lightbox-enabled images */
+.tour-lightbox {
+    cursor: zoom-in;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
 
@@ -24,7 +93,7 @@
 <!-- ═══════════════════════════════════════════════════════
      PROBLEM — A PASSWORD LIST ISN'T A PLAN
      ═══════════════════════════════════════════════════════ -->
-<section class="idx-section idx-section--dark">
+<!-- <section class="idx-section idx-section--dark">
     <div class="container">
         <div class="two-column">
 
@@ -78,13 +147,13 @@
 
         </div>
     </div>
-</section>
+</section> -->
 
 
 <!-- ═══════════════════════════════════════════════════════
      PRODUCT ① — WHAT THE PLATFORM ORGANIZES
      ═══════════════════════════════════════════════════════ -->
-<section class="value-proposition">
+<!-- <section class="value-proposition">
     <div class="container">
         <div class="section-header">
             <span class="idx-section-label">What you organize</span>
@@ -124,6 +193,83 @@
             </div>
         </div>
     </div>
+</section> -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT TOUR — SEE IT IN ACTION
+     ═══════════════════════════════════════════════════════ -->
+<section class="product-tour">
+    <div class="container">
+        <div class="section-header">
+            <span class="idx-section-label">See it in action</span>
+            <h2>A real tool, built for real life.</h2>
+            <p class="section-subtitle">Every screen is built to be clear, not intimidating. Here's what you'll actually see inside your plan.</p>
+        </div>
+
+        <!-- Dashboard overview — full width -->
+        <div class="tour-wide">
+            <img src="{% static 'baseapp/images/DashboardView_Header.png' %}"
+                 alt="Digital Vault dashboard showing navigation categories and personalized heading"
+                 class="tour-screenshot tour-lightbox">
+            <p class="tour-caption"><strong>Your Digital Vault</strong> — a single, organized home for every category. Navigate between contacts, accounts, devices, documents, and more from one place.</p>
+        </div>
+
+        <!-- Progress + Protection layers — 2 columns -->
+        <div class="tour-grid-2">
+            <div class="tour-item">
+                <img src="{% static 'baseapp/images/DashboardView_Progess.png' %}"
+                     alt="Progress tracker widget showing completion percentage and an information activity log"
+                     class="tour-lightbox">
+                <p class="tour-caption"><strong>Track your progress</strong> — see exactly how complete your plan is and what still needs attention.</p>
+            </div>
+            <div class="tour-item">
+                <img src="{% static 'baseapp/images/DashboardView_Protection.png' %}"
+                     alt="Protection layers panel showing a strength rating for each category"
+                     class="tour-lightbox">
+                <p class="tour-caption"><strong>Protection layers</strong> — each category shows how well-covered you are so nothing slips through the cracks.</p>
+            </div>
+        </div>
+
+        <!-- Upcoming reviews — full width -->
+        <div class="tour-wide">
+            <img src="{% static 'baseapp/images/DashboardView_Reviewlist.png' %}"
+                 alt="Upcoming reviews list with scheduled review dates for accounts and documents"
+                 class="tour-screenshot tour-lightbox">
+            <p class="tour-caption"><strong>Upcoming reviews</strong> — built-in reminders prompt you to keep your plan current as your life changes.</p>
+        </div>
+
+        <!-- Contact detail + Account detail — 2 columns -->
+        <div class="tour-grid-2">
+            <div class="tour-item">
+                <img src="{% static 'baseapp/images/ContactsDetail.png' %}"
+                     alt="Contact detail view showing delegation map, assigned items, roles, and contact information"
+                     class="tour-lightbox">
+                <p class="tour-caption"><strong>Trusted contacts</strong> — each person sees exactly what's delegated to them, their assigned role, and how to reach you.</p>
+            </div>
+            <div class="tour-item">
+                <img src="{% static 'baseapp/images/AccountsDetail.png' %}"
+                     alt="Account detail view showing category, assigned contact, instructions, and notes for family"
+                     class="tour-lightbox">
+                <p class="tour-caption"><strong>Account details</strong> — every account includes who handles it, what to do with it, and notes left specifically for your family.</p>
+            </div>
+        </div>
+
+        <!-- Modal spotlight — feature callout -->
+        <div class="tour-spotlight">
+            <div>
+                <img src="{% static 'baseapp/images/ContactsDetailViewModal.png' %}"
+                     alt="Account details modal popup showing instructions and family notes from within the contact view"
+                     class="tour-lightbox">
+            </div>
+            <div class="tour-spotlight-text">
+                <span class="idx-section-label">For your family</span>
+                <h3>Every contact sees the full picture.</h3>
+                <p>When a contact is designated to handle a specific account, they can view everything that matters — the account details, your instructions, and exactly what you want them to do. Nothing left to interpretation.</p>
+            </div>
+        </div>
+
+    </div>
 </section>
 
 
@@ -140,7 +286,7 @@
         <div class="steps-grid">
             <div class="step-card">
                 <div class="step-image">
-                    <img src="/static/baseapp/images/1.svg" alt="Step 1">
+                    <i class="fas fa-compass" style="font-size: 1.75rem; color: var(--thirty-percent);"></i>
                 </div>
                 <h3>Discover</h3>
                 <p>Use our guided prompts to uncover every digital account you have — banking, utilities,
@@ -148,7 +294,7 @@
             </div>
             <div class="step-card">
                 <div class="step-image">
-                    <img src="/static/baseapp/images/2.svg" alt="Step 2">
+                    <i class="fas fa-sitemap" style="font-size: 1.75rem; color: var(--thirty-percent);"></i>
                 </div>
                 <h3>Organize</h3>
                 <p>Assign each account, device, and document to a trusted contact. Decide who gets access,
@@ -156,7 +302,7 @@
             </div>
             <div class="step-card">
                 <div class="step-image">
-                    <img src="/static/baseapp/images/3.svg" alt="Step 3">
+                    <i class="fas fa-shield-halved" style="font-size: 1.75rem; color: var(--thirty-percent);"></i>
                 </div>
                 <h3>Rest Easy</h3>
                 <p>Your plan is secure and ready. Built-in review reminders keep it current, and your family
@@ -170,7 +316,7 @@
 <!-- ═══════════════════════════════════════════════════════
      RESULT — WHAT YOUR FAMILY GETS
      ═══════════════════════════════════════════════════════ -->
-<section class="adult-children">
+<!-- <section class="adult-children">
     <div class="container">
         <div class="two-column">
 
@@ -223,24 +369,68 @@
 
         </div>
     </div>
-</section>
+</section> -->
 
 
 <!-- ═══════════════════════════════════════════════════════
      CLOSING CTA
      ═══════════════════════════════════════════════════════ -->
 <section class="closing-cta">
-    <div class="container text-center">
+    <div class="container">
         <h2 class="closing-headline">Ready to give your family a clear path forward?</h2>
         <div class="hero-buttons">
-            <a href="{% url 'accounts:register' %}" class="idx-btn idx-btn--primary">Start Organizing Today</a>
-            <a href="{% url 'accounts:payment' %}" class="idx-btn idx-btn--outline">View Plans &amp; Pricing</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
+            <a href="{% url 'accounts:payment' %}" class="btn btn-secondary">View Plans &amp; Pricing</a>
         </div>
     </div>
 </section>
 
 
-{% endblock %}
-</body>
+<!-- ═══════════════════════════════════════════════════════
+     LIGHTBOX MODAL
+     ═══════════════════════════════════════════════════════ -->
+<div id="tour-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged screenshot">
+    <button id="tour-lightbox-close" aria-label="Close">&times;</button>
+    <img id="tour-lightbox-img" src="" alt="">
+</div>
 
-</html>
+<script>
+(function () {
+    const overlay  = document.getElementById('tour-lightbox');
+    const lbImg    = document.getElementById('tour-lightbox-img');
+    const closeBtn = document.getElementById('tour-lightbox-close');
+
+    function open(src, alt) {
+        lbImg.src = src;
+        lbImg.alt = alt;
+        overlay.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+        overlay.classList.remove('is-open');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+    }
+
+    // Wire up every tour image
+    document.querySelectorAll('.tour-lightbox').forEach(function (img) {
+        img.addEventListener('click', function () {
+            open(img.src, img.alt);
+        });
+    });
+
+    // Close on backdrop click (not on the image itself)
+    overlay.addEventListener('click', function (e) {
+        if (e.target !== lbImg) close();
+    });
+
+    closeBtn.addEventListener('click', close);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+    });
+}());
+</script>
+
+{% endblock %}

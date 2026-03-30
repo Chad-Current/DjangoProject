@@ -230,6 +230,15 @@
   color: var(--text-color);
 }
 
+.dash-btn {
+  padding: 0.5em;
+  border-radius: 20px;
+  margin: 0.5em;
+}
+
+.dash-btn a {
+  color: var(--text-color-dark);
+}
 
 /* ══════════════════════════════════════════════
    TRUST STRIP
@@ -280,7 +289,9 @@
   padding: 1rem;
 }
 
-.payment-modal.open { display: flex; }
+.payment-modal.open {
+  display: flex;
+}
 
 .payment-modal-content {
   background: var(--purewhite-color);
@@ -294,8 +305,15 @@
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 
@@ -312,7 +330,9 @@
   transition: color 0.2s;
 }
 
-.close-modal:hover { color: var(--ten-percent); }
+.close-modal:hover {
+  color: var(--ten-percent);
+}
 
 
 /* ── Modal header ── */
@@ -401,9 +421,15 @@
   margin: 0 auto 1rem;
 }
 
-.spinner.active { display: block; }
+.spinner.active {
+  display: block;
+}
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 
 /* ── Submit button ── */
@@ -424,8 +450,16 @@
   box-shadow: 3px 4px 14px rgba(22, 40, 59, 0.2);
 }
 
-#submit-payment:hover    { opacity: 0.88; transform: translateY(-1px); }
-#submit-payment:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+#submit-payment:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+#submit-payment:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
 
 
 /* ── Secure note ── */
@@ -442,7 +476,9 @@
   text-align: center;
 }
 
-.modal-secure-note i { color: var(--thirty-percent); }
+.modal-secure-note i {
+  color: var(--thirty-percent);
+}
 
 
 /* ── Billing interval toggle ─────────────────────────────────────────────── */

@@ -24,8 +24,7 @@
         {# Document Name #}
         <div class="ob-field ob-full{% if form.name_or_title.errors %} has-error{% endif %}">
           <label for="{{ form.name_or_title.id_for_label }}"
-            class="ob-label-tooltip"
-            title="A clear, descriptive name for this document so your family can immediately understand what it is and why it matters.">
+            class="ob-label-tooltip">
             Document Name <span class="req" aria-hidden="true">*</span>
             <span class="ob-tip" role="tooltip">A clear, descriptive name so your family can immediately understand what it is. e.g. "Term Life Insurance Policy" or "Vehicle Title — 2021 Honda CRV".</span>
           </label>
@@ -39,8 +38,7 @@
         {# Category #}
         <div class="ob-field{% if form.document_category.errors %} has-error{% endif %}">
           <label for="{{ form.document_category.id_for_label }}"
-            class="ob-label-tooltip"
-            title="The type of document — e.g. Insurance, Financial, Medical, Property, Identification. Helps your family filter and find the right records quickly.">
+            class="ob-label-tooltip">
             Category <span class="req" aria-hidden="true">*</span>
             <span class="ob-tip" role="tooltip">The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.</span>
           </label>
@@ -53,8 +51,7 @@
         {# Assign to Contact #}
         <div class="ob-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
           <label for="{{ form.delegated_important_document_to.id_for_label }}"
-            class="ob-label-tooltip"
-            title="The contact who should be the first to access, act on, or safeguard this document — e.g. your executor for financial records, or your healthcare proxy for medical documents.">
+            class="ob-label-tooltip">
             Assign to Contact <span class="req" aria-hidden="true">*</span>
             <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
           </label>
@@ -68,8 +65,7 @@
         {# Description #}
         <div class="ob-field{% if form.description.errors %} has-error{% endif %}">
           <label for="{{ form.description.id_for_label }}"
-            class="ob-label-tooltip"
-            title="A brief summary of what this document covers — policy numbers, account details, coverage amounts, or any other key facts your family would need to know immediately.">
+            class="ob-label-tooltip">
             Description
             <span class="ob-tip" role="tooltip">A brief summary of what this document covers — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.</span>
           </label>
@@ -83,8 +79,7 @@
         {# Physical Location #}
         <div class="ob-field{% if form.physical_location.errors %} has-error{% endif %}">
           <label for="{{ form.physical_location.id_for_label }}"
-            class="ob-label-tooltip"
-            title="Where the original physical copy of this document is stored — be specific enough that your family can find it without you. e.g. 'Fireproof safe in master bedroom closet'.">
+            class="ob-label-tooltip">
             Physical Location
             <span class="ob-tip" role="tooltip">Where the original copy is stored. Be specific enough that your family can find it without you — e.g. "Fireproof safe in master bedroom closet".</span>
           </label>
@@ -98,8 +93,7 @@
         {# Digital Location #}
         <div class="ob-field{% if form.digital_location.errors %} has-error{% endif %}">
           <label for="{{ form.digital_location.id_for_label }}"
-            class="ob-label-tooltip"
-            title="Where a digital copy or scan of this document is stored — allows your family to access it quickly before locating the physical original.">
+            class="ob-label-tooltip">
             Digital Location
             <span class="ob-tip" role="tooltip">Where a digital copy or scan is stored for quick access — e.g. "Dropbox / Important Docs folder" or "Google Drive / Insurance".</span>
           </label>
@@ -113,8 +107,7 @@
         {# Review Schedule #}
         <div class="ob-field{% if form.review_time.errors %} has-error{% endif %}">
           <label for="{{ form.review_time.id_for_label }}"
-            class="ob-label-tooltip"
-            title="How often you want a reminder to check that this document is still current — important for insurance policies, tax records, and anything with expiry dates.">
+            class="ob-label-tooltip">
             Review Schedule
             <span class="ob-tip" role="tooltip">How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.</span>
           </label>

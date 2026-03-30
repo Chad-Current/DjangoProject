@@ -57,6 +57,7 @@
 .vault-dashboard {
   min-height: 100vh;
   padding: 2rem;
+  background: 
 }
 
 /* ─── Vault Hero ─────────────────────────────────────────────────────────── */
@@ -632,6 +633,10 @@
   justify-content: center;
   font-size: var(--font-nm);
   flex-shrink: 0;
+}
+
+.review-icon .fas {
+  color: var(--thirty-percent);
 }
 
 .review-info {

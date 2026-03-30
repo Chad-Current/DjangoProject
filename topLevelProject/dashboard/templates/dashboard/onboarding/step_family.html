@@ -24,8 +24,7 @@
         {# For Contact #}
         <div class="ob-field ob-full{% if form.relation.errors %} has-error{% endif %}">
           <label for="{{ form.relation.id_for_label }}"
-            class="ob-label-tooltip"
-            title="Select the specific contact this note or message is intended for. Each note is delivered privately to the person you choose.">
+            class="ob-label-tooltip">
             For Contact <span class="req" aria-hidden="true">*</span>
             <span class="ob-tip" role="tooltip">Select the specific contact this note is intended for. Each note is delivered privately to the person you choose.</span>
           </label>
@@ -39,8 +38,7 @@
         {# Message #}
         <div class="ob-field ob-full{% if form.content.errors %} has-error{% endif %}">
           <label for="{{ form.content.id_for_label }}"
-            class="ob-label-tooltip"
-            title="Write freely — your wishes, instructions, personal messages, or anything this person should know. This is your chance to speak directly to them in your own words.">
+            class="ob-label-tooltip">
             Message / Instructions <span class="req" aria-hidden="true">*</span>
             <span class="ob-tip" role="tooltip">Write freely — wishes, instructions, or a personal message. This is your chance to speak directly to this person in your own words.</span>
           </label>

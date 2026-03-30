@@ -11,7 +11,7 @@
      Emotional hook. Plant the problem before anything else.
      ═══════════════════════════════════════════════════════ -->
 
-<section class="hero">
+<section class="hero mt-4 mb-4">
     <!-- <video autoplay muted loop playsinline id="bg-video">
         <source src="{% static '/baseapp/images/bg.mp4' %}" type="video/mp4">
     </video> -->
@@ -299,6 +299,42 @@
 
 </div>
 
+
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CLOSING CTA
+     ═══════════════════════════════════════════════════════ -->
+<section class="closing-cta">
+    <div class="container">
+        <h2 class="closing-headline">Your family is going to have enough to carry.<br>Let this not be one of them.</h2>
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
+            <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FAMILY ACCESS REQUEST
+     Tertiary audience — placed after all primary CTAs.
+     ═══════════════════════════════════════════════════════ -->
+<section class="family-access-section">
+    <div class="container">
+        <h3 class="family-access-heading">
+            Are you a family member of a deceased or incapacitated account holder?
+        </h3>
+        <p class="family-access-body">
+            If a loved one had an account with us, you can submit a verified access request.
+            Our team will review your documentation and grant you access to their estate information.
+        </p>
+        <div class="hero-buttons">
+            <a href="{% url 'recovery:external_recovery_request' %}" class="btn btn-primary">Request Estate Access</a>
+        </div>
+    </div>
+</section>
+
 <script>
     const INDEX_PRICES = {
         essentials: { annual: '39.99', monthly: '3.99' },
@@ -319,42 +355,4 @@
     }
 </script>
 
-
-<!-- ═══════════════════════════════════════════════════════
-     CLOSING CTA
-     ═══════════════════════════════════════════════════════ -->
-<section class="closing-cta">
-    <div class="container text-center">
-        <h2 class="closing-headline">Your family is going to have enough to carry.<br>Let this not be one of them.</h2>
-        <div class="hero-buttons" style="justify-content: center; margin-top: 1.5rem;">
-            <a href="{% url 'accounts:register' %}" class="idx-btn idx-btn--primary">Start Organizing Today</a>
-            <a href="{% url 'baseapp:checklist_email' %}" class="idx-btn idx-btn--outline">Download Free Guide</a>
-        </div>
-    </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════
-     FAMILY ACCESS REQUEST
-     Tertiary audience — placed after all primary CTAs.
-     ═══════════════════════════════════════════════════════ -->
-<section class="family-access-section">
-    <div class="container text-center">
-        <h3 class="family-access-heading">
-            Are you a family member of a deceased or incapacitated account holder?
-        </h3>
-        <p class="family-access-body">
-            If a loved one had an account with us, you can submit a verified access request.
-            Our team will review your documentation and grant you access to their estate information.
-        </p>
-        <div class="hero-buttons">
-            <a href="{% url 'recovery:external_recovery_request' %}">Request Estate Access</a>
-        </div>
-    </div>
-</section>
-
-
 {% endblock %}
-</body>
-
-</html>

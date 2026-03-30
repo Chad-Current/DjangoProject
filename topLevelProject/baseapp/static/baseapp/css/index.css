@@ -120,46 +120,6 @@
    BUTTONS
    ══════════════════════════════════════════════ */
 
-/* idx-* variants (used in other templates) */
-.idx-btn {
-    display: inline-block;
-    padding: .85rem 2rem;
-    border-radius: 50px;
-    font-family: var(--main-font);
-    font-size: var(--font-nm);
-    font-weight: 800;
-    letter-spacing: .03em;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: opacity .2s, transform .15s, box-shadow .2s;
-    box-shadow: 3px 4px 12px rgba(2, 2, 2, .1);
-}
-
-.idx-btn:hover {
-    opacity: .88;
-    transform: translateY(-2px);
-    box-shadow: 3px 6px 18px rgba(2, 2, 2, .15);
-}
-
-.idx-btn--primary {
-    background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
-    color: var(--text-color);
-}
-
-.idx-btn--outline {
-    background: var(--background-color);
-    color: var(--ten-percent);
-    border: 2px solid rgba(45, 106, 156, .35);
-}
-
-.idx-btn--ghost {
-    background: transparent;
-    color: var(--text-color);
-    border: 2px solid rgba(237, 231, 227, .5);
-}
-
-/* Non-prefixed variants (used by current HTML) */
 .btn {
     display: inline-block;
     padding: 0.85rem 2rem;
@@ -187,7 +147,7 @@
 }
 
 .btn-secondary {
-    background: var(--purewhite-color);
+    background: transparent;
     color: var(--thirty-percent);
     border: 2px solid rgba(45, 106, 156, .3);
 }
@@ -197,51 +157,9 @@
    2. HERO
    ══════════════════════════════════════════════ */
 
-.hero {
-    background: var(--background-color);
-    padding: 5rem 0 4rem;
-}
-
-/* .hero {
-    position: relative;
-    overflow: hidden;
-    padding: 5rem 0 4rem;
-    min-height: 10vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-}
-
-#bg-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
-
-.hero::before {
-    content: "";
-    position: relative;
-    inset: 0;
-    background: linear-gradient(135deg,
-            var(--background-color) 0%,
-            var(--seventy-percent) 100%);
-    opacity: 0.45;
-    z-index: -1;
-} */
-/* content above video + overlay */
-
 .hero-content {
     position: relative;
     z-index: 1;
-    text-align: center;
-}
-
-.hero-content {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -249,7 +167,7 @@
 }
 
 .hero-left {
-    flex: 1.5;
+    flex: 2;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -259,13 +177,13 @@
 }
 
 .hero-right {
-    flex: 1;
+    flex: 1.5;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* background: var(--purewhite-color);
+    background: var(--purewhite-color);
     padding: 0.5em;
-    border-radius: 20px; */
+    border-radius: 20px;
 }
 
 .hero-image {
@@ -456,30 +374,6 @@
     justify-content: center;
 }
 
-.family-access-section .hero-buttons a {
-    display: inline-block;
-    margin-top: 1em;
-    padding: 0.85rem 2rem;
-    border-radius: 50px;
-    font-family: var(--main-font);
-    font-size: var(--font-nm);
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 3px 4px 12px rgba(2, 2, 2, .12);
-    background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
-    color: var(--text-color);
-}
-
-.family-access-section .hero-buttons a:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-    box-shadow: 3px 6px 18px rgba(2, 2, 2, .18);
-}
-
 
 /* ══════════════════════════════════════════════
    3. FEATURE CARDS
@@ -501,6 +395,7 @@
     border-radius: 12px;
     padding: 1.75rem;
     border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
     transition: border-color .2s, box-shadow .2s;
 }
 
@@ -1274,43 +1169,6 @@
     margin-left: 0.4rem;
 }
 
-@media (max-width: 900px) {
-    .categories-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .features-grid--compact {
-        grid-template-columns: 1fr;
-    }
-
-    .about-block {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-@media (max-width: 600px) {
-    .categories-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero {
-        background: linear-gradient(135deg, var(--background-color) 0%, var(--seventy-percent) 100%);
-        padding: 5rem 0 4rem;
-    }
-
-    /* video as background */
-    #bg-video {
-        display: none;
-    }
-
-    /* gradient overlay on top of video */
-    .hero::before {
-        display: none;
-    }
-
-    /* content above video + overlay */
-}
 
 
 /* ══════════════════════════════════════════════
@@ -1380,6 +1238,84 @@
 
 
 /* ══════════════════════════════════════════════
+   PRODUCT TOUR — what_it_does.html screenshots
+   ══════════════════════════════════════════════ */
+
+.product-tour {
+    background: var(--background-color);
+    padding: 5rem 0;
+}
+
+.tour-wide {
+    margin-bottom: 2.5rem;
+}
+
+.tour-screenshot {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid rgba(45, 106, 156, .1);
+    box-shadow: 0 6px 28px rgba(22, 40, 59, .09);
+    display: block;
+}
+
+.tour-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.tour-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.tour-item img {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid rgba(45, 106, 156, .1);
+    box-shadow: 0 4px 20px rgba(22, 40, 59, .08);
+}
+
+.tour-caption {
+    font-family: var(--paragraph-font);
+    font-size: var(--font-sm);
+    color: var(--text-color-dark-muted);
+    text-align: center;
+    margin-top: .55rem;
+    line-height: 1.5;
+}
+
+.tour-caption strong {
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--thirty-percent);
+}
+
+.tour-spotlight {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: center;
+    background: var(--background-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-top: 0;
+    border: 1.5px solid rgba(45, 106, 156, .1);
+}
+
+.tour-spotlight img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(22, 40, 59, .12);
+}
+
+.tour-spotlight-text h3 {
+    margin-top: 0;
+}
+
+
+/* ══════════════════════════════════════════════
    10. RESPONSIVE
    ══════════════════════════════════════════════ */
 
@@ -1394,9 +1330,17 @@
         gap: 2.5rem;
     }
 
+    .categories-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .features-grid,
     .modules-grid {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .features-grid--compact {
+        grid-template-columns: 1fr;
     }
 
     .problems-grid,
@@ -1406,6 +1350,11 @@
 
     .steps-grid::before {
         display: none;
+    }
+
+    .about-block {
+        flex-direction: column;
+        text-align: center;
     }
 
     .pricing-cards {
@@ -1418,6 +1367,13 @@
         max-width: 480px;
     }
 
+    .tour-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .tour-spotlight {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 600px) {
@@ -1430,12 +1386,13 @@
         align-items: center;
     }
 
-    .testimonial-box {
-        padding: 2rem 1.5rem;
-    }
-
+    .categories-grid,
     .features-grid,
     .modules-grid {
         grid-template-columns: 1fr;
+    }
+
+    .testimonial-box {
+        padding: 2rem 1.5rem;
     }
 }
