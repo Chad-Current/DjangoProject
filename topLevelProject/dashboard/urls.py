@@ -58,10 +58,10 @@ urlpatterns = [
 
     # ── Funeral Planning ──────────────────────────────────────────────────────
     path('funeralplan/',          views.FuneralPlanIndexView.as_view(),  name='funeralplan_index'),
-    path('funeralplan/demo/',     views.FuneralPlanDemoView.as_view(),   name='funeralplan_demo'),
     path('funeralplan/summary/',  views.FuneralPlanDetailView.as_view(), name='funeralplan_detail'),
     path('funeralplan/edit/',     views.FuneralPlanUpdateView.as_view(), name='funeralplan_update'),
     path('funeralplan/delete/',   views.FuneralPlanDeleteView.as_view(), name='funeralplan_delete'),
+    path('funeralplan/print/',    views.FuneralPlanPrintView.as_view(),  name='funeralplan_print'),
     # 8 section steps
     path('funeralplan/step/1/',   views.FuneralPlanStep1View.as_view(),  name='funeralplan_step1'),
     path('funeralplan/step/2/',   views.FuneralPlanStep2View.as_view(),  name='funeralplan_step2'),

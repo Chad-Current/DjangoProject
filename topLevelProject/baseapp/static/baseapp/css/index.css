@@ -111,8 +111,7 @@
 .section-subtitle {
     font-family: var(--paragraph-font);
     font-size: var(--font-md);
-    color: var(--text-color-dark-muted);
-    margin-top: 0;
+     margin-top: 0;
 }
 
 
@@ -1032,7 +1031,324 @@
 
 
 /* ══════════════════════════════════════════════
-   9. INTERIOR PAGES — About & What It Does
+   9. PRICING COMPARISON TABLE
+   ══════════════════════════════════════════════ */
+
+.pricing-compare-section {
+    padding: 3rem 0 4rem;
+    background: var(--background-color);
+}
+
+.pricing-compare-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pricing-compare-table {
+    width: 100%;
+    /* max-width: 900px; */
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-size: var(--font-nm);
+}
+
+.feature-head {
+    font-size: var(--font-md);
+    font-family: var(--main-font);
+    font-weight: 700;
+    color: var(--forty-percent);
+}
+
+/* Column widths */
+.pricing-compare-table .feature-col {
+    width: 40%;
+}
+
+.pricing-compare-table .tier-col {
+    width: 20%;
+    text-align: center;
+}
+
+/* Header row */
+.pricing-compare-table thead th {
+    padding: 1rem 0.75rem 1.25rem;
+    vertical-align: bottom;
+    border-bottom: 2px solid var(--thirty-percent);
+}
+
+.pricing-compare-table thead th.free-col {
+    background: rgba(45, 106, 156, 0.03);
+}
+
+.pricing-compare-table thead th.essentials-col {
+    background: rgba(45, 106, 156, 0.06);
+}
+
+.pricing-compare-table thead th.legacy-col {
+    background: rgba(45, 106, 156, 0.12);
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.compare-tier-badge {
+    display: inline-block;
+    background: var(--accent-color);
+    color: var(--text-color-dark);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.compare-tier-name {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ten-percent);
+}
+
+.compare-tier-sub {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-color-dark-muted);
+    font-weight: 400;
+    margin-top: 0.2rem;
+}
+
+/* Group header rows */
+.compare-group-header td {
+    padding: 0.9rem 0.75rem 0.4rem;
+    font-size: var(--font-nm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--thirty-percent);
+    border-top: 1px solid rgba(45, 106, 156, 0.15);
+    background: rgba(45, 106, 156, 0.03);
+}
+
+/* Data rows */
+.pricing-compare-table tbody tr:not(.compare-group-header) td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid rgba(45, 106, 156, 0.08);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.pricing-compare-table tbody tr:not(.compare-group-header) td.feature-name,
+.pricing-compare-table tbody tr:not(.compare-group-header) td:first-child {
+    text-align: left;
+    color: var(--text-color-dark);
+    font-size: var(--font-nm);
+}
+.pricing-compare-table tbody tr:not(.compare-group-header) td:nth-child(2) {
+    background: rgba(45, 106, 156, 0.04);
+}
+
+.pricing-compare-table tbody tr:not(.compare-group-header) td:nth-child(3) {
+    background: rgba(45, 106, 156, 0.06);
+}
+
+.pricing-compare-table tbody tr:not(.compare-group-header) td:nth-child(4) {
+    background: rgba(45, 106, 156, 0.08);
+}
+
+/* Hover */
+.pricing-compare-table tbody tr:not(.compare-group-header):hover td {
+    background: rgba(45, 106, 156, 0.06);
+}
+
+.pricing-compare-table tbody tr:not(.compare-group-header):hover td:nth-child(3) {
+    background: rgba(45, 106, 156, 0.1);
+}
+
+.pricing-compare-table tbody tr:not(.compare-group-header):hover td:nth-child(4) {
+    background: rgba(45, 106, 156, 0.14);
+}
+
+/* Icons */
+.compare-yes {
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.compare-no {
+    color: #c0c8d0;
+    font-size: 1.1rem;
+}
+
+/* Text badges inside cells */
+.compare-note {
+    font-size: 0.8rem;
+    color: var(--text-color-dark-muted);
+    font-style: italic;
+}
+
+.compare-addon {
+    font-size: 0.78rem;
+    color: var(--thirty-percent);
+    font-weight: 600;
+}
+
+/* Footer CTA row */
+.compare-cta-row td {
+    padding: 1.5rem 0.75rem 0.5rem;
+    text-align: center;
+    border-top: 2px solid var(--thirty-percent);
+}
+
+.compare-cta-btn {
+    display: inline-block;
+    padding: 0.55rem 1.25rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.compare-cta-btn:hover {
+    opacity: 0.85;
+}
+
+.compare-cta-btn.free-btn {
+    background: transparent;
+    border: 2px solid var(--thirty-percent);
+    color: var(--thirty-percent);
+}
+
+.compare-cta-btn.essentials-btn {
+    background: var(--thirty-percent);
+    color: #fff;
+    border: 2px solid var(--thirty-percent);
+}
+
+.compare-cta-btn.legacy-btn {
+    background: var(--accent-color);
+    color: var(--text-color-dark);
+    border: 2px solid var(--accent-color);
+}
+
+/* ── Mobile tab bar (hidden on desktop) ── */
+.compare-mobile-tabs {
+    display: none;
+}
+
+/* ── Mobile: tab-based single-column view ── */
+@media (max-width: 767px) {
+
+    /* Show the tab bar */
+    .compare-mobile-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .compare-tab {
+        padding: 0.45rem 1.1rem;
+        border: 2px solid var(--thirty-percent);
+        background: transparent;
+        color: var(--thirty-percent);
+        border-radius: 2rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        white-space: nowrap;
+    }
+
+    .compare-tab.active {
+        background: var(--thirty-percent);
+        color: #fff;
+    }
+
+    .compare-tab.legacy.active {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: var(--text-color-dark);
+    }
+
+    .compare-tab-badge {
+        display: inline-block;
+        background: var(--accent-color);
+        color: var(--text-color-dark);
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.75rem;
+        margin-left: 0.2rem;
+        vertical-align: middle;
+    }
+
+    .compare-tab.legacy.active .compare-tab-badge {
+        background: var(--text-color-dark);
+        color: var(--accent-color);
+    }
+
+    /* Hide ALL tier cells by default on mobile */
+    .pricing-compare-table [data-tier] {
+        display: none;
+    }
+
+    /* Show only the active tier's cells */
+    #compare-table[data-active-tier="free"] [data-tier="free"],
+    #compare-table[data-active-tier="essentials"] [data-tier="essentials"],
+    #compare-table[data-active-tier="legacy"] [data-tier="legacy"] {
+        display: table-cell;
+    }
+
+    /* Group header: span only 2 columns on mobile (feature + 1 tier) */
+    .compare-group-header td {
+        display: table-cell !important;
+    }
+
+    .compare-group-header td[colspan] {
+        /* reset colspan effect visually — only 2 cols visible */
+        width: auto;
+    }
+
+    /* Feature column takes more space when only 2 cols visible */
+    .pricing-compare-table .feature-col {
+        width: 65%;
+    }
+
+    .pricing-compare-table .tier-col {
+        width: 35%;
+    }
+
+    /* Tighter padding */
+    .pricing-compare-table thead th,
+    .pricing-compare-table tbody tr td,
+    .compare-cta-row td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.88rem;
+    }
+
+    /* Stack the CTA button for better tap target */
+    .compare-cta-row td {
+        padding-top: 1.25rem;
+    }
+
+    .compare-cta-btn {
+        display: block;
+        text-align: center;
+        padding: 0.65rem 1rem;
+    }
+
+    /* Hide desktop-only tier sub-labels inside the header */
+    .compare-tier-sub {
+        display: none;
+    }
+}
+
+
+/* ══════════════════════════════════════════════
+   10. INTERIOR PAGES — About & What It Does
    ══════════════════════════════════════════════ */
 
 /* Shared interior page hero banner */
@@ -1179,6 +1495,8 @@
     background: var(--background-color);
     padding: 5rem 0;
     text-align: center;
+    min-height: clamp(10em, 30em, 40em);
+    align-content: center;
 }
 
 .closing-headline {

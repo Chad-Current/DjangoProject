@@ -39,13 +39,21 @@ class CustomUser(AbstractUser):
     ]
 
     FREE_TIER_LIMITS = {
-        'contacts': 3,
-        'accounts': 2,
-        'devices': 2,
+        'contacts': 2,
+        'accounts': 1,
+        'devices': 1,
         'estate_documents': 1,
         'important_documents': 1,
     }
 
+    ESSENTIAL_TIER_LIMITS = {
+        'contacts': 3,
+        'accounts': 3,
+        'devices': 3,
+        'estate_documents': 3,
+        'important_documents': 5,
+    }
+    
     # ── Basic fields ──────────────────────────────────────────────────────────
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(default=False)

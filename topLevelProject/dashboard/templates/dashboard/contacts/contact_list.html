@@ -45,7 +45,7 @@
                                     <span>{{ contact.first_name }} {{ contact.last_name }}</span>
                                 </div>
                             </td>
-                            <td><span>{{ contact.contact_relation }}</span></td>
+                            <td><span class="contact-info">{{ contact.contact_relation }}</span></td>
                             <td><span class="contact-info">{{ contact.is_emergency_contact|yesno:"Yes,No" }}</span></td>
                             <td><span class="contact-info">{{ contact.phone|phone2numeric }}</span></td>
                             <td>

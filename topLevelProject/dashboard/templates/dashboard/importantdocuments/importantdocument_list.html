@@ -31,7 +31,8 @@
                         <tr>
                             <th>Document Category</th>
                             <th>Title</th>
-                            <th>Delegated to</th>
+                            <th>Description</th>
+                            <th>Assigned to</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -45,7 +46,8 @@
                                 </div>
                             </td>
                             <td><span class="contact-info">{{ document.name_or_title|truncatechars:50 }}</span></td>
-                            <td><span>{{ document.delegated_important_document_to }}</span></td>
+                            <td><span class="contact-info">{{ document.description|truncatechars:40|default:"—" }}</span></td>
+                            <td><span class="contact-info">{{ document.delegated_important_document_to }}</span></td>
                             <td>
                                 <div class="action-buttons">
                                     <a href="{% url 'dashboard:importantdocument_detail' document.slug %}"

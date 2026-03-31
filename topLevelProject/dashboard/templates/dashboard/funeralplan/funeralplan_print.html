@@ -1,0 +1,408 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funeral Plan &mdash; {{ user_full_name }}</title>
+  <link rel="stylesheet" href="{% static 'dashboard/css/funeralplan_print.css' %}">
+</head>
+<body>
+<div class="print-wrapper">
+
+  <!-- Screen toolbar (hidden on print) -->
+  <div class="screen-toolbar">
+    <button class="toolbar-btn toolbar-btn--primary" onclick="window.print()">
+      &#x1F5A8; Print / Save as PDF
+    </button>
+    <a href="{% url 'dashboard:funeralplan_detail' %}" class="toolbar-btn toolbar-btn--ghost">
+      &larr; Back to Summary
+    </a>
+    <span class="toolbar-spacer"></span>
+    <span class="toolbar-meta">Use your browser&rsquo;s Print or &ldquo;Save as PDF&rdquo; option</span>
+  </div>
+
+  <!-- Document header -->
+  <div class="doc-header">
+    <div class="doc-header__eyebrow">Digital Legacy Planning</div>
+    <div class="doc-header__title">Funeral &amp; Memorial Plan</div>
+    <div class="doc-header__name">{{ user_full_name }}</div>
+    <div class="doc-header__meta">Prepared {{ print_date }}</div>
+    {% if progress.is_complete %}
+      <div class="doc-header__status doc-header__status--complete">&#10003; All Sections Complete</div>
+    {% else %}
+      <div class="doc-header__status doc-header__status--partial">Partial &mdash; Some Sections Incomplete</div>
+    {% endif %}
+  </div>
+
+  <!-- 1 — Personal Information -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">1</span>
+      Personal Information
+    </div>
+    {% if has_personal_info %}
+      <div class="field-grid">
+        {% if plan.preferred_name %}
+          <div class="field">
+            <div class="field__label">Preferred Name</div>
+            <div class="field__value">{{ plan.preferred_name }}</div>
+          </div>
+        {% endif %}
+        {% if plan.occupation %}
+          <div class="field">
+            <div class="field__label">Occupation</div>
+            <div class="field__value">{{ plan.occupation }}</div>
+          </div>
+        {% endif %}
+        {% if plan.marital_status %}
+          <div class="field">
+            <div class="field__label">Marital Status</div>
+            <div class="field__value">{{ plan.marital_status }}</div>
+          </div>
+        {% endif %}
+        {% if plan.religion_or_spiritual_affiliation %}
+          <div class="field">
+            <div class="field__label">Religion / Affiliation</div>
+            <div class="field__value">{{ plan.religion_or_spiritual_affiliation }}</div>
+          </div>
+        {% endif %}
+        <div class="field">
+          <div class="field__label">Veteran</div>
+          {% if plan.is_veteran %}
+            <span class="field__badge field__badge--yes">Yes{% if plan.veteran_branch %} &mdash; {{ plan.veteran_branch }}{% endif %}</span>
+          {% else %}
+            <span class="field__badge field__badge--no">No</span>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <div class="section__empty">No personal information recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 2 — Service Preferences -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">2</span>
+      Service Preferences
+    </div>
+    {% if has_service_prefs %}
+      <div class="field-grid">
+        {% if plan.service_type %}
+          <div class="field">
+            <div class="field__label">Service Type</div>
+            <div class="field__value">{{ plan.service_type }}</div>
+          </div>
+        {% endif %}
+        {% if plan.preferred_funeral_home %}
+          <div class="field">
+            <div class="field__label">Funeral Home</div>
+            <div class="field__value">{{ plan.preferred_funeral_home }}</div>
+          </div>
+        {% endif %}
+        {% if plan.funeral_home_phone %}
+          <div class="field">
+            <div class="field__label">Funeral Home Phone</div>
+            <div class="field__value">{{ plan.funeral_home_phone }}</div>
+          </div>
+        {% endif %}
+        {% if plan.desired_timing %}
+          <div class="field">
+            <div class="field__label">Preferred Timing</div>
+            <div class="field__value">{{ plan.desired_timing }}</div>
+          </div>
+        {% endif %}
+        {% if plan.open_casket_viewing %}
+          <div class="field">
+            <div class="field__label">Viewing</div>
+            <div class="field__value">{{ plan.open_casket_viewing }}</div>
+          </div>
+        {% endif %}
+        {% if plan.officiant_name_freetext %}
+          <div class="field">
+            <div class="field__label">Officiant</div>
+            <div class="field__value">{{ plan.officiant_name_freetext }}</div>
+          </div>
+        {% endif %}
+        {% if plan.funeral_home_address %}
+          <div class="field field--full">
+            <div class="field__label">Funeral Home Address</div>
+            <div class="field__value">{{ plan.funeral_home_address }}</div>
+          </div>
+        {% endif %}
+        {% if plan.preferred_venue %}
+          <div class="field field--full">
+            <div class="field__label">Preferred Venue</div>
+            <div class="field__value">{{ plan.preferred_venue }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No service preferences recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 3 — Final Disposition -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">3</span>
+      Final Disposition
+    </div>
+    {% if has_disposition %}
+      <div class="field-grid">
+        {% if plan.disposition_method %}
+          <div class="field">
+            <div class="field__label">Method</div>
+            <div class="field__value">{{ plan.disposition_method }}</div>
+          </div>
+        {% endif %}
+        <div class="field">
+          <div class="field__label">Plot / Niche Purchased</div>
+          {% if plan.burial_plot_or_niche_purchased is True %}
+            <span class="field__badge field__badge--yes">Yes</span>
+          {% elif plan.burial_plot_or_niche_purchased is False %}
+            <span class="field__badge field__badge--no">No</span>
+          {% else %}
+            <div class="field__value">&mdash;</div>
+          {% endif %}
+        </div>
+        {% if plan.casket_type_preference %}
+          <div class="field">
+            <div class="field__label">Casket Preference</div>
+            <div class="field__value">{{ plan.casket_type_preference }}</div>
+          </div>
+        {% endif %}
+        {% if plan.urn_type_preference %}
+          <div class="field">
+            <div class="field__label">Urn Preference</div>
+            <div class="field__value">{{ plan.urn_type_preference }}</div>
+          </div>
+        {% endif %}
+        {% if plan.burial_or_interment_location %}
+          <div class="field field--full">
+            <div class="field__label">Location</div>
+            <div class="field__value">{{ plan.burial_or_interment_location }}</div>
+          </div>
+        {% endif %}
+        {% if plan.headstone_or_marker_inscription %}
+          <div class="field field--full">
+            <div class="field__label">Headstone / Marker Inscription Ideas</div>
+            <div class="field__value field__value--pre">{{ plan.headstone_or_marker_inscription }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No disposition preferences recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 4 — Ceremony -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">4</span>
+      Ceremony Personalization
+    </div>
+    {% if has_ceremony %}
+      <div class="field-grid">
+        {% if plan.flowers_or_colors %}
+          <div class="field">
+            <div class="field__label">Flowers / Colors</div>
+            <div class="field__value">{{ plan.flowers_or_colors }}</div>
+          </div>
+        {% endif %}
+        {% if plan.clothing_or_jewelry_description %}
+          <div class="field">
+            <div class="field__label">Clothing / Jewelry</div>
+            <div class="field__value">{{ plan.clothing_or_jewelry_description }}</div>
+          </div>
+        {% endif %}
+        {% if plan.music_choices %}
+          <div class="field field--full">
+            <div class="field__label">Music</div>
+            <div class="field__value field__value--pre">{{ plan.music_choices }}</div>
+          </div>
+        {% endif %}
+        {% if plan.readings_poems_or_scriptures %}
+          <div class="field field--full">
+            <div class="field__label">Readings / Poems / Scriptures</div>
+            <div class="field__value field__value--pre">{{ plan.readings_poems_or_scriptures }}</div>
+          </div>
+        {% endif %}
+        {% if plan.eulogists_notes %}
+          <div class="field field--full">
+            <div class="field__label">Eulogists / Speakers</div>
+            <div class="field__value field__value--pre">{{ plan.eulogists_notes }}</div>
+          </div>
+        {% endif %}
+        {% if plan.pallbearers_notes %}
+          <div class="field field--full">
+            <div class="field__label">Pallbearers</div>
+            <div class="field__value field__value--pre">{{ plan.pallbearers_notes }}</div>
+          </div>
+        {% endif %}
+        {% if plan.religious_cultural_customs %}
+          <div class="field field--full">
+            <div class="field__label">Religious / Cultural Customs</div>
+            <div class="field__value field__value--pre">{{ plan.religious_cultural_customs }}</div>
+          </div>
+        {% endif %}
+        {% if plan.items_to_display %}
+          <div class="field field--full">
+            <div class="field__label">Items to Display</div>
+            <div class="field__value field__value--pre">{{ plan.items_to_display }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No ceremony preferences recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 5 — Reception -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">5</span>
+      Reception / Gathering
+    </div>
+    {% if has_reception %}
+      <div class="field-grid">
+        <div class="field">
+          <div class="field__label">Gathering Desired</div>
+          {% if plan.reception_desired is True %}
+            <span class="field__badge field__badge--yes">Yes</span>
+          {% elif plan.reception_desired is False %}
+            <span class="field__badge field__badge--no">No</span>
+          {% else %}
+            <div class="field__value">Not specified</div>
+          {% endif %}
+        </div>
+        {% if plan.reception_location %}
+          <div class="field field--full">
+            <div class="field__label">Location</div>
+            <div class="field__value">{{ plan.reception_location }}</div>
+          </div>
+        {% endif %}
+        {% if plan.reception_food_preferences %}
+          <div class="field field--full">
+            <div class="field__label">Food / Catering</div>
+            <div class="field__value field__value--pre">{{ plan.reception_food_preferences }}</div>
+          </div>
+        {% endif %}
+        {% if plan.reception_atmosphere_notes %}
+          <div class="field field--full">
+            <div class="field__label">Atmosphere / Music</div>
+            <div class="field__value field__value--pre">{{ plan.reception_atmosphere_notes }}</div>
+          </div>
+        {% endif %}
+        {% if plan.reception_guest_list_notes %}
+          <div class="field field--full">
+            <div class="field__label">Guest List Notes</div>
+            <div class="field__value field__value--pre">{{ plan.reception_guest_list_notes }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No reception preferences recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 6 — Obituary -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">6</span>
+      Obituary &amp; Memorial
+    </div>
+    {% if has_obituary %}
+      <div class="field-grid">
+        {% if plan.obituary_photo_description %}
+          <div class="field field--full">
+            <div class="field__label">Photo Preference</div>
+            <div class="field__value">{{ plan.obituary_photo_description }}</div>
+          </div>
+        {% endif %}
+        {% if plan.obituary_key_achievements %}
+          <div class="field field--full">
+            <div class="field__label">Key Achievements / Memories</div>
+            <div class="field__value field__value--pre">{{ plan.obituary_key_achievements }}</div>
+          </div>
+        {% endif %}
+        {% if plan.obituary_publications %}
+          <div class="field field--full">
+            <div class="field__label">Publications / Websites</div>
+            <div class="field__value">{{ plan.obituary_publications }}</div>
+          </div>
+        {% endif %}
+        {% if plan.charitable_donations_in_lieu %}
+          <div class="field field--full">
+            <div class="field__label">Charitable Donations in Lieu of Flowers</div>
+            <div class="field__value">{{ plan.charitable_donations_in_lieu }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No obituary information recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 7 — Administrative -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">7</span>
+      Administrative &amp; Financial
+    </div>
+    {% if has_admin %}
+      <div class="field-grid">
+        {% if plan.funeral_insurance_policy_number %}
+          <div class="field">
+            <div class="field__label">Insurance Policy #</div>
+            <div class="field__value">{{ plan.funeral_insurance_policy_number }}</div>
+          </div>
+        {% endif %}
+        {% if plan.death_certificates_requested %}
+          <div class="field">
+            <div class="field__label">Death Certificates Needed</div>
+            <div class="field__value">{{ plan.death_certificates_requested }}</div>
+          </div>
+        {% endif %}
+        {% if plan.payment_arrangements %}
+          <div class="field field--full">
+            <div class="field__label">Payment Arrangements</div>
+            <div class="field__value field__value--pre">{{ plan.payment_arrangements }}</div>
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="section__empty">No administrative details recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- 8 — Additional Instructions -->
+  <div class="section">
+    <div class="section__heading">
+      <span class="section__heading-num">8</span>
+      Additional Instructions
+    </div>
+    {% if has_instructions %}
+      <div class="field-grid field-grid--single">
+        <div class="field">
+          <div class="field__value field__value--pre">{{ plan.additional_instructions }}</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="section__empty">No additional instructions recorded.</div>
+    {% endif %}
+  </div>
+
+  <!-- Document footer -->
+  <div class="doc-footer">
+    <span>
+      <span class="doc-footer__brand">Digital Legacy Planner</span>
+      &nbsp;&mdash;&nbsp;Funeral &amp; Memorial Plan
+    </span>
+    <span>Printed {{ print_date }} &nbsp;&bull;&nbsp; {{ user_full_name }}</span>
+  </div>
+
+</div><!-- /.print-wrapper -->
+</body>
+</html>

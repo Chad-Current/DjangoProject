@@ -7,7 +7,6 @@
 
 {% block content %}
 <div class="main">
-    <div class="listing-container">
         <div class="page-header">
             <div class="header-content">
                 <h1 class="page-title">Estate Documents</h1>
@@ -32,7 +31,8 @@
                             <tr>
                                 <th>Document Category</th>
                                 <th>Name / Title</th>
-                                <th>Delegated to</th>
+                                <th>Storage Location</th>
+                                <th>Assigned to</th>
                                 <th class="text-end">Actions</th>
                             </tr>
                         </thead>
@@ -45,8 +45,9 @@
                                         <span>{{ estate.estate_category }}</span>
                                     </div>
                                 </td>
-                                <td><span>{{ estate.name_or_title }}</span></td>
-                                <td><span>{{ estate.delegated_estate_to }}</span></td>
+                                <td><span class="contact-info">{{ estate.name_or_title }}</span></td>
+                                <td><span class="contact-info">{{ estate.estate_physical_location|default:"—" }}</span></td>
+                                <td><span class="contact-info">{{ estate.delegated_estate_to }}</span></td>
                                 <td>
                                     <div class="action-buttons">
                                         <a href="{% url 'dashboard:estate_detail' estate.slug %}" class="btn-action btn-edit" title="View estate">
@@ -111,6 +112,5 @@
             </div>
             {% endif %}
         </div>
-    </div>
 </div>
 {% endblock %}

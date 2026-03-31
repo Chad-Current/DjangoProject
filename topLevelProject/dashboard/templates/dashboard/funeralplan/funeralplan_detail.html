@@ -34,9 +34,9 @@
     <a href="{% url 'dashboard:funeralplan_index' %}" class="ob-btn ob-btn-ghost">
       <i class="fas fa-grid-2"></i> Overview
     </a>
-    <button onclick="window.print()" class="ob-btn ob-btn-ghost">
+    <a href="{% url 'dashboard:funeralplan_print' %}" class="ob-btn ob-btn-ghost">
       <i class="fas fa-print"></i> Print
-    </button>
+    </a>
     <span class="ob-spacer"></span>
     {% if can_modify %}
       <a href="{% url 'dashboard:funeralplan_delete' %}"
@@ -371,7 +371,7 @@
       <i class="fas fa-arrow-left"></i> Back to Overview
     </a>
     <a href="{% url 'dashboard:dashboard_home' %}" class="ob-btn ob-btn-ghost">Dashboard</a>
-    <button onclick="window.print()" class="ob-btn ob-btn-ghost">Print Summary</button>
+    <a href="{% url 'dashboard:funeralplan_print' %}" class="ob-btn ob-btn-ghost">Print Summary</a>
   </div>
 
 </div><!-- /.onboarding-wrap -->

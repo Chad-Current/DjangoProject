@@ -29,8 +29,10 @@
                 <table class="table contacts-table">
                     <thead>
                         <tr>
-                            <th>Relationship</th>
+                            <th>Contact</th>
                             <th>Information</th>
+                            <th>Legal Will Location</th>
+                            <th>Password Manager</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -38,10 +40,14 @@
                         {% for family in familyawareness_objects %}
                         <tr>
                             <td>
-                                <i class="fa fa-users contact-icon"></i>
-                                <span>{{ family.relation }}</span>
+                                <div class="contact-name">
+                                    <i class="fa fa-users contact-icon"></i>
+                                    <span>{{ family.relation }}</span>
+                                </div>
                             </td>
                             <td><span class="contact-info">{{ family.content|truncatechars:50 }}</span></td>
+                            <td><span class="contact-info">{{ family.is_location_of_legal_will|yesno:"Yes,No" }}</span></td>
+                            <td><span class="contact-info">{{ family.is_password_manager|yesno:"Yes,No" }}</span></td>
                             <td>
                                 <div class="action-buttons">
                                     <a href="{% url 'dashboard:familyawareness_detail' family.slug %}"

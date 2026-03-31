@@ -31,6 +31,7 @@
                         <tr>
                             <th>Category</th>
                             <th>Name</th>
+                            <th>2FA Device</th>
                             <th>Assigned to</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -44,7 +45,8 @@
                                     <span>{{ device.device_type }}</span>
                                 </div>
                             </td>
-                            <td><span>{{ device.device_name }}</span></td>
+                            <td><span class="contact-info">{{ device.device_name }}</span></td>
+                            <td><span class="contact-info">{{ device.used_for_2fa|yesno:"Yes,No" }}</span></td>
                             <td><span class="contact-info">{{ device.delegated_device_to|truncatechars:50 }}</span></td>
                             <td>
                                 <div class="action-buttons">

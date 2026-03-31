@@ -1,0 +1,246 @@
+{% extends 'baseapp/base.html' %}
+{% load static %}
+
+<title>{% block title %}Pricing — Digital Estate Planning{% endblock %}</title>
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════
+     COMPARISON TABLE
+     ═══════════════════════════════════════════════════════ -->
+<section class="pricing-compare-section">
+    <div class="container">
+        <div class="section-header text-center" style="margin-bottom: 2rem;">
+            <h3>See exactly what's included</h3>
+            <p class="section-subtitle">Every feature, side by side.</p>
+        </div>
+
+        <!-- Mobile tab bar — hidden on desktop -->
+        <div class="compare-mobile-tabs" role="tablist" aria-label="Select a plan to compare">
+            <button class="compare-tab active" data-tab="free"       onclick="compareShowTier('free')"       role="tab" aria-selected="true">Free</button>
+            <button class="compare-tab"         data-tab="essentials" onclick="compareShowTier('essentials')" role="tab" aria-selected="false">Essentials</button>
+            <button class="compare-tab legacy"  data-tab="legacy"     onclick="compareShowTier('legacy')"     role="tab" aria-selected="false">Legacy <span class="compare-tab-badge">Best</span></button>
+        </div>
+
+        <div class="pricing-compare-wrap">
+            <table class="pricing-compare-table" id="compare-table" data-active-tier="free">
+                <thead>
+                    <tr>
+                        <th class="feature-col feature-head">Feature</th>
+                        <th class="tier-col free-col" data-tier="free">
+                            <span class="compare-tier-name">Free</span>
+                            <span class="compare-tier-sub">No card required</span>
+                        </th>
+                        <th class="tier-col essentials-col" data-tier="essentials">
+                            <span class="compare-tier-name">Essentials</span>
+                            <span class="compare-tier-sub">$3.99/mo or $39.99/yr</span>
+                        </th>
+                        <th class="tier-col legacy-col" data-tier="legacy">
+                            <span class="compare-tier-badge">Best Value</span>
+                            <span class="compare-tier-name">Legacy</span>
+                            <span class="compare-tier-sub">$5.99/mo or $59.99/yr</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- ACCESS -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Access &amp; Editing</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Edit &amp; save data</td>
+                        <td data-tier="free"><span class="compare-note">Up to limits</span></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">View data after canceling</td>
+                        <td data-tier="free"><span class="compare-note">Always free</span></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Unlimited items per category</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                    <!-- CONTACTS -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Trusted Contacts</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Save trusted contacts</td>
+                        <td data-tier="free"><span class="compare-note">Up to 2</span></td>
+                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Unlimited contacts</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                    <!-- DIGITAL ACCOUNTS & DEVICES -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Digital Accounts &amp; Devices</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Save digital accounts</td>
+                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Save devices</td>
+                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Unlimited accounts &amp; devices</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                    <!-- DOCUMENTS -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Documents</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Estate documents (will, POA, etc.)</td>
+                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Important personal documents</td>
+                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="compare-note">Up to 5</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Unlimited documents</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                    <!-- PLANNING -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Planning &amp; Preferences</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Funeral &amp; final arrangement planning</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Family needs-to-know section</td>
+                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Built-in relevance review reminders</td>
+                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                    <!-- VAULT -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Password Vault (Optional Add-on)</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Encrypted credential storage</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><span class="compare-addon">+ $99.99/yr</span></td>
+                        <td data-tier="legacy"><span class="compare-addon">+ $99.99/yr</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Vault access audit log</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><span class="compare-addon">With add-on</span></td>
+                        <td data-tier="legacy"><span class="compare-addon">With add-on</span></td>
+                    </tr>
+
+                    <!-- SUPPORT -->
+                    <tr class="compare-group-header">
+                        <td colspan="4">Support &amp; Updates</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Email support</td>
+                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
+                        <td data-tier="essentials"><span class="compare-note">Standard</span></td>
+                        <td data-tier="legacy"><span class="compare-note">Priority</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Platform updates</td>
+                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Family recovery request system</td>
+                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                    </tr>
+
+                </tbody>
+
+                <!-- <tfoot>
+                    <tr class="compare-cta-row">
+                        <td></td>
+                        <td data-tier="free">
+                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn free-btn">Start Free</a>
+                        </td>
+                        <td data-tier="essentials">
+                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn essentials-btn">Get Essentials</a>
+                        </td>
+                        <td data-tier="legacy">
+                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn legacy-btn">Get Legacy</a>
+                        </td>
+                    </tr>
+                </tfoot> -->
+
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CLOSING CTA
+     ═══════════════════════════════════════════════════════ -->
+<section class="closing-cta">
+    <div class="container">
+        <h2 class="closing-headline">Ready to give your family peace of mind?</h2>
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start for Free</a>
+            <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    function compareShowTier(tier) {
+        // Update active tab button
+        document.querySelectorAll('.compare-tab').forEach(function(btn) {
+            var isActive = btn.dataset.tab === tier;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        // Update table data attribute (drives CSS)
+        document.getElementById('compare-table').dataset.activeTier = tier;
+    }
+</script>
+
+{% endblock %}

@@ -32,6 +32,7 @@
                         <tr>
                             <th>Category</th>
                             <th>Provider</th>
+                            <th>Instruction</th>
                             <th>Assigned to</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -45,9 +46,9 @@
                                     <span>{{ account.account_category }}</span>
                                 </div>
                             </td>
-                            <td><span>{{ account.account_name_or_provider }}</span></td>
-                            <td><span class="contact-info">{{ account.delegated_account_to|truncatechars:50 }}</span>
-                            </td>
+                            <td><span class="contact-info">{{ account.account_name_or_provider }}</span></td>
+                            <td><span class="contact-info">{{ account.get_keep_or_close_instruction_display }}</span></td>
+                            <td><span class="contact-info">{{ account.delegated_account_to|truncatechars:50 }}</span></td>
                             <td>
                                 <div class="action-buttons">
                                     <a href="{% url 'dashboard:account_detail' account.slug %}"

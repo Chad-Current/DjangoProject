@@ -1,23 +1,24 @@
 /* ============================================================
-   vault.css — Password Vault add-on styles
-   Requires stylesheet.css and forms.css to be loaded first
-   (provides design tokens, form layout, button styles).
+   vault.css — Password Vault styles
+   Loaded alongside listing.css / detail-view.css / forms.css
+   (those files provide design tokens, layout, and button base).
 
    Table of contents
    -----------------
-   1. Password row (form, list, detail)
+   1. Password row — shared across form, list, and detail
    2. Hint & utility text
-   3. Entry type badge
-   4. List page — header & filter row
-   5. List page — entry legend, pagination, empty state
-   6. Detail page — utility classes
+   3. List page — filter bar
+   4. List page — password cell (table row)
+   5. List page — pagination
+   6. Detail page — password input & action buttons
+   7. Detail page — countdown message
    ============================================================ */
 
 
 /* ============================================================
    1. PASSWORD ROW
-   Flex container used on every page that shows the password
-   input alongside Reveal / Hide / Copy action buttons.
+   Flex wrapper used on the form and detail pages alongside
+   the Reveal / Hide / Copy buttons.
    ============================================================ */
 
 .vault-pw-row {
@@ -50,7 +51,7 @@
   margin-top: 0.35rem;
 }
 
-/* Hides an element on initial render; JS removes this or sets display directly */
+/* Hides an element on initial render; JS sets display directly */
 .vault-hidden {
   display: none;
 }
@@ -62,103 +63,109 @@
 
 
 /* ============================================================
-   3. ENTRY TYPE BADGE
-   Pill label attached to the legend on list cards and the
-   detail page header.
+   3. LIST PAGE — FILTER BAR
+   Desktop and mobile type-filter button rows.
    ============================================================ */
 
-.vault-type-badge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 10px;
-  border-radius: 99px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  vertical-align: middle;
-}
-
-.vault-type-account {
-  background: rgba(39, 174, 96, 0.12);
-  color: #1e8449;
-  border: 1.5px solid rgba(39, 174, 96, 0.3);
-}
-
-.vault-type-device {
-  background: rgba(45, 106, 156, 0.1);
-  color: var(--thirty-percent);
-  border: 1.5px solid rgba(45, 106, 156, 0.3);
-}
-
-.vault-type-other {
-  background: var(--background-color);
-  color: var(--text-color-dark-muted);
-  border: 1.5px solid var(--seventy-percent);
-}
-
-
-/* ============================================================
-   4. LIST PAGE — HEADER & FILTER ROW
-   ============================================================ */
-
-/* Title row: "N entries" text left, "+ Add Entry" button right */
-.vault-list-header {
+.vault-filter-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.vault-list-header p {
-  font-family: var(--paragraph-font);
-  font-size: var(--font-nm);
-  color: var(--text-color-dark-muted);
-  margin: 0;
-}
-
-/* All / Accounts / Devices / Other filter buttons */
-.vault-filter-row {
+.vault-filter-bar--mobile {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
 }
 
-.vault-filter-row .btn {
-  font-size: 0.85rem;
+/* Individual filter pill buttons (anchors styled as btn-action) */
+.vault-filter-btn {
+  padding: 0.35rem 0.85rem;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+
+.vault-filter-bar--mobile .vault-filter-btn {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
 }
 
 
 /* ============================================================
-   5. LIST PAGE — ENTRY LEGEND, PAGINATION, EMPTY STATE
+   4. LIST PAGE — PASSWORD CELL
+   Flex wrapper and masked input inside each table row.
    ============================================================ */
 
-/* Legend inside each per-entry fieldset: label + type badge */
-.vault-entry-legend {
+.vault-pw-cell {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-/* Pagination row — centred buttons */
+.vault-list-pw-input {
+  width: 120px;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--ten-percent);
+  border-radius: 4px;
+  background: var(--bg-color);
+  font-family: monospace;
+}
+
+.vault-list-reveal-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+}
+
+
+/* ============================================================
+   5. LIST PAGE — PAGINATION
+   ============================================================ */
+
 .vault-pagination {
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
-/* "Page N of M" indicator between Previous / Next buttons */
-.vault-page-indicator {
-  padding: 0.45rem 1rem;
-  background: var(--background-color);
-  border: 1.5px solid var(--seventy-percent);
-  border-radius: 6px;
-  font-family: var(--main-font);
-  font-size: var(--font-sm);
-  color: var(--text-color-dark-muted);
+.vault-page-btn {
+  text-decoration: none;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
 }
 
-/* "Add your first entry" link inside the empty-state alert */
-.vault-add-link {
-  margin-left: 0.75rem;
+
+/* ============================================================
+   6. DETAIL PAGE — PASSWORD INPUT & ACTION BUTTONS
+   ============================================================ */
+
+.vault-detail-pw-input {
+  width: 160px;
+  font-size: 0.88rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--ten-percent);
+  border-radius: 5px;
+  background: var(--bg-color);
+  font-family: monospace;
+}
+
+/* Sizing for the Reveal Password / Copy buttons in the detail info-card */
+.vault-detail-action-btn {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+}
+
+
+/* ============================================================
+   7. DETAIL PAGE — COUNTDOWN MESSAGE
+   ============================================================ */
+
+.vault-countdown-msg {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--fifty-percent);
 }

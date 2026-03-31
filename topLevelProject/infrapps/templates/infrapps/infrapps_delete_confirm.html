@@ -1,67 +1,52 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
+{% block title %}Delete Vault Entry{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/delete.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-<div class="form-wrapper">
+<div class="main">
+  <div class="delete-view-wrapper">
+    <div class="delete-view">
 
-  {% if form.non_field_errors %}
-  <ul class="errorlist nonfield" role="alert">
-    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
-  </ul>
-  {% endif %}
+      <!-- Icon -->
+      <div class="delete-icon">
+        <i class="fas fa-key"></i>
+      </div>
 
-  <!-- ══════════════════════════════════════════
-       ENTRY SUMMARY
-  ══════════════════════════════════════════ -->
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Delete Vault Entry</legend>
+      <!-- Heading -->
+      <h2 class="delete-title">Delete Vault Entry?</h2>
+      <p class="delete-subtitle">You are about to permanently remove</p>
 
-    <div class="alert alert-warning">
-      <strong>Warning:</strong> This action is permanent. The encrypted password will be destroyed
-      and cannot be recovered.
+      <!-- Item chip -->
+      <div class="delete-item-name">
+        <i class="fas fa-key"></i>
+        {{ object.label }}
+        <span class="delete-item-meta">&mdash; {{ object.get_entry_type_display }}</span>
+      </div>
+
+      <!-- Warning -->
+      <div class="delete-warning-notice">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>This action cannot be undone. The encrypted password will be permanently destroyed and cannot be recovered.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="delete-actions">
+        <a href="{% url 'vault:vault_detail' object.slug %}" class="btn-cancel">
+          <i class="fas fa-arrow-left"></i> Cancel
+        </a>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn-confirm-delete">
+            <i class="fas fa-trash-alt"></i> Yes, Delete
+          </button>
+        </form>
+      </div>
+
     </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="The label of the entry being deleted.">Label</label>
-      <p><strong>{{ object.label }}</strong></p>
-    </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="The type of vault entry.">Entry Type</label>
-      <p>{{ object.get_entry_type_display }}</p>
-    </div>
-
-    {% if object.has_linked_source %}
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="The account or device this entry was linked to.">Linked to</label>
-      <p>{{ object.source_name }}</p>
-    </div>
-    {% endif %}
-
-    {% if object.username_or_email %}
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="The username or email stored with this entry.">Username / Email</label>
-      <p>{{ object.username_or_email }}</p>
-    </div>
-    {% endif %}
-
-  </fieldset>
-
-  <!-- ── ACTIONS ─────────────────────────────── -->
-  <form method="post" novalidate>
-    {% csrf_token %}
-    <div class="button-group">
-      <button type="submit" class="btn btn-danger">Yes, delete permanently</button>
-      <a href="{% url 'vault:vault_detail' object.slug %}" class="btn btn-secondary">Cancel</a>
-    </div>
-  </form>
-
-</div>
+  </div>
 </div>
 {% endblock %}

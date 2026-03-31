@@ -1,201 +1,269 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
+{% block title %}{{ entry.label }}{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-<div class="form-wrapper">
+<div class="main container py-4">
+
+  <!-- Header -->
+  <div class="device-header">
+    <h1><i class="fas fa-key"></i> {{ entry.label }}</h1>
+    <div class="subtitle">
+      {{ entry.get_entry_type_display }}
+      {% if entry.has_linked_source %}&nbsp;&mdash;&nbsp;Linked to {{ entry.source_name }}{% endif %}
+    </div>
+  </div>
 
   {% if messages %}
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+      <div class="alert-box" role="alert">
+        <i class="fas fa-info-circle"></i>
+        <p>{{ message }}</p>
+      </div>
     {% endfor %}
   {% endif %}
 
-  <!-- ══════════════════════════════════════════
-       IDENTITY
-  ══════════════════════════════════════════ -->
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">
-      {{ entry.label }}
-      <span class="vault-type-badge vault-type-{{ entry.entry_type }}">
-        {{ entry.get_entry_type_display }}
-      </span>
-    </legend>
+  <div class="row">
 
-    {% if entry.has_linked_source %}
-    <div class="form-field">
-      <label class="ob-label-tooltip"
-        title="The account or device this credential is linked to.">
-        Linked to
-        <span class="ob-tip" role="tooltip">The account or device this credential is linked to.</span>
-      </label>
-      <p>{{ entry.source_name }}</p>
-    </div>
-    {% endif %}
+    <!-- Left column -->
+    <div class="col-lg-6">
 
-    {% if entry.username_or_email %}
-    <div class="form-field">
-      <label class="ob-label-tooltip"
-        title="The username or email associated with this credential.">
-        Username / Email
-        <span class="ob-tip" role="tooltip">The username or email associated with this credential.</span>
-      </label>
-      <p>{{ entry.username_or_email }}</p>
-    </div>
-    {% endif %}
-
-  </fieldset>
-
-  <!-- ══════════════════════════════════════════
-       LINKED SOURCE DETAILS
-  ══════════════════════════════════════════ -->
-  {% if entry.linked_account %}
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Linked Account Details</legend>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="Provider name.">Provider</label>
-      <p>{{ entry.linked_account.account_name_or_provider }}</p>
-    </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="Account category.">Category</label>
-      <p>{{ entry.linked_account.account_category }}</p>
-    </div>
-
-    {% if entry.linked_account.website_url %}
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="Login URL.">Website URL</label>
-      <p>
-        <a href="{{ entry.linked_account.website_url }}" target="_blank" rel="noopener noreferrer">
-          {{ entry.linked_account.website_url }}
-        </a>
-      </p>
-    </div>
-    {% endif %}
-
-  </fieldset>
-  {% endif %}
-
-  {% if entry.linked_device %}
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Linked Device Details</legend>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="Device name.">Device Name</label>
-      <p>{{ entry.linked_device.device_name }}</p>
-    </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="Type of device.">Device Type</label>
-      <p>{{ entry.linked_device.device_type }}</p>
-    </div>
-
-  </fieldset>
-  {% endif %}
-
-  <!-- ══════════════════════════════════════════
-       PASSWORD REVEAL
-  ══════════════════════════════════════════ -->
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Encrypted Credential</legend>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip"
-        title="Click Reveal Password to decrypt and display for 15 seconds. The password auto-hides and is never stored in plain text.">
-        Password / PIN
-        <span class="ob-tip" role="tooltip">
-          Click Reveal Password to decrypt and display for 15 seconds.
-          Auto-hides after the timer expires.
-        </span>
-      </label>
-
-      <div class="vault-pw-row">
-        <input type="password"
-               id="pw-detail"
-               value="••••••••"
-               readonly
-               class="textinput"
-               aria-label="Encrypted password">
-        <button type="button"
-                id="vault-reveal-btn"
-                class="btn btn-secondary"
-                data-slug="{{ entry.slug }}"
-                data-csrf="{{ csrf_token }}">
-          Reveal Password
-        </button>
-        <button type="button"
-                id="vault-copy-btn"
-                class="btn btn-secondary vault-hidden"
-                aria-label="Copy password to clipboard">
-          Copy
-        </button>
+      <!-- Identity -->
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-id-badge"></i> Entry Details</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="dv-mt-2">
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-tag"></i> Entry Type</div>
+              <div class="info-value">{{ entry.get_entry_type_display }}</div>
+            </div>
+            {% if entry.username_or_email %}
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-user"></i> Username / Email</div>
+              <div class="info-value">{{ entry.username_or_email }}</div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
 
-      <p id="vault-countdown-msg" class="vault-hint vault-hidden">
-        Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
-      </p>
+      <!-- Encrypted credential -->
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-lock"></i> Encrypted Credential</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="dv-mt-2">
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-key"></i> Password / PIN</div>
+              <div class="info-value">
+                <div class="vault-pw-row">
+                  <input type="password"
+                         id="pw-detail"
+                         value="••••••••"
+                         readonly
+                         class="vault-detail-pw-input"
+                         aria-label="Encrypted password">
+                  <button type="button"
+                          id="vault-reveal-btn"
+                          class="btn-action btn-edit vault-detail-action-btn"
+                          data-slug="{{ entry.slug }}"
+                          data-csrf="{{ csrf_token }}">
+                    Reveal Password
+                  </button>
+                  <button type="button"
+                          id="vault-copy-btn"
+                          class="btn-action btn-view vault-detail-action-btn vault-hidden"
+                          aria-label="Copy password to clipboard">
+                    Copy
+                  </button>
+                </div>
+                <p id="vault-countdown-msg" class="vault-countdown-msg vault-hidden">
+                  Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="alert-box dv-mt-2">
+            <i class="fas fa-shield-alt"></i>
+            <p>Encrypted with AES-256 (Fernet). Decrypted only on explicit request and never stored in plain text.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-  </fieldset>
+    <!-- Right column -->
+    <div class="col-lg-6">
 
-  <!-- ══════════════════════════════════════════
-       NOTES
-  ══════════════════════════════════════════ -->
-  {% if entry.notes %}
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Notes</legend>
+      <!-- Linked account details -->
+      {% if entry.linked_account %}
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-globe"></i> Linked Account</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="dv-mt-2">
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-building"></i> Provider</div>
+              <div class="info-value">{{ entry.linked_account.account_name_or_provider }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-tag"></i> Category</div>
+              <div class="info-value">{{ entry.linked_account.account_category }}</div>
+            </div>
+            {% if entry.linked_account.website_url %}
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-link"></i> Website</div>
+              <div class="info-value">
+                <a href="{{ entry.linked_account.website_url }}" target="_blank" rel="noopener noreferrer">
+                  {{ entry.linked_account.website_url }}
+                </a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
-    <div class="form-field">
-      <p class="vault-pre-wrap">{{ entry.notes }}</p>
+      <!-- Linked device details -->
+      {% if entry.linked_device %}
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-laptop"></i> Linked Device</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="dv-mt-2">
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-tag"></i> Device Name</div>
+              <div class="info-value">{{ entry.linked_device.device_name }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-desktop"></i> Device Type</div>
+              <div class="info-value">{{ entry.linked_device.device_type }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Notes -->
+      {% if entry.notes %}
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="description-box dv-mt-2">
+            <p>{{ entry.notes|linebreaks }}</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Audit -->
+      <div class="info-card">
+        <div class="collapsible-header" aria-expanded="true">
+          <h3><i class="fas fa-history"></i> Audit</h3>
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="dv-mt-2">
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-calendar-plus"></i> Created</div>
+              <div class="info-value">{{ entry.created_at|date:"N j, Y \a\t g:i A" }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-edit"></i> Last Modified</div>
+              <div class="info-value">{{ entry.updated_at|date:"N j, Y \a\t g:i A" }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label"><i class="fas fa-eye"></i> Last Accessed</div>
+              <div class="info-value">
+                {% if entry.last_accessed %}
+                  {{ entry.last_accessed|date:"N j, Y \a\t g:i A" }}
+                {% else %}
+                  Never
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-  </fieldset>
-  {% endif %}
-
-  <!-- ══════════════════════════════════════════
-       AUDIT
-  ══════════════════════════════════════════ -->
-  <fieldset class="form-fieldset">
-    <legend class="form-fieldset-legend">Audit</legend>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="When this entry was first created.">Created</label>
-      <p>{{ entry.created_at|date:"N j, Y \a\t g:i A" }}</p>
-    </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="When this entry was last edited.">Last Modified</label>
-      <p>{{ entry.updated_at|date:"N j, Y \a\t g:i A" }}</p>
-    </div>
-
-    <div class="form-field">
-      <label class="ob-label-tooltip" title="When this password was last decrypted and revealed.">Last Accessed</label>
-      <p>{% if entry.last_accessed %}{{ entry.last_accessed|date:"N j, Y \a\t g:i A" }}{% else %}Never{% endif %}</p>
-    </div>
-
-  </fieldset>
-
-  <!-- ── ACTIONS ─────────────────────────────── -->
-  <div class="button-group">
-    <a href="{% url 'vault:vault_list' %}" class="btn btn-secondary">Back to Vault</a>
-    {% if can_modify %}
-      <a href="{% url 'vault:vault_update' entry.slug %}" class="btn btn-primary">Edit Entry</a>
-      <a href="{% url 'vault:vault_delete' entry.slug %}" class="btn btn-danger">Delete</a>
-    {% endif %}
   </div>
 
-</div>
+  <!-- Action buttons -->
+  {% if can_modify %}
+  <div class="action-buttons">
+    <a href="{% url 'vault:vault_update' entry.slug %}" class="btn-edit btn-custom">
+      <i class="fas fa-edit"></i> Edit Entry
+    </a>
+    <a href="{% url 'vault:vault_delete' entry.slug %}" class="btn-delete btn-custom">
+      <i class="fas fa-trash-alt"></i> Delete Entry
+    </a>
+    <a href="{% url 'vault:vault_list' %}" class="btn-back btn-custom">
+      <i class="fas fa-arrow-left"></i> Back to Vault
+    </a>
+  </div>
+  {% else %}
+  <div class="action-buttons">
+    <a href="{% url 'vault:vault_list' %}" class="btn-back btn-custom">
+      <i class="fas fa-arrow-left"></i> Back to Vault
+    </a>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.collapsible-header').forEach(function (header) {
+    var content = header.nextElementSibling;
+    if (!content || !content.classList.contains('collapsible-content')) return;
+    if (header.getAttribute('aria-expanded') === 'true') {
+      content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+      content.style.maxHeight = '0';
+      content.style.overflow  = 'hidden';
+    }
+    header.addEventListener('click', function () {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.overflow  = 'hidden';
+        requestAnimationFrame(function () { content.style.maxHeight = '0'; });
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.addEventListener('transitionend', function onEnd() {
+          content.style.maxHeight = 'none';
+          content.style.overflow  = 'visible';
+          content.removeEventListener('transitionend', onEnd);
+        });
+        header.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+});
+
 (function () {
   const revealBtn    = document.getElementById('vault-reveal-btn');
   const copyBtn      = document.getElementById('vault-copy-btn');
@@ -208,11 +276,11 @@
   let autoHide, ticker, secs = 15;
 
   function mask() {
-    pwField.type       = 'password';
-    pwField.value      = '••••••••';
+    pwField.type          = 'password';
+    pwField.value         = '••••••••';
     revealBtn.textContent = 'Reveal Password';
-    if (copyBtn)      copyBtn.style.display = 'none';
-    if (countdownMsg) countdownMsg.style.display = 'none';
+    if (copyBtn)      copyBtn.classList.add('vault-hidden');
+    if (countdownMsg) countdownMsg.classList.add('vault-hidden');
     clearTimeout(autoHide);
     clearInterval(ticker);
     secs = 15;
@@ -241,8 +309,8 @@
         pwField.type          = 'text';
         pwField.value         = data.password;
         revealBtn.textContent = 'Hide Password';
-        if (copyBtn)      copyBtn.style.display = 'inline-flex';
-        if (countdownMsg) { countdownMsg.style.display = 'block'; countdownEl.textContent = secs; }
+        if (copyBtn)      copyBtn.classList.remove('vault-hidden');
+        if (countdownMsg) { countdownMsg.classList.remove('vault-hidden'); countdownEl.textContent = secs; }
 
         ticker   = setInterval(function () {
           secs -= 1;

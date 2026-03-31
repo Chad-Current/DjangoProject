@@ -7,26 +7,41 @@ from django.urls import reverse
 
 class FreeTierLimitMixin:
     """
-    Blocks free-tier users from creating items beyond their per-category limit.
+    Blocks free-tier and Essentials-tier users from creating items beyond their per-category limit.
     Set free_tier_item to a key from CustomUser.FREE_TIER_LIMITS on each CreateView.
     Assumes the model has a profile__user lookup path.
+
+    Free-tier limits:      CustomUser.FREE_TIER_LIMITS
+    Essentials-tier limits: CustomUser.ESSENTIAL_TIER_LIMITS
+    Legacy tier:           no item limit
     """
     free_tier_item = None
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.is_free_tier():
+        user = request.user
+        if user.is_authenticated:
             key = self.free_tier_item
             if key:
                 from accounts.models import CustomUser
-                limit = CustomUser.FREE_TIER_LIMITS.get(key, 0)
-                count = self.model.objects.filter(profile__user=request.user).count()
-                if count >= limit:
-                    messages.warning(
-                        request,
-                        f"You've reached the free tier limit ({limit} {key.replace('_', ' ')}). "
-                        "Upgrade your subscription to add more."
-                    )
-                    return redirect(reverse('dashboard:dashboard_home'))
+                if user.is_free_tier():
+                    limit = CustomUser.FREE_TIER_LIMITS.get(key, 0)
+                    tier_label = "free tier"
+                elif user.can_modify_data() and user.subscription_tier == 'essentials':
+                    limit = CustomUser.ESSENTIAL_TIER_LIMITS.get(key, 0)
+                    tier_label = "Essentials tier"
+                else:
+                    limit = None
+                    tier_label = None
+
+                if limit is not None:
+                    count = self.model.objects.filter(profile__user=user).count()
+                    if count >= limit:
+                        messages.warning(
+                            request,
+                            f"You've reached the {tier_label} limit ({limit} {key.replace('_', ' ')}). "
+                            "Upgrade your subscription to add more."
+                        )
+                        return redirect(reverse('dashboard:dashboard_home'))
         return super().dispatch(request, *args, **kwargs)
 
 

@@ -1,6 +1,7 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
+{% block title %}{{ submit_label|default:"Vault Entry" }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'baseapp/css/forms.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'baseapp/css/tooltip_styles.css' %}" type="text/css">
@@ -115,7 +116,7 @@
       <div class="form-field">
         <label for="id_raw_password"
           class="ob-label-tooltip"
-          title="The password or PIN to encrypt and store. It will never be visible after saving.{% if password_optional %} Leave blank to keep the existing password.{% endif %}">
+          title="The password or PIN to encrypt and store.{% if password_optional %} Leave blank to keep the existing password.{% endif %}">
           Password / PIN
           {% if not password_optional %}<span class="req" aria-hidden="true">*</span>{% endif %}
           <span class="ob-tip" role="tooltip">
@@ -162,15 +163,13 @@
 
     </fieldset>
 
-    <!-- ══════════════════════════════════════════
-         SECURITY NOTICE
-    ══════════════════════════════════════════ -->
+    <!-- Security notice -->
     <div class="alert alert-warning">
       <strong>Security notice:</strong> Your password is encrypted with AES-256 (Fernet) before being saved.
       It is never stored in plain text and is only decrypted on explicit request within your authenticated session.
     </div>
 
-    <!-- ── ACTIONS ─────────────────────────────── -->
+    <!-- Actions -->
     <div class="button-group">
       <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
       <button type="button" class="btn btn-secondary" onclick="history.back();">Back</button>

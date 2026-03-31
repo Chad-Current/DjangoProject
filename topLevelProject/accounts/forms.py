@@ -89,34 +89,3 @@ class CustomSetPasswordForm(SetPasswordForm):
         }),
         strip=False,
     )
-
-
-
-    """
-    Serves the checklist PDF as a download and logs the event.
-    Place the PDF at:  <BASE_DIR>/static/baseapp/downloads/digital-estate-checklist.pdf
-    """
-    import os
-    from django.http import FileResponse
-
-    PDF_RELATIVE_PATH = ('static', 'baseapp', 'downloads', 'digital-estate-checklist.pdf')
-
-    def get(self, request):
-        import os
-        from django.conf import settings
-        from django.http import FileResponse, Http404
-
-        path = os.path.join(settings.BASE_DIR, *self.PDF_RELATIVE_PATH)
-        if not os.path.exists(path):
-            logger.error('Checklist PDF not found at %s', path)
-            raise Http404('Checklist file not found.')
-
-        logger.info(
-            'Checklist PDF downloaded by %s',
-            request.user.email if request.user.is_authenticated else 'anonymous'
-        )
-        return FileResponse(
-            open(path, 'rb'),
-            as_attachment=True,
-            filename='digital-estate-checklist.pdf',
-        )

@@ -7,7 +7,6 @@
 
 {% block content %}
     <div class="main">
-        <div class="listing-container">
             <!-- Header Section -->
             <div class="page-header">
                 <div class="header-content">
@@ -61,13 +60,13 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span>{{ review.get_item_type }}</span>
+                                        <span class="contact-info">{{ review.get_item_type }}</span>
                                     </td>
                                     <td>
-                                        <span>{{ review.review_date|date:"M d, Y" }}</span>
+                                        <span class="contact-info">{{ review.review_date|date:"M d, Y" }}</span>
                                     </td>
                                     <td>
-                                        <span class="{% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}fas fa-exclamation-triangle text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
+                                        <span class="contact-info {% if review.next_review_due %}{% now 'Y-m-d' as today %}{% if review.next_review_due|date:'Y-m-d' < today %}fas fa-exclamation-triangle text-danger{% elif review.next_review_due|date:'Y-m-d' == today %}text-warning{% endif %}{% endif %}">
                                             {{ review.next_review_due|date:"M d, Y"|default:"Not set" }}
                                         </span>
                                     </td>
@@ -194,7 +193,7 @@
 
                         <div class="card-actions" onclick="event.stopPropagation();">
                             <a href="{% url 'dashboard:relevancereview_detail' review.slug %}"
-                                class="btn-custom btn-back">
+                                class="btn-custom btn-view">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </a>
@@ -238,6 +237,5 @@
                 {% endif %}
 
             </div><!-- /.contacts-content -->
-        </div><!-- /.listing-container -->
     </div><!-- /.main -->
 {% endblock %}

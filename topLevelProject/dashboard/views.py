@@ -83,7 +83,7 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         if not user.is_authenticated:
             return super().dispatch(request, *args, **kwargs)
         
-        if not getattr(user, "has_paid", False):
+        if not user.has_paid:
             if user.is_free_tier():
                 try:
                     user.profile
@@ -344,9 +344,6 @@ class AccountListView(ViewAccessMixin, ListView):
             category_id = self.request.GET.get('account_category')
             if category_id:
                 queryset = queryset.filter(account_category=category_id)
-
-            if self.request.GET.get('critical'):
-                queryset = queryset.filter(is_critical=True)
 
             return queryset.order_by('-created_at')
         except Profile.DoesNotExist:
@@ -1051,6 +1048,63 @@ class FuneralPlanDetailView(FuneralPlanMixin, TemplateView):
         return context
 
 
+class FuneralPlanPrintView(FuneralPlanMixin, TemplateView):
+    template_name = 'dashboard/funeralplan/funeralplan_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        plan, _ = self.get_or_create_plan()
+        context.update(self._base_context())
+        context['plan']       = plan
+        context['page_title'] = "Print Funeral Plan"
+
+        user = self.request.user
+        context['user_full_name'] = (
+            f"{user.first_name} {user.last_name}".strip() or user.username
+        )
+        today = timezone.localdate()
+        context['print_date'] = f"{today.strftime('%B')} {today.day}, {today.year}"
+
+        context['has_personal_info'] = any([
+            plan.preferred_name, plan.occupation,
+            plan.marital_status, plan.religion_or_spiritual_affiliation,
+            plan.is_veteran,
+        ])
+        context['has_service_prefs'] = any([
+            plan.service_type, plan.preferred_funeral_home,
+            plan.preferred_venue, plan.officiant_contact,
+            plan.officiant_name_freetext, plan.desired_timing,
+            plan.open_casket_viewing,
+        ])
+        context['has_disposition'] = any([
+            plan.disposition_method, plan.burial_or_interment_location,
+            plan.casket_type_preference, plan.urn_type_preference,
+            plan.headstone_or_marker_inscription,
+        ])
+        context['has_ceremony'] = any([
+            plan.music_choices, plan.flowers_or_colors,
+            plan.readings_poems_or_scriptures, plan.eulogists_notes,
+            plan.pallbearers_notes, plan.clothing_or_jewelry_description,
+            plan.religious_cultural_customs, plan.items_to_display,
+        ])
+        context['has_reception'] = any([
+            plan.reception_desired, plan.reception_location,
+            plan.reception_food_preferences, plan.reception_atmosphere_notes,
+            plan.reception_guest_list_notes,
+        ])
+        context['has_obituary'] = any([
+            plan.obituary_photo_description, plan.obituary_key_achievements,
+            plan.obituary_publications, plan.charitable_donations_in_lieu,
+        ])
+        context['has_admin'] = any([
+            plan.funeral_insurance_policy_number,
+            plan.death_certificates_requested,
+            plan.payment_arrangements,
+        ])
+        context['has_instructions'] = bool(plan.additional_instructions)
+        return context
+
+
 class _FuneralPlanStepBase(FuneralPlanMixin, TemplateView):
     """
     Abstract base for the 8 section step views.
@@ -1162,62 +1216,6 @@ class FuneralPlanStep8View(_FuneralPlanStepBase):
     next_url      = None  # last step → summary
 
 
-class FuneralPlanDemoView(LoginRequiredMixin, TemplateView):
-    """Read-only demo preview of the funeral plan for free/demo users."""
-    template_name = 'dashboard/funeralplan/funeralplan_demo.html'
-    login_url = '/accounts/login/'
-
-    def dispatch(self, request, *args, **kwargs):
-        return redirect(reverse('dashboard:funeralplan_index'))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Funeral Plan — Demo Preview'
-        context['progress'] = {
-            'personal_info': True,
-            'service':       True,
-            'disposition':   True,
-            'ceremony':      True,
-            'reception':     True,
-            'obituary':      True,
-            'admin':         True,
-            'instructions':  True,
-            'is_complete':   True,
-        }
-        context['demo_plan'] = {
-            'preferred_name':                    'Robert',
-            'occupation':                        'Electrical Engineer',
-            'marital_status':                    'Married',
-            'religion_or_spiritual_affiliation': 'Methodist',
-            'is_veteran':                        True,
-            'service_type':                      'Traditional Funeral Service',
-            'preferred_funeral_home':            'Hennessey-Snyder Funeral Home, Ames IA',
-            'preferred_venue':                   'First United Methodist Church, Ames IA',
-            'officiant_name_freetext':           'Rev. Carol Hughes',
-            'desired_timing':                    'Within one week of passing, on a Saturday if possible',
-            'open_casket_viewing':               True,
-            'disposition_method':                'Burial',
-            'burial_or_interment_location':      'Iowa State Cemetery, Ames IA — Family plot, Section C',
-            'casket_type_preference':            'Solid oak, dark finish',
-            'headstone_or_marker_inscription':   '"Beloved Husband, Father & Veteran — He kept us safe."',
-            'music_choices':                     'Amazing Grace (hymn), On Eagle\'s Wings, Danny Boy',
-            'flowers_or_colors':                 'White lilies and blue irises — keep it simple',
-            'readings_poems_or_scriptures':      'Psalm 23, John 14:1-3',
-            'eulogists_notes':                   'Michael Johnson (son) and Emily Johnson (daughter)',
-            'pallbearers_notes':                 'Six nephews — contact Sarah for names',
-            'clothing_or_jewelry_description':   'Navy suit, American flag pin, wedding ring',
-            'reception_desired':                 True,
-            'reception_location':                'Church fellowship hall immediately following burial',
-            'obituary_key_achievements':         '35 years at Alliant Energy; coached little league 12 seasons; Eagle Scout leader',
-            'obituary_publications':             'Ames Tribune, Des Moines Register',
-            'charitable_donations_in_lieu':      'Donations to the Iowa Veterans Home Foundation appreciated',
-            'payment_arrangements':              'Pre-arranged with Hennessey-Snyder; policy on file',
-            'funeral_insurance_policy_number':   'GUL-2847193 — Principal Life Insurance',
-            'death_certificates_requested':      10,
-            'additional_instructions':           'Please play Iowa Fight Song quietly as guests arrive. No black clothing — wear something colorful.',
-        }
-        return context
-
 
 class FuneralPlanDeleteView(FuneralPlanMixin, TemplateView):
     template_name = 'dashboard/funeralplan/funeralplan_confirm_delete.html'
@@ -1296,7 +1294,7 @@ class RelevanceReviewListView(LoginRequiredMixin, ListView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not getattr(request.user, "has_paid", False) and not request.user.is_free_tier():
+        if not request.user.has_paid and not request.user.is_free_tier():
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -1366,7 +1364,7 @@ class RelevanceReviewDetailView(LoginRequiredMixin, DetailView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not getattr(request.user, "has_paid", False) and not request.user.is_free_tier():
+        if not request.user.has_paid and not request.user.is_free_tier():
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -1401,7 +1399,7 @@ class RelevanceReviewCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
+        if not user.has_paid:
             return redirect(reverse("accounts:payment"))
         if not user.can_modify_data():
             messages.error(request, "You don't have permission to create reviews.")
@@ -1460,7 +1458,7 @@ class RelevanceReviewUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
+        if not user.has_paid:
             return redirect(reverse("accounts:payment"))
         if not user.can_modify_data():
             messages.error(request, "You don't have permission to edit reviews.")
@@ -1514,9 +1512,9 @@ class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not getattr(user, "has_paid", False):
+        if not user.has_paid:
             return redirect(reverse("accounts:payment"))
-        if not user.can_delete_data():
+        if not user.can_modify_data():
             messages.error(request, "You don't have permission to delete reviews.")
             return redirect(reverse("dashboard:dashboard_home"))
         return super().dispatch(request, *args, **kwargs)
@@ -1561,7 +1559,7 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
     login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and not getattr(request.user, "has_paid", False):
+        if request.user.is_authenticated and not request.user.has_paid:
             return JsonResponse({
                 'success': False,
                 'error':   'Payment required to access this feature'
