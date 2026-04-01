@@ -38,11 +38,6 @@ class CustomUserAdmin(UserAdmin):
                 'payment_date',
             ),
         }),
-        ('Legacy One-Time Payment Fields', {
-            'fields': ('essentials_expires', 'legacy_granted_date'),
-            'classes': ('collapse',),
-            'description': 'Used only for users who purchased under the old one-time payment model.',
-        }),
         ('Add-on Subscription', {
             'fields': ('addon_active', 'addon_payment_date', 'addon_expires'),
         }),

@@ -57,7 +57,6 @@
 .vault-dashboard {
   min-height: 100vh;
   padding: 2rem;
-  background: 
 }
 
 /* ─── Vault Hero ─────────────────────────────────────────────────────────── */
@@ -180,7 +179,7 @@
   display: block;
   font-size: 2.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--ten-percent);
   line-height: 1;
   margin-bottom: 0.25rem;
 }
@@ -487,18 +486,17 @@
 .vault-visual .security-log {
   background: transparent;
   box-shadow: none;
-  padding: 0;
-  margin-top: 2rem;
-  border-top: 1px solid #dce6f0;
   padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--seventy-percent);
 }
 
 .security-log {
-  background: rgba(231, 239, 247, 0.05);
+  background: var(--background-color);
   border-radius: 20px;
   padding: 2rem;
   margin-top: 2rem;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
 }
 
 .security-log h3 {
@@ -528,7 +526,7 @@
   transition: all 0.3s ease;
 }
 
-.log-entry:hover { background: #dce6f0; }
+.log-entry:hover { background: var(--seventy-percent); }
 
 .log-icon {
   width: 32px;
@@ -541,9 +539,9 @@
   flex-shrink: 0;
 }
 
-.log-icon.success { background: rgba(98,162,206,0.15);  color: var(--thirty-percent); }
-.log-icon.warning { background: rgba(255,166,43,0.15);  color: var(--accent-color); }
-.log-icon.alert   { background: rgba(37,78,112,0.15);   color: var(--ten-percent); }
+.log-icon.success_icon { background: rgba(98,162,206,0.15);  color: var(--thirty-percent); }
+.log-icon.warning_icon   { background: rgba(252, 143, 1, 0.15);   color: rgb(252, 143, 1); }
+.log-icon.alert_icon { background: rgba(255,0,1,0.15);  color: rgba(255,0,0,1); }
 
 .log-content { flex: 1; }
 
@@ -569,12 +567,12 @@
 }
 
 .upcoming-reviews {
-  background: rgba(231, 239, 247, 0.05);
+  background: var(--background-color);
   border-radius: 20px;
   border: solid 1px var(--seventy-percent);
   padding: 2rem;
   margin-top: 3rem;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
 }
 
 .upcoming-reviews h3 {
@@ -613,7 +611,7 @@
 }
 
 .review-item-link:hover .review-item {
-  background: #dce6f0;
+  background: var(--seventy-percent);
   border-left-color: var(--sixty-percent);
   transform: translateX(3px);
 }
@@ -682,9 +680,13 @@
 
 .status-badge i { font-size: 0.85em; }
 
-.status-badge.overdue  { background: rgba(37,78,112,0.1);   color: var(--ten-percent); }
-.status-badge.warning  { background: rgba(255,166,43,0.1);  color: var(--accent-color); }
-.status-badge.upcoming { background: rgba(98,162,206,0.1);  color: var(--thirty-percent); }
+.log-icon.success_icon { background: rgba(98,162,206,0.15);  color: var(--thirty-percent); }
+.log-icon.warning_icon   { background: rgba(252, 143, 1, 0.15);   color: rgb(252, 143, 1); }
+.log-icon.alert_icon { background: rgba(255,0,1,0.15);  color: rgba(255,0,0,1); }
+
+.status-badge.overdue  { background: rgba(255,0,1,0.15);  color: rgba(255,0,0,1); }
+.status-badge.warning  { background: rgba(252, 143, 1, 0.15);   color: rgb(252, 143, 1); }
+.status-badge.upcoming { background: rgba(98,162,206,0.15);  color: var(--thirty-percent); }
 
 .free-banner {
   display: flex;
@@ -707,7 +709,7 @@
 .review-footer {
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #dce6f0;
+  border-top: 1px solid var(--seventy-percent);
   text-align: center;
 }
 
@@ -782,7 +784,7 @@
 }
 
 @media (max-width: 640px) {
-  .progress-percentage { font-size: var(--font-sm); }
+  .progress-percentage { font-size: 1.5rem; }
   .progress-label      { font-size: var(--font-sm); }
   .review-item {
     flex-flow: column wrap;

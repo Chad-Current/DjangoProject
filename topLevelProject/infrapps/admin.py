@@ -100,7 +100,6 @@ class VaultEntryAdmin(admin.ModelAdmin):
     # ── List view ────────────────────────────────────────────────────────────
     list_display = (
         'label',
-        'entry_type',
         'profile_owner',
         'linked_source',
         'username_or_email',
@@ -109,7 +108,7 @@ class VaultEntryAdmin(admin.ModelAdmin):
         'updated_at',
     )
     list_display_links = ('label',)
-    list_filter        = ('entry_type', 'created_at', 'updated_at')
+    list_filter        = ('created_at', 'updated_at')
     search_fields      = (
         'label',
         'username_or_email',
@@ -137,7 +136,6 @@ class VaultEntryAdmin(admin.ModelAdmin):
         }),
         ('Entry Details', {
             'fields': (
-                'entry_type',
                 'label',
                 'username_or_email',
                 'notes',
@@ -146,8 +144,7 @@ class VaultEntryAdmin(admin.ModelAdmin):
         ('Linked Source', {
             'description': (
                 'Link this entry to one of the user\'s existing accounts or devices. '
-                'Leave both blank for a standalone entry. '
-                '<strong>Do not link to both simultaneously.</strong>'
+                '<strong>Exactly one must be set.</strong>'
             ),
             'fields': ('linked_account', 'linked_device'),
         }),

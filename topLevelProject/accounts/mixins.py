@@ -5,6 +5,38 @@ from django.http import Http404
 from django.urls import reverse
 
 
+class LapsedViewLimitMixin:
+    """
+    Applied to ListViews. When the requesting user is a lapsed subscriber
+    (has previously paid but subscription is no longer active), caps the
+    display to FREE_TIER_LIMITS and injects banner context.
+    Subclass must set free_tier_item to the matching FREE_TIER_LIMITS key.
+
+    Limiting is applied in get_context_data() by patching self.object_list
+    before the paginator runs. This works even when the subclass get_queryset()
+    builds its own queryset without calling super().
+    """
+    free_tier_item = None  # e.g. 'contacts'
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        if user.is_authenticated and user.is_lapsed_subscriber():
+            limit = user.FREE_TIER_LIMITS.get(self.free_tier_item, 0)
+            full_list = self.object_list
+            lapsed_total = (
+                full_list.count() if hasattr(full_list, 'count') else len(full_list)
+            )
+            # Patch object_list before super() runs the paginator
+            self.object_list = list(full_list[:limit])
+            context = super().get_context_data(**kwargs)
+            context['is_lapsed'] = True
+            context['lapsed_total'] = lapsed_total
+            context['lapsed_limit'] = limit
+        else:
+            context = super().get_context_data(**kwargs)
+        return context
+
+
 class FreeTierLimitMixin:
     """
     Blocks free-tier and Essentials-tier users from creating items beyond their per-category limit.
@@ -59,12 +91,10 @@ class PaidUserRequiredMixin(UserPassesTestMixin):
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
-            if self.request.user.subscription_tier == 'essentials' and not self.request.user.is_essentials_edit_active():
-                messages.warning(self.request, 'Your Essentials tier edit access has expired. You now have view-only access. Upgrade to Legacy for lifetime access.')
-            else:
-                messages.warning(self.request, 'An active subscription is required to access this feature.')
+            messages.warning(self.request, 'An active subscription is required to access this feature.')
             return redirect('accounts:payment')
         return redirect('accounts:login')
+
 
 class AddonRequiredMixin(LoginRequiredMixin):
     """
@@ -124,17 +154,7 @@ class UserOwnsObjectMixin(LoginRequiredMixin):
     def get_queryset(self):
         """Filter queryset to only show objects owned by current user"""
         queryset = super().get_queryset()
-        
-        # Handle both simple and nested field lookups
-        if '__' in self.owner_field:
-            # For nested lookups like 'profile__user' or 'account__profile__user'
-            # Django's ORM can handle this directly
-            filter_kwargs = {self.owner_field: self.request.user}
-        else:
-            # For simple field lookups like 'user'
-            filter_kwargs = {self.owner_field: self.request.user}
-        
-        return queryset.filter(**filter_kwargs)
+        return queryset.filter(**{self.owner_field: self.request.user})
     
     def get_object(self, queryset=None):
         """Ensure user can only access their own object"""
@@ -192,10 +212,7 @@ class DeleteAccessMixin(LoginRequiredMixin):
         if request.user.is_free_tier():
             return super().dispatch(request, *args, **kwargs)
         if not request.user.can_modify_data():
-            if request.user.subscription_tier == 'essentials' and not request.user.is_essentials_edit_active():
-                messages.warning(request, 'Your Essentials tier edit access has expired.')
-            else:
-                messages.warning(request, 'An active subscription is required to delete items.')
+            messages.warning(request, 'An active subscription is required to delete items.')
             return redirect('accounts:payment')
         return super().dispatch(request, *args, **kwargs)
     
@@ -210,9 +227,9 @@ class DeleteAccessMixin(LoginRequiredMixin):
         obj = super().get_object(queryset)
         owner = obj
         for field in self.owner_field.split('__'):
-            owner = getattr(owner, field)
-        # if owner is None:
-        #     raise Http404('Owner not found')
+            owner = getattr(owner, field, None)
+            if owner is None:
+                raise Http404('Owner not found')
         if owner != self.request.user:
             raise Http404("You don't have permission to delete this object")
         return obj

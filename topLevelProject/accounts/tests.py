@@ -41,20 +41,28 @@ User = get_user_model()
 def make_user(username='user', email='user@example.com', password='StrongPass1!', **kw):
     return User.objects.create_user(username=username, email=email, password=password, **kw)
 
-def make_essentials(username='ess', email='ess@example.com'):
+def make_stripe_user(username='ess', email='ess@example.com', tier='essentials'):
     u = make_user(username=username, email=email)
-    u.upgrade_to_essentials()
+    u.subscription_tier = tier
+    u.stripe_subscription_id = 'sub_test'
+    u.subscription_status = 'active'
+    u.has_paid = True
+    u.payment_date = timezone.now()
+    u.save()
     return u
 
 def make_legacy(username='leg', email='leg@example.com'):
-    u = make_user(username=username, email=email)
-    u.upgrade_to_legacy()
-    return u
+    return make_stripe_user(username=username, email=email, tier='legacy')
 
-def make_expired_essentials(username='exp', email='exp@example.com'):
-    u = make_essentials(username=username, email=email)
-    u.essentials_expires = timezone.now() - timedelta(days=1)
-    u.save(update_fields=['essentials_expires'])
+def make_lapsed_user(username='lapsed', email='lapsed@example.com'):
+    """User who previously had a subscription but it's now canceled."""
+    u = make_user(username=username, email=email)
+    u.subscription_tier = 'essentials'
+    u.stripe_subscription_id = 'sub_canceled'
+    u.subscription_status = 'canceled'
+    u.has_paid = True
+    u.payment_date = timezone.now()
+    u.save()
     return u
 
 
@@ -97,13 +105,13 @@ def test_unauthenticated_user_fails(self):
         self.assertFalse(self._test_func(make_user(username='u1', email='u1@x.com')))
 
     def test_active_essentials_passes(self):
-        self.assertTrue(self._test_func(make_essentials(username='u2', email='u2@x.com')))
+        self.assertTrue(self._test_func(make_stripe_user(username='u2', email='u2@x.com')))
 
     def test_legacy_passes(self):
         self.assertTrue(self._test_func(make_legacy(username='u3', email='u3@x.com')))
 
-    def test_expired_essentials_fails(self):
-        self.assertFalse(self._test_func(make_expired_essentials(username='u4', email='u4@x.com')))
+    def test_lapsed_subscriber_fails(self):
+        self.assertFalse(self._test_func(make_lapsed_user(username='u4', email='u4@x.com')))
 
     def test_inactive_user_fails(self):
         user = make_legacy(username='u5', email='u5@x.com')
@@ -123,26 +131,8 @@ def test_unauthenticated_user_fails(self):
         # Payment page itself is accessible (LoginRequired only) — just checking we get there
         self.assertEqual(response.status_code, 200)
 
-    def test_expired_essentials_message_content(self):
-        """Expired Essentials users see a specific expiry warning, not the generic one."""
-        factory = RequestFactory()
-        request = factory.get('/fake/')
-        request.user = make_expired_essentials(username='msgtest', email='msg@x.com')
-
-        # Attach message middleware manually
-        from django.contrib.messages.storage.fallback import FallbackStorage
-        setattr(request, 'session', self.client.session)
-        setattr(request, '_messages', FallbackStorage(request))
-
-        mixin = PaidUserRequiredMixin()
-        mixin.request = request
-        mixin.handle_no_permission()
-
-        msgs = list(get_messages(request))
-        self.assertTrue(any('expired' in str(m).lower() for m in msgs))
-
     def test_no_subscription_message_content(self):
-        """Users with no subscription see the generic 'payment required' message."""
+        """Users with no subscription see the generic subscription required message."""
         factory = RequestFactory()
         request = factory.get('/fake/')
         request.user = make_user(username='nosub', email='nosub@x.com')
@@ -156,7 +146,7 @@ def test_unauthenticated_user_fails(self):
         mixin.handle_no_permission()
 
         msgs = list(get_messages(request))
-        self.assertTrue(any('payment required' in str(m).lower() for m in msgs))
+        self.assertTrue(any('subscription' in str(m).lower() for m in msgs))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -181,17 +171,17 @@ class ViewOnlyMixinTest(TestCase):
         self.assertFalse(self._test_func(make_user(username='vp1', email='vp1@x.com')))
 
     def test_active_essentials_passes(self):
-        self.assertTrue(self._test_func(make_essentials(username='vp2', email='vp2@x.com')))
+        self.assertTrue(self._test_func(make_stripe_user(username='vp2', email='vp2@x.com')))
 
     def test_legacy_passes(self):
         self.assertTrue(self._test_func(make_legacy(username='vp3', email='vp3@x.com')))
 
-    def test_expired_essentials_can_still_view(self):
+    def test_lapsed_subscriber_can_still_view(self):
         """
-        Critical: expired Essentials users lose edit access but MUST
-        retain view access (can_view_data returns True for any has_paid essentials user).
+        Critical: lapsed subscribers lose edit access but MUST
+        retain view access (can_view_data returns True for any has_paid user).
         """
-        self.assertTrue(self._test_func(make_expired_essentials(username='vp4', email='vp4@x.com')))
+        self.assertTrue(self._test_func(make_lapsed_user(username='vp4', email='vp4@x.com')))
 
     def test_anonymous_user_fails(self):
         from django.contrib.auth.models import AnonymousUser
@@ -233,8 +223,8 @@ class UserOwnsObjectMixinTest(TestCase):
     """
 
     def setUp(self):
-        self.owner = make_essentials(username='owner', email='owner@x.com')
-        self.other = make_essentials(username='other', email='other@x.com')
+        self.owner = make_stripe_user(username='owner', email='owner@x.com')
+        self.other = make_stripe_user(username='other', email='other@x.com')
 
     def _make_mixin_with_user(self, user, owner_field='user'):
         mixin = UserOwnsObjectMixin()
@@ -401,42 +391,30 @@ class DeleteAccessMixinTest(TestCase):
         self.assertTrue(user.can_modify_data())
 
     def test_active_essentials_passes_dispatch(self):
-        user = make_essentials(username='del2', email='del2@x.com')
+        user = make_stripe_user(username='del2', email='del2@x.com')
         self.assertTrue(user.can_modify_data())
 
     def test_unpaid_user_blocked_by_dispatch(self):
         user = make_user(username='del3', email='del3@x.com')
         self.assertFalse(user.can_modify_data())
 
-    def test_expired_essentials_blocked_by_dispatch(self):
-        user = make_expired_essentials(username='del4', email='del4@x.com')
+    def test_lapsed_subscriber_blocked_by_dispatch(self):
+        user = make_lapsed_user(username='del4', email='del4@x.com')
         self.assertFalse(user.can_modify_data())
 
-    def test_expired_essentials_gets_expiry_message(self):
-        """Expired Essentials users should see the expiry-specific warning."""
-        user = make_expired_essentials(username='del5', email='del5@x.com')
+    def test_lapsed_user_gets_subscription_required_message(self):
+        """Lapsed subscribers (canceled subscription) should see the subscription required warning."""
+        user = make_lapsed_user(username='del5', email='del5@x.com')
         request = self._build_mixin_request(user)
         mixin = DeleteAccessMixin()
         mixin.request = request
 
-        # Simulate the message branch directly
         from django.contrib import messages as django_messages
-        if user.subscription_tier == 'essentials' and not user.is_essentials_edit_active():
-            django_messages.warning(request, 'Your Essentials tier edit access has expired.')
+        if not user.can_modify_data():
+            django_messages.warning(request, 'An active subscription is required to delete items.')
 
         msgs = list(get_messages(request))
-        self.assertTrue(any('expired' in str(m).lower() for m in msgs))
-
-    def test_unpaid_user_gets_payment_required_message(self):
-        user = make_user(username='del6', email='del6@x.com')
-        request = self._build_mixin_request(user)
-
-        from django.contrib import messages as django_messages
-        if user.subscription_tier != 'essentials' or user.is_essentials_edit_active():
-            django_messages.warning(request, 'Payment required to delete items.')
-
-        msgs = list(get_messages(request))
-        self.assertTrue(any('payment required' in str(m).lower() for m in msgs))
+        self.assertTrue(any('subscription' in str(m).lower() for m in msgs))
 
     def test_delete_access_mixin_owner_field_default(self):
         mixin = DeleteAccessMixin()
@@ -444,8 +422,8 @@ class DeleteAccessMixinTest(TestCase):
 
     def test_get_object_raises_http404_for_wrong_owner(self):
         """Non-owner accessing delete URL should get Http404."""
-        owner = make_essentials(username='del7', email='del7@x.com')
-        other = make_essentials(username='del8', email='del8@x.com')
+        owner = make_stripe_user(username='del7', email='del7@x.com')
+        other = make_stripe_user(username='del8', email='del8@x.com')
 
         class FakeObj:
             pass
@@ -522,21 +500,21 @@ class CombinedMixinTest(TestCase):
         # test_func comes from PaidUserRequiredMixin via MRO
         self.assertFalse(mixin.test_func())
 
-    def test_view_access_test_func_allows_expired_essentials(self):
+    def test_view_access_test_func_allows_lapsed_subscriber(self):
         """ViewAccessMixin test_func must use can_view_data, not can_modify_data."""
-        expired = make_expired_essentials(username='va1', email='va1@x.com')
+        lapsed = make_lapsed_user(username='va1', email='va1@x.com')
         mixin = ViewAccessMixin()
 
         class FakeRequest:
-            user = expired
+            user = lapsed
 
         mixin.request = FakeRequest()
-        # test_func comes from ViewOnlyMixin via MRO — expired essentials CAN view
+        # test_func comes from ViewOnlyMixin via MRO — lapsed subscribers CAN view
         self.assertTrue(mixin.test_func())
 
-    def test_full_access_denies_expired_essentials(self):
-        """Expired Essentials cannot modify — FullAccessMixin must block them."""
-        expired = make_expired_essentials(username='fa2', email='fa2@x.com')
+    def test_full_access_denies_lapsed_subscriber(self):
+        """Lapsed subscribers cannot modify — FullAccessMixin must block them."""
+        expired = make_lapsed_user(username='fa2', email='fa2@x.com')
         mixin = FullAccessMixin()
 
         class FakeRequest:

@@ -128,7 +128,7 @@ def _make_vault_inline():
             model = VaultEntry
             verbose_name = 'Vault Entry (metadata only)'
             verbose_name_plural = 'Vault Entries (metadata only — passwords hidden)'
-            fields = ('label', 'entry_type', 'username_or_email', 'linked_account', 'linked_device', 'notes')
+            fields = ('label', 'username_or_email', 'linked_account', 'linked_device', 'notes')
             readonly_fields = fields
 
             def get_queryset(self, request):

@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.db.models import Min, Max
 from datetime import datetime, timedelta
 from django.contrib.messages.views import SuccessMessageMixin
-from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin, FreeTierLimitMixin
+from accounts.mixins import FullAccessMixin, ViewAccessMixin, DeleteAccessMixin, FreeTierLimitMixin, LapsedViewLimitMixin
 from .models import (
     Profile,
     Contact,
@@ -173,14 +173,6 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['can_view']      = user.can_view_data()
             context['is_free_tier']  = user.is_free_tier()
 
-            if user.subscription_tier == 'essentials':
-                context['is_edit_active']    = user.is_essentials_edit_active()
-                context['days_remaining']    = user.days_until_essentials_expires()
-                context['essentials_expires']= user.essentials_expires
-
-            if user.subscription_tier == 'legacy':
-                context['legacy_granted'] = user.legacy_granted_date
-
             context['show_onboarding'] = self._should_show_onboarding(context)
 
         except Profile.DoesNotExist:
@@ -329,12 +321,13 @@ class ProfileUpdateView(FullAccessMixin, UpdateView):
 # ACCOUNT VIEWS
 # ============================================================================
 
-class AccountListView(ViewAccessMixin, ListView):
+class AccountListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = Account
     template_name       = 'dashboard/accounts/account_list.html'
     context_object_name = 'accounts'
     owner_field         = 'profile__user'
     paginate_by         = 20
+    free_tier_item      = 'accounts'
 
     def get_queryset(self):
         try:
@@ -353,11 +346,13 @@ class AccountListView(ViewAccessMixin, ListView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         context['can_modify'] = user.can_modify_data() or user.is_free_tier()
-        try:
-            profile = Profile.objects.get(user=user)
-            context['accounts'] = Account.objects.filter(profile=profile)
-        except Profile.DoesNotExist:
-            context['accounts'] = Account.objects.none()
+        # Skip re-fetch when lapsed — super() already set the limited list
+        if not context.get('is_lapsed'):
+            try:
+                profile = Profile.objects.get(user=user)
+                context['accounts'] = Account.objects.filter(profile=profile)
+            except Profile.DoesNotExist:
+                context['accounts'] = Account.objects.none()
         return context
 
 
@@ -425,12 +420,13 @@ class AccountDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
 # DEVICE VIEWS
 # ============================================================================
 
-class DeviceListView(ViewAccessMixin, ListView):
+class DeviceListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = Device
     template_name       = 'dashboard/devices/device_list.html'
     context_object_name = 'devices'
     owner_field         = 'profile__user'
     paginate_by         = 20
+    free_tier_item      = 'devices'
 
     def get_queryset(self):
         try:
@@ -509,12 +505,13 @@ class DeviceDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
 # ESTATE DOCUMENT VIEWS
 # ============================================================================
 
-class EstateListView(ViewAccessMixin, ListView):
+class EstateListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = DigitalEstateDocument
     template_name       = 'dashboard/estates/estate_list.html'
     context_object_name = 'estates'
     owner_field         = 'profile__user'
     paginate_by         = 20
+    free_tier_item      = 'estate_documents'
 
     def get_queryset(self):
         try:
@@ -676,12 +673,13 @@ class FamilyAwarenessDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
 # IMPORTANT DOCUMENT VIEWS
 # ============================================================================
 
-class ImportantDocumentListView(ViewAccessMixin, ListView):
+class ImportantDocumentListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = ImportantDocument
     template_name       = 'dashboard/importantdocuments/importantdocument_list.html'
     context_object_name = 'documents'
     owner_field         = 'profile__user'
     paginate_by         = 20
+    free_tier_item      = 'important_documents'
 
     def get_queryset(self):
         try:
@@ -760,12 +758,13 @@ class ImportantDocumentDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView
 # CONTACT VIEWS
 # ============================================================================
 
-class ContactListView(ViewAccessMixin, ListView):
+class ContactListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = Contact
     template_name       = 'dashboard/contacts/contact_list.html'
     context_object_name = 'contacts'
     owner_field         = 'profile__user'
     paginate_by         = 20
+    free_tier_item      = 'contacts'
 
     def get_queryset(self):
         try:

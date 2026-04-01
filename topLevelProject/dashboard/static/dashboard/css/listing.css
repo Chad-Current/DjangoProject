@@ -41,6 +41,82 @@
 }
 .btn-outline-secondary:hover { background: #f3f4f6; }
 
+
+/* ── Lapsed subscriber banner ────────────────────────────────── */
+.lapsed-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: rgba(45, 106, 156, 0.06);
+  border: 1.5px solid rgba(45, 106, 156, 0.25);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.lapsed-banner-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.lapsed-banner-body > i {
+  color: var(--thirty-percent);
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.lapsed-banner-body strong {
+  display: block;
+  font-family: var(--main-font);
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--ten-percent);
+  margin-bottom: 0.2rem;
+}
+
+.lapsed-banner-body p {
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--thirty-percent);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.lapsed-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(135deg, var(--thirty-percent), var(--twenty-percent));
+  color: var(--text-color);
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.lapsed-banner-btn:hover {
+  opacity: 0.88;
+  color: var(--text-color);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+  .lapsed-banner     { flex-direction: column; }
+  .lapsed-banner-btn { width: 100%; justify-content: center; }
+}
+
+
 .text-muted   { color: var(--text-color-dark-muted) !important; }
 .text-danger  { color: #dc2626 !important; }
 .text-warning { color: #d97706 !important; }

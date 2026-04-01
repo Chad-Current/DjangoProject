@@ -60,15 +60,14 @@ def make_user(username='tuser', email='tuser@example.com',
     )
 
 
-def make_legacy(username='legacy', email='legacy@example.com'):
+def make_stripe_user(username='legacy', email='legacy@example.com'):
     u = make_user(username=username, email=email)
-    u.upgrade_to_legacy()
-    return u
-
-
-def make_essentials(username='ess', email='ess@example.com'):
-    u = make_user(username=username, email=email)
-    u.upgrade_to_essentials()
+    u.subscription_tier = 'legacy'
+    u.stripe_subscription_id = 'sub_test'
+    u.subscription_status = 'active'
+    u.has_paid = True
+    u.payment_date = timezone.now()
+    u.save()
     return u
 
 
@@ -168,7 +167,7 @@ def make_funeral_plan(profile, **kw):
 class ProfileModelTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
 
     def test_str_contains_first_name(self):
@@ -183,7 +182,7 @@ class ProfileModelTest(TestCase):
             )
 
     def test_profile_cascades_when_user_deleted(self):
-        user2 = make_legacy(username='cascade', email='cascade@x.com')
+        user2 = make_stripe_user(username='cascade', email='cascade@x.com')
         p2 = make_profile(user2)
         pk = p2.pk
         user2.delete()
@@ -201,7 +200,7 @@ class ContactModelProtectionTest(TestCase):
     """
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
@@ -282,7 +281,7 @@ class ContactModelProtectionTest(TestCase):
 class AccountModelTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
@@ -337,7 +336,7 @@ class AccountModelTest(TestCase):
 class FuneralPlanModelTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
 
     def test_is_complete_true_when_all_four_required_fields_set(self):
@@ -409,7 +408,7 @@ class FuneralPlanModelTest(TestCase):
 class RelevanceReviewModelTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
@@ -479,7 +478,7 @@ class RelevanceReviewModelTest(TestCase):
 class SignalTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
 
     def test_complete_profile_auto_creates_self_contact(self):
         profile = make_profile(self.user)
@@ -586,7 +585,7 @@ class ProfileFormTest(TestCase):
 class ContactFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         make_profile(self.user)
 
     def _data(self, **kw):
@@ -637,7 +636,7 @@ class ContactFormTest(TestCase):
 class AccountFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
@@ -678,7 +677,7 @@ class AccountFormTest(TestCase):
 class DigitalEstateDocumentFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
 
@@ -718,7 +717,7 @@ class DigitalEstateDocumentFormTest(TestCase):
 class FuneralPlanPersonalInfoFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
 
@@ -752,7 +751,7 @@ class FuneralPlanPersonalInfoFormTest(TestCase):
 class FuneralPlanServiceFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
@@ -791,7 +790,7 @@ class FuneralPlanServiceFormTest(TestCase):
 class FuneralPlanReceptionFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
 
@@ -826,7 +825,7 @@ class FuneralPlanReceptionFormTest(TestCase):
 class FuneralPlanAdminFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.plan, _ = FuneralPlan.objects.get_or_create(profile=self.profile)
 
@@ -861,7 +860,7 @@ class FuneralPlanAdminFormTest(TestCase):
 class RelevanceReviewFormTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.acct = make_account(self.profile, self.contact)
@@ -939,7 +938,7 @@ class DashboardHomeViewTest(TestCase):
         )
 
     def test_paid_user_without_profile_redirected_to_profile_create(self):
-        user = make_legacy(username='noprof', email='np2@x.com')
+        user = make_stripe_user(username='noprof', email='np2@x.com')
         self.client.force_login(user)
         self.assertRedirects(
             self.client.get(reverse('dashboard:dashboard_home')),
@@ -947,7 +946,7 @@ class DashboardHomeViewTest(TestCase):
         )
 
     def test_fully_set_up_user_sees_dashboard(self):
-        user = make_legacy()
+        user = make_stripe_user()
         make_profile(user)
         self.client.force_login(user)
         response = self.client.get(reverse('dashboard:dashboard_home'))
@@ -955,7 +954,7 @@ class DashboardHomeViewTest(TestCase):
         self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_context_includes_correct_account_count(self):
-        user = make_legacy()
+        user = make_stripe_user()
         profile = make_profile(user)
         contact = make_contact(profile)
         make_account(profile, contact)
@@ -965,7 +964,7 @@ class DashboardHomeViewTest(TestCase):
         )
 
     def test_onboarding_shown_when_fewer_than_three_categories_filled(self):
-        user = make_legacy()
+        user = make_stripe_user()
         make_profile(user)
         self.client.force_login(user)
         self.assertTrue(
@@ -973,7 +972,7 @@ class DashboardHomeViewTest(TestCase):
         )
 
     def test_progress_is_integer_between_0_and_100(self):
-        user = make_legacy()
+        user = make_stripe_user()
         make_profile(user)
         self.client.force_login(user)
         p = self.client.get(reverse('dashboard:dashboard_home')).context['progress']
@@ -1003,7 +1002,7 @@ class ContactDeletionViewTest(TestCase):
     """
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
@@ -1178,14 +1177,14 @@ class ContactDeletionViewTest(TestCase):
     # ── Ownership isolation ───────────────────────────────────
 
     def test_other_user_cannot_delete_contact(self):
-        other = make_legacy(username='iso_del', email='iso_del@x.com')
+        other = make_stripe_user(username='iso_del', email='iso_del@x.com')
         make_profile(other)
         self.client.force_login(other)
         self.client.post(self.delete_url)
         self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
 
     def test_other_user_cannot_view_contact_detail(self):
-        other = make_legacy(username='iso_det', email='iso_det@x.com')
+        other = make_stripe_user(username='iso_det', email='iso_det@x.com')
         make_profile(other)
         self.client.force_login(other)
         response = self.client.get(
@@ -1197,7 +1196,7 @@ class ContactDeletionViewTest(TestCase):
 class ContactCRUDViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
@@ -1250,7 +1249,7 @@ class ContactCRUDViewTest(TestCase):
 class AccountViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.account = make_account(self.profile, self.contact)
@@ -1288,7 +1287,7 @@ class AccountViewTest(TestCase):
         self.assertFalse(Contact.objects.filter(pk=contact_pk).exists())
 
     def test_other_user_cannot_access_account_detail(self):
-        other = make_legacy(username='a_iso', email='a_iso@x.com')
+        other = make_stripe_user(username='a_iso', email='a_iso@x.com')
         make_profile(other)
         self.client.force_login(other)
         self.assertEqual(
@@ -1312,7 +1311,7 @@ class AccountViewTest(TestCase):
 class DeviceViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.device = make_device(self.profile, self.contact)
@@ -1356,7 +1355,7 @@ class DeviceViewTest(TestCase):
 class EstateDocumentViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.doc = make_estate_doc(self.profile, self.contact)
@@ -1386,7 +1385,7 @@ class EstateDocumentViewTest(TestCase):
 class ImportantDocumentViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.doc = make_important_doc(self.profile, self.contact)
@@ -1433,7 +1432,7 @@ class ImportantDocumentViewTest(TestCase):
 class FamilyAwarenessViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.note = make_family_note(self.contact)
@@ -1479,7 +1478,7 @@ class FamilyAwarenessViewTest(TestCase):
 class FuneralPlanViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.client.force_login(self.user)
 
@@ -1553,20 +1552,6 @@ class FuneralPlanViewTest(TestCase):
             reverse('accounts:payment'),
         )
 
-    def test_expired_essentials_post_to_step_is_blocked(self):
-        exp = make_essentials(username='fp_exp', email='fp_exp@x.com')
-        exp.essentials_expires = timezone.now() - timedelta(days=1)
-        exp.save()
-        make_profile(exp)
-        FuneralPlan.objects.create(profile=exp.profile)
-        self.client.force_login(exp)
-        self.client.post(reverse('dashboard:funeralplan_step1'), {
-            'preferred_name': 'Blocked', 'is_veteran': False,
-        })
-        self.assertNotEqual(
-            FuneralPlan.objects.get(profile=exp.profile).preferred_name, 'Blocked'
-        )
-
     # ── Delete ────────────────────────────────────────────────
 
     def test_delete_get_renders_confirm_template(self):
@@ -1616,16 +1601,6 @@ class FuneralPlanViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(FuneralPlan.objects.filter(profile=self.profile).exists())
 
-    def test_expired_essentials_cannot_delete_plan(self):
-        exp = make_essentials(username='fp_delexp', email='fp_delexp@x.com')
-        exp.essentials_expires = timezone.now() - timedelta(days=1)
-        exp.save()
-        make_profile(exp)
-        FuneralPlan.objects.create(profile=exp.profile)
-        self.client.force_login(exp)
-        self.client.post(reverse('dashboard:funeralplan_delete'), {'confirm_text': 'DELETE'})
-        self.assertTrue(FuneralPlan.objects.filter(profile=exp.profile).exists())
-
 
 # ═══════════════════════════════════════════════════════════════
 #  VIEW TESTS — RelevanceReview & MarkItemReviewed
@@ -1634,7 +1609,7 @@ class FuneralPlanViewTest(TestCase):
 class RelevanceReviewViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.acct = make_account(self.profile, self.contact)
@@ -1654,7 +1629,7 @@ class RelevanceReviewViewTest(TestCase):
         )
 
     def test_other_user_cannot_view_review(self):
-        other = make_legacy(username='rv_iso', email='rv_iso@x.com')
+        other = make_stripe_user(username='rv_iso', email='rv_iso@x.com')
         make_profile(other)
         self.client.force_login(other)
         response = self.client.get(
@@ -1674,7 +1649,7 @@ class RelevanceReviewViewTest(TestCase):
 class MarkItemReviewedViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.acct = make_account(self.profile, self.contact)
@@ -1711,7 +1686,7 @@ class MarkItemReviewedViewTest(TestCase):
         self.assertEqual(self.client.post(self.url).status_code, 403)
 
     def test_other_users_review_returns_error(self):
-        other = make_legacy(username='mk_oth', email='mk_oth@x.com')
+        other = make_stripe_user(username='mk_oth', email='mk_oth@x.com')
         make_profile(other)
         self.client.force_login(other)
         data = json.loads(self.client.post(self.url).content)
@@ -1725,7 +1700,7 @@ class MarkItemReviewedViewTest(TestCase):
 class OnboardingViewTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.client.force_login(self.user)
 
@@ -1777,7 +1752,7 @@ class OnboardingViewTest(TestCase):
 class EdgeCaseTest(TestCase):
 
     def setUp(self):
-        self.user = make_legacy()
+        self.user = make_stripe_user()
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
         self.client.force_login(self.user)
@@ -1794,7 +1769,7 @@ class EdgeCaseTest(TestCase):
         )
 
     def test_account_list_only_shows_own_accounts(self):
-        other = make_legacy(username='iso_a', email='iso_a@x.com')
+        other = make_stripe_user(username='iso_a', email='iso_a@x.com')
         op = make_profile(other)
         oc = make_contact(op, first_name='O', last_name='P')
         make_account(op, oc, account_name_or_provider='OtherBank')
@@ -1810,7 +1785,7 @@ class EdgeCaseTest(TestCase):
 
     def test_account_list_empty_for_paid_user_without_profile(self):
         """get_queryset must handle Profile.DoesNotExist gracefully."""
-        no_prof = make_legacy(username='np3', email='np3@x.com')
+        no_prof = make_stripe_user(username='np3', email='np3@x.com')
         self.client.force_login(no_prof)
         response = self.client.get(reverse('dashboard:account_list'))
         self.assertEqual(response.status_code, 200)

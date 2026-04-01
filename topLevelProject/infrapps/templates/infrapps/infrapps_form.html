@@ -27,19 +27,6 @@
     <fieldset class="form-fieldset">
       <legend class="form-fieldset-legend">Vault Entry Details</legend>
 
-      <div class="form-field{% if form.entry_type.errors %} has-error{% endif %}">
-        <label for="{{ form.entry_type.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Whether this password belongs to a digital account, a device, or is a standalone entry.">
-          Entry Type <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">Whether this password belongs to a digital account, a device, or is standalone.</span>
-        </label>
-        {{ form.entry_type }}
-        {% if form.entry_type.errors %}
-          <div class="error" role="alert">{{ form.entry_type.errors }}</div>
-        {% endif %}
-      </div>
-
       <div class="form-field{% if form.label.errors %} has-error{% endif %}">
         <label for="{{ form.label.id_for_label }}"
           class="ob-label-tooltip"
@@ -62,16 +49,16 @@
       <legend class="form-fieldset-legend">Link to Account or Device</legend>
 
       <div class="alert alert-warning">
-        <strong>Optional:</strong> Link this password to one of your existing accounts or devices,
-        or leave both blank for a standalone entry. Do not link to both at the same time.
+        <strong>Required:</strong> Every vault entry must be linked to exactly one Account or Device.
+        Do not link to both at the same time.
       </div>
 
       <div class="form-field{% if form.linked_account.errors %} has-error{% endif %}">
         <label for="{{ form.linked_account.id_for_label }}"
           class="ob-label-tooltip"
-          title="Select a digital account this password belongs to. Leave blank if linking to a device or creating a standalone entry.">
+          title="Select the digital account this password belongs to.">
           Link to Account
-          <span class="ob-tip" role="tooltip">Select a digital account this password belongs to. Leave blank if not applicable.</span>
+          <span class="ob-tip" role="tooltip">Select the digital account this password belongs to.</span>
         </label>
         {{ form.linked_account }}
         {% if form.linked_account.errors %}
@@ -82,9 +69,9 @@
       <div class="form-field{% if form.linked_device.errors %} has-error{% endif %}">
         <label for="{{ form.linked_device.id_for_label }}"
           class="ob-label-tooltip"
-          title="Select a device this PIN or password belongs to. Leave blank if linking to an account or creating a standalone entry.">
+          title="Select the device this PIN or password belongs to.">
           Link to Device
-          <span class="ob-tip" role="tooltip">Select a device this PIN or password belongs to. Leave blank if not applicable.</span>
+          <span class="ob-tip" role="tooltip">Select the device this PIN or password belongs to.</span>
         </label>
         {{ form.linked_device }}
         {% if form.linked_device.errors %}
@@ -113,30 +100,25 @@
         {% endif %}
       </div>
 
-      <div class="form-field">
-        <label for="id_raw_password"
+      <div class="form-field{% if form.raw_password.errors %} has-error{% endif %}">
+        <label for="{{ form.raw_password.id_for_label }}"
           class="ob-label-tooltip"
-          title="The password or PIN to encrypt and store.{% if password_optional %} Leave blank to keep the existing password.{% endif %}">
+          title="The password or PIN to encrypt and store. Leave blank when editing to keep the existing password.">
           Password / PIN
-          {% if not password_optional %}<span class="req" aria-hidden="true">*</span>{% endif %}
           <span class="ob-tip" role="tooltip">
             Encrypted immediately on save and never stored in plain text.
-            {% if password_optional %}Leave blank to keep the existing password unchanged.{% endif %}
+            Leave blank when editing to keep the existing password unchanged.
           </span>
         </label>
         <div class="vault-pw-row">
-          <input
-            type="password"
-            name="raw_password"
-            id="id_raw_password"
-            class="textinput"
-            autocomplete="new-password"
-            {% if not password_optional %}required{% endif %}
-          >
+          {{ form.raw_password }}
           <button type="button" id="vault-toggle-pw" class="btn btn-secondary" aria-label="Show password">Show</button>
         </div>
-        {% if password_optional %}
-          <p class="vault-hint">Leave blank to keep the current password unchanged.</p>
+        {% if form.raw_password.errors %}
+          <div class="error" role="alert">{{ form.raw_password.errors }}</div>
+        {% endif %}
+        {% if form.raw_password.help_text %}
+          <p class="vault-hint">{{ form.raw_password.help_text }}</p>
         {% endif %}
       </div>
 

@@ -75,18 +75,9 @@ class VaultEntry(models.Model):
     """
     A single encrypted credential stored in the add-on Vault.
 
-    Linked (optionally) to a dashboard Account OR a dashboard Device.
-    Exactly one of `linked_account` / `linked_device` should be set;
-    both may be null for a standalone entry.
-
+    Exactly one of `linked_account` / `linked_device` must be set.
     The raw password is NEVER persisted — only the Fernet-encrypted token.
     """
-
-    ENTRY_TYPE_CHOICES = [
-        ('account',  'Digital Account'),
-        ('device',   'Device'),
-        ('other',    'Other / Standalone'),
-    ]
 
     # ── Ownership ────────────────────────────────────────────────────────────
     profile = models.ForeignKey(
@@ -115,11 +106,6 @@ class VaultEntry(models.Model):
     )
 
     # ── Entry metadata ───────────────────────────────────────────────────────
-    entry_type = models.CharField(
-        max_length=20,
-        choices=ENTRY_TYPE_CHOICES,
-        default='other',
-    )
     label = models.CharField(
         max_length=200,
         help_text="A descriptive label, e.g. 'Gmail master password' or 'iPhone PIN'.",
@@ -178,6 +164,17 @@ class VaultEntry(models.Model):
                 n   += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    # ── Validation ───────────────────────────────────────────────────────────
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        has_account = bool(self.linked_account_id)
+        has_device  = bool(self.linked_device_id)
+        if has_account and has_device:
+            raise ValidationError("Link to either an Account or a Device — not both.")
+        if not has_account and not has_device:
+            raise ValidationError("Each vault entry must be linked to an Account or a Device.")
 
     # ── Encryption helpers ────────────────────────────────────────────────────
 

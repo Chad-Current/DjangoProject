@@ -103,15 +103,11 @@
       </div>
 
     {% else %}
-      <!-- No Stripe subscription — legacy one-time or no subscription -->
+      <!-- No active subscription -->
       <div class="pricing-card" style="margin: 0 auto 2rem;">
-        <div class="tier-name">{{ user.get_tier_display_name }}</div>
+        <div class="tier-name">No Active Subscription</div>
         <div style="margin: 1rem 0; color: #555; font-size: 0.95rem;">
-          {% if user.has_paid %}
-            <p>You are on a legacy plan. Upgrade to a recurring subscription for continuous access.</p>
-          {% else %}
-            <p>You don't have an active subscription.</p>
-          {% endif %}
+          <p>You don't have an active subscription.</p>
         </div>
         <div class="tier-divider"></div>
         <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn"

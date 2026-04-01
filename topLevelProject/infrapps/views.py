@@ -12,7 +12,8 @@ from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView,
 )
 
-from dashboard.models import Profile, Account, Device
+from dashboard.models import Profile
+from .forms import VaultEntryForm
 from .models import VaultEntry, VaultAccessLog
 
 logger = logging.getLogger(__name__)
@@ -94,8 +95,10 @@ class VaultListView(VaultAccessMixin, ListView):
 
         # Optional filter by type
         entry_type = self.request.GET.get('type')
-        if entry_type in ('account', 'device', 'other'):
-            qs = qs.filter(entry_type=entry_type)
+        if entry_type == 'account':
+            qs = qs.filter(linked_account__isnull=False)
+        elif entry_type == 'device':
+            qs = qs.filter(linked_device__isnull=False)
 
         return qs.order_by('-updated_at')
 
@@ -141,34 +144,15 @@ class VaultDetailView(VaultAccessMixin, DetailView):
 class VaultCreateView(VaultAccessMixin, CreateView):
     model         = VaultEntry
     template_name = 'infrapps/infrapps_form.html'
-    # Fields handled manually — password goes through set_password(), not directly
-    fields = [
-        'entry_type',
-        'label',
-        'linked_account',
-        'linked_device',
-        'username_or_email',
-        'notes',
-    ]
+    form_class    = VaultEntryForm
 
     def get_success_url(self):
         return reverse('vault:vault_list')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        profile = _get_profile_or_403(self.request.user)
-
-        # Scope FK dropdowns to the user's own data
-        form.fields['linked_account'].queryset = Account.objects.filter(
-            profile=profile
-        ).order_by('account_name_or_provider')
-        form.fields['linked_device'].queryset = Device.objects.filter(
-            profile=profile
-        ).order_by('device_name')
-
-        form.fields['linked_account'].required = False
-        form.fields['linked_device'].required  = False
-        return form
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['profile'] = _get_profile_or_403(self.request.user)
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -185,21 +169,7 @@ class VaultCreateView(VaultAccessMixin, CreateView):
         profile = _get_profile_or_403(self.request.user)
         entry   = form.save(commit=False)
         entry.profile = profile
-
-        # Encrypt the raw password submitted in the extra field
-        raw_password = self.request.POST.get('raw_password', '').strip()
-        if not raw_password:
-            form.add_error(None, "A password is required.")
-            return self.form_invalid(form)
-
-        entry.set_password(raw_password)
-
-        # Auto-derive entry_type from which FK is set
-        if entry.linked_account_id and not entry.linked_device_id:
-            entry.entry_type = 'account'
-        elif entry.linked_device_id and not entry.linked_account_id:
-            entry.entry_type = 'device'
-
+        entry.set_password(form.cleaned_data['raw_password'])
         entry.save()
         messages.success(self.request, f'"{entry.label}" saved to your vault.')
         logger.info("VaultEntry %s created by %s", entry.pk, self.request.user.email)
@@ -211,18 +181,11 @@ class VaultCreateView(VaultAccessMixin, CreateView):
 # ---------------------------------------------------------------------------
 
 class VaultUpdateView(VaultAccessMixin, UpdateView):
-    model         = VaultEntry
-    template_name = 'infrapps/infrapps_form.html'
-    slug_field    = 'slug'
+    model          = VaultEntry
+    template_name  = 'infrapps/infrapps_form.html'
+    form_class     = VaultEntryForm
+    slug_field     = 'slug'
     slug_url_kwarg = 'slug'
-    fields = [
-        'entry_type',
-        'label',
-        'linked_account',
-        'linked_device',
-        'username_or_email',
-        'notes',
-    ]
 
     def get_success_url(self):
         return reverse('vault:vault_detail', kwargs={'slug': self.object.slug})
@@ -234,29 +197,18 @@ class VaultUpdateView(VaultAccessMixin, UpdateView):
             raise PermissionDenied("You don't have permission to edit this entry.")
         return obj
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        profile = _get_profile_or_403(self.request.user)
-
-        form.fields['linked_account'].queryset = Account.objects.filter(
-            profile=profile
-        ).order_by('account_name_or_provider')
-        form.fields['linked_device'].queryset = Device.objects.filter(
-            profile=profile
-        ).order_by('device_name')
-
-        form.fields['linked_account'].required = False
-        form.fields['linked_device'].required  = False
-        return form
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['profile']   = _get_profile_or_403(self.request.user)
+        kwargs['is_update'] = True
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active']    = self.request.user.can_access_addon()
-        context['page_title']      = f'Edit — {self.object.label}'
-        context['submit_label']    = 'Update Entry'
-        context['is_update']       = True
-        # Tell the template whether the user left raw_password blank (= keep existing)
-        context['password_optional'] = True
+        context['addon_active'] = self.request.user.can_access_addon()
+        context['page_title']   = f'Edit — {self.object.label}'
+        context['submit_label'] = 'Update Entry'
+        context['is_update']    = True
         return context
 
     def form_valid(self, form):
@@ -265,9 +217,8 @@ class VaultUpdateView(VaultAccessMixin, UpdateView):
             return redirect('vault:vault_list')
 
         entry        = form.save(commit=False)
-        raw_password = self.request.POST.get('raw_password', '').strip()
+        raw_password = form.cleaned_data.get('raw_password', '').strip()
 
-        # Only re-encrypt if a new password was supplied; otherwise keep the old token
         if raw_password:
             entry.set_password(raw_password)
 

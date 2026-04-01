@@ -75,6 +75,43 @@
             <div class="security-log">
                 <h3><i class="fas fa-clipboard-list"></i> Information Log</h3>
                 <div class="log-entries">
+
+
+                    {% if user.subscription_status == "active" or user.subscription_status == "canceled" %}
+                    <div class="log-entry">
+                        <div class="log-icon {% if user.days_until_renewal <= 7 %}alert_icon{% elif user.days_until_renewal <= 30 %}warning_icon{% else %}success_icon{% endif %}">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="log-content">
+                            <div class="log-message">Subscription expires on {{ request.user.subscription_current_period_end|date:"N j, Y" }}</div>
+                            <div class="log-time">{{ user.days_until_renewal }} days remaining</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if soonest_review %}
+                    <div class="log-entry">
+                        <div class="log-icon {% if first_delta.days <= 7 %}alert_icon{% elif first_delta.days <= 30 %}warning_icon{% else %}success_icon{% endif %}">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="log-content">
+                            <div class="log-message">
+                                {% if first_delta.days < 0 %}
+                                    Review overdue - action required
+                                {% elif first_delta.days == 0 %}
+                                    Review due today
+                                {% elif first_delta.days <= 7 %}
+                                    Review due in {{ first_delta.days }} {% if first_delta.days == 1 %}day{% else %}days{% endif %}
+                                {% else %}
+                                    Next review in {{ first_delta.days }} days
+                                {% endif %}
+                            </div>
+                            <div class="log-time">Scheduled Review</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    
                     {% if accounts_count > 0 %}
                     <div class="log-entry">
                         <div class="log-icon success"><i class="fas fa-check"></i></div>
@@ -84,6 +121,7 @@
                         </div>
                     </div>
                     {% endif %}
+
 
                     {% if devices_count > 0 %}
                     <div class="log-entry">
@@ -95,25 +133,7 @@
                     </div>
                     {% endif %}
 
-                    {% if first_delta %}
-                    <div class="log-entry">
-                        <div class="log-icon {% if first_delta.days <= 7 %}alert{% elif first_delta.days <= 30 %}warning{% else %}success{% endif %}">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="log-content">
-                            <div class="log-message">
-                                {% if first_delta.days <= 0 %}
-                                    Review overdue - action required
-                                {% elif first_delta.days <= 7 %}
-                                    Review due in {{ first_delta.days }} {% if first_delta.days == 1 %}day{% else %}days{% endif %}
-                                {% else %}
-                                    Next review in {{ first_delta.days }} days
-                                {% endif %}
-                            </div>
-                            <div class="log-time">Scheduled Review</div>
-                        </div>
-                    </div>
-                    {% endif %}
+
 
                     {% if remaining_tasks > 0 %}
                     <div class="log-entry">

@@ -98,7 +98,13 @@
     <li class="nav-item desktop-only">
       <div class="user-menu">
         <button class="user-menu-trigger" aria-haspopup="true" aria-label="Account menu">
+          {% if request.user.subscription_tier == "legacy" %}
+          <span class="user-avatar-legacy">{{ user.username|first|upper }}</span>
+          {% elif request.user.subscription_tier == "essentials" %}
+          <span class="user-avatar-essentials">{{ user.username|first|upper }}</span>
+          {% else %}
           <span class="user-avatar">{{ user.username|first|upper }}</span>
+          {% endif %}
           <span class="user-trigger-name">{{ user.username }}</span>
           <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
@@ -108,7 +114,14 @@
         </button>
         <div class="user-menu-content" role="menu">
           <div class="um-header">
-            <span class="user-avatar user-avatar--lg">{{ user.username|first|upper }}</span>
+          {% if request.user.subscription_tier == "legacy" %}
+          <span class="user-avatar-legacy user-avatar--lg">{{ user.username|first|upper }}</span>
+          {% elif request.user.subscription_tier == "essentials" %}
+          <span class="user-avatar-essentials user-avatar--lg">{{ user.username|first|upper }}</span>
+          {% else %}
+          <span class="user-avatar user-avatar--lg">{{ user.username|first|upper }}</span>
+          {% endif %}
+            <!-- <span class="user-avatar user-avatar--lg">{{ user.username|first|upper }}</span> -->
             <div>
               <p class="um-name">{{ user.username }}</p>
               <p class="um-email">{{ user.email }}</p>

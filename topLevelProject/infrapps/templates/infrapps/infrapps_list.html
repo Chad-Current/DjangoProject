@@ -48,10 +48,6 @@
            class="btn-action vault-filter-btn {% if current_type == 'device' %}btn-edit{% else %}btn-view{% endif %}">
           Devices
         </a>
-        <a href="{% url 'vault:vault_list' %}?type=other"
-           class="btn-action vault-filter-btn {% if current_type == 'other' %}btn-edit{% else %}btn-view{% endif %}">
-          Other
-        </a>
       </div>
 
       <div class="table-responsive">
@@ -75,7 +71,7 @@
                 </div>
               </td>
               <td>
-                <span class="contact-info">{{ entry.get_entry_type_display }}</span>
+                <span class="contact-info">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</span>
               </td>
               <td>
                 <span class="contact-info">{{ entry.username_or_email|default:"—" }}</span>
@@ -132,8 +128,6 @@
            class="btn-action vault-filter-btn {% if current_type == 'account' %}btn-edit{% else %}btn-view{% endif %}">Accounts</a>
         <a href="{% url 'vault:vault_list' %}?type=device"
            class="btn-action vault-filter-btn {% if current_type == 'device' %}btn-edit{% else %}btn-view{% endif %}">Devices</a>
-        <a href="{% url 'vault:vault_list' %}?type=other"
-           class="btn-action vault-filter-btn {% if current_type == 'other' %}btn-edit{% else %}btn-view{% endif %}">Other</a>
       </div>
 
       {% for entry in entries %}
@@ -142,7 +136,7 @@
           <div class="contact-avatar"><i class="fas fa-key"></i></div>
           <div class="contact-details">
             <h3 class="contact-card-name">{{ entry.label }}</h3>
-            <span class="badge-relationship-mobile">{{ entry.get_entry_type_display }}</span>
+            <span class="badge-relationship-mobile">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</span>
           </div>
         </div>
         {% if entry.username_or_email %}

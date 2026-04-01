@@ -1,0 +1,15 @@
+{% if is_lapsed and lapsed_total > lapsed_limit %}
+<div class="lapsed-banner">
+    <div class="lapsed-banner-body">
+        <i class="fas fa-lock"></i>
+        <div>
+            <strong>Subscription ended</strong>
+            <p>You're viewing {{ lapsed_limit }} of {{ lapsed_total }} item{{ lapsed_total|pluralize }}.
+            Resubscribe to restore full access to all your saved data.</p>
+        </div>
+    </div>
+    <a href="{% url 'accounts:payment' %}" class="lapsed-banner-btn">
+        <i class="fas fa-redo-alt"></i> Resubscribe
+    </a>
+</div>
+{% endif %}

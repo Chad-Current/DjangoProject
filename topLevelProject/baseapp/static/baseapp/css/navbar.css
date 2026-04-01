@@ -105,11 +105,41 @@ nav#navbar>ul>li {
 /* ═══════════════════════════════════════════════════════
    SHARED USER AVATAR
 ═══════════════════════════════════════════════════════ */
-.user-avatar {
+.user-avatar-legacy {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
   background-color: var(--accent-color, #3d5a8a);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--main-font);
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.user-avatar-essentials {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #01b819;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--main-font);
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.user-avatar{
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--thirty-percent, #6190db);
   color: #fff;
   display: flex;
   align-items: center;

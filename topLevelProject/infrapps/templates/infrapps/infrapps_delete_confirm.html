@@ -24,7 +24,7 @@
       <div class="delete-item-name">
         <i class="fas fa-key"></i>
         {{ object.label }}
-        <span class="delete-item-meta">&mdash; {{ object.get_entry_type_display }}</span>
+        <span class="delete-item-meta">&mdash; {% if object.linked_account %}Account{% elif object.linked_device %}Device{% endif %}</span>
       </div>
 
       <!-- Warning -->

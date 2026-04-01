@@ -15,7 +15,7 @@
   <div class="device-header">
     <h1><i class="fas fa-key"></i> {{ entry.label }}</h1>
     <div class="subtitle">
-      {{ entry.get_entry_type_display }}
+      {% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}
       {% if entry.has_linked_source %}&nbsp;&mdash;&nbsp;Linked to {{ entry.source_name }}{% endif %}
     </div>
   </div>
@@ -44,7 +44,7 @@
           <div class="dv-mt-2">
             <div class="info-row">
               <div class="info-label"><i class="fas fa-tag"></i> Entry Type</div>
-              <div class="info-value">{{ entry.get_entry_type_display }}</div>
+              <div class="info-value">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</div>
             </div>
             {% if entry.username_or_email %}
             <div class="info-row">

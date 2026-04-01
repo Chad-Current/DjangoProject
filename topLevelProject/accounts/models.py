@@ -6,8 +6,7 @@ from datetime import timedelta
 
 class CustomUser(AbstractUser):
     """
-    Custom user model supporting both legacy one-time payments (backward compat)
-    and the current Stripe recurring subscription model.
+    Custom user model for the Stripe recurring subscription model.
 
     Subscription tiers:
         none        — No active subscription (read-only or no access)
@@ -77,16 +76,6 @@ class CustomUser(AbstractUser):
     payment_date = models.DateTimeField(
         null=True, blank=True,
         help_text="Date of most recent payment or subscription start",
-    )
-
-    # ── Legacy one-time fields (backward compat only — not used for new users) ─
-    essentials_expires = models.DateTimeField(
-        null=True, blank=True,
-        help_text="[Legacy one-time] When Essentials edit access expires",
-    )
-    legacy_granted_date = models.DateTimeField(
-        null=True, blank=True,
-        help_text="[Legacy one-time] When lifetime legacy access was granted",
     )
 
     # ── Stripe subscription fields ────────────────────────────────────────────
@@ -192,17 +181,15 @@ class CustomUser(AbstractUser):
         if self.stripe_subscription_id:
             return self.subscription_status == 'active'
 
-        # ── Backward compat: legacy one-time payment users ────────────────────
-        if self.subscription_tier == 'essentials':
-            return bool(self.essentials_expires and timezone.now() < self.essentials_expires)
-        if self.subscription_tier == 'legacy':
-            return True
-
         return False
 
     def is_free_tier(self):
         """Active user with no subscription — real saves allowed up to per-category limits."""
         return self.is_active and not self.has_paid
+
+    def is_lapsed_subscriber(self):
+        """True for users who have previously paid but whose subscription is no longer active."""
+        return bool(self.has_paid and not self.can_modify_data())
 
     # ── Subscription helpers ──────────────────────────────────────────────────
 
@@ -217,25 +204,6 @@ class CustomUser(AbstractUser):
         delta = self.subscription_current_period_end - timezone.now()
         return max(0, delta.days)
 
-    # ── Legacy one-time helpers (backward compat) ─────────────────────────────
-
-    def is_essentials_edit_active(self):
-        """[Legacy one-time] Check if Essentials tier still has edit access."""
-        if self.stripe_subscription_id:
-            return self.subscription_status == 'active'
-        if self.subscription_tier != 'essentials':
-            return False
-        return bool(self.essentials_expires and timezone.now() < self.essentials_expires)
-
-    def days_until_essentials_expires(self):
-        """[Legacy one-time] Days remaining for Essentials edit access."""
-        if self.stripe_subscription_id:
-            return self.days_until_renewal()
-        if self.subscription_tier != 'essentials' or not self.essentials_expires:
-            return 0
-        delta = self.essentials_expires - timezone.now()
-        return max(0, delta.days)
-
     def get_tier_display_name(self):
         """Human-readable tier name with status."""
         if self.stripe_subscription_id:
@@ -245,14 +213,10 @@ class CustomUser(AbstractUser):
                 cancel_note = ' — Cancels at period end' if self.subscription_cancel_at_period_end else ''
                 return f"{tier} ({interval} subscription{cancel_note})"
             return f"{tier} (Subscription {self.subscription_status})"
-        # Legacy one-time
         if self.subscription_tier == 'essentials':
-            if self.is_essentials_edit_active():
-                days = self.days_until_essentials_expires()
-                return f"Essentials (Edit access: {days} days remaining)"
             return "Essentials (View-only)"
         if self.subscription_tier == 'legacy':
-            return "Legacy (Lifetime Access)"
+            return "Legacy (View-only)"
         return "No Subscription"
 
     # ── Stripe activation / deactivation ─────────────────────────────────────
@@ -288,24 +252,6 @@ class CustomUser(AbstractUser):
         """Mark the subscription as canceled (user loses modify access)."""
         self.subscription_status = 'canceled'
         self.subscription_cancel_at_period_end = False
-        self.save()
-
-    # ── Legacy one-time upgrade methods (kept for backward compat) ─────────────
-
-    def upgrade_to_essentials(self):
-        """[Legacy] Activate Essentials tier with one-time payment."""
-        self.subscription_tier = 'essentials'
-        self.has_paid = True
-        self.payment_date = timezone.now()
-        self.essentials_expires = timezone.now() + timedelta(days=365)
-        self.save()
-
-    def upgrade_to_legacy(self):
-        """[Legacy] Activate Legacy tier with one-time payment."""
-        self.subscription_tier = 'legacy'
-        self.has_paid = True
-        self.payment_date = timezone.now()
-        self.legacy_granted_date = timezone.now()
         self.save()
 
     # ── Add-on subscription ───────────────────────────────────────────────────

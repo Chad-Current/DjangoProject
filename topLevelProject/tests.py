@@ -50,22 +50,14 @@ def make_user(username="tuser", email="tuser@example.com",
     )
 
 
-def make_essentials(username="ess", email="ess@example.com"):
+def make_stripe_user(username="leg", email="leg@example.com", tier='legacy'):
     u = make_user(username=username, email=email)
-    u.upgrade_to_essentials()
-    return u
-
-
-def make_legacy(username="leg", email="leg@example.com"):
-    u = make_user(username=username, email=email)
-    u.upgrade_to_legacy()
-    return u
-
-
-def make_expired_essentials(username="exp", email="exp@example.com"):
-    u = make_essentials(username=username, email=email)
-    u.essentials_expires = timezone.now() - timedelta(days=1)
-    u.save(update_fields=["essentials_expires"])
+    u.subscription_tier = tier
+    u.stripe_subscription_id = 'sub_test'
+    u.subscription_status = 'active'
+    u.has_paid = True
+    u.payment_date = timezone.now()
+    u.save()
     return u
 
 
@@ -138,7 +130,7 @@ TEST_FERNET_KEY = Fernet.generate_key().decode()
 
 def make_vault_user():
     """User with a paid subscription AND an active add-on (vault access)."""
-    u = make_legacy(username="vaultuser", email="vault@example.com")
+    u = make_stripe_user(username="vaultuser", email="vault@example.com")
     u.activate_addon()
     return u
 
@@ -311,33 +303,37 @@ class SubscriptionTierTests(TestCase):
         self.assertNotEqual(r.request["PATH_INFO"], self.DASHBOARD_URL)
 
     def test_essentials_user_can_access_dashboard(self):
-        u = make_essentials(username="e2", email="e2@example.com")
+        u = make_stripe_user(username="e2", email="e2@example.com", tier='essentials')
         make_profile(u)
         self._login(u)
         r = self.c.get(self.DASHBOARD_URL)
         self.assertEqual(r.status_code, 200)
 
     def test_legacy_user_can_access_dashboard(self):
-        u = make_legacy(username="l2", email="l2@example.com")
+        u = make_stripe_user(username="l2", email="l2@example.com")
         make_profile(u)
         self._login(u)
         r = self.c.get(self.DASHBOARD_URL)
         self.assertEqual(r.status_code, 200)
 
     def test_essentials_can_modify_data(self):
-        u = make_essentials(username="em", email="em@example.com")
+        u = make_stripe_user(username="em", email="em@example.com", tier='essentials')
         self.assertTrue(u.can_modify_data())
 
-    def test_expired_essentials_cannot_modify(self):
-        u = make_expired_essentials(username="ex2", email="ex2@example.com")
+    def test_lapsed_subscriber_cannot_modify(self):
+        u = make_stripe_user(username="ex2", email="ex2@example.com")
+        u.subscription_status = 'canceled'
+        u.save()
         self.assertFalse(u.can_modify_data())
 
-    def test_expired_essentials_can_still_view(self):
-        u = make_expired_essentials(username="exv", email="exv@example.com")
+    def test_lapsed_subscriber_can_still_view(self):
+        u = make_stripe_user(username="exv", email="exv@example.com")
+        u.subscription_status = 'canceled'
+        u.save()
         self.assertTrue(u.can_view_data())
 
     def test_legacy_can_modify_data(self):
-        u = make_legacy(username="lm", email="lm@example.com")
+        u = make_stripe_user(username="lm", email="lm@example.com")
         self.assertTrue(u.can_modify_data())
 
     def test_unpaid_cannot_view_data(self):
@@ -354,7 +350,7 @@ class DashboardCoreTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="core", email="core@example.com")
+        self.user = make_stripe_user(username="core", email="core@example.com")
         self.c.force_login(self.user)
 
     def test_no_profile_redirects_to_profile_create(self):
@@ -405,7 +401,7 @@ class ContactCRUDTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="ctct", email="ctct@example.com")
+        self.user = make_stripe_user(username="ctct", email="ctct@example.com")
         self.c.force_login(self.user)
         self.profile = make_profile(self.user)
 
@@ -447,7 +443,7 @@ class ContactCRUDTests(TestCase):
 
     def test_other_user_cannot_view_contact(self):
         """Ownership isolation: a second user gets 404 on the first user's slug."""
-        other = make_legacy(username="other_c", email="other_c@example.com")
+        other = make_stripe_user(username="other_c", email="other_c@example.com")
         other_profile = make_profile(other, email="other@example.com")
         contact = Contact.objects.filter(profile=self.profile).first()
 
@@ -465,7 +461,7 @@ class AccountCRUDTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="acct", email="acct@example.com")
+        self.user = make_stripe_user(username="acct", email="acct@example.com")
         self.c.force_login(self.user)
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
@@ -505,7 +501,7 @@ class AccountCRUDTests(TestCase):
         self.assertEqual(r.status_code, 200)
 
     def test_account_ownership_isolation(self):
-        other = make_legacy(username="other_a", email="other_a@example.com")
+        other = make_stripe_user(username="other_a", email="other_a@example.com")
         other_profile = make_profile(other, email="oa@example.com")
         acct = make_account(self.profile, self.contact)
 
@@ -523,7 +519,7 @@ class DeviceCRUDTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="dvc", email="dvc@example.com")
+        self.user = make_stripe_user(username="dvc", email="dvc@example.com")
         self.c.force_login(self.user)
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
@@ -563,7 +559,7 @@ class EstateDocumentCRUDTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="estdoc", email="estdoc@example.com")
+        self.user = make_stripe_user(username="estdoc", email="estdoc@example.com")
         self.c.force_login(self.user)
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
@@ -587,7 +583,7 @@ class ImportantDocumentCRUDTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="idoc", email="idoc@example.com")
+        self.user = make_stripe_user(username="idoc", email="idoc@example.com")
         self.c.force_login(self.user)
         self.profile = make_profile(self.user)
         self.contact = make_contact(self.profile)
@@ -615,7 +611,7 @@ class FuneralPlanTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="fun", email="fun@example.com")
+        self.user = make_stripe_user(username="fun", email="fun@example.com")
         self.c.force_login(self.user)
         make_profile(self.user)
 
@@ -640,7 +636,7 @@ class OnboardingTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = make_legacy(username="onb", email="onb@example.com")
+        self.user = make_stripe_user(username="onb", email="onb@example.com")
         self.c.force_login(self.user)
         make_profile(self.user)
 
@@ -725,7 +721,7 @@ class VaultTests(TestCase):
 
     def test_vault_requires_addon(self):
         """A user without an active add-on subscription cannot reach the vault."""
-        no_addon = make_legacy(username="noaddon", email="noaddon@example.com")
+        no_addon = make_stripe_user(username="noaddon", email="noaddon@example.com")
         make_profile(no_addon, email="noaddon@example.com")
         self.c.force_login(no_addon)
         r = self.c.get(reverse("vault:vault_list"))
@@ -747,7 +743,7 @@ class RecoveryPublicFlowTests(TestCase):
     def setUp(self):
         self.c = Client()
         # Create a target user whose estate data is being requested
-        self.target_user = make_legacy(username="target", email="target@example.com")
+        self.target_user = make_stripe_user(username="target", email="target@example.com")
         self.target_profile = make_profile(self.target_user,
                                            email="target@example.com")
 
@@ -814,9 +810,9 @@ class RecoveryAuthenticatedFlowTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.requester = make_legacy(username="requser", email="req@example.com")
+        self.requester = make_stripe_user(username="requser", email="req@example.com")
         self.c.force_login(self.requester)
-        self.target_user = make_legacy(username="tgt2", email="tgt2@example.com")
+        self.target_user = make_stripe_user(username="tgt2", email="tgt2@example.com")
         self.target_profile = make_profile(self.target_user,
                                            email="tgt2@example.com")
 
@@ -840,7 +836,7 @@ class SignalSmokeTests(TestCase):
 
     def test_self_contact_created_on_profile_save(self):
         """Creating a Profile should auto-create a 'Self' contact via signal."""
-        user = make_legacy(username="sig", email="sig@example.com")
+        user = make_stripe_user(username="sig", email="sig@example.com")
         profile = make_profile(user)
         self.assertTrue(
             Contact.objects.filter(profile=profile, first_name=user.username).exists()
@@ -849,7 +845,7 @@ class SignalSmokeTests(TestCase):
 
     def test_account_creation_creates_relevance_review(self):
         from dashboard.models import RelevanceReview
-        user = make_legacy(username="sig2", email="sig2@example.com")
+        user = make_stripe_user(username="sig2", email="sig2@example.com")
         profile = make_profile(user)
         contact = make_contact(profile)
         acct = make_account(profile, contact)
@@ -859,7 +855,7 @@ class SignalSmokeTests(TestCase):
 
     def test_device_creation_creates_relevance_review(self):
         from dashboard.models import RelevanceReview
-        user = make_legacy(username="sig3", email="sig3@example.com")
+        user = make_stripe_user(username="sig3", email="sig3@example.com")
         profile = make_profile(user)
         contact = make_contact(profile)
         dev = make_device(profile, contact)

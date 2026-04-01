@@ -73,7 +73,12 @@ class UserFactory:
         user = User.objects.create_user(
             username=username, email=email, password="TestPass123!"
         )
-        user.upgrade_to_legacy()
+        user.subscription_tier = 'legacy'
+        user.stripe_subscription_id = 'sub_test'
+        user.subscription_status = 'active'
+        user.has_paid = True
+        user.payment_date = timezone.now()
+        user.save()
         return user
 
     @staticmethod
@@ -81,7 +86,12 @@ class UserFactory:
         user = User.objects.create_user(
             username=username, email=email, password="TestPass123!"
         )
-        user.upgrade_to_essentials()
+        user.subscription_tier = 'essentials'
+        user.stripe_subscription_id = 'sub_test_ess'
+        user.subscription_status = 'active'
+        user.has_paid = True
+        user.payment_date = timezone.now()
+        user.save()
         return user
 
     @staticmethod
@@ -92,13 +102,16 @@ class UserFactory:
         return user
 
     @staticmethod
-    def create_expired_essentials(username="expireduser", email="expired@example.com"):
+    def create_lapsed(username="lapseduser", email="lapsed@example.com"):
+        """User who previously had a subscription but it's now canceled."""
         user = User.objects.create_user(
             username=username, email=email, password="TestPass123!"
         )
-        user.subscription_tier = "essentials"
+        user.subscription_tier = 'essentials'
+        user.stripe_subscription_id = 'sub_canceled'
+        user.subscription_status = 'canceled'
         user.has_paid = True
-        user.essentials_expires = timezone.now() - timedelta(days=10)
+        user.payment_date = timezone.now()
         user.save()
         return user
 
@@ -181,22 +194,6 @@ def make_important_doc(profile, contact, **overrides):
 
 class CustomUserSubscriptionTierTests(TestCase):
 
-    def test_upgrade_to_legacy_sets_fields(self):
-        user = User.objects.create_user("u1", "u1@x.com", "pass")
-        user.upgrade_to_legacy()
-        self.assertEqual(user.subscription_tier, "legacy")
-        self.assertTrue(user.has_paid)
-        self.assertIsNotNone(user.legacy_granted_date)
-
-    def test_upgrade_to_essentials_sets_fields(self):
-        user = User.objects.create_user("u2", "u2@x.com", "pass")
-        user.upgrade_to_essentials()
-        self.assertEqual(user.subscription_tier, "essentials")
-        self.assertTrue(user.has_paid)
-        self.assertIsNotNone(user.essentials_expires)
-        delta = (user.essentials_expires - timezone.now()).days
-        self.assertGreaterEqual(delta, 364)
-
     def test_legacy_can_view_and_modify(self):
         user = UserFactory.create_legacy()
         self.assertTrue(user.can_view_data())
@@ -206,11 +203,6 @@ class CustomUserSubscriptionTierTests(TestCase):
         user = UserFactory.create_essentials()
         self.assertTrue(user.can_view_data())
         self.assertTrue(user.can_modify_data())
-
-    def test_expired_essentials_can_view_but_not_modify(self):
-        user = UserFactory.create_expired_essentials()
-        self.assertTrue(user.can_view_data())
-        self.assertFalse(user.can_modify_data())
 
     def test_unpaid_cannot_view_or_modify(self):
         user = UserFactory.create_unpaid()
@@ -224,22 +216,6 @@ class CustomUserSubscriptionTierTests(TestCase):
         self.assertFalse(user.can_view_data())
         self.assertFalse(user.can_modify_data())
 
-    def test_is_essentials_edit_active_true_when_not_expired(self):
-        user = UserFactory.create_essentials()
-        self.assertTrue(user.is_essentials_edit_active())
-
-    def test_is_essentials_edit_active_false_when_expired(self):
-        user = UserFactory.create_expired_essentials()
-        self.assertFalse(user.is_essentials_edit_active())
-
-    def test_days_until_essentials_expires_positive_when_active(self):
-        user = UserFactory.create_essentials()
-        self.assertGreater(user.days_until_essentials_expires(), 0)
-
-    def test_days_until_essentials_expires_zero_when_expired(self):
-        user = UserFactory.create_expired_essentials()
-        self.assertEqual(user.days_until_essentials_expires(), 0)
-
     def test_get_tier_display_name_legacy(self):
         user = UserFactory.create_legacy()
         self.assertIn("Legacy", user.get_tier_display_name())
@@ -248,11 +224,6 @@ class CustomUserSubscriptionTierTests(TestCase):
         user = UserFactory.create_essentials()
         display = user.get_tier_display_name()
         self.assertIn("Essentials", display)
-        self.assertIn("days", display.lower())
-
-    def test_get_tier_display_name_essentials_expired(self):
-        user = UserFactory.create_expired_essentials()
-        self.assertIn("View-only", user.get_tier_display_name())
 
     def test_get_tier_display_name_no_subscription(self):
         user = UserFactory.create_unpaid()
@@ -1114,8 +1085,8 @@ class DashboardHomeViewTests(TestCase):
         r = self.client.get(self.url)
         self.assertTrue(r.context["can_modify"])
 
-    def test_dashboard_can_modify_false_for_expired_essentials(self):
-        user = UserFactory.create_expired_essentials(username="dh_exp", email="dh_exp@x.com")
+    def test_dashboard_can_modify_false_for_lapsed_subscriber(self):
+        user = UserFactory.create_lapsed(username="dh_exp", email="dh_exp@x.com")
         make_profile(user)
         self.client.force_login(user)
         r = self.client.get(self.url)
@@ -1161,8 +1132,8 @@ class ProfileViewTests(TestCase):
         r = self.client.get(reverse("dashboard:profile_update"))
         self.assertEqual(r.status_code, 200)
 
-    def test_expired_essentials_cannot_update_profile(self):
-        exp_user = UserFactory.create_expired_essentials(username="exp_pv", email="exp_pv@x.com")
+    def test_lapsed_subscriber_cannot_update_profile(self):
+        exp_user = UserFactory.create_lapsed(username="exp_pv", email="exp_pv@x.com")
         make_profile(exp_user)
         self.client.force_login(exp_user)
         r = self.client.get(reverse("dashboard:profile_update"))
@@ -1606,8 +1577,8 @@ class MarkItemReviewedViewTests(TestCase):
         data = json.loads(r.content)
         self.assertFalse(data["success"])
 
-    def test_expired_essentials_gets_403(self):
-        exp = UserFactory.create_expired_essentials(username="mir_exp", email="mir_exp@x.com")
+    def test_lapsed_subscriber_gets_403(self):
+        exp = UserFactory.create_lapsed(username="mir_exp", email="mir_exp@x.com")
         make_profile(exp)
         self.client.force_login(exp)
         r = self.client.post(self.url)
@@ -1787,8 +1758,8 @@ class MixinPermissionLogicTests(TestCase):
         user = UserFactory.create_essentials(username="mx_ess", email="mx_ess@x.com")
         self.assertTrue(user.can_modify_data())
 
-    def test_expired_essentials_cannot_modify(self):
-        user = UserFactory.create_expired_essentials(username="mx_exp", email="mx_exp@x.com")
+    def test_lapsed_subscriber_cannot_modify(self):
+        user = UserFactory.create_lapsed(username="mx_exp", email="mx_exp@x.com")
         self.assertFalse(user.can_modify_data())
 
     def test_unpaid_cannot_modify(self):
@@ -1803,8 +1774,8 @@ class MixinPermissionLogicTests(TestCase):
         user = UserFactory.create_essentials(username="mx_vess", email="mx_vess@x.com")
         self.assertTrue(user.can_view_data())
 
-    def test_expired_essentials_can_view(self):
-        user = UserFactory.create_expired_essentials(username="mx_vexp", email="mx_vexp@x.com")
+    def test_lapsed_subscriber_can_view(self):
+        user = UserFactory.create_lapsed(username="mx_vexp", email="mx_vexp@x.com")
         self.assertTrue(user.can_view_data())
 
     def test_unpaid_cannot_view(self):
