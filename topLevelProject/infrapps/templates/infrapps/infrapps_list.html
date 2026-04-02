@@ -19,10 +19,14 @@
       </p>
     </div>
     {% if can_modify and addon_active %}
-    <div class="header-action">
-      <a href="{% url 'vault:vault_create' %}" class="btn-add-contact">
-        <i class="fas fa-plus-circle"></i>
-        <span>Add Entry</span>
+    <div class="header-action" style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <a href="{% url 'vault:vault_create_account' %}" class="btn-add-contact">
+        <i class="fas fa-globe"></i>
+        <span>Add Account Password</span>
+      </a>
+      <a href="{% url 'vault:vault_create_device' %}" class="btn-add-contact">
+        <i class="fas fa-laptop"></i>
+        <span>Add Device Password</span>
       </a>
     </div>
     {% endif %}
@@ -37,15 +41,15 @@
 
       <div class="vault-filter-bar">
         <a href="{% url 'vault:vault_list' %}"
-           class="btn-action vault-filter-btn {% if not current_type %}btn-edit{% else %}btn-view{% endif %}">
+           class="vault-filter-btn {% if not current_type %}vault-filter-btn--active{% endif %}">
           All
         </a>
         <a href="{% url 'vault:vault_list' %}?type=account"
-           class="btn-action vault-filter-btn {% if current_type == 'account' %}btn-edit{% else %}btn-view{% endif %}">
+           class="vault-filter-btn {% if current_type == 'account' %}vault-filter-btn--active{% endif %}">
           Accounts
         </a>
         <a href="{% url 'vault:vault_list' %}?type=device"
-           class="btn-action vault-filter-btn {% if current_type == 'device' %}btn-edit{% else %}btn-view{% endif %}">
+           class="vault-filter-btn {% if current_type == 'device' %}vault-filter-btn--active{% endif %}">
           Devices
         </a>
       </div>
@@ -85,18 +89,18 @@
                          class="vault-list-pw-input"
                          aria-label="Password for {{ entry.label }}">
                   <button type="button"
-                          class="btn-action btn-view vault-list-reveal-btn vault-reveal-btn"
+                          class="vault-list-reveal-btn vault-reveal-btn"
                           data-slug="{{ entry.slug }}"
                           data-field="pw-{{ entry.slug }}"
                           data-csrf="{{ csrf_token }}">
-                    Reveal
+                    <i class="fas fa-eye"></i> Reveal
                   </button>
                 </div>
               </td>
               <td>
                 <div class="action-buttons">
                   <a href="{% url 'vault:vault_detail' entry.slug %}"
-                     class="btn-action btn-edit" title="View entry">
+                     class="btn-action btn-view" title="View entry">
                     <i class="fas fa-eye"></i>
                   </a>
                   {% if can_modify %}
@@ -123,11 +127,11 @@
 
       <div class="vault-filter-bar--mobile">
         <a href="{% url 'vault:vault_list' %}"
-           class="btn-action vault-filter-btn {% if not current_type %}btn-edit{% else %}btn-view{% endif %}">All</a>
+           class="vault-filter-btn {% if not current_type %}vault-filter-btn--active{% endif %}">All</a>
         <a href="{% url 'vault:vault_list' %}?type=account"
-           class="btn-action vault-filter-btn {% if current_type == 'account' %}btn-edit{% else %}btn-view{% endif %}">Accounts</a>
+           class="vault-filter-btn {% if current_type == 'account' %}vault-filter-btn--active{% endif %}">Accounts</a>
         <a href="{% url 'vault:vault_list' %}?type=device"
-           class="btn-action vault-filter-btn {% if current_type == 'device' %}btn-edit{% else %}btn-view{% endif %}">Devices</a>
+           class="vault-filter-btn {% if current_type == 'device' %}vault-filter-btn--active{% endif %}">Devices</a>
       </div>
 
       {% for entry in entries %}
@@ -167,14 +171,14 @@
     <div class="vault-pagination">
       {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}"
-           class="btn-action btn-view vault-page-btn">
+           class="btn-outline-secondary btn-sm vault-page-btn">
           &larr; Previous
         </a>
       {% endif %}
       <span class="contact-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}{% if current_type %}&type={{ current_type }}{% endif %}"
-           class="btn-action btn-view vault-page-btn">
+           class="btn-outline-secondary btn-sm vault-page-btn">
           Next &rarr;
         </a>
       {% endif %}
@@ -187,9 +191,14 @@
       <h2 class="empty-state-title">No Vault Entries Yet</h2>
       <p class="empty-state-text">Securely store passwords and PINs for your accounts and devices.</p>
       {% if can_modify and addon_active %}
-      <a href="{% url 'vault:vault_create' %}" class="btn-add-first">
-        <i class="fas fa-plus-circle"></i> Add Your First Entry
-      </a>
+      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;">
+        <a href="{% url 'vault:vault_create_account' %}" class="btn-add-first">
+          <i class="fas fa-globe"></i> Add Account Password
+        </a>
+        <a href="{% url 'vault:vault_create_device' %}" class="btn-add-first">
+          <i class="fas fa-laptop"></i> Add Device Password
+        </a>
+      </div>
       {% endif %}
     </div>
     {% endif %}
@@ -210,12 +219,12 @@ document.querySelectorAll('.vault-reveal-btn').forEach(function (btn) {
     if (field.type === 'text') {
       field.type      = 'password';
       field.value     = '••••••••';
-      btn.textContent = 'Reveal';
+      btn.innerHTML   = '<i class="fas fa-eye"></i> Reveal';
       return;
     }
 
-    btn.disabled    = true;
-    btn.textContent = 'Loading…';
+    btn.disabled  = true;
+    btn.innerHTML = 'Loading…';
 
     fetch('/vault/' + slug + '/reveal/', {
       method:  'POST',
@@ -228,23 +237,23 @@ document.querySelectorAll('.vault-reveal-btn').forEach(function (btn) {
     .then(function (data) {
       btn.disabled = false;
       if (data.success) {
-        field.type      = 'text';
-        field.value     = data.password;
-        btn.textContent = 'Hide';
+        field.type    = 'text';
+        field.value   = data.password;
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
         setTimeout(function () {
-          field.type      = 'password';
-          field.value     = '••••••••';
-          btn.textContent = 'Reveal';
+          field.type    = 'password';
+          field.value   = '••••••••';
+          btn.innerHTML = '<i class="fas fa-eye"></i> Reveal';
         }, 15000);
       } else {
-        btn.textContent = 'Error';
+        btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
         alert(data.error || 'Could not reveal password.');
       }
     })
     .catch(function (err) {
       console.error(err);
-      btn.disabled    = false;
-      btn.textContent = 'Error';
+      btn.disabled  = false;
+      btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
     });
   });
 });

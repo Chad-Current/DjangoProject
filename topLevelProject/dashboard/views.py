@@ -33,6 +33,8 @@ from .models import (
     FuneralPlan,
     RelevanceReview,
 )
+from infrapps.models import VaultEntry
+
 from .forms import (
     ProfileForm,
     ContactForm,
@@ -365,6 +367,10 @@ class AccountDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
+        from infrapps.models import VaultEntry
+        context['has_vault_entry'] = VaultEntry.objects.filter(
+            linked_account=self.object
+        ).exists()
         return context
 
 
@@ -450,6 +456,10 @@ class DeviceDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data()
+        from infrapps.models import VaultEntry
+        context['has_vault_entry'] = VaultEntry.objects.filter(
+            linked_device=self.object
+        ).exists()
         return context
 
 
@@ -794,14 +804,17 @@ class ContactDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         important_docs = ImportantDocument.objects.filter(delegated_important_document_to=contact).order_by('name_or_title')
         devices_listed = Device.objects.filter(delegated_device_to=contact).order_by('device_name')
         accounts_listed= Account.objects.filter(delegated_account_to=contact).order_by('account_name_or_provider')
+        family_listed  = FamilyNeedsToKnowSection.objects.filter(relation=contact).order_by('-updated_at')
 
         context['delegated_estate_documents']    = estate_docs
         context['delegated_important_documents'] = important_docs
         context['delegated_devices']             = devices_listed
         context['delegated_accounts']            = accounts_listed
+        context['family_notes']                  = family_listed
         context['total_assignments'] = (
             estate_docs.count() + important_docs.count() +
             devices_listed.count() + accounts_listed.count()
+            + family_listed.count()
         )
         return context
 
@@ -857,17 +870,22 @@ class ContactDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
         important_docs   = ImportantDocument.objects.filter(delegated_important_document_to=contact).select_related('profile')
         assigned_accounts= Account.objects.filter(delegated_account_to=contact).select_related('profile')
         assigned_devices = Device.objects.filter(delegated_device_to=contact).select_related('profile')
+        family_notes     = FamilyNeedsToKnowSection.objects.filter(relation=contact).select_related('relation')
 
         context['estate_documents']    = estate_docs
         context['important_documents'] = important_docs
         context['assigned_accounts']   = assigned_accounts
         context['assigned_devices']    = assigned_devices
+        context['family_notes']        = family_notes
+
         context['total_documents']     = estate_docs.count() + important_docs.count()
         context['total_accounts']      = assigned_accounts.count()
         context['total_devices']       = assigned_devices.count()
+        context['total_notes']        =  family_notes.count()
         context['has_assignments']     = (
             estate_docs.exists() or important_docs.exists() or
             assigned_accounts.exists() or assigned_devices.exists()
+            or family_notes.exists()
         )
 
         if context['has_assignments']:
@@ -895,8 +913,9 @@ class ContactDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
                 request,
                 f'Cannot delete {contact.first_name} {contact.last_name} because they have '
                 f'{total_restrictions} item(s) assigned to them '
-                f'({estate_count} estate, {important_count} important, '
-                f'{account_count} account, {device_count} device). '
+                # f'({estate_count} estate, {important_count} important, '
+                # f'{account_count} account, {device_count} device). '
+                # f'{family_note_count} family notes. '
                 f'Please reassign these to another contact first.'
             )
             return HttpResponseRedirect(

@@ -30,6 +30,10 @@
     --nt-accounts-bg:       var(--fifty-percent);
     --nt-accounts-light:    var(--background-color);
 
+    --nt-notes-color:       var(--thirty-percent);
+    --nt-notes-bg:          var(--forty-percent);
+    --nt-notes-light:       var(--background-color);
+
     --nt-item-bg:           var(--purewhite-color);
     --nt-item-border:       var(--seventy-percent);
     --nt-item-shadow:       0 2px 8px rgba(22, 40, 59, 0.07);
@@ -218,6 +222,7 @@
 .nt-node--docs     { background: var(--nt-docs-bg);     animation-delay: 0.32s; }
 .nt-node--devices  { background: var(--nt-devices-bg);  animation-delay: 0.39s; }
 .nt-node--accounts { background: var(--nt-accounts-bg); animation-delay: 0.46s; }
+.nt-node--notes    { background: var(--nt-notes-bg);    animation-delay: 0.55s; }
 
 .nt-node--category i {
     font-size: 0.82rem;
@@ -281,12 +286,28 @@
 .nt-node--docs-item    { border-left: 3px solid var(--nt-docs-color);     }
 .nt-node--device-item  { border-left: 3px solid var(--nt-devices-color);  }
 .nt-node--account-item { border-left: 3px solid var(--nt-accounts-color); }
+.nt-node--notes-item   { border-left: 3px solid var(--nt-notes-color);    }
 
 /* Icon color matches category */
 .nt-node--estate-item  > i { color: var(--nt-estate-color);   }
 .nt-node--docs-item    > i { color: var(--nt-docs-color);     }
 .nt-node--device-item  > i { color: var(--nt-devices-color);  }
 .nt-node--account-item > i { color: var(--nt-accounts-color); }
+.nt-node--notes-item   > i { color: var(--nt-notes-color);    }
+
+/* Staggered animation delays for notes items — applied via nth-child
+   because the inline style attribute was removed to avoid the VS Code
+   embedded CSS linter false positive on Django template tags. */
+#nt-col-notes .nt-node--notes-item:nth-child(1)  { animation-delay:  900ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(2)  { animation-delay: 1000ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(3)  { animation-delay: 1100ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(4)  { animation-delay: 1200ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(5)  { animation-delay: 1300ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(6)  { animation-delay: 1400ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(7)  { animation-delay: 1500ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(8)  { animation-delay: 1600ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(9)  { animation-delay: 1700ms; }
+#nt-col-notes .nt-node--notes-item:nth-child(10) { animation-delay: 1800ms; }
 
 .nt-item-label {
     overflow: hidden;
@@ -447,6 +468,7 @@
 .nt-modal-icon--docs    { background: rgba(45, 106, 156, 0.10); color: var(--nt-docs-color);     }
 .nt-modal-icon--device  { background: rgba(0, 0, 0, 0.07);      color: var(--nt-devices-color);  }
 .nt-modal-icon--account { background: rgba(45, 106, 156, 0.08); color: var(--nt-accounts-color); }
+.nt-modal-icon--notes   { background: rgba(45, 106, 156, 0.10); color: var(--nt-notes-color);    }
 
 .nt-modal-title-text {
     font-family: var(--title-font);

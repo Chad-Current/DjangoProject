@@ -46,18 +46,16 @@
          LINK TO ACCOUNT OR DEVICE
     ══════════════════════════════════════════ -->
     <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Link to Account or Device</legend>
+      <legend class="form-fieldset-legend">
+        {% if entry_form_type == 'account' %}Link to Account{% else %}Link to Device{% endif %}
+      </legend>
 
-      <div class="alert alert-warning">
-        <strong>Required:</strong> Every vault entry must be linked to exactly one Account or Device.
-        Do not link to both at the same time.
-      </div>
-
+      {% if entry_form_type == 'account' %}
       <div class="form-field{% if form.linked_account.errors %} has-error{% endif %}">
         <label for="{{ form.linked_account.id_for_label }}"
           class="ob-label-tooltip"
           title="Select the digital account this password belongs to.">
-          Link to Account
+          Account <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Select the digital account this password belongs to.</span>
         </label>
         {{ form.linked_account }}
@@ -65,12 +63,12 @@
           <div class="error" role="alert">{{ form.linked_account.errors }}</div>
         {% endif %}
       </div>
-
+      {% else %}
       <div class="form-field{% if form.linked_device.errors %} has-error{% endif %}">
         <label for="{{ form.linked_device.id_for_label }}"
           class="ob-label-tooltip"
           title="Select the device this PIN or password belongs to.">
-          Link to Device
+          Device <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Select the device this PIN or password belongs to.</span>
         </label>
         {{ form.linked_device }}
@@ -78,6 +76,7 @@
           <div class="error" role="alert">{{ form.linked_device.errors }}</div>
         {% endif %}
       </div>
+      {% endif %}
 
     </fieldset>
 

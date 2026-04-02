@@ -337,14 +337,24 @@
             <div class="info-card">
                 <h3><i class="fas fa-clipboard-check"></i> Review Status</h3>
                 
-                <div class="info-row">
+                <!-- <div class="info-row">
                     <div class="info-label">
-                        <i class="far fa-calendar-check"></i> Review Date
+                        <i class="fas fa-user-check"></i> Reviewer
                     </div>
                     <div class="info-value">
-                        {{ review.review_date|date:"F d, Y g:i A" }}
+                        {{ review.reviewer.get_full_name|default:review.reviewer.username }}
+                    </div>
+                </div> -->
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="far fa-calendar-check"></i> Created on
+                    </div>
+                    <div class="info-value">
+                        {{ review.created_at|date:"F d, Y g:i A" }}
                     </div>
                 </div>
+                
 
                 <div class="info-row">
                     <div class="info-label">
@@ -355,14 +365,6 @@
                     </div>
                 </div>
 
-                <div class="info-row">
-                    <div class="info-label">
-                        <i class="fas fa-user-check"></i> Reviewer
-                    </div>
-                    <div class="info-value">
-                        {{ review.reviewer.get_full_name|default:review.reviewer.username }}
-                    </div>
-                </div>
 
                 <!-- <div class="info-row">
                     <div class="info-label">
@@ -427,20 +429,20 @@
     {% if can_modify %}
     <div class="action-buttons">
         {% if review.account_review %}
-            <a href="{% url 'dashboard:account_detail' review.account_review.slug %}" class="btn-back btn-custom">
-                <i class="fas fa-arrow-left"></i> Back to Account
+            <a href="{% url 'dashboard:account_update' review.account_review.slug %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Update Account Details
             </a>
         {% elif review.device_review %}
-            <a href="{% url 'dashboard:device_detail' review.device_review.slug %}" class="btn-back btn-custom">
-                <i class="fas fa-arrow-left"></i> Back to Device
+            <a href="{% url 'dashboard:device_update' review.device_review.slug %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Update Device Details
             </a>
         {% elif review.estate_review %}
-            <a href="{% url 'dashboard:estate_detail' review.estate_review.slug %}" class="btn-back btn-custom">
-                <i class="fas fa-arrow-left"></i> Back to Document
+            <a href="{% url 'dashboard:estate_update' review.estate_review.slug %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Update Document Details
             </a>
         {% elif review.important_document_review %}
-            <a href="{% url 'dashboard:importantdocument_detail' review.important_document_review.slug %}" class="btn-back btn-custom">
-                <i class="fas fa-arrow-left"></i> Back to Document
+            <a href="{% url 'dashboard:importantdocument_update' review.important_document_review.slug %}" class="btn-back btn-custom">
+                <i class="fas fa-arrow-left"></i> Update Document Details
             </a>
         {% endif %}
         <a href="{% url 'dashboard:relevancereview_list' %}" class="btn-back btn-custom">

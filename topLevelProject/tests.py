@@ -295,12 +295,12 @@ class SubscriptionTierTests(TestCase):
         r = self.c.get(self.DASHBOARD_URL)
         self.assertIn(r.status_code, [302, 301])
 
-    def test_unpaid_user_redirected_from_dashboard(self):
-        u = make_user(username="unpaid", email="unpaid@example.com")
+    def test_free_tier_user_can_access_dashboard(self):
+        """Free-tier users are allowed into the dashboard (auto-profile created)."""
+        u = make_user(username="freetier", email="freetier@example.com")
         self._login(u)
         r = self.c.get(self.DASHBOARD_URL, follow=True)
-        # Should NOT land on the dashboard — redirect to payment or elsewhere
-        self.assertNotEqual(r.request["PATH_INFO"], self.DASHBOARD_URL)
+        self.assertEqual(r.status_code, 200)
 
     def test_essentials_user_can_access_dashboard(self):
         u = make_stripe_user(username="e2", email="e2@example.com", tier='essentials')
@@ -336,9 +336,10 @@ class SubscriptionTierTests(TestCase):
         u = make_stripe_user(username="lm", email="lm@example.com")
         self.assertTrue(u.can_modify_data())
 
-    def test_unpaid_cannot_view_data(self):
+    def test_free_tier_can_view_data(self):
+        """Free-tier users (is_free_tier=True) can view their data."""
         u = make_user(username="nv", email="nv@example.com")
-        self.assertFalse(u.can_view_data())
+        self.assertTrue(u.can_view_data())
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -670,14 +671,20 @@ class VaultTests(TestCase):
         r = self.c.get(reverse("vault:vault_list"))
         self.assertEqual(r.status_code, 200)
 
-    def test_vault_create_get(self):
-        r = self.c.get(reverse("vault:vault_create"))
+    def test_vault_create_account_get(self):
+        r = self.c.get(reverse("vault:vault_create_account"))
         self.assertEqual(r.status_code, 200)
 
-    def test_vault_create_post(self):
-        r = self.c.post(reverse("vault:vault_create"), {
+    def test_vault_create_device_get(self):
+        r = self.c.get(reverse("vault:vault_create_device"))
+        self.assertEqual(r.status_code, 200)
+
+    def test_vault_create_account_post(self):
+        contact = make_contact(self.profile)
+        account = make_account(self.profile, contact)
+        r = self.c.post(reverse("vault:vault_create_account"), {
             "label": "My Gmail Password",
-            "entry_type": "other",
+            "linked_account": account.pk,
             "username_or_email": "jane@gmail.com",
             "raw_password": "SuperSecret99!",
             "notes": "",
@@ -685,6 +692,21 @@ class VaultTests(TestCase):
         self.assertTrue(
             VaultEntry.objects.filter(profile=self.profile,
                                       label="My Gmail Password").exists()
+        )
+
+    def test_vault_create_device_post(self):
+        contact = make_contact(self.profile)
+        device = make_device(self.profile, contact)
+        r = self.c.post(reverse("vault:vault_create_device"), {
+            "label": "Laptop PIN",
+            "linked_device": device.pk,
+            "username_or_email": "",
+            "raw_password": "DevicePin99!",
+            "notes": "",
+        }, follow=True)
+        self.assertTrue(
+            VaultEntry.objects.filter(profile=self.profile,
+                                      label="Laptop PIN").exists()
         )
 
     def test_vault_password_is_encrypted_at_rest(self):

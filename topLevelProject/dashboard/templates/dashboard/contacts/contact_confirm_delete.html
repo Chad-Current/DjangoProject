@@ -32,7 +32,7 @@
                 <div class="delete-warning-notice">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>
-                        <strong>{{ total_assignments }} item(s)</strong> are currently assigned to this contact.
+                        items(s) are currently assigned to this contact.
                         Please reassign them to another contact before deleting.
                     </p>
                 </div>
@@ -44,7 +44,7 @@
                     <ul class="delete-assignment-list">
                         {% for doc in estate_documents %}
                         <li class="delete-assignment-item">
-                            <span><i class="fas fa-file-contract"></i>{{ doc.name_or_title }}</span>
+                            <span><i class="fas fa-file-contract"></i>{{ doc.name_or_title|truncatechars:20 }}</span>
                             <a href="{% url 'dashboard:estate_update' doc.slug %}" class="delete-reassign-link">Reassign →</a>
                         </li>
                         {% endfor %}
@@ -58,7 +58,7 @@
                     <ul class="delete-assignment-list">
                         {% for doc in important_documents %}
                         <li class="delete-assignment-item">
-                            <span><i class="fas fa-file-alt"></i>{{ doc.name_or_title }}</span>
+                            <span><i class="fas fa-file-alt"></i>{{ doc.name_or_title|truncatechars:20 }}</span>
                             <a href="{% url 'dashboard:importantdocument_update' doc.slug %}" class="delete-reassign-link">Reassign →</a>
                         </li>
                         {% endfor %}
@@ -72,7 +72,7 @@
                     <ul class="delete-assignment-list">
                         {% for assign in assigned_accounts %}
                         <li class="delete-assignment-item">
-                            <span><i class="fas fa-globe"></i>{{ assign.account_name_or_provider }}</span>
+                            <span><i class="fas fa-globe"></i>{{ assign.account_name_or_provider|truncatechars:20 }}</span>
                             <a href="{% url 'dashboard:account_update' assign.slug %}" class="delete-reassign-link">Reassign →</a>
                         </li>
                         {% endfor %}
@@ -86,8 +86,22 @@
                     <ul class="delete-assignment-list">
                         {% for device in assigned_devices %}
                         <li class="delete-assignment-item">
-                            <span><i class="fas fa-laptop"></i>{{ device.device_name }}</span>
+                            <span><i class="fas fa-laptop"></i>{{ device.device_name|truncatechars:20 }}</span>
                             <a href="{% url 'dashboard:device_update' device.slug %}" class="delete-reassign-link">Reassign →</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if family_notes %}
+                <div class="delete-assignment-group">
+                    <p class="delete-assignment-label">Notes ({{ family_notes.count }})</p>
+                    <ul class="delete-assignment-list">
+                        {% for note in family_notes %}
+                        <li class="delete-assignment-item">
+                            <span><i class="fas fa-laptop"></i>{{ note.content|truncatechars:20 }}</span>
+                            <a href="{% url 'dashboard:familyawareness_update' note.slug %}" class="delete-reassign-link">Reassign →</a>
                         </li>
                         {% endfor %}
                     </ul>

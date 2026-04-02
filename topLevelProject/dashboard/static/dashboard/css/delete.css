@@ -281,11 +281,11 @@
 }
 
 .delete-reassign-link {
-    font-size: 0.78rem;
+    font-size: var(--font-nm);
     font-weight: 600;
     color: #dc2626;
     text-decoration: none;
-    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-family: var(--main-font, sans-serif);
     transition: color 0.2s;
 }
 

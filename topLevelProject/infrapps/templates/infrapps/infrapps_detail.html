@@ -4,7 +4,6 @@
 {% block title %}{{ entry.label }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'dashboard/css/collapse.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
 {% endblock %}
 
@@ -12,12 +11,12 @@
 <div class="main container py-4">
 
   <!-- Header -->
-  <div class="device-header">
+  <div class="delegation-header">
     <h1><i class="fas fa-key"></i> {{ entry.label }}</h1>
-    <div class="subtitle">
+    <p class="subtitle">
       {% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}
       {% if entry.has_linked_source %}&nbsp;&mdash;&nbsp;Linked to {{ entry.source_name }}{% endif %}
-    </div>
+    </p>
   </div>
 
   {% if messages %}
@@ -36,68 +35,54 @@
 
       <!-- Identity -->
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-id-badge"></i> Entry Details</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
+        <h3><i class="fas fa-id-badge"></i> Entry Details</h3>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-tag"></i> Entry Type</div>
+          <div class="info-value">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</div>
         </div>
-        <div class="collapsible-content">
-          <div class="dv-mt-2">
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-tag"></i> Entry Type</div>
-              <div class="info-value">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</div>
-            </div>
-            {% if entry.username_or_email %}
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-user"></i> Username / Email</div>
-              <div class="info-value">{{ entry.username_or_email }}</div>
-            </div>
-            {% endif %}
-          </div>
+        {% if entry.username_or_email %}
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-user"></i> Username / Email</div>
+          <div class="info-value">{{ entry.username_or_email }}</div>
         </div>
+        {% endif %}
       </div>
 
       <!-- Encrypted credential -->
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-lock"></i> Encrypted Credential</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
-        </div>
-        <div class="collapsible-content">
-          <div class="dv-mt-2">
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-key"></i> Password / PIN</div>
-              <div class="info-value">
-                <div class="vault-pw-row">
-                  <input type="password"
-                         id="pw-detail"
-                         value="••••••••"
-                         readonly
-                         class="vault-detail-pw-input"
-                         aria-label="Encrypted password">
-                  <button type="button"
-                          id="vault-reveal-btn"
-                          class="btn-action btn-edit vault-detail-action-btn"
-                          data-slug="{{ entry.slug }}"
-                          data-csrf="{{ csrf_token }}">
-                    Reveal Password
-                  </button>
-                  <button type="button"
-                          id="vault-copy-btn"
-                          class="btn-action btn-view vault-detail-action-btn vault-hidden"
-                          aria-label="Copy password to clipboard">
-                    Copy
-                  </button>
-                </div>
-                <p id="vault-countdown-msg" class="vault-countdown-msg vault-hidden">
-                  Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
-                </p>
-              </div>
+        <h3><i class="fas fa-lock"></i> Encrypted Credential</h3>
+        <div class="info-row-pin">
+          <div class="info-label-pin"><i class="fas fa-key"></i> Password / PIN</div>
+          <div class="info-value">
+            <div class="vault-pw-row">
+              <input type="password"
+                     id="pw-detail"
+                     value="••••••••"
+                     readonly
+                     class="vault-detail-pw-input"
+                     aria-label="Encrypted password">
+              <button type="button"
+                      id="vault-reveal-btn"
+                      class="vault-detail-reveal-btn"
+                      data-slug="{{ entry.slug }}"
+                      data-csrf="{{ csrf_token }}">
+                <i class="fas fa-eye"></i> Reveal Password
+              </button>
+              <button type="button"
+                      id="vault-copy-btn"
+                      class="vault-detail-copy-btn vault-hidden"
+                      aria-label="Copy password to clipboard">
+                <i class="fas fa-copy"></i> Copy
+              </button>
             </div>
+            <p id="vault-countdown-msg" class="vault-countdown-msg vault-hidden">
+              Password hides automatically in <strong><span id="vault-countdown">15</span>s</strong>.
+            </p>
           </div>
-          <div class="alert-box dv-mt-2">
-            <i class="fas fa-shield-alt"></i>
-            <p>Encrypted with AES-256 (Fernet). Decrypted only on explicit request and never stored in plain text.</p>
-          </div>
+        </div>
+        <div class="alert-box dv-mt-2">
+          <i class="fas fa-shield-alt"></i>
+          <p>Encrypted with AES-256 (Fernet). Decrypted only on explicit request and never stored in plain text.</p>
         </div>
       </div>
 
@@ -109,53 +94,39 @@
       <!-- Linked account details -->
       {% if entry.linked_account %}
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-globe"></i> Linked Account</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
+        <h3><i class="fas fa-globe"></i> Linked Account</h3>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-building"></i> Provider</div>
+          <div class="info-value">{{ entry.linked_account.account_name_or_provider }}</div>
         </div>
-        <div class="collapsible-content">
-          <div class="dv-mt-2">
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-building"></i> Provider</div>
-              <div class="info-value">{{ entry.linked_account.account_name_or_provider }}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-tag"></i> Category</div>
-              <div class="info-value">{{ entry.linked_account.account_category }}</div>
-            </div>
-            {% if entry.linked_account.website_url %}
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-link"></i> Website</div>
-              <div class="info-value">
-                <a href="{{ entry.linked_account.website_url }}" target="_blank" rel="noopener noreferrer">
-                  {{ entry.linked_account.website_url }}
-                </a>
-              </div>
-            </div>
-            {% endif %}
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-tag"></i> Category</div>
+          <div class="info-value">{{ entry.linked_account.account_category }}</div>
+        </div>
+        {% if entry.linked_account.website_url %}
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-link"></i> Website</div>
+          <div class="info-value">
+            <a href="{{ entry.linked_account.website_url }}" target="_blank" rel="noopener noreferrer">
+              {{ entry.linked_account.website_url }}
+            </a>
           </div>
         </div>
+        {% endif %}
       </div>
       {% endif %}
 
       <!-- Linked device details -->
       {% if entry.linked_device %}
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-laptop"></i> Linked Device</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
+        <h3><i class="fas fa-laptop"></i> Linked Device</h3>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-tag"></i> Device Name</div>
+          <div class="info-value">{{ entry.linked_device.device_name }}</div>
         </div>
-        <div class="collapsible-content">
-          <div class="dv-mt-2">
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-tag"></i> Device Name</div>
-              <div class="info-value">{{ entry.linked_device.device_name }}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-desktop"></i> Device Type</div>
-              <div class="info-value">{{ entry.linked_device.device_type }}</div>
-            </div>
-          </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-desktop"></i> Device Type</div>
+          <div class="info-value">{{ entry.linked_device.device_type }}</div>
         </div>
       </div>
       {% endif %}
@@ -163,44 +134,32 @@
       <!-- Notes -->
       {% if entry.notes %}
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-sticky-note"></i> Notes</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
-        </div>
-        <div class="collapsible-content">
-          <div class="description-box dv-mt-2">
-            <p>{{ entry.notes|linebreaks }}</p>
-          </div>
+        <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+        <div class="description-box dv-mt-2">
+          <p>{{ entry.notes|linebreaks }}</p>
         </div>
       </div>
       {% endif %}
 
       <!-- Audit -->
       <div class="info-card">
-        <div class="collapsible-header" aria-expanded="true">
-          <h3><i class="fas fa-history"></i> Audit</h3>
-          <i class="fas fa-chevron-down collapse-icon"></i>
+        <h3><i class="fas fa-history"></i> Audit</h3>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-calendar-plus"></i> Created</div>
+          <div class="info-value">{{ entry.created_at|date:"N j, Y \a\t g:i A" }}</div>
         </div>
-        <div class="collapsible-content">
-          <div class="dv-mt-2">
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-calendar-plus"></i> Created</div>
-              <div class="info-value">{{ entry.created_at|date:"N j, Y \a\t g:i A" }}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-edit"></i> Last Modified</div>
-              <div class="info-value">{{ entry.updated_at|date:"N j, Y \a\t g:i A" }}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-label"><i class="fas fa-eye"></i> Last Accessed</div>
-              <div class="info-value">
-                {% if entry.last_accessed %}
-                  {{ entry.last_accessed|date:"N j, Y \a\t g:i A" }}
-                {% else %}
-                  Never
-                {% endif %}
-              </div>
-            </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-edit"></i> Last Modified</div>
+          <div class="info-value">{{ entry.updated_at|date:"N j, Y \a\t g:i A" }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-eye"></i> Last Accessed</div>
+          <div class="info-value">
+            {% if entry.last_accessed %}
+              {{ entry.last_accessed|date:"N j, Y \a\t g:i A" }}
+            {% else %}
+              Never
+            {% endif %}
           </div>
         </div>
       </div>
@@ -234,36 +193,6 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.collapsible-header').forEach(function (header) {
-    var content = header.nextElementSibling;
-    if (!content || !content.classList.contains('collapsible-content')) return;
-    if (header.getAttribute('aria-expanded') === 'true') {
-      content.style.maxHeight = content.scrollHeight + 'px';
-    } else {
-      content.style.maxHeight = '0';
-      content.style.overflow  = 'hidden';
-    }
-    header.addEventListener('click', function () {
-      var expanded = this.getAttribute('aria-expanded') === 'true';
-      if (expanded) {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        content.style.overflow  = 'hidden';
-        requestAnimationFrame(function () { content.style.maxHeight = '0'; });
-        header.setAttribute('aria-expanded', 'false');
-      } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        content.addEventListener('transitionend', function onEnd() {
-          content.style.maxHeight = 'none';
-          content.style.overflow  = 'visible';
-          content.removeEventListener('transitionend', onEnd);
-        });
-        header.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
-});
-
 (function () {
   const revealBtn    = document.getElementById('vault-reveal-btn');
   const copyBtn      = document.getElementById('vault-copy-btn');
@@ -276,9 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
   let autoHide, ticker, secs = 15;
 
   function mask() {
-    pwField.type          = 'password';
-    pwField.value         = '••••••••';
-    revealBtn.textContent = 'Reveal Password';
+    pwField.type        = 'password';
+    pwField.value       = '••••••••';
+    revealBtn.innerHTML = '<i class="fas fa-eye"></i> Reveal Password';
     if (copyBtn)      copyBtn.classList.add('vault-hidden');
     if (countdownMsg) countdownMsg.classList.add('vault-hidden');
     clearTimeout(autoHide);
@@ -292,8 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const slug = revealBtn.dataset.slug;
     const csrf = revealBtn.dataset.csrf;
 
-    revealBtn.disabled    = true;
-    revealBtn.textContent = 'Loading…';
+    revealBtn.disabled  = true;
+    revealBtn.innerHTML = 'Loading…';
 
     fetch('/vault/' + slug + '/reveal/', {
       method:  'POST',
@@ -306,9 +235,9 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (data) {
       revealBtn.disabled = false;
       if (data.success) {
-        pwField.type          = 'text';
-        pwField.value         = data.password;
-        revealBtn.textContent = 'Hide Password';
+        pwField.type        = 'text';
+        pwField.value       = data.password;
+        revealBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Password';
         if (copyBtn)      copyBtn.classList.remove('vault-hidden');
         if (countdownMsg) { countdownMsg.classList.remove('vault-hidden'); countdownEl.textContent = secs; }
 
@@ -319,14 +248,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
         autoHide = setTimeout(mask, 15000);
       } else {
-        revealBtn.textContent = 'Error — try again';
+        revealBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error — try again';
         alert(data.error || 'Could not reveal password.');
       }
     })
     .catch(function (err) {
       console.error(err);
-      revealBtn.disabled    = false;
-      revealBtn.textContent = 'Error — try again';
+      revealBtn.disabled  = false;
+      revealBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error — try again';
     });
   });
 
@@ -334,9 +263,10 @@ document.addEventListener('DOMContentLoaded', function () {
     copyBtn.addEventListener('click', function () {
       if (!pwField.value || pwField.type !== 'text') return;
       navigator.clipboard.writeText(pwField.value).then(function () {
-        const orig = copyBtn.textContent;
-        copyBtn.textContent = 'Copied!';
-        setTimeout(function () { copyBtn.textContent = orig; }, 2000);
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(function () {
+          copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        }, 2000);
       });
     });
   }

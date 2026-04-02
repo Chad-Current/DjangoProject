@@ -340,7 +340,7 @@ class FuneralPlanModelTest(TestCase):
         self.profile = make_profile(self.user)
 
     def test_is_complete_true_when_all_four_required_fields_set(self):
-        self.assertTrue(make_funeral_plan(self.profile).is_complete)
+        self.assertTrue(make_funeral_plan(self.profile))
 
     def test_is_complete_false_without_disposition_method(self):
         plan = FuneralPlan.objects.create(

@@ -222,6 +222,7 @@ STRIPE_LEGACY_ANNUAL_PRICE_ID = os.environ.get('STRIPE_LEGACY_ANNUAL_PRICE_ID', 
 STRIPE_LEGACY_MONTHLY_PRICE_ID = os.environ.get('STRIPE_LEGACY_MONTHLY_PRICE_ID', '')
 
 
+VAULT_ENCRYPTION_KEY = "sQRYLWraROkCufAiJ9VPvbMPdtwq9Y6AH920AMS1B-s="
 # Three settings.py changes you'll need when deploying:
 
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache' + SESSION_CACHE_ALIAS = 'default'

@@ -13,7 +13,14 @@
     <!-- Header -->
     <div class="device-header">
         <h1><i class="fas fa-laptop"></i> {{ device.device_name }}</h1>
-        <div class="subtitle">{{ device.get_device_type_display }}</div>
+        <div class="subtitle">
+            {{ device.get_device_type_display }}
+            {% if has_vault_entry %}
+            <span class="badge-role badge-executor" title="A password for this device is stored in your vault">
+                <i class="fas fa-shield-alt"></i> Password in Vault
+            </span>
+            {% endif %}
+        </div>
     </div>
 
     <div class="row">

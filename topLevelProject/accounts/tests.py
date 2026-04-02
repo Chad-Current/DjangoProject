@@ -89,20 +89,19 @@ class PaidUserRequiredMixinTest(TestCase):
         mixin.request = req
         return mixin.test_func()
 
-def test_unauthenticated_user_fails(self):
-    from django.contrib.auth.models import AnonymousUser
+    def test_unauthenticated_user_fails(self):
+        from django.contrib.auth.models import AnonymousUser
 
-    mixin = PaidUserRequiredMixin()
+        mixin = PaidUserRequiredMixin()
 
-    class FakeRequest:
-        user = AnonymousUser()
+        class FakeRequest:
+            user = AnonymousUser()
 
-    mixin.request = FakeRequest()
-    self.assertFalse(mixin.test_func())
+        mixin.request = FakeRequest()
+        self.assertFalse(mixin.test_func())
 
-
-    def test_unpaid_user_fails(self):
-        self.assertFalse(self._test_func(make_user(username='u1', email='u1@x.com')))
+    def test_free_tier_user_passes(self):
+        self.assertTrue(self._test_func(make_user(username='u1', email='u1@x.com')))
 
     def test_active_essentials_passes(self):
         self.assertTrue(self._test_func(make_stripe_user(username='u2', email='u2@x.com')))
@@ -167,8 +166,8 @@ class ViewOnlyMixinTest(TestCase):
         mixin.request = req
         return mixin.test_func()
 
-    def test_unpaid_user_fails(self):
-        self.assertFalse(self._test_func(make_user(username='vp1', email='vp1@x.com')))
+    def test_free_tier_user_passes(self):
+        self.assertTrue(self._test_func(make_user(username='vp1', email='vp1@x.com')))
 
     def test_active_essentials_passes(self):
         self.assertTrue(self._test_func(make_stripe_user(username='vp2', email='vp2@x.com')))
@@ -237,23 +236,23 @@ class UserOwnsObjectMixinTest(TestCase):
 
     # get_object ownership check
 
-def test_owner_can_access_own_object(self):
-    """Ownership traversal returns the correct user for a simple 'user' field."""
+    def test_owner_can_access_own_object(self):
+        """Ownership traversal returns the correct user for a simple 'user' field."""
 
-    class FakeObj:
-        pass
+        class FakeObj:
+            pass
 
-    obj = FakeObj()
-    obj.user = self.owner
+        obj = FakeObj()
+        obj.user = self.owner
 
-    resolved_owner = obj
-    for field in 'user'.split('__'):
-        resolved_owner = getattr(resolved_owner, field, None)
-        if resolved_owner is None:
-            self.fail("Owner traversal returned None unexpectedly")
+        resolved_owner = obj
+        for field in 'user'.split('__'):
+            resolved_owner = getattr(resolved_owner, field, None)
+            if resolved_owner is None:
+                self.fail("Owner traversal returned None unexpectedly")
 
-    self.assertEqual(resolved_owner, self.owner)
-    self.assertNotEqual(resolved_owner, self.other)
+        self.assertEqual(resolved_owner, self.owner)
+        self.assertNotEqual(resolved_owner, self.other)
 
     def test_other_user_raises_http404(self):
         """get_object should raise Http404 when owner != request.user."""
@@ -361,11 +360,8 @@ def test_owner_can_access_own_object(self):
 class DeleteAccessMixinTest(TestCase):
     """
     DeleteAccessMixin.dispatch blocks non-modifying users.
-
-    NOTE: There is a bug in the current implementation —
-          `redirect('payment')` should be `redirect('accounts:payment')`.
-          The test below documents this and will FAIL until the bug is fixed,
-          serving as a regression guard.
+    Free-tier users and active paid subscribers may delete their own items.
+    Lapsed/canceled subscribers are blocked and redirected to accounts:payment.
     """
 
     def setUp(self):
@@ -443,29 +439,15 @@ class DeleteAccessMixinTest(TestCase):
     # ── Bug regression test ───────────────────────────────────
 
     def test_delete_access_mixin_redirect_uses_namespaced_url(self):
-        """
-        BUG: DeleteAccessMixin.dispatch calls redirect('payment') without
-        the 'accounts:' namespace, causing NoReverseMatch in production.
-        This test documents the correct behaviour and will pass once fixed.
-
-        Fix:  return redirect('accounts:payment')
-        """
-        user = make_user(username='bugtest', email='bugtest@x.com', password='StrongPass1!')
-        self.client.force_login(user)
-
-        # We need a real URL that uses DeleteAccessMixin to trigger dispatch.
-        # Since none exist in accounts/ directly, we test the redirect target string.
+        """accounts:payment URL resolves — DeleteAccessMixin redirects there correctly."""
         from django.urls import reverse as url_reverse
         try:
-            # If 'payment' (no namespace) resolves, the bug may be masked
             url_reverse('accounts:payment')
             namespaced_works = True
         except Exception:
             namespaced_works = False
 
-        # The namespaced URL must always resolve
-        self.assertTrue(namespaced_works,
-            "accounts:payment URL must resolve — fix DeleteAccessMixin to use this namespace")
+        self.assertTrue(namespaced_works, "accounts:payment URL must resolve")
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -488,17 +470,17 @@ class CombinedMixinTest(TestCase):
         self.assertTrue(issubclass(ViewAccessMixin, ViewOnlyMixin))
         self.assertTrue(issubclass(ViewAccessMixin, UserOwnsObjectMixin))
 
-    def test_full_access_test_func_requires_modify(self):
-        """FullAccessMixin test_func must use can_modify_data (from PaidUserRequired)."""
-        unpaid = make_user(username='fa1', email='fa1@x.com')
+    def test_full_access_test_func_passes_free_tier(self):
+        """FullAccessMixin allows free-tier users (is_free_tier=True) through."""
+        free_tier = make_user(username='fa1', email='fa1@x.com')
         mixin = FullAccessMixin()
 
         class FakeRequest:
-            user = unpaid
+            user = free_tier
 
         mixin.request = FakeRequest()
-        # test_func comes from PaidUserRequiredMixin via MRO
-        self.assertFalse(mixin.test_func())
+        # Free-tier users pass PaidUserRequiredMixin.test_func via is_free_tier()
+        self.assertTrue(mixin.test_func())
 
     def test_view_access_test_func_allows_lapsed_subscriber(self):
         """ViewAccessMixin test_func must use can_view_data, not can_modify_data."""

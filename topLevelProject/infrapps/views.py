@@ -13,7 +13,7 @@ from django.views.generic import (
 )
 
 from dashboard.models import Profile
-from .forms import VaultEntryForm
+from .forms import VaultEntryForm, AccountVaultEntryForm, DeviceVaultEntryForm
 from .models import VaultEntry, VaultAccessLog
 
 logger = logging.getLogger(__name__)
@@ -177,15 +177,100 @@ class VaultCreateView(VaultAccessMixin, CreateView):
 
 
 # ---------------------------------------------------------------------------
+# TYPED CREATE VIEWS
+# ---------------------------------------------------------------------------
+
+class AccountVaultCreateView(VaultAccessMixin, CreateView):
+    """Create a vault entry linked to a digital Account."""
+    model         = VaultEntry
+    template_name = 'infrapps/infrapps_form.html'
+    form_class    = AccountVaultEntryForm
+
+    def get_success_url(self):
+        return reverse('vault:vault_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['profile'] = _get_profile_or_403(self.request.user)
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['addon_active']   = self.request.user.can_access_addon()
+        context['entry_form_type'] = 'account'
+        context['page_title']     = 'Add Account Password'
+        context['submit_label']   = 'Save Password'
+        return context
+
+    def form_valid(self, form):
+        if not self.request.user.can_modify_data():
+            messages.error(self.request, "Your subscription does not allow adding entries.")
+            return redirect('vault:vault_list')
+
+        profile = _get_profile_or_403(self.request.user)
+        entry   = form.save(commit=False)
+        entry.profile    = profile
+        entry.entry_type = 'account'
+        entry.set_password(form.cleaned_data['raw_password'])
+        entry.save()
+        messages.success(self.request, f'"{entry.label}" saved to your vault.')
+        logger.info("VaultEntry %s (account) created by %s", entry.pk, self.request.user.email)
+        return redirect(self.get_success_url())
+
+
+class DeviceVaultCreateView(VaultAccessMixin, CreateView):
+    """Create a vault entry linked to a Device."""
+    model         = VaultEntry
+    template_name = 'infrapps/infrapps_form.html'
+    form_class    = DeviceVaultEntryForm
+
+    def get_success_url(self):
+        return reverse('vault:vault_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['profile'] = _get_profile_or_403(self.request.user)
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['addon_active']   = self.request.user.can_access_addon()
+        context['entry_form_type'] = 'device'
+        context['page_title']     = 'Add Device Password'
+        context['submit_label']   = 'Save Password'
+        return context
+
+    def form_valid(self, form):
+        if not self.request.user.can_modify_data():
+            messages.error(self.request, "Your subscription does not allow adding entries.")
+            return redirect('vault:vault_list')
+
+        profile = _get_profile_or_403(self.request.user)
+        entry   = form.save(commit=False)
+        entry.profile    = profile
+        entry.entry_type = 'device'
+        entry.set_password(form.cleaned_data['raw_password'])
+        entry.save()
+        messages.success(self.request, f'"{entry.label}" saved to your vault.')
+        logger.info("VaultEntry %s (device) created by %s", entry.pk, self.request.user.email)
+        return redirect(self.get_success_url())
+
+
+# ---------------------------------------------------------------------------
 # UPDATE
 # ---------------------------------------------------------------------------
 
 class VaultUpdateView(VaultAccessMixin, UpdateView):
     model          = VaultEntry
     template_name  = 'infrapps/infrapps_form.html'
-    form_class     = VaultEntryForm
     slug_field     = 'slug'
     slug_url_kwarg = 'slug'
+
+    def get_form_class(self):
+        """Use the typed form that matches the entry's existing FK."""
+        if self.object.linked_account_id:
+            return AccountVaultEntryForm
+        return DeviceVaultEntryForm
 
     def get_success_url(self):
         return reverse('vault:vault_detail', kwargs={'slug': self.object.slug})
@@ -205,10 +290,11 @@ class VaultUpdateView(VaultAccessMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active'] = self.request.user.can_access_addon()
-        context['page_title']   = f'Edit — {self.object.label}'
-        context['submit_label'] = 'Update Entry'
-        context['is_update']    = True
+        context['addon_active']    = self.request.user.can_access_addon()
+        context['entry_form_type'] = 'account' if self.object.linked_account_id else 'device'
+        context['page_title']      = f'Edit — {self.object.label}'
+        context['submit_label']    = 'Update Entry'
+        context['is_update']       = True
         return context
 
     def form_valid(self, form):

@@ -614,10 +614,11 @@
 
 .action-buttons {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 2rem;
-  padding-top: 1.5rem;
+  padding: 1.5rem;
   border-top: 1px solid var(--background-color);
 }
 

@@ -137,6 +137,39 @@
             </div>
         </div>
 
+       <!-- Family Notes -->
+        <div class="nt-column" id="nt-col-notes">
+            <div class="nt-node--category nt-node--notes" id="nt-cat-notes">
+                <i class="fas fa-sticky-note"></i>
+                <span class="nt-cat-label">Notes</span>
+                <span class="nt-count">{{ family_notes|length }}</span>
+            </div>
+            <div class="nt-items">
+                {% for note in family_notes %}
+                <div class="nt-node--item nt-node--notes-item"
+                     data-href="{% url 'dashboard:familyawareness_detail' note.slug %}"
+                     data-modal-type="note"
+                     data-modal-name="{{ note.relation }}"
+                     data-modal-content="{{ note.content|truncatechars:200 }}"
+                     data-modal-is-legal-will="{{ note.is_location_of_legal_will|yesno:'true,false' }}"
+                     data-modal-is-password-manager="{{ note.is_password_manager|yesno:'true,false' }}"
+                     data-modal-is-social-media="{{ note.is_social_media|yesno:'true,false' }}"
+                     data-modal-is-photos="{{ note.is_photos_or_files|yesno:'true,false' }}"
+                     data-modal-is-data-retention="{{ note.is_data_retention_preferences|yesno:'true,false' }}"
+                     data-modal-is-other="{{ note.is_other|yesno:'true,false' }}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="Note for {{ note.relation }}">
+                    <i class="fas fa-sticky-note"></i>
+                    <span class="nt-item-label">{{ note.relation|truncatechars:28 }}</span>
+                </div>
+                {% empty %}
+                <div class="nt-node--empty">None assigned</div>
+                {% endfor %}
+            </div>
+        </div>
+
+
     </div>
 
     <!-- Node detail modal -->
@@ -225,6 +258,18 @@
             html += row('Username / Email', d.modalUsername);
             html += row('Instruction',      d.modalInstruction);
             html += row('Notes for Family', d.modalNotes);
+        } else if (d.modalType === 'note') {
+            html += row('Content', d.modalContent);
+            var topics = [];
+            if (d.modalIsLegalWill       === 'true') topics.push('Location of Legal Will');
+            if (d.modalIsPasswordManager === 'true') topics.push('Password Manager');
+            if (d.modalIsSocialMedia     === 'true') topics.push('Social Media');
+            if (d.modalIsPhotos          === 'true') topics.push('Photos or Files');
+            if (d.modalIsDataRetention   === 'true') topics.push('Data Retention Preferences');
+            if (d.modalIsOther           === 'true') topics.push('Other');
+            if (topics.length) {
+                html += row('Note Covers', topics.join(' &middot; '));
+            }
         }
         return html || '<p class="nt-modal-empty">No additional details recorded.</p>';
     }
@@ -233,14 +278,16 @@
         estate:    'fas fa-file-contract',
         important: 'fas fa-file-alt',
         device:    'fas fa-laptop',
-        account:   'fas fa-user-circle'
+        account:   'fas fa-user-circle',
+        note:      'fas fa-sticky-note'
     };
 
     var typeColorClass = {
         estate:    'nt-modal-icon--estate',
         important: 'nt-modal-icon--docs',
         device:    'nt-modal-icon--device',
-        account:   'nt-modal-icon--account'
+        account:   'nt-modal-icon--account',
+        note:      'nt-modal-icon--notes'
     };
 
     /* ── Open / close ── */
@@ -290,8 +337,8 @@
         var section = document.querySelector('.nt-section');
         var svg     = document.getElementById('nt-svg');
         var rootEl  = document.getElementById('nt-root');
-        var catIds  = ['nt-cat-estate', 'nt-cat-docs', 'nt-cat-devices', 'nt-cat-accounts'];
-        var colIds  = ['nt-col-estate', 'nt-col-docs',  'nt-col-devices',  'nt-col-accounts'];
+        var catIds  = ['nt-cat-estate', 'nt-cat-docs', 'nt-cat-devices', 'nt-cat-accounts', 'nt-cat-notes'];
+        var colIds  = ['nt-col-estate', 'nt-col-docs',  'nt-col-devices',  'nt-col-accounts', 'nt-col-notes'];
 
         if (!section || !svg || !rootEl) return;
 

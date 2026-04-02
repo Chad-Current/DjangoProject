@@ -61,6 +61,13 @@
   white-space: pre-wrap;
 }
 
+.vault-buttons {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1em;
+}
 
 /* ============================================================
    3. LIST PAGE — FILTER BAR
@@ -71,6 +78,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .vault-filter-bar--mobile {
@@ -80,12 +88,25 @@
   margin-bottom: 0.75rem;
 }
 
-/* Individual filter pill buttons (anchors styled as btn-action) */
+/* Self-contained filter pill — no dependency on btn-action/btn-edit/btn-view */
 .vault-filter-btn {
-  padding: 0.35rem 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 600;
   text-decoration: none;
-  border-radius: 6px;
-  font-size: 0.82rem;
+  transition: background 0.2s, color 0.2s;
+  background: rgba(98, 162, 206, 0.12);
+  color: var(--thirty-percent);
+}
+
+.vault-filter-btn:hover,
+.vault-filter-btn--active {
+  background: var(--thirty-percent);
+  color: var(--text-color);
 }
 
 .vault-filter-bar--mobile .vault-filter-btn {
@@ -102,12 +123,12 @@
 .vault-pw-cell {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .vault-list-pw-input {
-  width: 120px;
-  font-size: 0.82rem;
+  width: 240px;
+  font-size: var(--font-sm);
   padding: 0.2rem 0.4rem;
   border: 1px solid var(--ten-percent);
   border-radius: 4px;
@@ -116,8 +137,32 @@
 }
 
 .vault-list-reveal-btn {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  border: 1.5px solid rgba(98, 162, 206, 0.45);
+  background: rgba(98, 162, 206, 0.1);
+  color: var(--thirty-percent);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.vault-list-reveal-btn:hover:not(:disabled) {
+  background: var(--thirty-percent);
+  color: var(--text-color);
+  border-color: var(--thirty-percent);
+}
+
+.vault-list-reveal-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 
@@ -153,12 +198,70 @@
   font-family: monospace;
 }
 
-/* Sizing for the Reveal Password / Copy buttons in the detail info-card */
-.vault-detail-action-btn {
-  font-size: 0.78rem;
-  padding: 0.3rem 0.7rem;
+/* Reveal Password button — blue-tinted pill */
+.vault-detail-reveal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-family: var(--main-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(98, 162, 206, 0.45);
+  background: rgba(98, 162, 206, 0.1);
+  color: var(--thirty-percent);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 
+.vault-detail-reveal-btn:hover:not(:disabled) {
+  background: var(--thirty-percent);
+  color: var(--text-color);
+  border-color: var(--thirty-percent);
+}
+
+.vault-detail-reveal-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Copy button — green-tinted pill */
+.vault-detail-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-family: var(--main-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(45, 160, 100, 0.4);
+  background: rgba(45, 160, 100, 0.1);
+  color: #1a7a48;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.vault-detail-copy-btn:hover {
+  background: #1a7a48;
+  color: #fff;
+  border-color: #1a7a48;
+}
+
+.info-row-pin {
+    align-items: flex-start;
+    padding: 0.6rem 0;
+}
+
+.info-label-pin {
+  min-width: unset;
+  width: 100%;
+  font-size: var(--font-nm);
+  color: var(--thirty-percent);
+}
 
 /* ============================================================
    7. DETAIL PAGE — COUNTDOWN MESSAGE

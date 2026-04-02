@@ -20,7 +20,7 @@ class LapsedViewLimitMixin:
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        if user.is_authenticated and user.is_lapsed_subscriber():
+        if user.is_authenticated and user.is_lapsed_subscriber() and not user.is_subscription_active():
             limit = user.FREE_TIER_LIMITS.get(self.free_tier_item, 0)
             full_list = self.object_list
             lapsed_total = (

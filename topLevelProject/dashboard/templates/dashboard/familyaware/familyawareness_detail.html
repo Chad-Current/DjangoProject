@@ -76,6 +76,13 @@
                             </div>
                             {% if familyawareness.is_data_retention_preferences %}<span class="condition-badge">Yes</span>{% endif %}
                         </div>
+                        <div class="condition-item {% if familyawareness.is_other %}active{% else %}inactive{% endif %}">
+                            <div>
+                                <i class="fas {% if familyawareness.is_other %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                <strong class="dv-ml-2">Other Information</strong>
+                            </div>
+                            {% if familyawareness.is_other %}<span class="condition-badge">Yes</span>{% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

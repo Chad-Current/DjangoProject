@@ -450,7 +450,7 @@ class FamilyNeedsToKnowSection(models.Model):
     """
     relation = models.ForeignKey(
         Contact,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='family_relations',
     )
 

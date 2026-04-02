@@ -567,7 +567,7 @@
 }
 
 .upcoming-reviews {
-  background: var(--background-color);
+  /* background: var(--background-color); */
   border-radius: 20px;
   border: solid 1px var(--seventy-percent);
   padding: 2rem;
