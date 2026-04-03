@@ -14,11 +14,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_free_tier %}
-    <div class="container">
-    <p class="free-banner"><strong>Free Tier -&nbsp</strong> Save up to 3 Contacts, 2 Accounts, 2 Devices, 1 Estate Documents and 1 Important Documents</p>
-    </div>
-    {% endif %}
+
 <div class="vault-dashboard">
     <!-- Hero Section -->
     <div class="vault-hero">
@@ -31,17 +27,36 @@
         </h1>
         <p class="subtitle">
             {% if progress >= 100 %}
-                🔒 Fully Secured - Your digital legacy is protected
+                <i class="fas fa-lock"> Fully Secured - Your digital legacy is protected
             {% elif progress >= 70 %}
-                🔐 Nearly Complete - Just a few more items to secure
+                <i class="fas fa-unlock"></i> Nearly Complete - Just a few more items to secure
             {% elif progress >= 40 %}
-                🔓 Building Security - Keep adding to strengthen your vault
+                <i class="fas fa-unlock"></i> Building Security - Keep adding to strengthen your vault
             {% else %}
-                🔓 Getting Started - Begin securing your digital estate
+                <i class="fas fa-lock-open"></i>  Getting Started - Begin securing your digital estate
             {% endif %}
         </p>
     </div>
-
+    {% if user.is_free_tier %}
+    <div class="container">
+    <div class="free-tier-banner">
+      <div class="free-tier-banner__label">
+        Free Tier
+      </div>
+      <div class="free-tier-banner__limits">
+        <span class="free-tier-limit-pill"><i class="fas fa-users"></i> 2 Contacts</span>
+        <span class="free-tier-limit-pill"><i class="fas fa-globe"></i> 1 Account</span>
+        <span class="free-tier-limit-pill"><i class="fas fa-laptop"></i> 1 Device</span>
+        <span class="free-tier-limit-pill"><i class="fas fa-file-contract"></i> 1 Estate Doc</span>
+        <span class="free-tier-limit-pill"><i class="fas fa-folder-open"></i> 1 Important Doc</span>
+        <span class="free-tier-limit-pill"><i class="fas fa-heart"></i> 2 Family Notes</span>
+      </div>
+      <a href="{% url 'accounts:payment' %}" class="free-tier-banner__upgrade">
+        <i class="fas fa-arrow-up"></i> Upgrade
+      </a>
+    </div>
+    </div>
+    {% endif %}
     <!-- Main Vault Container -->
     <div class="vault-container">
         <!-- Left: Progress Circle + Information Log -->

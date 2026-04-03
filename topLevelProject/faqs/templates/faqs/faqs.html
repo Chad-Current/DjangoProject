@@ -1,30 +1,38 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends "baseapp/base.html" %}
 {% load static %}
 
-{% block title %}Help & FAQs{% endblock %}
+{% block title %}FAQs — Digital Estate Planning{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'faqs/css/accordion.css' %}" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="main container py-4 faq-page">
 
-  <!-- Page Introduction -->
-  <div class="faq-intro">
-    <h1><i class="fas fa-hands-helping"></i> Help &amp; Common Questions</h1>
-    <p>
-      Click any question below to read the answer.
-      If you need more help, scroll to the bottom of the page and we'll get back to you.
-    </p>
-  </div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ENTRY — PAGE HEADER
+     ═══════════════════════════════════════════════════════ -->
+<div class="page-hero">
+    <div class="container">
+        <span class="idx-section-label">Help &amp; FAQs</span>
+        <h1>Common questions, plain answers.</h1>
+        <p class="page-hero-subtitle">
+            Everything you need to know about how Digital Estate Plan works,
+            what we protect, and how your family benefits.
+        </p>
+    </div>
+</div>
+
+
+<div class="main container py-4 faq-page">
 
 
   <!-- ═══════════════════════════════════════
-       CATEGORY 1: Keeping Your Information Safe
+       CATEGORY 1: Your Security & Privacy
        ═══════════════════════════════════════ -->
   <div class="faq-category-label">
-    <i class="fas fa-lock"></i> Keeping Your Information Safe
+    <i class="fas fa-lock"></i> Your Security &amp; Privacy
   </div>
 
   <details class="faq-item">
@@ -40,11 +48,12 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Yes — your information is kept private and secure. Here is how we protect you:</p>
+      <p>Yes. We've made security a foundation of the platform, not an afterthought. Here's what's in place:</p>
       <ul>
-        <li><i class="fas fa-check-circle"></i> <span>Your documents are mailed in using a prepaid envelope — nothing is sent over the internet.</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>Only one person handles your paperwork. No outside companies or extra staff are involved.</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>Please only send <strong>copies</strong> of your documents, not originals. Any original accidentally sent will be returned to you unopened.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>All stored credentials and sensitive data are encrypted using Fernet symmetric encryption before they ever touch our database. Your data is never stored in plaintext.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Account access is protected with session-based authentication and automatic session timeouts.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Repeated failed login attempts trigger an account lockout to prevent unauthorized access.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>The platform enforces standard protections against XSS, CSRF, and clickjacking on every page.</span></li>
       </ul>
     </div>
   </details>
@@ -53,7 +62,7 @@
     <summary>
       <span class="faq-question-text">
         <i class="fas fa-eye-slash"></i>
-        Can anyone else see my passwords?
+        Can anyone else see my stored passwords and credentials?
       </span>
       <span class="faq-toggle-label">
         <span class="toggle-show">Show answer</span>
@@ -62,8 +71,8 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>No. Only you can see your passwords and private account details.</p>
-      <p>We cannot see them either. The only people who can access your information are the trusted family members or friends that <strong>you choose</strong> to share specific items with.</p>
+      <p>No. Stored credentials are encrypted and only decrypted on your explicit request. We cannot read them.</p>
+      <p>The only people who can access your vault entries are the trusted contacts you <strong>specifically designate</strong> — and only for the items you choose to share with them. Nothing is shared automatically or by default.</p>
     </div>
   </details>
 
@@ -80,8 +89,8 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>No problem — it happens to everyone. On the login page, click the <strong>"Forgot Password"</strong> link. We will send a reset link to your email address.</p>
-      <p>If you no longer have access to your email address, please contact us directly and we will help you recover your account safely.</p>
+      <p>No problem. On the login page, click <strong>"Forgot Password"</strong> and we'll send a reset link to your email address.</p>
+      <p>If you no longer have access to that email address, contact us directly and we'll help you recover your account safely.</p>
     </div>
   </details>
 
@@ -106,8 +115,8 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Only the people <strong>you choose</strong>. You decide exactly which family members or trusted friends can see which items — such as a specific bank account, a document, or a device.</p>
-      <p>Nobody else will be able to see anything in your account. Everything else stays completely private.</p>
+      <p>Only the people <strong>you choose</strong>. You decide exactly which trusted contacts can see which items — a specific bank account, a device, a document — and nothing else.</p>
+      <p>Family members who aren't designated contacts can submit a verified recovery request through our review process. Requests are only approved after proper documentation is provided — your information is never handed over without verification.</p>
     </div>
   </details>
 
@@ -124,8 +133,8 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>You can appoint a trusted person — like a family member or close friend — to be the main person who manages things after you're gone. We provide them with clear, simple instructions on what to do and what to pass on to others.</p>
-      <p>Each person you've shared items with will only see what you've given them access to — nothing more.</p>
+      <p>You designate trusted contacts and assign each of them to specific accounts, devices, or documents. When the time comes, they know exactly what they're responsible for — and what you wanted done with it.</p>
+      <p>You can also add a personal note to each contact with any special instructions or context that would help them. Think of it as a private letter attached to each item.</p>
     </div>
   </details>
 
@@ -133,7 +142,7 @@
     <summary>
       <span class="faq-question-text">
         <i class="fas fa-comment-alt"></i>
-        Can I leave a personal message for my family?
+        Can I leave personal notes or instructions for specific people?
       </span>
       <span class="faq-toggle-label">
         <span class="toggle-show">Show answer</span>
@@ -142,14 +151,80 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Yes. When you add a contact, there is a space where you can write a personal message or special instructions just for them.</p>
-      <p>This might be something like: <em>"The insurance documents are in the blue folder in my filing cabinet"</em> — whatever would be most helpful for them to know.</p>
+      <p>Yes. When you add a contact, there is a field for personal notes or special instructions just for that person.</p>
+      <p>This is a good place to write things like: <em>"Please cancel this subscription first,"</em> or <em>"The hard drive in this laptop has photos you'll want to save."</em> Whatever context would make their job easier.</p>
     </div>
   </details>
 
 
   <!-- ═══════════════════════════════════════
-       CATEGORY 3: Using This Website
+       CATEGORY 3: Plans & Subscriptions
+       ═══════════════════════════════════════ -->
+  <div class="faq-category-label">
+    <i class="fas fa-credit-card"></i> Plans &amp; Subscriptions
+  </div>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-gift"></i>
+        What does the free tier include?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Free accounts let you explore every section of the platform and save a limited number of items in each category — no credit card required. You'll be able to add up to 2 contacts, 1 account, 1 device, 1 estate document, and 1 important document.</p>
+      <p>You can view and review everything you've saved at any time. When you're ready to add more, you can upgrade to Essentials or Legacy.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-layer-group"></i>
+        What's the difference between Essentials and Legacy?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Both plans give you full edit access while your subscription is active. The key differences are:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Essentials</strong> — full edit access with per-category limits (up to 3 contacts, 3 accounts, 3 devices, 3 estate docs, 5 important documents).</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Legacy</strong> — no item limits, plus access to the Funeral Planning section for documenting your final wishes.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Both plans include view-only access if you ever cancel, so your family's information stays intact.</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-times-circle"></i>
+        What happens to my data if I cancel?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Your data stays in place. If you cancel a paid subscription, your account moves to view-only access — you can still see everything you've saved, but you won't be able to add or edit items until you resubscribe.</p>
+      <p>We don't delete your information when you cancel. The whole point of this platform is that your plan should outlast any billing cycle.</p>
+    </div>
+  </details>
+
+
+  <!-- ═══════════════════════════════════════
+       CATEGORY 4: Using This Website
        ═══════════════════════════════════════ -->
   <div class="faq-category-label">
     <i class="fas fa-laptop"></i> Using This Website
@@ -168,12 +243,12 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Getting set up is straightforward and you can go at your own pace. Here is the order we suggest:</p>
+      <p>You can go at your own pace — there's no right order, but here's what most people find works well:</p>
       <ul>
-        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>First, add the names and contact details of your trusted family members or friends.</span></li>
-        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>Then add your important documents, accounts, and devices one at a time.</span></li>
-        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>For each item, you can choose which person should have access to it.</span></li>
-        <li><i class="fas fa-circle" style="font-size: 0.5rem; margin-top: 0.45rem; color: var(--thirty-percent);"></i> <span>There is no rush — you can update or add things any time.</span></li>
+        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>Start with your <strong>Trusted Contacts</strong> — add the people you want to have access to your information.</span></li>
+        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>Then add your <strong>Accounts</strong>, <strong>Devices</strong>, and <strong>Documents</strong> one at a time.</span></li>
+        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>For each item, assign which contact should handle it and add any notes that would help them.</span></li>
+        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>You can download our free checklist guide as a starting point if you're not sure what to include.</span></li>
       </ul>
     </div>
   </details>
@@ -191,13 +266,14 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>We suggest checking your information once a year — for example, around the new year or your birthday. It is also a good idea to update things after any big changes in your life, such as:</p>
+      <p>We recommend a quick review once a year — your birthday or the new year are easy anchors. It's also worth updating after any major life change:</p>
       <ul>
-        <li><i class="fas fa-check-circle"></i> <span>Moving to a new home</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>Opening or closing a bank account</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>A change in your family situation</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>Updating a legal document like a will</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Opening or closing a bank account or subscription</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Getting a new phone, computer, or device</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>A change in your family situation — marriage, divorce, a new child</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Updating a will, power of attorney, or healthcare directive</span></li>
       </ul>
+      <p>The platform includes built-in review reminders to help you stay current without having to think about it.</p>
     </div>
   </details>
 
@@ -214,8 +290,7 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Yes. This website works on phones, tablets, and computers. You do not need to download any separate app.</p>
-      <p>If you find the text too small, you can make it larger in your phone or browser settings. On most devices, you can also pinch the screen to zoom in.</p>
+      <p>Yes. The website is fully responsive and works on phones, tablets, and computers. No app download required.</p>
     </div>
   </details>
 
@@ -225,13 +300,15 @@
        ═══════════════════════════════════════ -->
   <div class="faq-help-banner">
     <div>
-      <h3><i class="fas fa-phone-alt"></i> Still have a question?</h3>
+      <h3><i class="fas fa-envelope"></i> Still have a question?</h3>
       <p>We're happy to help. Send us a message and someone will get back to you as soon as possible.</p>
     </div>
     <a href="{% url 'baseapp:home' %}" class="faq-help-btn">
-      <i class="fas fa-envelope"></i> Send Us a Message
+      <i class="fas fa-paper-plane"></i> Send Us a Message
     </a>
   </div>
 
 </div>
+
+<script src="{% static 'faqs/js/faqs.js' %}"></script>
 {% endblock %}

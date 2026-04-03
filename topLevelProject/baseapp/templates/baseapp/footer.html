@@ -5,8 +5,8 @@
 
         <!-- Brand -->
         <div class="footer-brand">
-            <span class="footer-logo">Wisehands</span>
-            <p class="footer-tagline">Helping families and seniors<br>create a plan for success.</p>
+            <span class="footer-logo">Digital Estate Plan</span>
+            <p class="footer-tagline">Giving your family a clear path<br>when they need it most.</p>
             <div class="footer-social">
                 <a href="#" aria-label="Facebook" class="footer-social-link">
                     <i class="fab fa-facebook-f"></i>
@@ -21,24 +21,25 @@
         <div class="footer-cols">
 
             <div class="footer-col">
-                <h4 class="footer-col-heading">FAQs</h4>
+                <h4 class="footer-col-heading">Explore</h4>
                 <ul class="footer-col-list">
-                    <li>How does it work?</li>
-                    <li>Is my data secure?</li>
-                    <li>What if I'm not tech-savvy?</li>
-                    <li>How long does it take?</li>
+                    <li><a href="{% url 'baseapp_main:home' %}">Home</a></li>
+                    <li><a href="{% url 'baseapp_main:what_it_does' %}">How It Works</a></li>
+                    <li><a href="{% url 'baseapp_main:about' %}">About Us</a></li>
+                    <li><a href="{% url 'baseapp_main:pricing' %}">Plans &amp; Pricing</a></li>
+                    <li><a href="{% url 'faqs_page:faqs' %}">FAQs</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
                 <h4 class="footer-col-heading">Legal</h4>
                 <ul class="footer-col-list">
-                    <li><a href="{% url 'baseapp:privacy_policy' %}">Privacy Policy</a></li>
-                    <li><a href="{% url 'baseapp:terms_and_conditions' %}">Terms &amp; Conditions</a></li>
-                    <li><a href="{% url 'baseapp:cookie_policy' %}">Cookie Policy</a></li>
-                    <li><a href="{% url 'baseapp:data_collection' %}">Data Collection</a></li>
-                    <li><a href="{% url 'baseapp:data_retention' %}">Data Retention</a></li>
-                    <li><a href="{% url 'baseapp:accessibility' %}">Accessibility</a></li>
+                    <li><a href="{% url 'baseapp_main:privacy_policy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'baseapp_main:terms_and_conditions' %}">Terms &amp; Conditions</a></li>
+                    <li><a href="{% url 'baseapp_main:cookie_policy' %}">Cookie Policy</a></li>
+                    <li><a href="{% url 'baseapp_main:data_collection' %}">Data Collection</a></li>
+                    <li><a href="{% url 'baseapp_main:data_retention' %}">Data Retention</a></li>
+                    <li><a href="{% url 'baseapp_main:accessibility' %}">Accessibility</a></li>
                 </ul>
             </div>
 
@@ -46,16 +47,13 @@
                 <h4 class="footer-col-heading">Contact</h4>
                 <ul class="footer-col-list footer-col-list--contact">
                     <li>
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>1009 SW Delaware St.</span>
-                    </li>
-                    <li>
                         <i class="fas fa-phone"></i>
                         <a href="tel:+15153821751">(515) 382-1751</a>
                     </li>
                     <li>
                         <i class="fas fa-envelope"></i>
-                        <a href="mailto:info@wisehands.com">info@wisehands.com</a>
+                        <!-- TODO: update to your support email -->
+                        <a href="mailto:support@digitalestateplan.com">support@digitalestateplan.com</a>
                     </li>
                 </ul>
             </div>
@@ -64,7 +62,7 @@
     </div>
 
     <div class="footer-bottom">
-        <span>&copy; {% now "Y" %} Wisehands Digital Concierge. All rights reserved.</span>
+        <span>&copy; {% now "Y" %} Digital Estate Plan. All rights reserved.</span>
     </div>
 
 </footer>

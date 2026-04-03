@@ -823,6 +823,7 @@ span {
   font-size: 1.25rem;
   line-height: 1;
   flex-shrink: 0;
+  color: var(--accent-color);
 }
 
 .add-on-text {

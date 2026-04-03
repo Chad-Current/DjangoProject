@@ -15,6 +15,24 @@
 <div class="ob-body">
 
   <!-- ── FORM ─────────────────────────────────────── -->
+  {% if at_limit %}
+  <div class="ob-form-card">
+    <div class="ob-card-heading">
+      <div class="ob-card-icon"><i class="fas fa-lock"></i></div>
+      Limit Reached
+    </div>
+    <div class="ob-limit-notice">
+      <p>You've reached the <strong>{{ tier_label }}</strong> limit of <strong>{{ tier_limit }} contacts</strong>.
+      {% if tier_label == "free tier" %}
+        You can upgrade to Essentials or Legacy from your dashboard to add more.
+      {% else %}
+        You can upgrade to Legacy from your dashboard for unlimited entries.
+      {% endif %}
+      </p>
+      <p>Continue to the next step below.</p>
+    </div>
+  </div>
+  {% else %}
   <form method="post" novalidate>
     {% csrf_token %}
     <div class="ob-form-card">
@@ -326,6 +344,7 @@
       
     </div>{# end ob-form-card #}
   </form>
+  {% endif %}{# end at_limit #}
 
   <!-- ── PANEL ─────────────────────────────────────── -->
   <div class="ob-panel">

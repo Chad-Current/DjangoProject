@@ -276,7 +276,7 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, '🎉 Profile created! Let\'s set up your estate plan.')
+        messages.success(self.request, 'Profile created! Let\'s set up your estate plan.')
         super().form_valid(form)
         return redirect(reverse('dashboard:onboarding_welcome'))
 
@@ -634,12 +634,14 @@ class FamilyAwarenessDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
         return context
 
 
-class FamilyAwarenessCreateView(FullAccessMixin, CreateView):
-    model         = FamilyNeedsToKnowSection
-    form_class    = FamilyNeedsToKnowSectionForm
-    template_name = 'dashboard/familyaware/familyawareness_form.html'
-    success_url   = reverse_lazy('dashboard:familyawareness_list')
-    owner_field   = 'relation__profile__user'
+class FamilyAwarenessCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
+    model          = FamilyNeedsToKnowSection
+    form_class     = FamilyNeedsToKnowSectionForm
+    template_name  = 'dashboard/familyaware/familyawareness_form.html'
+    success_url    = reverse_lazy('dashboard:familyawareness_list')
+    owner_field    = 'relation__profile__user'
+    free_tier_item = 'family_awareness'
+    count_filter   = 'relation__profile__user'
 
     def get_form_kwargs(self):
         kwargs         = super().get_form_kwargs()
@@ -1687,6 +1689,35 @@ class OnboardingMixin(LoginRequiredMixin):
         except Exception:
             return {k: 0 for k in ('contacts', 'accounts', 'devices', 'estates', 'documents', 'family_knows')}
 
+    def _tier_limit_reached(self, key, model):
+        """
+        Returns (at_limit: bool, limit: int|None, tier_label: str|None).
+        Mirrors FreeTierLimitMixin logic for use in TemplateView-based onboarding steps.
+        """
+        from accounts.models import CustomUser
+        user = self.request.user
+        if user.is_free_tier():
+            limit = CustomUser.FREE_TIER_LIMITS.get(key)
+            tier_label = "free tier"
+        elif user.can_modify_data() and user.subscription_tier == 'essentials':
+            limit = CustomUser.ESSENTIAL_TIER_LIMITS.get(key)
+            tier_label = "Essentials tier"
+        else:
+            return False, None, None  # Legacy — no limit
+
+        if limit is None:
+            return False, None, None
+
+        profile = self.request.user.profile
+        if key == 'family_awareness':
+            qs = model.objects.filter(relation__profile=profile)
+        else:
+            qs = model.objects.filter(profile=profile)
+            if key == 'contacts':
+                qs = qs.exclude(contact_relation='Self')
+        count = qs.count()
+        return count >= limit, limit, tier_label
+
 
 class OnboardingWelcomeView(OnboardingMixin, TemplateView):
     template_name = 'dashboard/onboarding/welcome.html'
@@ -1710,11 +1741,23 @@ class OnboardingContactView(OnboardingMixin, TemplateView):
         context['form']        = ContactForm(user=self.request.user)
         context['step']        = 1
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('contacts', Contact)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
         profile = request.user.profile
-        form    = ContactForm(request.POST, user=request.user)
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('contacts', Contact)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} contacts). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_contacts'))
+        form = ContactForm(request.POST, user=request.user)
         if form.is_valid():
             contact = form.save(commit=False)
             contact.profile = profile
@@ -1737,11 +1780,23 @@ class OnboardingAccountView(OnboardingMixin, TemplateView):
         context['form']        = AccountForm(user=self.request.user)
         context['step']        = 2
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('accounts', Account)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
         profile = request.user.profile
-        form    = AccountForm(request.POST, user=request.user)
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('accounts', Account)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} accounts). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_accounts'))
+        form = AccountForm(request.POST, user=request.user)
         if form.is_valid():
             account = form.save(commit=False)
             account.profile = profile
@@ -1764,11 +1819,23 @@ class OnboardingDeviceView(OnboardingMixin, TemplateView):
         context['form']        = DeviceForm(user=self.request.user)
         context['step']        = 3
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('devices', Device)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
         profile = request.user.profile
-        form    = DeviceForm(request.POST, user=request.user)
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('devices', Device)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} devices). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_devices'))
+        form = DeviceForm(request.POST, user=request.user)
         if form.is_valid():
             device = form.save(commit=False)
             device.profile = profile
@@ -1791,11 +1858,23 @@ class OnboardingEstateView(OnboardingMixin, TemplateView):
         context['form']        = DigitalEstateDocumentForm(user=self.request.user)
         context['step']        = 4
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('estate_documents', DigitalEstateDocument)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
         profile = request.user.profile
-        form    = DigitalEstateDocumentForm(request.POST, request.FILES, user=request.user)
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('estate_documents', DigitalEstateDocument)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} estate documents). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_estate'))
+        form = DigitalEstateDocumentForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             doc = form.save(commit=False)
             doc.profile = profile
@@ -1818,11 +1897,23 @@ class OnboardingDocumentsView(OnboardingMixin, TemplateView):
         context['form']        = ImportantDocumentForm(user=self.request.user)
         context['step']        = 5
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('important_documents', ImportantDocument)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
         profile = request.user.profile
-        form    = ImportantDocumentForm(request.POST, request.FILES, user=request.user)
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('important_documents', ImportantDocument)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} important documents). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_documents'))
+        form = ImportantDocumentForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             doc = form.save(commit=False)
             doc.profile = profile
@@ -1847,9 +1938,21 @@ class OnboardingFamilyView(OnboardingMixin, TemplateView):
         context['form']        = FamilyNeedsToKnowSectionForm(user=self.request.user)
         context['step']        = 6
         context['total_steps'] = 6
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('family_awareness', FamilyNeedsToKnowSection)
+        context['at_limit']   = at_limit
+        context['tier_limit'] = tier_limit
+        context['tier_label'] = tier_label
         return context
 
     def post(self, request, *args, **kwargs):
+        at_limit, tier_limit, tier_label = self._tier_limit_reached('family_awareness', FamilyNeedsToKnowSection)
+        if at_limit:
+            messages.warning(
+                request,
+                f"You've reached the {tier_label} limit ({tier_limit} family awareness notes). "
+                "Upgrade your subscription to add more."
+            )
+            return redirect(reverse('dashboard:onboarding_family'))
         form = FamilyNeedsToKnowSectionForm(request.POST, user=request.user)
         if form.is_valid():
             note = form.save()

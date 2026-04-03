@@ -41,13 +41,16 @@ class FreeTierLimitMixin:
     """
     Blocks free-tier and Essentials-tier users from creating items beyond their per-category limit.
     Set free_tier_item to a key from CustomUser.FREE_TIER_LIMITS on each CreateView.
-    Assumes the model has a profile__user lookup path.
+
+    By default assumes the model has a profile__user lookup path. Override count_filter
+    with a different lookup string when the path differs (e.g. 'relation__profile__user').
 
     Free-tier limits:      CustomUser.FREE_TIER_LIMITS
     Essentials-tier limits: CustomUser.ESSENTIAL_TIER_LIMITS
     Legacy tier:           no item limit
     """
     free_tier_item = None
+    count_filter   = 'profile__user'
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
@@ -66,7 +69,10 @@ class FreeTierLimitMixin:
                     tier_label = None
 
                 if limit is not None:
-                    count = self.model.objects.filter(profile__user=user).count()
+                    qs = self.model.objects.filter(**{self.count_filter: user})
+                    if key == 'contacts':
+                        qs = qs.exclude(contact_relation='Self')
+                    count = qs.count()
                     if count >= limit:
                         messages.warning(
                             request,

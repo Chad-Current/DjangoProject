@@ -7,8 +7,7 @@
 .site-footer {
     background-color: var(--background-color-dark);
     color: var(--text-color);
-    font-family: 'Nunito', sans-serif;
-    /* margin-top: clamp(80px, 10vw, 160px); */
+    font-family: var(--main-font), sans-serif;
 }
 
 /* ── Inner layout ───────────────────────────────────────────── */
@@ -38,7 +37,7 @@
 }
 
 .footer-tagline {
-    font-family: 'Crimson Text', serif;
+    font-family: var(--title-font), serif;
     font-size: 1rem;
     line-height: 1.65;
     color: var(--seventy-percent);
@@ -56,7 +55,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    border: 1px solid var(--ten-percent);
+    border: 1px solid var(--thirty-percent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,7 +87,7 @@
 }
 
 .footer-col-heading {
-    font-family: 'Nunito', sans-serif;
+    font-family: var(--main-font), sans-serif;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -148,7 +147,7 @@
     margin: 0 auto;
     padding: 18px 32px;
     font-size: 0.78rem;
-    color: var(--ten-percent);
+    color: var(--fifty-percent);
     letter-spacing: 0.01em;
 }
 

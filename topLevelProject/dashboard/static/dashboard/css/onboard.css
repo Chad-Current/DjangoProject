@@ -28,21 +28,22 @@
 }
 
 .rail-header {
-  background: var(--thirty-percent);  
+  background: var(--background-color-dark);
+  border: solid 2px var(--ten-percent);
   border-radius: 20px 20px 0 0;
   padding: 1.75rem 1.5rem 1.5rem;
 }
 .rail-header h2 {
   font-family: var(--title-font);
   font-size: var(--font-xl);
-  color: var(--text-color);
+  color: var(--accent-color);
   margin: 0 0 0.2rem;
 }
 .rail-header p {
   font-family: var(--main-font);
   font-size: var(--font-sm);
-  font-weight: 300;
-  color: rgba(231, 239, 247, 0.7);
+  font-weight: 400;
+  color: var(--text-color);
   margin: 0;
 }
 .rail-progress-track {
@@ -180,8 +181,10 @@
 }
 
 .ob-page-header {
-  background: var(--thirty-percent);
+  background: var(--background-color-dark);
+  border: solid 2px var(--ten-percent);
   border-radius: 20px;
+  padding: 1.75rem 1.5rem 1.5rem;
   padding: 2rem;
   margin-bottom: 1.75rem;
   box-shadow: 0 4px 18px rgba(22, 40, 59, 0.07), 0 -1px 8px var(--purewhite-color);
@@ -206,8 +209,8 @@
 .ob-page-header p {
   font-family: var(--paragraph-font);
   font-size: var(--font-nm);
-  font-weight: 300;
-  color: var(--text-color);
+  font-weight: 400;
+  color: var(--accent-color);
   margin: 0;
 }
 
@@ -226,6 +229,16 @@
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.08);
 }
+
+.ob-limit-notice {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--thirty-percent);
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  line-height: 1.6;
+}
+.ob-limit-notice p { margin-bottom: 1.25rem; }
 .ob-form-card .form-check .form-check-input {
   margin-left: 0;
 }
@@ -630,7 +643,7 @@
 }
 
 .ob-step-card {
-  background: var(--background-color);
+  /* background: var(--background-color); */
   border-radius: 14px;
   padding: 1.4rem;
   border-left: 4px solid var(--sixty-percent);
@@ -657,6 +670,7 @@
   font-size: 1.6rem;
   line-height: 1;
   margin-bottom: 0.45rem;
+  color: var(--thirty-percent);
 }
 .ob-step-card h4 {
   font-family: var(--main-font);
@@ -686,6 +700,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 3em;
   padding-top: 0.5rem;
   border-top: 1px solid var(--background-color);
   flex-wrap: wrap;
@@ -713,7 +728,7 @@
 .ob-complete-trophy {
   width: 72px;
   height: 72px;
-  background: var(--accent-color);
+  background: var(--background-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -721,6 +736,7 @@
   font-size: 2rem;
   margin: 0 auto 1.25rem;
   box-shadow: 0 6px 24px rgba(255, 166, 43, 0.3);
+  color: var(--thirty-percent);
 }
 .ob-page-header.ob-complete-header { text-align: center; }
 .ob-page-header.ob-complete-header .ob-eyebrow { text-align: center; }
@@ -746,7 +762,7 @@
 .ob-count-cell {
   text-align: center;
   padding: 1.25rem 1rem;
-  background: var(--background-color);
+  /* background: var(--background-color); */
   border-radius: 14px;
   border-left: 4px solid var(--sixty-percent);
   display: flex;
@@ -761,14 +777,17 @@
 .ob-count-emoji {
   font-size: 1.4rem;
   line-height: 1;
+  color: var(--thirty-percent);
 }
+
 .ob-count-number {
   font-family: var(--title-font);
   font-size: var(--font-xxl);
   font-weight: 700;
-  color: var(--ten-percent);
-  line-height: 1;
+  color: var(--accent-color);
+  /* line-height: 1; */
 }
+
 .ob-count-label {
   font-family: var(--paragraph-font);
   font-size: var(--font-sm);
@@ -781,6 +800,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 1em;
   padding-top: 0.5rem;
   border-top: 1px solid var(--background-color);
   flex-wrap: wrap;
@@ -1188,6 +1208,7 @@ a.ob-step-card {
 /* ── Form card top margin ────────────────────────────────────── */
 .ob-form-card--mt {
   margin-top: 1rem;
+  width: 100%;
 }
 
 /* ── Pre-line text in item names ─────────────────────────────── */

@@ -172,65 +172,71 @@
 
 .delete-actions {
     display: flex;
-    gap: 0.75rem;
+    flex-direction: column;
+    gap: 0.65rem;
     width: 100%;
-    flex-wrap: wrap;
 }
 
 .btn-confirm-delete {
-    flex: 1;
+    width: 100%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-family: var(--main-font, sans-serif);
     font-size: 0.875rem;
     font-weight: 600;
     color: #fff;
     background: #dc2626;
     border: none;
     border-radius: 10px;
-    padding: 0.8rem 1.5rem;
+    padding: 0.85rem 1.5rem;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     letter-spacing: 0.01em;
 }
 
-.btn-confirm-delete:hover {
+.btn-confirm-delete:hover:not(:disabled) {
     background: #b91c1c;
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
 }
 
-.btn-confirm-delete:active {
+.btn-confirm-delete:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: none;
 }
 
+.btn-confirm-delete:disabled {
+    background: var(--seventy-percent);
+    color: var(--sixty-percent);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 .btn-cancel {
-    flex: 1;
+    width: 100%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-family: 'DM Sans', var(--main-font, sans-serif);
+    font-family: var(--main-font, sans-serif);
     font-size: 0.875rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--thirty-percent);
     background: transparent;
-    border: 1.5px solid #d1d5db;
+    border: 1.5px solid var(--sixty-percent);
     border-radius: 10px;
-    padding: 0.8rem 1.5rem;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
     text-decoration: none;
-    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .btn-cancel:hover {
-    background: #f9fafb;
-    border-color: #9ca3af;
-    transform: translateY(-1px);
-    color: #111;
+    background: var(--seventy-percent);
+    border-color: var(--thirty-percent);
+    color: var(--ten-percent);
 }
 
 /* form inline so it flows with flex */

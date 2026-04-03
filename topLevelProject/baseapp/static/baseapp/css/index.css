@@ -111,7 +111,7 @@
 .section-subtitle {
     font-family: var(--paragraph-font);
     font-size: var(--font-md);
-     margin-top: 0;
+    margin-top: 0;
 }
 
 
@@ -170,7 +170,8 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    background: var(--purewhite-color);
+    /* background: var(--purewhite-color); */
+    box-shadow: 0px 0px 20px 8px rgba(45, 106, 156, .1);
     padding: 2em;
     border-radius: 20px;
 }
@@ -180,7 +181,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--purewhite-color);
+    /* background: var(--purewhite-color); */
     padding: 0.5em;
     border-radius: 20px;
 }
@@ -395,12 +396,15 @@
     padding: 1.75rem;
     border-top: 3px solid transparent;
     border-bottom: 3px solid transparent;
-    transition: border-color .2s, box-shadow .2s;
+    box-shadow: 4px 10px 24px rgba(62, 146, 214, 0.1);
+    transition: border-color .2s, box-shadow .2s, transform .2s;
+    cursor: arrow;
 }
 
 .feature-card:hover {
     border-color: var(--thirty-percent);
     box-shadow: 4px 10px 24px rgba(45, 106, 156, .1);
+    transform: scale(1.05);
 }
 
 .feature-icon {
@@ -728,6 +732,9 @@
     height: 48px;
     border-radius: 50%;
     background: rgba(255, 255, 255, .08);
+    color: var(--accent-color);
+    /* background: rgba(253, 253, 253, 0.753);
+    color: var(--ten-percent); */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -868,7 +875,37 @@
     color: var(--ten-percent);
     text-transform: uppercase;
     letter-spacing: .07em;
-    margin-bottom: 1rem;
+    margin-bottom: 2em;
+}
+
+.section-tag-light {
+    display: inline-block;
+    background: var(--background-color);
+    border: solid 1.5px var(--thirty-percent);
+    border-radius: 50px;
+    padding: .3rem 1rem;
+    font-family: var(--main-font);
+    font-size: var(--font-sm);
+    font-weight: 800;
+    color: var(--ten-percent);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 2em;
+}
+
+.section-tag-dark {
+    display: inline-block;
+    background: var(--background-color-dark);
+    border: solid 1.5px var(--seventy-percent);
+    border-radius: 50px;
+    padding: .3rem 1rem;
+    font-family: var(--main-font);
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 2em;
 }
 
 .intro-text {
@@ -1143,6 +1180,7 @@
     color: var(--text-color-dark);
     font-size: var(--font-nm);
 }
+
 .pricing-compare-table tbody tr:not(.compare-group-header) td:nth-child(2) {
     background: rgba(45, 106, 156, 0.04);
 }

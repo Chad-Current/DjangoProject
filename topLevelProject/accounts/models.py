@@ -43,6 +43,7 @@ class CustomUser(AbstractUser):
         'devices': 1,
         'estate_documents': 1,
         'important_documents': 1,
+        'family_awareness': 2,
     }
 
     ESSENTIAL_TIER_LIMITS = {
@@ -51,6 +52,7 @@ class CustomUser(AbstractUser):
         'devices': 3,
         'estate_documents': 3,
         'important_documents': 5,
+        'family_awareness': 5,
     }
     
     # ── Basic fields ──────────────────────────────────────────────────────────

@@ -17,7 +17,7 @@
   <!-- Page header -->
   <div class="ob-page-header{% if progress.is_complete %} ob-complete-header{% endif %}">
     {% if progress.is_complete %}
-      <div class="ob-complete-trophy">🎗️</div>
+      <div class="ob-complete-trophy"><i class="fas fa-ribbon"></i></div>
     {% endif %}
     <p class="ob-eyebrow">Estate Planning</p>
     <h1>Funeral Plan Summary</h1>
@@ -55,32 +55,32 @@
     <!-- Progress count row -->
     <div class="ob-count-grid">
       <div class="ob-count-cell accent-blue">
-        <div class="ob-count-emoji">🪪</div>
+        <div class="ob-count-emoji"><i class="fas fa-id-card"></i></div>
         <div class="ob-count-number">{% if progress.personal_info %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Personal Info</div>
       </div>
       <div class="ob-count-cell accent-navy">
-        <div class="ob-count-emoji">⛪</div>
+        <div class="ob-count-emoji"><i class="fas fa-place-of-worship"></i></div>
         <div class="ob-count-number">{% if progress.service %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Service Prefs</div>
       </div>
       <div class="ob-count-cell accent-amber">
-        <div class="ob-count-emoji">🌿</div>
+        <div class="ob-count-emoji"><i class="fas fa-leaf"></i></div>
         <div class="ob-count-number">{% if progress.disposition %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Disposition</div>
       </div>
       <div class="ob-count-cell accent-amber">
-        <div class="ob-count-emoji">🎵</div>
+        <div class="ob-count-emoji"><i class="fas fa-music"></i></div>
         <div class="ob-count-number">{% if progress.ceremony %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Ceremony</div>
       </div>
       <div class="ob-count-cell accent-navy">
-        <div class="ob-count-emoji">🤝</div>
+        <div class="ob-count-emoji"><i class="fas fa-hands-helping"></i></div>
         <div class="ob-count-number">{% if progress.reception %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Reception</div>
       </div>
       <div class="ob-count-cell accent-blue">
-        <div class="ob-count-emoji">📰</div>
+        <div class="ob-count-emoji"><i class="fas fa-file"></i></div>
         <div class="ob-count-number">{% if progress.obituary %}✓{% else %}—{% endif %}</div>
         <div class="ob-count-label">Obituary</div>
       </div>
@@ -110,7 +110,6 @@
   <!-- 1 — Personal Information -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">🪪</div>
       1 — Personal Information
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -165,7 +164,6 @@
   <!-- 2 — Service Preferences -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">⛪</div>
       2 — Service Preferences
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -196,7 +194,6 @@
   <!-- 3 — Final Disposition -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">🌿</div>
       3 — Final Disposition
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -219,7 +216,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">🌿</div>
         <p>No disposition preferences recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step3' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -229,7 +225,6 @@
   <!-- 4 — Ceremony -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">🎵</div>
       4 — Ceremony Personalization
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -250,7 +245,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">🎵</div>
         <p>No ceremony preferences recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step4' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -260,7 +254,6 @@
   <!-- 5 — Reception -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">🤝</div>
       5 — Reception / Gathering
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -282,7 +275,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">🤝</div>
         <p>No reception preferences recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step5' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -292,7 +284,6 @@
   <!-- 6 — Obituary -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">📰</div>
       6 — Obituary &amp; Memorial
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -309,7 +300,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">📰</div>
         <p>No obituary information recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step6' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -319,7 +309,6 @@
   <!-- 7 — Administrative -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">📋</div>
       7 — Administrative &amp; Financial
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -336,7 +325,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">📋</div>
         <p>No administrative details recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step7' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -346,7 +334,6 @@
   <!-- 8 — Additional Instructions -->
   <div class="ob-form-card ob-form-card--mt">
     <div class="ob-card-heading">
-      <div class="ob-card-icon">✉️</div>
       8 — Additional Instructions
       {% if can_modify %}
         <a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost ob-btn--edit">
@@ -358,7 +345,6 @@
       <p class="fp-instructions-text">{{ plan.additional_instructions }}</p>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">✉️</div>
         <p>No additional instructions recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step8' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
