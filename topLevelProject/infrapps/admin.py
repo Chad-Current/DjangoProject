@@ -79,9 +79,9 @@ class VaultEntryAdminForm(forms.ModelForm):
         if new_password:
             instance.set_password(new_password)
             logger.info(
-                "Admin reset encrypted_password for VaultEntry pk=%s label='%s'",
+                "Admin reset encrypted_password for VaultEntry pk=%s source='%s'",
                 instance.pk,
-                instance.label,
+                instance.source_name,
             )
 
         if commit:
@@ -99,18 +99,16 @@ class VaultEntryAdmin(admin.ModelAdmin):
 
     # ── List view ────────────────────────────────────────────────────────────
     list_display = (
-        'label',
-        'profile_owner',
         'linked_source',
+        'profile_owner',
         'username_or_email',
         'has_password',
         'last_accessed_display',
         'updated_at',
     )
-    list_display_links = ('label',)
+    list_display_links = ('linked_source',)
     list_filter        = ('created_at', 'updated_at')
     search_fields      = (
-        'label',
         'username_or_email',
         'profile__user__email',
         'profile__user__username',
@@ -136,7 +134,6 @@ class VaultEntryAdmin(admin.ModelAdmin):
         }),
         ('Entry Details', {
             'fields': (
-                'label',
                 'username_or_email',
                 'notes',
             ),
@@ -286,7 +283,8 @@ class VaultAccessLogAdmin(admin.ModelAdmin):
     list_display_links = ('entry_label',)
     list_filter        = ('accessed_at',)
     search_fields      = (
-        'entry__label',
+        'entry__linked_account__account_name_or_provider',
+        'entry__linked_device__device_name',
         'accessed_by__email',
         'accessed_by__username',
         'ip_address',
@@ -308,9 +306,9 @@ class VaultAccessLogAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    @admin.display(description='Entry', ordering='entry__label')
+    @admin.display(description='Entry')
     def entry_label(self, obj):
-        return obj.entry.label
+        return obj.entry.source_name
 
     def get_queryset(self, request):
         return (

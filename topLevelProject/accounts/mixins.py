@@ -102,12 +102,10 @@ class PaidUserRequiredMixin(UserPassesTestMixin):
         return redirect('accounts:login')
 
 
-class AddonRequiredMixin(LoginRequiredMixin):
+class LegacyRequiredMixin(LoginRequiredMixin):
     """
-    Restricts a view to users who have an active add-on subscription.
-    - Non-paying users  → redirected to payment page
-    - Paying users without add-on → redirected to addon purchase page
-    - Expired add-on → redirected to addon purchase page with warning
+    Restricts a view to users who have an active Legacy subscription.
+    - Non-legacy users → redirected to payment page with explanation
     """
     login_url = '/accounts/login/'
 
@@ -115,21 +113,13 @@ class AddonRequiredMixin(LoginRequiredMixin):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
 
-        if not request.user.is_eligible_for_addon():
-            # Has no paid tier at all
+        user = request.user
+        if user.subscription_tier != 'legacy' or not user.is_subscription_active():
             messages.warning(
                 request,
-                'You need an active subscription (Essentials or Legacy) before adding an add-on.'
+                'This feature is included with the Legacy plan.'
             )
             return redirect('accounts:payment')
-
-        if not request.user.can_access_addon():
-            # Eligible but hasn't purchased, or it expired
-            messages.warning(
-                request,
-                'This feature requires the add-on subscription.'
-            )
-            return redirect('accounts:addon')
 
         return super().dispatch(request, *args, **kwargs)
     

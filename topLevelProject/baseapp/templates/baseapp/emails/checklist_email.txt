@@ -1,4 +1,4 @@
-Hi {{ first_name }},
+Hi {{ first_name|default:"there" }},
 
 Thanks for reaching out — getting your digital estate organised is one of the most thoughtful things you can do for your family.
 

@@ -25,7 +25,7 @@
                 <button class="pc-toggle-btn active" id="pc-toggle-annual" onclick="pcSetBilling('annual')">Annual</button>
                 <button class="pc-toggle-btn" id="pc-toggle-monthly" onclick="pcSetBilling('monthly')">Monthly</button>
             </div>
-            <span class="pc-save-badge" id="pc-save-badge">Save 20%</span>
+            <span class="pc-save-badge" id="pc-save-badge">2 months free with annual</span>
         </div>
 
         <!-- Pricing cards -->
@@ -45,7 +45,7 @@
                     <li><i class="fas fa-check-circle"></i> View-only access to all data</li>
                     <li><i class="fas fa-check-circle"></i> Up to 2 trusted contacts</li>
                     <li><i class="fas fa-check-circle"></i> 1 digital account &amp; 1 device</li>
-                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 2 Family Notes</li>
                     <li><i class="fas fa-check-circle"></i> Family recovery request system</li>
                     <li><i class="fas fa-times-circle"></i> Full edit access</li>
                     <li><i class="fas fa-times-circle"></i> Unlimited items</li>
@@ -60,22 +60,20 @@
                 <div class="pc-card-tier pc-card-tier--essentials">Essentials</div>
                 <div class="pc-card-price-wrap">
                     <span class="pc-currency">$</span>
-                    <span class="pc-price" id="pc-ess-price">89.99</span>
+                    <span class="pc-price" id="pc-ess-price">59.99</span>
                 </div>
                 <div class="pc-period" id="pc-ess-period">per year</div>
-                <div class="pc-period-sub" id="pc-ess-sub">billed annually — save 20%</div>
+                <div class="pc-period-sub" id="pc-ess-sub">billed annually — 2 months free</div>
                 <hr class="pc-card-divider">
                 <ul class="pc-features">
                     <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
                     <li><i class="fas fa-check-circle"></i> Up to 3 trusted contacts</li>
                     <li><i class="fas fa-check-circle"></i> Up to 3 accounts &amp; 3 devices</li>
                     <li><i class="fas fa-check-circle"></i> Up to 5 important documents</li>
-                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
-                    <li><i class="fas fa-check-circle"></i> View-only access after canceling</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 5 Family Notes</li>
                     <li><i class="fas fa-check-circle"></i> Email support</li>
                     <li><i class="fas fa-times-circle"></i> Unlimited items</li>
                 </ul>
-                <div class="pc-addon-line">Optional: <strong>+$49.99/yr</strong> Password Vault add-on</div>
                 <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
             </div>
 
@@ -85,10 +83,10 @@
                 <div class="pc-card-tier pc-card-tier--legacy">Legacy</div>
                 <div class="pc-card-price-wrap">
                     <span class="pc-currency">$</span>
-                    <span class="pc-price" id="pc-leg-price">149.99</span>
+                    <span class="pc-price" id="pc-leg-price">99.99</span>
                 </div>
                 <div class="pc-period" id="pc-leg-period">per year</div>
-                <div class="pc-period-sub" id="pc-leg-sub">billed annually — save 20%</div>
+                <div class="pc-period-sub" id="pc-leg-sub">billed annually — 2 months free</div>
                 <hr class="pc-card-divider">
                 <ul class="pc-features">
                     <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
@@ -96,11 +94,10 @@
                     <li><i class="fas fa-check-circle"></i> Unlimited accounts &amp; devices</li>
                     <li><i class="fas fa-check-circle"></i> Unlimited documents</li>
                     <li><i class="fas fa-check-circle"></i> Detailed funeral &amp; final arrangement planning</li>
+                    <li><i class="fas fa-check-circle"></i> Encrypted password vault — included</li>
                     <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
-                    <li><i class="fas fa-check-circle"></i> View-only access after canceling</li>
                     <li><i class="fas fa-check-circle"></i> Priority email support</li>
                 </ul>
-                <div class="pc-addon-line">Optional: <strong>+$49.99/yr</strong> Password Vault add-on</div>
                 <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
             </div>
 
@@ -135,12 +132,12 @@
                         </th>
                         <th class="pc-th-tier pc-th-tier--essentials" data-tier="essentials">
                             <span class="pc-th-tier-name pc-th-tier-name--essentials">Essentials</span>
-                            <span class="pc-th-tier-sub">$9.99/mo or $89.99/yr</span>
+                            <span class="pc-th-tier-sub">$5.99/mo or $59.99/yr</span>
                         </th>
                         <th class="pc-th-tier pc-th-tier--legacy" data-tier="legacy">
                             <span class="pc-th-tier-badge">Best Value</span>
                             <span class="pc-th-tier-name pc-th-tier-name--legacy">Legacy</span>
-                            <span class="pc-th-tier-sub">$15.99/mo or $149.99/yr</span>
+                            <span class="pc-th-tier-sub">$9.99/mo or $99.99/yr</span>
                         </th>
                     </tr>
                 </thead>
@@ -153,12 +150,6 @@
                     <tr>
                         <td class="feature-name">Edit &amp; save data</td>
                         <td data-tier="free"><span class="pc-compare-note">Up to limits</span></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
-                    </tr>
-                    <tr>
-                        <td class="feature-name">View data after canceling</td>
-                        <td data-tier="free"><span class="pc-compare-note">Always free</span></td>
                         <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
                         <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
@@ -244,8 +235,8 @@
                     </tr>
                     <tr>
                         <td class="feature-name">Family needs-to-know section</td>
-                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 2</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 5</span></td>
                         <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
@@ -257,19 +248,19 @@
 
                     <!-- VAULT -->
                     <tr class="pc-group-header">
-                        <td colspan="4">Password Vault (Optional Add-on)</td>
+                        <td colspan="4">Password Vault</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Encrypted credential storage</td>
                         <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
-                        <td data-tier="essentials"><span class="pc-compare-addon">+ $49.99/yr</span></td>
-                        <td data-tier="legacy"><span class="pc-compare-addon">+ $49.99/yr</span></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Vault access audit log</td>
                         <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
-                        <td data-tier="essentials"><span class="pc-compare-addon">With add-on</span></td>
-                        <td data-tier="legacy"><span class="pc-compare-addon">With add-on</span></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- SUPPORT -->
@@ -304,21 +295,22 @@
     <!-- ═══════════════════════════════════════════════════════
          CLOSING CTA
          ═══════════════════════════════════════════════════════ -->
-    <section class="pc-cta-section">
-        <h2 class="pc-cta-headline">Ready to give your family <em>peace of mind?</em></h2>
-        <p class="pc-cta-sub">Start free today — no credit card required.</p>
-        <div class="pc-cta-buttons">
-            <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Start for Free</a>
-            <a href="{% url 'baseapp:checklist_email' %}" class="pc-cta-btn pc-cta-btn--free">Download Free Guide</a>
+<section class="closing-cta">
+    <div class="container">
+        <h2 class="closing-headline">Your family is going to have enough to carry.<br>Let this not be one of them.</h2>
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
+            <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
         </div>
-    </section>
+    </div>
+</section>
 
 </div>
 
 <script>
     const PC_PRICES = {
-        essentials: { annual: '89.99', monthly: '9.99' },
-        legacy:     { annual: '149.99', monthly: '15.99' },
+        essentials: { annual: '59.99', monthly: '5.99' },
+        legacy:     { annual: '99.99', monthly: '9.99' },
     };
 
     function pcSetBilling(interval) {
@@ -335,9 +327,9 @@
         document.getElementById('pc-leg-period').textContent = interval === 'annual' ? 'per year' : 'per month';
 
         document.getElementById('pc-ess-sub').textContent =
-            interval === 'annual' ? 'billed annually \u2014 save 20%' : 'billed monthly';
+            interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
         document.getElementById('pc-leg-sub').textContent =
-            interval === 'annual' ? 'billed annually \u2014 save 20%' : 'billed monthly';
+            interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
     }
 
     function pcShowTier(tier) {

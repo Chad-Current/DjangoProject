@@ -71,14 +71,14 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {% if can_modify %}
+
                                         <div class="action-buttons">
                                             <a href="{% url 'dashboard:relevancereview_detail' review.slug %}"
                                                 class="btn-action btn-view" title="View review">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         </div>
-                                        {% endif %}
+
                                     </td>
                                 </tr>
                                 {% endfor %}

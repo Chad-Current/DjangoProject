@@ -36,8 +36,8 @@ def get_client_ip(request):
 
 # ── Pricing constants ─────────────────────────────────────────────────────────
 PRICES = {
-    'essentials': {'annual': 89.99, 'monthly': 9.99},
-    'legacy':     {'annual': 149.99, 'monthly': 15.99},
+    'essentials': {'annual': 59.99, 'monthly': 5.99},
+    'legacy':     {'annual': 99.99, 'monthly': 9.99},
 }
 
 
@@ -489,106 +489,6 @@ class UpgradeSubscriptionView(LoginRequiredMixin, View):
         return redirect('accounts:subscription_manage')
 
 
-# ── Add-on view ───────────────────────────────────────────────────────────────
-
-class AddonView(LoginRequiredMixin, View):
-    """
-    Lets eligible paying users purchase or renew the add-on subscription.
-    Non-paying users are redirected to the main payment page.
-    """
-    template_name = 'accounts/addon.html'
-    login_url = '/accounts/login/'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_eligible_for_addon():
-            messages.warning(
-                request,
-                'You need an Essentials or Legacy subscription before purchasing an add-on.'
-            )
-            return redirect('accounts:payment')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request):
-        context = {
-            'user': request.user,
-            'addon_price': 49.99,
-            'already_active': request.user.can_access_addon(),
-            'days_remaining': request.user.days_until_addon_expires(),
-            'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY,
-        }
-        return render(request, self.template_name, context)
-
-
-class CreateAddonPaymentView(LoginRequiredMixin, View):
-    """
-    AJAX endpoint: creates a Stripe PaymentIntent for the $49.99 add-on.
-    Returns the client_secret so the frontend can confirm the card payment.
-    """
-    login_url = '/accounts/login/'
-
-    def post(self, request):
-        user = request.user
-        if not user.is_eligible_for_addon():
-            return JsonResponse({'error': 'You are not eligible for the add-on.'}, status=403)
-
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            pi = stripe.PaymentIntent.create(
-                amount=4999,  # $49.99 in cents
-                currency='usd',
-                customer=user.stripe_customer_id or None,
-                metadata={'user_id': str(user.pk), 'type': 'addon'},
-            )
-            return JsonResponse({'client_secret': pi.client_secret, 'payment_intent_id': pi.id})
-        except stripe.error.StripeError as e:
-            logger.error(f'Stripe error creating addon PaymentIntent for {user.email}: {e}')
-            return JsonResponse({'error': str(e.user_message)}, status=400)
-        except Exception as e:
-            logger.error(f'Unexpected error creating addon PaymentIntent for {user.email}: {e}')
-            return JsonResponse({'error': 'An unexpected error occurred. Please try again.'}, status=500)
-
-
-class ConfirmAddonView(LoginRequiredMixin, View):
-    """
-    AJAX endpoint: verifies the Stripe PaymentIntent succeeded, then activates the add-on.
-    """
-    login_url = '/accounts/login/'
-
-    def post(self, request):
-        user = request.user
-        try:
-            data = json.loads(request.body)
-            payment_intent_id = data.get('payment_intent_id', '')
-        except (json.JSONDecodeError, AttributeError):
-            return JsonResponse({'error': 'Invalid request body.'}, status=400)
-
-        if not payment_intent_id:
-            return JsonResponse({'error': 'Missing payment_intent_id.'}, status=400)
-
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            pi = stripe.PaymentIntent.retrieve(payment_intent_id)
-
-            if pi.status != 'succeeded':
-                return JsonResponse({'error': f'Payment not completed (status: {pi.status}).'}, status=400)
-
-            if pi.metadata.get('user_id') != str(user.pk):
-                return JsonResponse({'error': 'Payment intent does not match your account.'}, status=403)
-
-            user.activate_addon()
-            logger.info(f'User {user.email} activated add-on via Stripe PaymentIntent {payment_intent_id}')
-            return JsonResponse({'success': True, 'redirect_url': '/dashboard/'})
-
-        except stripe.error.StripeError as e:
-            logger.error(f'Stripe error confirming addon for {user.email}: {e}')
-            return JsonResponse({'error': str(e.user_message)}, status=400)
-        except PermissionError as e:
-            return JsonResponse({'error': str(e)}, status=403)
-        except Exception as e:
-            logger.error(f'Unexpected error confirming addon for {user.email}: {e}')
-            return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
-
-
 # ── Password Reset views ──────────────────────────────────────────────────────
 
 class CustomPasswordResetView(PasswordResetView):
@@ -633,9 +533,6 @@ manage_subscription_view = ManageSubscriptionView.as_view()
 cancel_subscription_view = CancelSubscriptionView.as_view()
 upgrade_subscription_view = UpgradeSubscriptionView.as_view()
 stripe_webhook_view = StripeWebhookView.as_view()
-addon_view = AddonView.as_view()
-create_addon_payment_view = CreateAddonPaymentView.as_view()
-confirm_addon_view = ConfirmAddonView.as_view()
 password_reset_view = CustomPasswordResetView.as_view()
 password_reset_done_view = CustomPasswordResetDoneView.as_view()
 password_reset_confirm_view = CustomPasswordResetConfirmView.as_view()

@@ -296,6 +296,7 @@
     </div>
 
     <!-- Upcoming Reviews -->
+     {% if request.user.is_subscription_active  %}
     <div class="vault-reviews-row">
         <div class="upcoming-reviews">
             <h3><i class="fas fa-calendar-check"></i> Upcoming Reviews</h3>
@@ -348,6 +349,7 @@
             {% endif %}
         </div>
     </div>
+{% endif %}
 </div>
 
 {% endblock %}

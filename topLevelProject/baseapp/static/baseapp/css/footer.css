@@ -8,6 +8,8 @@
     background-color: var(--background-color-dark);
     color: var(--text-color);
     font-family: var(--main-font), sans-serif;
+    padding: 10em 0 2em;
+
 }
 
 /* ── Inner layout ───────────────────────────────────────────── */

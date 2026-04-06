@@ -51,7 +51,7 @@
             </a>
             {% endif %}
 
-            {% if request.user.can_access_addon %}
+            {% if request.user.subscription_tier == 'legacy' and request.user.is_subscription_active %}
             <a href="{% url 'vault:vault_list' %}" class="subnav-item" title="Vault Passwords">
                 <i class="fas fa-user-shield"></i>
                 <span>Password</span>
@@ -59,11 +59,13 @@
             </a>
             {% endif %}
 
+            {% if request.user.is_subscription_active %}
             <a href="{% url 'dashboard:relevancereview_list' %}" class="subnav-item" title="Review your accounts">
                 <i class="fas fa-calendar-check"></i>
                 <span>Review</span>
                 <span>List</span>
             </a>
+            {% endif %}
         </div>
     </nav>
 </div>

@@ -709,6 +709,10 @@ class RelevanceReview(models.Model):
     review_date    = models.DateTimeField(auto_now_add=True)
     reasoning      = models.TextField(blank=True, help_text="Why does this still matter or not?")
     next_review_due= models.DateField(null=True, blank=True)
+    last_notified  = models.DateField(
+        null=True, blank=True,
+        help_text="Date the reviewer was last emailed a reminder for this review.",
+    )
     created_at     = models.DateTimeField(default=timezone.now)
     updated_at     = models.DateTimeField(auto_now=True)
 

@@ -21,7 +21,7 @@ class VaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['label', 'linked_account', 'linked_device', 'username_or_email', 'notes']
+        fields = ['linked_account', 'linked_device', 'username_or_email', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
@@ -50,7 +50,6 @@ class VaultEntryForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Entry Details',
-                Field('label'),
                 Field('username_or_email'),
             ),
             Fieldset(
@@ -94,7 +93,7 @@ class AccountVaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['label', 'linked_account', 'username_or_email', 'notes']
+        fields = ['linked_account', 'username_or_email', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
@@ -133,7 +132,7 @@ class DeviceVaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['label', 'linked_device', 'username_or_email', 'notes']
+        fields = ['linked_device', 'username_or_email', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }

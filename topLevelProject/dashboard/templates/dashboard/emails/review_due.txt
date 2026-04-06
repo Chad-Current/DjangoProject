@@ -1,0 +1,29 @@
+Hi {{ user.first_name|default:"there" }},
+
+This is a reminder that you have {{ reviews|length }} review{{ reviews|length|pluralize }} due on your Digital Estate Plan.
+
+{% if overdue %}——————————————————————————
+OVERDUE — {{ overdue|length }} item{{ overdue|length|pluralize }}
+——————————————————————————
+{% for r in overdue %}  • {{ r.get_item_type }}: {{ r.get_item_name }}
+    Due: {{ r.next_review_due }}
+{% endfor %}
+{% endif %}{% if due_today %}——————————————————————————
+DUE TODAY — {{ due_today|length }} item{{ due_today|length|pluralize }}
+——————————————————————————
+{% for r in due_today %}  • {{ r.get_item_type }}: {{ r.get_item_name }}
+{% endfor %}
+{% endif %}
+Log in to review and update your records:
+
+    https://{{ site_url }}/dashboard/reviews/
+
+Keeping your plan current ensures the people you trust have accurate information when it matters most.
+
+Warm regards,
+The Digital Estate Plan Team
+
+---
+Digital Estate Plan · {{ site_url }}
+You're receiving this because you have an active subscription and one or more reviews are due.
+To adjust your notification preferences, visit your account settings.

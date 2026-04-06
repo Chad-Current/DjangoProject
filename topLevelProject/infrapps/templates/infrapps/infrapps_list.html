@@ -71,7 +71,7 @@
               <td>
                 <div class="contact-name">
                   <i class="fas fa-key contact-icon"></i>
-                  <span>{{ entry.label }}</span>
+                  <span>{{ entry.source_name }}</span>
                 </div>
               </td>
               <td>
@@ -87,7 +87,7 @@
                          value="••••••••"
                          readonly
                          class="vault-list-pw-input"
-                         aria-label="Password for {{ entry.label }}">
+                         aria-label="Password for {{ entry.source_name }}">
                   <button type="button"
                           class="vault-list-reveal-btn vault-reveal-btn"
                           data-slug="{{ entry.slug }}"
@@ -139,7 +139,7 @@
         <div class="card-header-section">
           <div class="contact-avatar"><i class="fas fa-key"></i></div>
           <div class="contact-details">
-            <h3 class="contact-card-name">{{ entry.label }}</h3>
+            <h3 class="contact-card-name">{{ entry.source_name }}</h3>
             <span class="badge-relationship-mobile">{% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}</span>
           </div>
         </div>

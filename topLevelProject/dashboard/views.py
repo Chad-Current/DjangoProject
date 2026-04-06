@@ -151,20 +151,28 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
                 'others':       Device.objects.filter(profile=profile, device_type='Other').count(),
             }
 
-            review_stats = self._get_review_stats(profile)
-            context.update(review_stats)
-
-            upcoming_reviews = RelevanceReview.objects.filter(
-                Q(account_review__profile=profile) |
-                Q(device_review__profile=profile) |
-                Q(estate_review__profile=profile) |
-                Q(important_document_review__profile=profile)
-            ).exclude(
-                next_review_due__isnull=True
-            ).select_related(
-                'account_review', 'device_review',
-                'estate_review', 'important_document_review'
-            ).order_by('next_review_due')[:5]
+            if user.is_subscription_active():
+                review_stats = self._get_review_stats(profile)
+                context.update(review_stats)
+                upcoming_reviews = RelevanceReview.objects.filter(
+                    Q(account_review__profile=profile) |
+                    Q(device_review__profile=profile) |
+                    Q(estate_review__profile=profile) |
+                    Q(important_document_review__profile=profile)
+                ).exclude(
+                    next_review_due__isnull=True
+                ).select_related(
+                    'account_review', 'device_review',
+                    'estate_review', 'important_document_review'
+                ).order_by('next_review_due')[:5]
+            else:
+                context.update({
+                    'soonest_review': None,
+                    'first_delta':    None,
+                    'alert_due':      False,
+                    'alert_attention': False,
+                })
+                upcoming_reviews = RelevanceReview.objects.none()
 
             context['upcoming_reviews']  = upcoming_reviews
             context['today']             = datetime.now().date()
@@ -1314,7 +1322,9 @@ class RelevanceReviewListView(LoginRequiredMixin, ListView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_paid and not request.user.is_free_tier():
+        user = request.user
+        if not user.is_subscription_active():
+            messages.warning(request, 'An active subscription is required to access reviews.')
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -1384,7 +1394,9 @@ class RelevanceReviewDetailView(LoginRequiredMixin, DetailView):
     login_url           = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_paid and not request.user.is_free_tier():
+        user = request.user
+        if not user.is_subscription_active():
+            messages.warning(request, 'An active subscription is required to access reviews.')
             return redirect(reverse("accounts:payment"))
         return super().dispatch(request, *args, **kwargs)
 
@@ -1419,11 +1431,9 @@ class RelevanceReviewCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.has_paid:
+        if not user.is_subscription_active():
+            messages.warning(request, 'An active subscription is required to create reviews.')
             return redirect(reverse("accounts:payment"))
-        if not user.can_modify_data():
-            messages.error(request, "You don't have permission to create reviews.")
-            return redirect(reverse("dashboard:dashboard_home"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -1478,11 +1488,9 @@ class RelevanceReviewUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.has_paid:
+        if not user.is_subscription_active():
+            messages.warning(request, 'An active subscription is required to edit reviews.')
             return redirect(reverse("accounts:payment"))
-        if not user.can_modify_data():
-            messages.error(request, "You don't have permission to edit reviews.")
-            return redirect(reverse("dashboard:dashboard_home"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
@@ -1532,11 +1540,9 @@ class RelevanceReviewDeleteView(LoginRequiredMixin, DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.has_paid:
+        if not user.is_subscription_active():
+            messages.warning(request, 'An active subscription is required to delete reviews.')
             return redirect(reverse("accounts:payment"))
-        if not user.can_modify_data():
-            messages.error(request, "You don't have permission to delete reviews.")
-            return redirect(reverse("dashboard:dashboard_home"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
@@ -1579,10 +1585,10 @@ class MarkItemReviewedView(LoginRequiredMixin, View):
     login_url = '/accounts/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and not request.user.has_paid:
+        if request.user.is_authenticated and not request.user.is_subscription_active():
             return JsonResponse({
                 'success': False,
-                'error':   'Payment required to access this feature'
+                'error':   'An active subscription is required to mark reviews.'
             }, status=403)
         return super().dispatch(request, *args, **kwargs)
 

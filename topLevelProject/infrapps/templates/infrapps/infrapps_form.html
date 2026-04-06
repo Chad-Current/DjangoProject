@@ -27,19 +27,6 @@
     <fieldset class="form-fieldset">
       <legend class="form-fieldset-legend">Vault Entry Details</legend>
 
-      <div class="form-field{% if form.label.errors %} has-error{% endif %}">
-        <label for="{{ form.label.id_for_label }}"
-          class="ob-label-tooltip"
-          title="A short descriptive name for this credential — e.g. 'Gmail master password' or 'iPhone PIN'.">
-          Label <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">A short descriptive name for this credential — e.g. 'Gmail master password' or 'iPhone PIN'.</span>
-        </label>
-        {{ form.label }}
-        {% if form.label.errors %}
-          <div class="error" role="alert">{{ form.label.errors }}</div>
-        {% endif %}
-      </div>
-
     </fieldset>
 
     <!-- ══════════════════════════════════════════

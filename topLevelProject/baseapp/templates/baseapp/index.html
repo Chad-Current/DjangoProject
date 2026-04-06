@@ -3,6 +3,10 @@
 
 <title>{% block title %}Digital Estate Planning{% endblock %}</title>
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/pricing.css' %}" type="text/css">
+{% endblock %}
+
 {% block content %}
 
 
@@ -216,91 +220,94 @@
      RESULT ② — PRICING
      The natural close after demonstrating value.
      ═══════════════════════════════════════════════════════ -->
-<div class="payment-wrapper">
-    <div class="section-header text-center">
-        <span class="idx-section-label" style="display: block; text-align: center; margin-bottom: .5rem;">Simple
-            pricing</span>
-        <h2>Choose the plan that fits your life.</h2>
-        <p class="section-subtitle">Simple subscriptions — cancel anytime. Start for as little as $9.99/month.</p>
-    </div>
+    <section class="pc-hero">
+        <span class="pc-eyebrow">Simple, transparent pricing</span>
+        <h1 class="pc-hero-title">Plans built for <em>your</em> peace of mind</h1>
+        <p class="pc-hero-sub">Start free, upgrade when you're ready. Every plan protects your digital legacy — no surprises, no hidden fees.</p>
 
-    <div class="billing-toggle">
-        <button class="toggle-btn active" id="index-toggle-annual" onclick="indexSetBilling('annual')">Annual</button>
-        <button class="toggle-btn" id="index-toggle-monthly" onclick="indexSetBilling('monthly')">Monthly</button>
-        <span class="save-badge" id="index-save-badge">Save 2 months</span>
-    </div>
-
-    <div class="pricing-cards">
-
-        <div class="pricing-card">
-            <div class="tier-name">Essentials</div>
-            <div class="tier-price">
-                <span class="currency">$</span>
-                <span class="price-amount" id="index-essentials-price">89.99</span>
+        <!-- Billing toggle -->
+        <div class="pc-toggle-wrap">
+            <div class="pc-toggle">
+                <button class="pc-toggle-btn active" id="pc-toggle-annual" onclick="pcSetBilling('annual')">Annual</button>
+                <button class="pc-toggle-btn" id="pc-toggle-monthly" onclick="pcSetBilling('monthly')">Monthly</button>
             </div>
-            <div class="period" id="index-essentials-period">per year</div>
-            <div class="add-on">
-                <div class="add-on-label">Optional Add-on</div>
-                <div class="add-on-body">
-                    <span class="add-on-icon"><i class="fas fa-key"></i></span>
-                    <div class="add-on-text">
-                        <span class="add-on-name">Password Storage</span>
-                        <span class="add-on-price"><strong>+$49.99</strong> / year</span>
-                    </div>
-                </div>
-            </div>
-            <div class="tier-divider"></div>
-            <ul class="tier-features">
-                <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
-                <li><i class="fas fa-check-circle"></i> Add, change, and delete data</li>
-                <li><i class="fas fa-check-circle"></i> View-only access if you cancel</li>
-                <li><i class="fas fa-check-circle"></i> Email support</li>
-                <li><i class="fas fa-check-circle"></i> Regular platform updates</li>
-            </ul>
-            <!-- <a href="{% url 'accounts:payment' %}" class="select-tier-btn essentials-btn">Get Essentials</a> -->
+            <span class="pc-save-badge" id="pc-save-badge">2 months free with annual</span>
         </div>
 
-        <div class="pricing-card recommended">
-            <div class="recommended-badge">Best Value</div>
-            <div class="tier-name">Legacy</div>
-            <div class="tier-price">
-                <span class="currency">$</span>
-                <span class="price-amount" id="index-legacy-price">149.99</span>
-            </div>
-            <div class="period" id="index-legacy-period">per year</div>
-            <div class="add-on">
-                <div class="add-on-label">Optional Add-on</div>
-                <div class="add-on-body">
-                    <span class="add-on-icon"><i class="fas fa-key"></i></span>
-                    <div class="add-on-text">
-                        <span class="add-on-name">Password Storage</span>
-                        <span class="add-on-price"><strong>+$49.99</strong> / year</span>
-                    </div>
+        <!-- Pricing cards -->
+        <div class="pc-cards">
+
+            <!-- Free -->
+            <div class="pc-card pc-card--free">
+                <div class="pc-card-tier pc-card-tier--free">Free</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price">0</span>
                 </div>
+                <div class="pc-period">forever</div>
+                <div class="pc-period-sub">No credit card required</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> View-only access to all data</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 2 trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> 1 digital account &amp; 1 device</li>
+                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                    <li><i class="fas fa-check-circle"></i> Family recovery request system</li>
+                    <li><i class="fas fa-times-circle"></i> Full edit access</li>
+                    <li><i class="fas fa-times-circle"></i> Unlimited items</li>
+                    <li><i class="fas fa-times-circle"></i> Funeral planning</li>
+                </ul>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
             </div>
-            <div class="tier-divider"></div>
-            <ul class="tier-features">
-                <li><i class="fas fa-check-circle"></i> Full access while subscribed</li>
-                <li><i class="fas fa-check-circle"></i> Add, change, and delete data anytime</li>
-                <li><i class="fas fa-check-circle"></i> View-only access if you cancel</li>
-                <li><i class="fas fa-check-circle"></i> Includes detailed funeral planning</li>
-                <li><i class="fas fa-check-circle"></i> Priority email support</li>
-                <li><i class="fas fa-check-circle"></i> All future updates included</li>
-                <li><i class="fas fa-check-circle"></i> Best choice for long-term peace of mind</li>
-            </ul>
-            <!-- <a href="{% url 'accounts:payment' %}" class="select-tier-btn legacy-btn">Get Legacy</a> -->
+
+            <!-- Essentials -->
+            <div class="pc-card pc-card--essentials">
+                <span class="pc-badge pc-badge--essentials">Popular</span>
+                <div class="pc-card-tier pc-card-tier--essentials">Essentials</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price" id="pc-ess-price">59.99</span>
+                </div>
+                <div class="pc-period" id="pc-ess-period">per year</div>
+                <div class="pc-period-sub" id="pc-ess-sub">billed annually — 2 months free</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 3 trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 3 accounts &amp; 3 devices</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 5 important documents</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 2 Family Notes</li>
+                    <li><i class="fas fa-check-circle"></i> Email support</li>
+                </ul>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
+            </div>
+
+            <!-- Legacy -->
+            <div class="pc-card pc-card--legacy">
+                <span class="pc-badge pc-badge--legacy">Best Value</span>
+                <div class="pc-card-tier pc-card-tier--legacy">Legacy</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price" id="pc-leg-price">99.99</span>
+                </div>
+                <div class="pc-period" id="pc-leg-period">per year</div>
+                <div class="pc-period-sub" id="pc-leg-sub">billed annually — 2 months free</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited accounts &amp; devices</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited documents</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited Family Notes</li>
+                    <li><i class="fas fa-check-circle"></i> Detailed funeral &amp; final arrangement planning</li>
+                    <li><i class="fas fa-check-circle"></i> Encrypted password vault — included</li>
+                    <li><i class="fas fa-check-circle"></i> Priority email support</li>
+                </ul>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
+            </div>
+
         </div>
-
-    </div>
-
-    <div class="trust-strip">
-        <div class="trust-item"><i class="fas fa-lock"></i> Secured by Stripe</div>
-        <div class="trust-item"><i class="fas fa-shield-alt"></i> Encrypted payment</div>
-        <div class="trust-item"><i class="fas fa-sync-alt"></i> Cancel anytime</div>
-        <div class="trust-item"><i class="fas fa-headset"></i> Support included</div>
-    </div>
-
-</div>
+    </section>
 
 
 
@@ -339,22 +346,28 @@
 </section>
 
 <script>
-    const INDEX_PRICES = {
-        essentials: { annual: '89.99', monthly: '9.99' },
-        legacy: { annual: '149.99', monthly: '15.99' },
+    const PC_PRICES = {
+        essentials: { annual: '59.99', monthly: '5.99' },
+        legacy:     { annual: '99.99', monthly: '9.99' },
     };
 
-    function indexSetBilling(interval) {
-        document.getElementById('index-toggle-annual').classList.toggle('active', interval === 'annual');
-        document.getElementById('index-toggle-monthly').classList.toggle('active', interval === 'monthly');
-        document.getElementById('index-save-badge').style.display = interval === 'annual' ? 'inline-block' : 'none';
-        document.getElementById('index-essentials-price').textContent =
-            interval === 'annual' ? INDEX_PRICES.essentials.annual : INDEX_PRICES.essentials.monthly;
-        document.getElementById('index-legacy-price').textContent =
-            interval === 'annual' ? INDEX_PRICES.legacy.annual : INDEX_PRICES.legacy.monthly;
-        const periodText = interval === 'annual' ? 'per year' : 'per month';
-        document.getElementById('index-essentials-period').textContent = periodText;
-        document.getElementById('index-legacy-period').textContent = periodText;
+    function pcSetBilling(interval) {
+        document.getElementById('pc-toggle-annual').classList.toggle('active', interval === 'annual');
+        document.getElementById('pc-toggle-monthly').classList.toggle('active', interval === 'monthly');
+        document.getElementById('pc-save-badge').style.display = interval === 'annual' ? 'inline-block' : 'none';
+
+        document.getElementById('pc-ess-price').textContent =
+            interval === 'annual' ? PC_PRICES.essentials.annual : PC_PRICES.essentials.monthly;
+        document.getElementById('pc-leg-price').textContent =
+            interval === 'annual' ? PC_PRICES.legacy.annual : PC_PRICES.legacy.monthly;
+
+        document.getElementById('pc-ess-period').textContent = interval === 'annual' ? 'per year' : 'per month';
+        document.getElementById('pc-leg-period').textContent = interval === 'annual' ? 'per year' : 'per month';
+
+        document.getElementById('pc-ess-sub').textContent =
+            interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
+        document.getElementById('pc-leg-sub').textContent =
+            interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
     }
 </script>
 

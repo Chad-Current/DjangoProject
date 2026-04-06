@@ -38,9 +38,6 @@ class CustomUserAdmin(UserAdmin):
                 'payment_date',
             ),
         }),
-        ('Add-on Subscription', {
-            'fields': ('addon_active', 'addon_payment_date', 'addon_expires'),
-        }),
         ('Security', {
             'fields': ('last_login_ip', 'failed_login_attempts', 'account_locked_until'),
             'classes': ('collapse',),

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from datetime import timedelta
 
 
 class CustomUser(AbstractUser):
@@ -10,8 +9,8 @@ class CustomUser(AbstractUser):
 
     Subscription tiers:
         none        — No active subscription (read-only or no access)
-        essentials  — Full edit access while subscription is active ($89.99/yr or $9.99/mo)
-        legacy      — Full edit access while subscription is active ($149.99/yr or $15.99/mo)
+        essentials  — Full edit access while subscription is active ($59.99/yr or $5.99/mo)
+        legacy      — Full edit access + vault while subscription is active ($99.99/yr or $9.99/mo)
     """
 
     TIER_CHOICES = [
@@ -106,20 +105,6 @@ class CustomUser(AbstractUser):
     subscription_cancel_at_period_end = models.BooleanField(
         default=False,
         help_text="Subscription is set to cancel at end of current billing period",
-    )
-
-    # ── Add-on subscription ───────────────────────────────────────────────────
-    addon_active = models.BooleanField(
-        default=False,
-        help_text="User has an active add-on subscription",
-    )
-    addon_payment_date = models.DateTimeField(
-        null=True, blank=True,
-        help_text="Date the add-on was purchased",
-    )
-    addon_expires = models.DateTimeField(
-        null=True, blank=True,
-        help_text="When the add-on subscription expires (1 year from purchase, renewable)",
     )
 
     # ── Fix for reverse accessor clashes ─────────────────────────────────────
@@ -254,41 +239,6 @@ class CustomUser(AbstractUser):
         """Mark the subscription as canceled (user loses modify access)."""
         self.subscription_status = 'canceled'
         self.subscription_cancel_at_period_end = False
-        self.save()
-
-    # ── Add-on subscription ───────────────────────────────────────────────────
-
-    def can_access_addon(self):
-        """Check if user has an active add-on."""
-        if not self.has_paid or not self.addon_active:
-            return False
-        if self.addon_expires and timezone.now() > self.addon_expires:
-            return False
-        return True
-
-    def is_eligible_for_addon(self):
-        """Only paying users (essentials or legacy) may purchase the add-on."""
-        return self.has_paid and self.subscription_tier in ('essentials', 'legacy')
-
-    def days_until_addon_expires(self):
-        """Days remaining on the add-on subscription."""
-        if not self.addon_expires:
-            return 0
-        delta = self.addon_expires - timezone.now()
-        return max(0, delta.days)
-
-    def activate_addon(self):
-        """Purchase / renew the add-on for 1 year."""
-        if not self.is_eligible_for_addon():
-            raise PermissionError("User is not eligible for the add-on subscription.")
-        self.addon_active = True
-        self.addon_payment_date = timezone.now()
-        self.addon_expires = timezone.now() + timedelta(days=365)
-        self.save()
-
-    def deactivate_addon(self):
-        """Administratively remove add-on access."""
-        self.addon_active = False
         self.save()
 
     class Meta:

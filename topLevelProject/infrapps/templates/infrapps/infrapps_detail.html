@@ -1,7 +1,7 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
-{% block title %}{{ entry.label }}{% endblock %}
+{% block title %}{{ entry.source_name }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/detail-view.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'infrapps/css/vault.css' %}" type="text/css">
@@ -12,7 +12,7 @@
 
   <!-- Header -->
   <div class="delegation-header">
-    <h1><i class="fas fa-key"></i> {{ entry.label }}</h1>
+    <h1><i class="fas fa-key"></i> {{ entry.source_name }}</h1>
     <p class="subtitle">
       {% if entry.linked_account %}Account{% elif entry.linked_device %}Device{% endif %}
       {% if entry.has_linked_source %}&nbsp;&mdash;&nbsp;Linked to {{ entry.source_name }}{% endif %}

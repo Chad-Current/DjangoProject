@@ -20,20 +20,16 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Guard mixin — replaces AddonRequiredMixin inline for the vault app
-# so this file stays self-contained. Uses the same can_access_addon()
-# method defined on CustomUser in the previous implementation.
+# Guard mixin — vault is included in the Legacy subscription tier.
 # ---------------------------------------------------------------------------
 
 class VaultAccessMixin(LoginRequiredMixin):
     """
     Requires:
       1. User is authenticated.
-      2. User has a paid subscription tier (has_paid=True).
-      3. User has an active add-on (can_access_addon()).
+      2. User has an active Legacy subscription.
 
-    Non-paying users  → /accounts/payment/
-    Paying, no add-on → /accounts/addon/
+    All other users → /accounts/payment/ with an explanation.
     """
     login_url = '/accounts/login/'
 
@@ -41,19 +37,13 @@ class VaultAccessMixin(LoginRequiredMixin):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
 
-        if not getattr(request.user, 'has_paid', False):
+        user = request.user
+        if user.subscription_tier != 'legacy' or not user.is_subscription_active():
             messages.warning(
                 request,
-                'You need an active subscription to use the Vault.'
+                'The Password Vault is included with the Legacy plan.'
             )
             return redirect('accounts:payment')
-
-        if not request.user.can_access_addon():
-            messages.warning(
-                request,
-                'The Password Vault is part of the add-on subscription.'
-            )
-            return redirect('accounts:addon')
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -106,7 +96,7 @@ class VaultListView(VaultAccessMixin, ListView):
         context = super().get_context_data(**kwargs)
         profile = _get_profile_or_403(self.request.user)
         context['can_modify']    = self.request.user.can_modify_data()
-        context['addon_active']  = self.request.user.can_access_addon()
+        context['addon_active']  = self.request.user.is_subscription_active()
         context['total_entries'] = VaultEntry.objects.filter(profile=profile).count()
         context['current_type']  = self.request.GET.get('type', '')
         return context
@@ -156,7 +146,7 @@ class VaultCreateView(VaultAccessMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active'] = self.request.user.can_access_addon()
+        context['addon_active'] = self.request.user.is_subscription_active()
         context['page_title']   = 'Add Vault Entry'
         context['submit_label'] = 'Save Entry'
         return context
@@ -171,7 +161,7 @@ class VaultCreateView(VaultAccessMixin, CreateView):
         entry.profile = profile
         entry.set_password(form.cleaned_data['raw_password'])
         entry.save()
-        messages.success(self.request, f'"{entry.label}" saved to your vault.')
+        messages.success(self.request, f'"{entry.source_name}" saved to your vault.')
         logger.info("VaultEntry %s created by %s", entry.pk, self.request.user.email)
         return redirect(self.get_success_url())
 
@@ -196,7 +186,7 @@ class AccountVaultCreateView(VaultAccessMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active']   = self.request.user.can_access_addon()
+        context['addon_active']   = self.request.user.is_subscription_active()
         context['entry_form_type'] = 'account'
         context['page_title']     = 'Add Account Password'
         context['submit_label']   = 'Save Password'
@@ -213,7 +203,7 @@ class AccountVaultCreateView(VaultAccessMixin, CreateView):
         entry.entry_type = 'account'
         entry.set_password(form.cleaned_data['raw_password'])
         entry.save()
-        messages.success(self.request, f'"{entry.label}" saved to your vault.')
+        messages.success(self.request, f'"{entry.source_name}" saved to your vault.')
         logger.info("VaultEntry %s (account) created by %s", entry.pk, self.request.user.email)
         return redirect(self.get_success_url())
 
@@ -234,7 +224,7 @@ class DeviceVaultCreateView(VaultAccessMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active']   = self.request.user.can_access_addon()
+        context['addon_active']   = self.request.user.is_subscription_active()
         context['entry_form_type'] = 'device'
         context['page_title']     = 'Add Device Password'
         context['submit_label']   = 'Save Password'
@@ -251,7 +241,7 @@ class DeviceVaultCreateView(VaultAccessMixin, CreateView):
         entry.entry_type = 'device'
         entry.set_password(form.cleaned_data['raw_password'])
         entry.save()
-        messages.success(self.request, f'"{entry.label}" saved to your vault.')
+        messages.success(self.request, f'"{entry.source_name}" saved to your vault.')
         logger.info("VaultEntry %s (device) created by %s", entry.pk, self.request.user.email)
         return redirect(self.get_success_url())
 
@@ -290,9 +280,9 @@ class VaultUpdateView(VaultAccessMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addon_active']    = self.request.user.can_access_addon()
+        context['addon_active']    = self.request.user.is_subscription_active()
         context['entry_form_type'] = 'account' if self.object.linked_account_id else 'device'
-        context['page_title']      = f'Edit — {self.object.label}'
+        context['page_title']      = f'Edit — {self.object.source_name}'
         context['submit_label']    = 'Update Entry'
         context['is_update']       = True
         return context
@@ -309,7 +299,7 @@ class VaultUpdateView(VaultAccessMixin, UpdateView):
             entry.set_password(raw_password)
 
         entry.save()
-        messages.success(self.request, f'"{entry.label}" updated.')
+        messages.success(self.request, f'"{entry.source_name}" updated.')
         logger.info("VaultEntry %s updated by %s", entry.pk, self.request.user.email)
         return redirect(self.get_success_url())
 
@@ -337,10 +327,10 @@ class VaultDeleteView(VaultAccessMixin, DeleteView):
             messages.error(request, "Your subscription does not allow deleting entries.")
             return redirect('vault:vault_list')
         entry = self.get_object()
-        label = entry.label
+        source = entry.source_name
         entry.delete()
-        messages.success(request, f'"{label}" removed from your vault.')
-        logger.info("VaultEntry '%s' deleted by %s", label, request.user.email)
+        messages.success(request, f'"{source}" removed from your vault.')
+        logger.info("VaultEntry '%s' deleted by %s", source, request.user.email)
         return redirect(self.success_url)
 
 
@@ -356,8 +346,9 @@ class VaultRevealPasswordView(VaultAccessMixin, View):
     """
 
     def post(self, request, slug):
-        if not request.user.can_access_addon():
-            return JsonResponse({'success': False, 'error': 'Add-on required.'}, status=403)
+        user = request.user
+        if user.subscription_tier != 'legacy' or not user.is_subscription_active():
+            return JsonResponse({'success': False, 'error': 'Legacy subscription required.'}, status=403)
 
         try:
             profile = _get_profile_or_403(request.user)

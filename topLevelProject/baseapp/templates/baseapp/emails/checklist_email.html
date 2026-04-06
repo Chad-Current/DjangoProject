@@ -1,88 +1,214 @@
-{% extends "baseapp/base.html" %}
-{% block title %}Get the Free Checklist — Digital Estate Plan{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Digital Estate Readiness Checklist</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f4f8; font-family:Arial, Helvetica, sans-serif;">
 
-{% block content %}
-<div class="form-container">
-  <div class="form-wrapper" style="max-width:520px;">
+  <!-- Outer wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4f8; padding:32px 16px;">
+    <tr>
+      <td align="center">
 
-    <!-- Header -->
-    <div class="form-wrapper-header" style="text-align:center;">
-      <h2 style="margin:0 0 0.35rem;color:var(--text-color);">Get Your Free Checklist</h2>
-      <p style="color:rgba(231,239,247,0.75);margin:0;font-size:var(--font-sm);">
-        We'll email you the
-        <strong style="color:var(--purewhite-color);font-size:var(--font-sm);font-weight:600;">
-          Digital Estate Readiness Checklist
-        </strong>
-        — 9 sections to help you and your family stay organised.
-      </p>
-    </div>
+        <!-- Email card -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
-    <!-- Flash messages -->
-    {% if messages %}
-    <div class="form-wrapper-body" style="padding-bottom:0;">
-      <ul class="messages-list" style="margin:0;">
-        {% for message in messages %}
-          <li class="message {% if message.tags == 'error' %}message-error{% elif message.tags == 'success' %}message-success{% else %}message-warning{% endif %}">
-            {{ message }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+          <!-- Header bar -->
+          <tr>
+            <td style="background-color:#16283b; padding:32px 40px 28px; text-align:center;">
+              <p style="margin:0 0 6px; font-size:12px; font-weight:600; letter-spacing:2px; color:#7fb3d6; text-transform:uppercase;">Digital Estate Plan</p>
+              <h1 style="margin:0; font-size:22px; font-weight:700; color:#ffffff; line-height:1.3;">Your Free Checklist Is Attached</h1>
+            </td>
+          </tr>
 
-    <!-- Form body -->
-    <div class="form-wrapper-body">
-      <form method="post" novalidate>
-        {% csrf_token %}
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 12px;">
 
-        <!-- First name -->
-        <div class="form-group">
-          <label for="{{ form.first_name.id_for_label }}">
-            First name
-            <span style="font-weight:300;color:var(--sixty-percent);font-size:var(--font-sm);">(optional)</span>
-          </label>
-          {{ form.first_name }}
-          {% if form.first_name.errors %}
-            <ul class="errorlist">
-              {% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+              <p style="margin:0 0 20px; font-size:15px; color:#333333; line-height:1.6;">
+                Hi {{ first_name|default:"there" }},
+              </p>
 
-        <!-- Email -->
-        <div class="form-group">
-          <label for="{{ form.email.id_for_label }}" class="requiredField">
-            Email address
-          </label>
-          {{ form.email }}
-          {% if form.email.errors %}
-            <ul class="errorlist">
-              {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+              <p style="margin:0 0 20px; font-size:15px; color:#555555; line-height:1.6;">
+                Thank you for requesting the <strong style="color:#16283b;">Digital Estate Readiness Checklist</strong>. It's attached to this email as a PDF — print it out, work through each section, and store it somewhere trusted alongside any existing estate documents.
+              </p>
 
-        <!-- Submit -->
-        <div class="button-group">
-          <button type="submit" class="btn btn-primary">
-            Send Me the Checklist
-          </button>
-        </div>
+              <!-- Section label -->
+              <p style="margin:0 0 12px; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#7fb3d6;">
+                What's inside — 9 sections
+              </p>
 
-      </form>
-    </div>
+              <!-- Checklist items -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
 
-    <!-- Footer reassurance -->
-    <div style="padding:0 1.25rem 1.75rem;text-align:center;">
-      <p style="font-size:var(--font-sm);color:var(--thirty-percent);font-weight:300;margin-bottom:0.4rem;">
-        No account required &nbsp;·&nbsp; We won't spam you.
-      </p>
-      <p style="font-size:var(--font-sm);margin:0;">
-        Already have an account?
-        <a href="{% url 'accounts:login' %}" style="font-size:var(--font-sm);">Sign in</a>
-      </p>
-    </div>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">1</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">About You</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-  </div>
-</div>
-{% endblock %}
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">2</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Key People &amp; Helpers</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">3</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Core Estate Documents</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">4</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Important Supporting Documents</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">5</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Money, Bills &amp; Subscriptions</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">6</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Email, Social Media &amp; Online Accounts</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">7</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Devices &amp; Access</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #f0f4f8;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">8</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Delegations &amp; What Your Family Needs to Know</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:28px; vertical-align:top; padding-top:1px;">
+                          <span style="display:inline-block; width:20px; height:20px; background-color:#2d6a9c; border-radius:50%; text-align:center; line-height:20px; font-size:11px; font-weight:700; color:#ffffff;">9</span>
+                        </td>
+                        <td style="font-size:14px; color:#333333; line-height:1.5; padding-left:4px;">Keeping Things Up to Date</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+
+              <!-- CTA -->
+              <p style="margin:0 0 24px; font-size:15px; color:#555555; line-height:1.6;">
+                When you're ready to turn this checklist into a full secure digital plan, we're here to help.
+              </p>
+
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td style="border-radius:6px; background-color:#2d6a9c;">
+                    <a href="https://digitalestateplan.com"
+                       style="display:inline-block; padding:13px 28px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:6px;">
+                      Start Your Digital Plan &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:0 40px;">
+              <hr style="border:none; border-top:1px solid #e8edf2; margin:24px 0 0;">
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px 32px;">
+              <p style="margin:0 0 4px; font-size:12px; color:#999999; line-height:1.5;">
+                Warm regards,<br>
+                <strong style="color:#555555;">The Digital Estate Plan Team</strong>
+              </p>
+              <p style="margin:16px 0 0; font-size:11px; color:#bbbbbb; line-height:1.6;">
+                Digital Estate Plan &middot; digitalestateplan.com<br>
+                You received this email because you requested our free checklist.<br>
+                If this wasn't you, you can safely ignore this message.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Email card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

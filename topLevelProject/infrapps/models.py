@@ -106,10 +106,6 @@ class VaultEntry(models.Model):
     )
 
     # ── Entry metadata ───────────────────────────────────────────────────────
-    label = models.CharField(
-        max_length=200,
-        help_text="A descriptive label, e.g. 'Gmail master password' or 'iPhone PIN'.",
-    )
     username_or_email = models.CharField(
         max_length=254,
         blank=True,
@@ -150,13 +146,13 @@ class VaultEntry(models.Model):
     # ── String representation ────────────────────────────────────────────────
 
     def __str__(self):
-        return self.label
+        return self.source_name
 
     # ── Slug generation ──────────────────────────────────────────────────────
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.label)[:180]
+            base = slugify(self.source_name)[:180]
             slug = base
             n    = 1
             while VaultEntry.objects.filter(slug=slug).exclude(pk=self.pk).exists():
@@ -234,4 +230,4 @@ class VaultAccessLog(models.Model):
         ordering = ['-accessed_at']
 
     def __str__(self):
-        return f"{self.accessed_by} accessed '{self.entry.label}' at {self.accessed_at}"
+        return f"{self.accessed_by} accessed '{self.entry.source_name}' at {self.accessed_at}"

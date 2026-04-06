@@ -24,11 +24,6 @@ urlpatterns = [
     # Stripe webhook (no CSRF, no login)
     path('webhook/stripe/', views.stripe_webhook_view, name='stripe_webhook'),
 
-    # Add-on
-    path('addon/', views.addon_view, name='addon'),
-    path('addon/create/', views.create_addon_payment_view, name='create_addon_payment'),
-    path('addon/confirm/', views.confirm_addon_view, name='confirm_addon'),
-
     # Password Reset
     path('password-reset/', views.password_reset_view, name='password_reset'),
     path('password-reset/done/', views.password_reset_done_view, name='password_reset_done'),
