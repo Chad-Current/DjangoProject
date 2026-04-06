@@ -16,11 +16,20 @@
         href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
         rel="stylesheet">
     <script src="https://kit.fontawesome.com/ea6a27c21b.js" crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <title>Add-On Subscription</title>
 </head>
 
 <body class="payment-page">
     {% include 'baseapp/navbar.html' %}
+
+    <!-- Stripe config (read by addon.js) -->
+    <div id="stripe-addon-config"
+         data-publishable-key="{{ STRIPE_PUBLISHABLE_KEY }}"
+         data-create-url="{% url 'accounts:create_addon_payment' %}"
+         data-confirm-url="{% url 'accounts:confirm_addon' %}"
+         data-user-email="{{ user.email }}"
+         style="display:none;"></div>
 
     <!-- Page Header -->
     <div class="payment-header">
@@ -50,6 +59,9 @@
         </div>
         {% endif %}
 
+        <!-- Card error / status messages from JS -->
+        <div id="addon-alert" class="alert" style="display:none; margin-bottom: 1rem;"></div>
+
         <!-- Add-On Card -->
         <div class="pricing-cards" style="max-width: 480px; margin-left: auto; margin-right: auto;">
             <div class="pricing-card recommended" style="width: 100%;">
@@ -60,7 +72,7 @@
 
                 <div class="tier-price">
                     <span class="currency">$</span>
-                    <span class="price-amount">{{ addon_price|default:"99.99"|stringformat:"s"|slice:":2" }}</span>
+                    <span class="price-amount">49</span>
                     <span class="currency" style="align-self: flex-end; margin-bottom: 0.4rem;">.99</span>
                 </div>
                 <div class="period">per year</div>
@@ -74,16 +86,31 @@
                     <li><i class="fas fa-check-circle"></i> Compatible with Essentials &amp; Legacy plans</li>
                 </ul>
 
-                <form method="post">
-                    {% csrf_token %}
-                    <button class="select-tier-btn legacy-btn" type="submit">
+                <!-- Card element (shown before payment) -->
+                <div id="addon-card-section" style="margin-top: 1rem;">
+                    <div id="addon-card-element" style="
+                        padding: 0.75rem 1rem;
+                        border: 1px solid rgba(45,106,156,0.3);
+                        border-radius: 0.5rem;
+                        background: #fff;
+                        margin-bottom: 0.5rem;
+                    "></div>
+                    <div id="addon-card-errors" style="color: #dc3545; font-size: 0.85rem; min-height: 1.2em; margin-bottom: 0.75rem;"></div>
+                </div>
+
+                <button id="addon-submit-btn" class="select-tier-btn legacy-btn" type="button"
+                        onclick="window.handleAddonPayment()">
+                    <span id="addon-button-text">
                         {% if already_active %}
-                            <i class="fas fa-redo"></i>&nbsp; Renew Add-On
+                            <i class="fas fa-redo"></i>&nbsp; Renew Add-On — $49.99
                         {% else %}
-                            <i class="fas fa-plus-circle"></i>&nbsp; Activate Add-On — ${{ addon_price }}
+                            <i class="fas fa-plus-circle"></i>&nbsp; Activate Add-On — $49.99
                         {% endif %}
-                    </button>
-                </form>
+                    </span>
+                    <span id="addon-spinner" style="display:none;">
+                        <i class="fas fa-spinner fa-spin"></i>&nbsp; Processing…
+                    </span>
+                </button>
 
             </div>
         </div>
@@ -108,6 +135,7 @@
     {% include "baseapp/footer.html" %}
 
     <script src="{% static 'baseapp/js/index.js' %}"></script>
+    <script src="{% static 'accounts/js/addon.js' %}"></script>
 </body>
 
 </html>

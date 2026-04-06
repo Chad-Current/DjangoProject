@@ -19,12 +19,15 @@ urlpatterns = [
     path('subscription/success/', views.subscription_success_view, name='subscription_success'),
     path('subscription/manage/', views.manage_subscription_view, name='subscription_manage'),
     path('subscription/cancel/', views.cancel_subscription_view, name='subscription_cancel'),
+    path('subscription/upgrade/', views.upgrade_subscription_view, name='subscription_upgrade'),
 
     # Stripe webhook (no CSRF, no login)
     path('webhook/stripe/', views.stripe_webhook_view, name='stripe_webhook'),
 
     # Add-on
     path('addon/', views.addon_view, name='addon'),
+    path('addon/create/', views.create_addon_payment_view, name='create_addon_payment'),
+    path('addon/confirm/', views.confirm_addon_view, name='confirm_addon'),
 
     # Password Reset
     path('password-reset/', views.password_reset_view, name='password_reset'),

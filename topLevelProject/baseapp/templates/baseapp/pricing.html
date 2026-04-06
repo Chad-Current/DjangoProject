@@ -3,243 +3,350 @@
 
 <title>{% block title %}Pricing — Digital Estate Planning{% endblock %}</title>
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'baseapp/css/pricing.css' %}" type="text/css">
+{% endblock %}
+
 {% block content %}
 
-<!-- ═══════════════════════════════════════════════════════
-     COMPARISON TABLE
-     ═══════════════════════════════════════════════════════ -->
-<section class="pricing-compare-section">
-    <div class="container">
-        <div class="section-header text-center" style="margin-bottom: 2rem;">
-            <h3>See exactly what's included</h3>
-            <p class="section-subtitle">Every feature, side by side.</p>
+<div class="pc-page">
+
+    <!-- ═══════════════════════════════════════════════════════
+         HERO
+         ═══════════════════════════════════════════════════════ -->
+    <section class="pc-hero">
+        <span class="pc-eyebrow">Simple, transparent pricing</span>
+        <h1 class="pc-hero-title">Plans built for <em>your</em> peace of mind</h1>
+        <p class="pc-hero-sub">Start free, upgrade when you're ready. Every plan protects your digital legacy — no surprises, no hidden fees.</p>
+
+        <!-- Billing toggle -->
+        <div class="pc-toggle-wrap">
+            <div class="pc-toggle">
+                <button class="pc-toggle-btn active" id="pc-toggle-annual" onclick="pcSetBilling('annual')">Annual</button>
+                <button class="pc-toggle-btn" id="pc-toggle-monthly" onclick="pcSetBilling('monthly')">Monthly</button>
+            </div>
+            <span class="pc-save-badge" id="pc-save-badge">Save 20%</span>
         </div>
 
-        <!-- Mobile tab bar — hidden on desktop -->
-        <div class="compare-mobile-tabs" role="tablist" aria-label="Select a plan to compare">
-            <button class="compare-tab active" data-tab="free"       onclick="compareShowTier('free')"       role="tab" aria-selected="true">Free</button>
-            <button class="compare-tab"         data-tab="essentials" onclick="compareShowTier('essentials')" role="tab" aria-selected="false">Essentials</button>
-            <button class="compare-tab legacy"  data-tab="legacy"     onclick="compareShowTier('legacy')"     role="tab" aria-selected="false">Legacy <span class="compare-tab-badge">Best</span></button>
+        <!-- Pricing cards -->
+        <div class="pc-cards">
+
+            <!-- Free -->
+            <div class="pc-card pc-card--free">
+                <div class="pc-card-tier pc-card-tier--free">Free</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price">0</span>
+                </div>
+                <div class="pc-period">forever</div>
+                <div class="pc-period-sub">No credit card required</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> View-only access to all data</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 2 trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> 1 digital account &amp; 1 device</li>
+                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                    <li><i class="fas fa-check-circle"></i> Family recovery request system</li>
+                    <li><i class="fas fa-times-circle"></i> Full edit access</li>
+                    <li><i class="fas fa-times-circle"></i> Unlimited items</li>
+                    <li><i class="fas fa-times-circle"></i> Funeral planning</li>
+                </ul>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
+            </div>
+
+            <!-- Essentials -->
+            <div class="pc-card pc-card--essentials">
+                <span class="pc-badge pc-badge--essentials">Popular</span>
+                <div class="pc-card-tier pc-card-tier--essentials">Essentials</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price" id="pc-ess-price">89.99</span>
+                </div>
+                <div class="pc-period" id="pc-ess-period">per year</div>
+                <div class="pc-period-sub" id="pc-ess-sub">billed annually — save 20%</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 3 trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 3 accounts &amp; 3 devices</li>
+                    <li><i class="fas fa-check-circle"></i> Up to 5 important documents</li>
+                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                    <li><i class="fas fa-check-circle"></i> View-only access after canceling</li>
+                    <li><i class="fas fa-check-circle"></i> Email support</li>
+                    <li><i class="fas fa-times-circle"></i> Unlimited items</li>
+                </ul>
+                <div class="pc-addon-line">Optional: <strong>+$49.99/yr</strong> Password Vault add-on</div>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
+            </div>
+
+            <!-- Legacy -->
+            <div class="pc-card pc-card--legacy">
+                <span class="pc-badge pc-badge--legacy">Best Value</span>
+                <div class="pc-card-tier pc-card-tier--legacy">Legacy</div>
+                <div class="pc-card-price-wrap">
+                    <span class="pc-currency">$</span>
+                    <span class="pc-price" id="pc-leg-price">149.99</span>
+                </div>
+                <div class="pc-period" id="pc-leg-period">per year</div>
+                <div class="pc-period-sub" id="pc-leg-sub">billed annually — save 20%</div>
+                <hr class="pc-card-divider">
+                <ul class="pc-features">
+                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited trusted contacts</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited accounts &amp; devices</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited documents</li>
+                    <li><i class="fas fa-check-circle"></i> Detailed funeral &amp; final arrangement planning</li>
+                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                    <li><i class="fas fa-check-circle"></i> View-only access after canceling</li>
+                    <li><i class="fas fa-check-circle"></i> Priority email support</li>
+                </ul>
+                <div class="pc-addon-line">Optional: <strong>+$49.99/yr</strong> Password Vault add-on</div>
+                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         COMPARISON TABLE
+         ═══════════════════════════════════════════════════════ -->
+    <section class="pc-compare-section">
+        <div class="pc-section-header">
+            <h2 class="pc-section-title">Every feature, side by side</h2>
+            <p class="pc-section-sub">See exactly what's included in each plan before you decide.</p>
         </div>
 
-        <div class="pricing-compare-wrap">
-            <table class="pricing-compare-table" id="compare-table" data-active-tier="free">
+        <!-- Mobile tab bar -->
+        <div class="pc-mobile-tabs" role="tablist" aria-label="Select a plan to compare">
+            <button class="pc-tab active" data-tab="free"       onclick="pcShowTier('free')"       role="tab" aria-selected="true">Free</button>
+            <button class="pc-tab"         data-tab="essentials" onclick="pcShowTier('essentials')" role="tab" aria-selected="false">Essentials</button>
+            <button class="pc-tab"         data-tab="legacy"     onclick="pcShowTier('legacy')"     role="tab" aria-selected="false">Legacy <span class="pc-tab-badge">Best</span></button>
+        </div>
+
+        <div class="pc-compare-wrap">
+            <table class="pc-compare-table" id="pc-compare-table" data-active-tier="free">
                 <thead>
                     <tr>
-                        <th class="feature-col feature-head">Feature</th>
-                        <th class="tier-col free-col" data-tier="free">
-                            <span class="compare-tier-name">Free</span>
-                            <span class="compare-tier-sub">No card required</span>
+                        <th class="pc-th-feature">Feature</th>
+                        <th class="pc-th-tier" data-tier="free">
+                            <span class="pc-th-tier-name">Free</span>
+                            <span class="pc-th-tier-sub">No card required</span>
                         </th>
-                        <th class="tier-col essentials-col" data-tier="essentials">
-                            <span class="compare-tier-name">Essentials</span>
-                            <span class="compare-tier-sub">$3.99/mo or $39.99/yr</span>
+                        <th class="pc-th-tier pc-th-tier--essentials" data-tier="essentials">
+                            <span class="pc-th-tier-name pc-th-tier-name--essentials">Essentials</span>
+                            <span class="pc-th-tier-sub">$9.99/mo or $89.99/yr</span>
                         </th>
-                        <th class="tier-col legacy-col" data-tier="legacy">
-                            <span class="compare-tier-badge">Best Value</span>
-                            <span class="compare-tier-name">Legacy</span>
-                            <span class="compare-tier-sub">$5.99/mo or $59.99/yr</span>
+                        <th class="pc-th-tier pc-th-tier--legacy" data-tier="legacy">
+                            <span class="pc-th-tier-badge">Best Value</span>
+                            <span class="pc-th-tier-name pc-th-tier-name--legacy">Legacy</span>
+                            <span class="pc-th-tier-sub">$15.99/mo or $149.99/yr</span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <!-- ACCESS -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Access &amp; Editing</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Edit &amp; save data</td>
-                        <td data-tier="free"><span class="compare-note">Up to limits</span></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to limits</span></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">View data after canceling</td>
-                        <td data-tier="free"><span class="compare-note">Always free</span></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Always free</span></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Unlimited items per category</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- CONTACTS -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Trusted Contacts</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Save trusted contacts</td>
-                        <td data-tier="free"><span class="compare-note">Up to 2</span></td>
-                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to 2</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Unlimited contacts</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- DIGITAL ACCOUNTS & DEVICES -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Digital Accounts &amp; Devices</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Save digital accounts</td>
-                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
-                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Save devices</td>
-                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
-                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Unlimited accounts &amp; devices</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- DOCUMENTS -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Documents</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Estate documents (will, POA, etc.)</td>
-                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
-                        <td data-tier="essentials"><span class="compare-note">Up to 3</span></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 3</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Important personal documents</td>
-                        <td data-tier="free"><span class="compare-note">Up to 1</span></td>
-                        <td data-tier="essentials"><span class="compare-note">Up to 5</span></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><span class="pc-compare-note">Up to 1</span></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Up to 5</span></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Unlimited documents</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- PLANNING -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Planning &amp; Preferences</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Funeral &amp; final arrangement planning</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Family needs-to-know section</td>
-                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Built-in relevance review reminders</td>
-                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                     <!-- VAULT -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Password Vault (Optional Add-on)</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Encrypted credential storage</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><span class="compare-addon">+ $99.99/yr</span></td>
-                        <td data-tier="legacy"><span class="compare-addon">+ $99.99/yr</span></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><span class="pc-compare-addon">+ $49.99/yr</span></td>
+                        <td data-tier="legacy"><span class="pc-compare-addon">+ $49.99/yr</span></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Vault access audit log</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><span class="compare-addon">With add-on</span></td>
-                        <td data-tier="legacy"><span class="compare-addon">With add-on</span></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><span class="pc-compare-addon">With add-on</span></td>
+                        <td data-tier="legacy"><span class="pc-compare-addon">With add-on</span></td>
                     </tr>
 
                     <!-- SUPPORT -->
-                    <tr class="compare-group-header">
+                    <tr class="pc-group-header">
                         <td colspan="4">Support &amp; Updates</td>
                     </tr>
                     <tr>
                         <td class="feature-name">Email support</td>
-                        <td data-tier="free"><i class="fas fa-times-circle compare-no"></i></td>
-                        <td data-tier="essentials"><span class="compare-note">Standard</span></td>
-                        <td data-tier="legacy"><span class="compare-note">Priority</span></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
+                        <td data-tier="essentials"><span class="pc-compare-note">Standard</span></td>
+                        <td data-tier="legacy"><span class="pc-compare-note">Priority</span></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Platform updates</td>
-                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
                     <tr>
                         <td class="feature-name">Family recovery request system</td>
-                        <td data-tier="free"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="essentials"><i class="fas fa-check-circle compare-yes"></i></td>
-                        <td data-tier="legacy"><i class="fas fa-check-circle compare-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>
 
                 </tbody>
-
-                <!-- <tfoot>
-                    <tr class="compare-cta-row">
-                        <td></td>
-                        <td data-tier="free">
-                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn free-btn">Start Free</a>
-                        </td>
-                        <td data-tier="essentials">
-                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn essentials-btn">Get Essentials</a>
-                        </td>
-                        <td data-tier="legacy">
-                            <a href="{% url 'accounts:register' %}" class="compare-cta-btn legacy-btn">Get Legacy</a>
-                        </td>
-                    </tr>
-                </tfoot> -->
-
             </table>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- ═══════════════════════════════════════════════════════
-     CLOSING CTA
-     ═══════════════════════════════════════════════════════ -->
-<section class="closing-cta">
-    <div class="container">
-        <h2 class="closing-headline">Ready to give your family peace of mind?</h2>
-        <div class="hero-buttons">
-            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start for Free</a>
-            <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+    <!-- ═══════════════════════════════════════════════════════
+         CLOSING CTA
+         ═══════════════════════════════════════════════════════ -->
+    <section class="pc-cta-section">
+        <h2 class="pc-cta-headline">Ready to give your family <em>peace of mind?</em></h2>
+        <p class="pc-cta-sub">Start free today — no credit card required.</p>
+        <div class="pc-cta-buttons">
+            <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Start for Free</a>
+            <a href="{% url 'baseapp:checklist_email' %}" class="pc-cta-btn pc-cta-btn--free">Download Free Guide</a>
         </div>
-    </div>
-</section>
+    </section>
+
+</div>
 
 <script>
-    function compareShowTier(tier) {
-        // Update active tab button
-        document.querySelectorAll('.compare-tab').forEach(function(btn) {
+    const PC_PRICES = {
+        essentials: { annual: '89.99', monthly: '9.99' },
+        legacy:     { annual: '149.99', monthly: '15.99' },
+    };
+
+    function pcSetBilling(interval) {
+        document.getElementById('pc-toggle-annual').classList.toggle('active', interval === 'annual');
+        document.getElementById('pc-toggle-monthly').classList.toggle('active', interval === 'monthly');
+        document.getElementById('pc-save-badge').style.display = interval === 'annual' ? 'inline-block' : 'none';
+
+        document.getElementById('pc-ess-price').textContent =
+            interval === 'annual' ? PC_PRICES.essentials.annual : PC_PRICES.essentials.monthly;
+        document.getElementById('pc-leg-price').textContent =
+            interval === 'annual' ? PC_PRICES.legacy.annual : PC_PRICES.legacy.monthly;
+
+        document.getElementById('pc-ess-period').textContent = interval === 'annual' ? 'per year' : 'per month';
+        document.getElementById('pc-leg-period').textContent = interval === 'annual' ? 'per year' : 'per month';
+
+        document.getElementById('pc-ess-sub').textContent =
+            interval === 'annual' ? 'billed annually \u2014 save 20%' : 'billed monthly';
+        document.getElementById('pc-leg-sub').textContent =
+            interval === 'annual' ? 'billed annually \u2014 save 20%' : 'billed monthly';
+    }
+
+    function pcShowTier(tier) {
+        document.querySelectorAll('.pc-tab').forEach(function(btn) {
             var isActive = btn.dataset.tab === tier;
             btn.classList.toggle('active', isActive);
             btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
-
-        // Update table data attribute (drives CSS)
-        document.getElementById('compare-table').dataset.activeTier = tier;
+        document.getElementById('pc-compare-table').dataset.activeTier = tier;
     }
 </script>
 

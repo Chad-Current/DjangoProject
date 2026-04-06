@@ -139,7 +139,7 @@
               </a>
             </li>
             <li role="none">
-              <a href="{% url 'accounts:payment' %}" role="menuitem">
+              <a href="{% if user.has_paid %}{% url 'accounts:subscription_manage' %}{% else %}{% url 'accounts:payment' %}{% endif %}" role="menuitem">
                 <i class="fa fa-wallet um-icon" aria-hidden="true"></i>Account &amp; Billing
               </a>
             </li>
@@ -176,7 +176,7 @@
       </a>
     </li>
     <li class="mobile-only">
-      <a href="{% url 'accounts:payment' %}">
+      <a href="{% if user.has_paid %}{% url 'accounts:subscription_manage' %}{% else %}{% url 'accounts:payment' %}{% endif %}">
         <i class="fa-regular fa-credit-card nav-icon" aria-hidden="true"></i>Account &amp; Billing
       </a>
     </li>

@@ -10,8 +10,8 @@ class CustomUser(AbstractUser):
 
     Subscription tiers:
         none        — No active subscription (read-only or no access)
-        essentials  — Full edit access while subscription is active ($39.99/yr or $3.99/mo)
-        legacy      — Full edit access while subscription is active ($59.99/yr or $5.99/mo)
+        essentials  — Full edit access while subscription is active ($89.99/yr or $9.99/mo)
+        legacy      — Full edit access while subscription is active ($149.99/yr or $15.99/mo)
     """
 
     TIER_CHOICES = [

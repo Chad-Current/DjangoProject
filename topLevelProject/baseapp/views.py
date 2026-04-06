@@ -29,6 +29,7 @@ class WhatItDoesView(TemplateView):
 class PricingView(TemplateView):
     template_name = 'baseapp/pricing.html'
 
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _get_client_ip(request):
