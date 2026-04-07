@@ -79,6 +79,25 @@
   <details class="faq-item">
     <summary>
       <span class="faq-question-text">
+        <i class="fas fa-vault"></i>
+        What is the Password Vault and how does it work?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>The Password Vault is a secure, encrypted storage space for the credentials tied to your digital accounts and devices — available exclusively on the <strong>Legacy plan</strong>.</p>
+      <p>Every credential you save is encrypted with Fernet symmetric encryption before it's stored. It is never saved in plaintext, and we cannot read it. You can only reveal a stored password by explicitly requesting it while logged in.</p>
+      <p>Every time a vault entry is revealed, the access is recorded in an audit log — so you have a full history of when credentials were viewed and by whom.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
         <i class="fas fa-key"></i>
         What if I forget my password to log in?
       </span>
@@ -89,7 +108,7 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>No problem. On the login page, click <strong>"Forgot Password"</strong> and we'll send a reset link to your email address.</p>
+      <p>No problem. On the login page, click <a href="{% url 'accounts:password_reset' %}"><span>reset password</span></a> and we'll send a reset link to your email address.</p>
       <p>If you no longer have access to that email address, contact us directly and we'll help you recover your account safely.</p>
     </div>
   </details>
@@ -116,7 +135,7 @@
     </summary>
     <div class="faq-answer">
       <p>Only the people <strong>you choose</strong>. You decide exactly which trusted contacts can see which items — a specific bank account, a device, a document — and nothing else.</p>
-      <p>Family members who aren't designated contacts can submit a verified recovery request through our review process. Requests are only approved after proper documentation is provided — your information is never handed over without verification.</p>
+      <p>Family members who aren't designated contacts can submit a verified <a href="{% url 'recovery:external_recovery_request' %}"><span>recovery request</span></a> through our review process. Requests are only approved after proper documentation is provided — your information is never handed over without verification.</p>
     </div>
   </details>
 
@@ -177,8 +196,14 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Free accounts let you explore every section of the platform and save a limited number of items in each category — no credit card required. You'll be able to add up to 2 contacts, 1 account, 1 device, 1 estate document, and 1 important document.</p>
-      <p>You can view and review everything you've saved at any time. When you're ready to add more, you can upgrade to Essentials or Legacy.</p>
+      <p>Free accounts let you explore every section of the platform and save a limited number of items in each category — no credit card required. You can add:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span>Up to 2 trusted contacts</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>1 digital account &amp; 1 device</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>1 estate document &amp; 1 important document</span></li>
+        <li><i class="fas fa-check-circle"></i> <span>Up to 2 family notes</span></li>
+      </ul>
+      <p>You can view everything you've saved at any time. When you're ready to add more, you can upgrade to Essentials or Legacy.</p>
     </div>
   </details>
 
@@ -197,10 +222,33 @@
     <div class="faq-answer">
       <p>Both plans give you full edit access while your subscription is active. The key differences are:</p>
       <ul>
-        <li><i class="fas fa-check-circle"></i> <span><strong>Essentials</strong> — full edit access with per-category limits (up to 3 contacts, 3 accounts, 3 devices, 3 estate docs, 5 important documents).</span></li>
-        <li><i class="fas fa-check-circle"></i> <span><strong>Legacy</strong> — no item limits, plus access to the Funeral Planning section for documenting your final wishes.</span></li>
-        <li><i class="fas fa-check-circle"></i> <span>Both plans include view-only access if you ever cancel, so your family's information stays intact.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Essentials ($5.99/mo or $59.99/yr)</strong> — full edit access with per-category limits: up to 3 contacts, 3 accounts, 3 devices, 3 estate docs, 5 important documents, and 5 family notes.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Legacy ($9.99/mo or $99.99/yr)</strong> — no item limits, plus exclusive access to the Funeral &amp; Final Arrangements planning section and the encrypted Password Vault for securely storing credentials tied to your accounts and devices.</span></li>
       </ul>
+      <p>Both plans bill monthly or annually. Annual billing saves you two months compared to monthly.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-dollar-sign"></i>
+        How much does it cost?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>There are three options:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Free</strong> — $0, forever. No credit card required.</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Essentials</strong> — $5.99/month, or $59.99/year (saves two months).</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Legacy</strong> — $9.99/month, or $99.99/year (saves two months).</span></li>
+      </ul>
+      <p>Subscriptions are managed through Stripe and can be canceled at any time. See our <a href="{% url 'baseapp:pricing' %}"><span>pricing page</span></a> for a full feature comparison.</p>
     </div>
   </details>
 
@@ -217,8 +265,9 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>Your data stays in place. If you cancel a paid subscription, your account moves to view-only access — you can still see everything you've saved, but you won't be able to add or edit items until you resubscribe.</p>
+      <p>Your data stays in place. If you cancel a paid subscription, your account moves to limited view-only access. You won't be able to add or edit items until you resubscribe.</p>
       <p>We don't delete your information when you cancel. The whole point of this platform is that your plan should outlast any billing cycle.</p>
+      <p>Your designated digital executors (contacts) can <a href="{% url 'recovery:external_recovery_request' %}"><span>request access</span></a> to  your data in the occurance of an unfortunate life event.</p>
     </div>
   </details>
 
@@ -243,12 +292,13 @@
       </span>
     </summary>
     <div class="faq-answer">
-      <p>You can go at your own pace — there's no right order, but here's what most people find works well:</p>
+      <p>After you create your account and set up your profile, we walk you through a step-by-step onboarding flow that covers each section of your estate plan in order — contacts, accounts, devices, estate documents, important documents, and family notes. You can skip any step and come back later.</p>
+      <p>If you prefer to explore on your own, your dashboard gives you direct access to every section. Most people find this order works well:</p>
       <ul>
         <li><i class="fas fa-circle faq-bullet-dot"></i> <span>Start with your <strong>Trusted Contacts</strong> — add the people you want to have access to your information.</span></li>
         <li><i class="fas fa-circle faq-bullet-dot"></i> <span>Then add your <strong>Accounts</strong>, <strong>Devices</strong>, and <strong>Documents</strong> one at a time.</span></li>
         <li><i class="fas fa-circle faq-bullet-dot"></i> <span>For each item, assign which contact should handle it and add any notes that would help them.</span></li>
-        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>You can download our free checklist guide as a starting point if you're not sure what to include.</span></li>
+        <li><i class="fas fa-circle faq-bullet-dot"></i> <span>You can also download our free checklist guide as a starting point if you're not sure what to include.</span></li>
       </ul>
     </div>
   </details>
@@ -273,7 +323,7 @@
         <li><i class="fas fa-check-circle"></i> <span>A change in your family situation — marriage, divorce, a new child</span></li>
         <li><i class="fas fa-check-circle"></i> <span>Updating a will, power of attorney, or healthcare directive</span></li>
       </ul>
-      <p>The platform includes built-in review reminders to help you stay current without having to think about it.</p>
+      <p>Essentials and Legacy subscribers also have access to built-in relevance reviews — a tool to log when you last checked each item and set a reminder for the next review. It's a simple way to keep your plan current without having to remember on your own.</p>
     </div>
   </details>
 

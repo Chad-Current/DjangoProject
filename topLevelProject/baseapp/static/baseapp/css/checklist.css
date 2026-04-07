@@ -9,7 +9,7 @@
 
 .cl-header {
   text-align: center;
-  padding: 2rem 1.25rem 0;
+  padding-top: 0.5rem;
 }
 
 
@@ -76,10 +76,10 @@
   margin-bottom: 0.5rem;
 }
 
-.cl-pill-amber {
-  background: rgba(255, 166, 43, 0.12);
-  border-color: rgba(255, 166, 43, 0.4);
-  color: #9a5e10;
+.cl-pill-accent {
+  background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  border-color: var(--accent-color);
+  color: var(--text-color-dark);
 }
 
 .cl-pill-green {

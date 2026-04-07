@@ -82,13 +82,11 @@
     </div>
 
     <!-- Action Buttons -->
-    {% if request.user.can_modify_data %}
     <div class="action-buttons">
         <a href="{% url 'dashboard:profile_update' %}" class="btn btn-wrapper btn-custom btn-edit">
             <i class="fas fa-pen"></i> Edit Profile
         </a>
     </div>
-    {% endif %}
 
 
 </div>

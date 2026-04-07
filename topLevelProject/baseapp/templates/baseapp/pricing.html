@@ -51,7 +51,7 @@
                     <li><i class="fas fa-times-circle"></i> Unlimited items</li>
                     <li><i class="fas fa-times-circle"></i> Funeral planning</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
+                <a href="{% url 'accounts:register' %}?plan=free" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
             </div>
 
             <!-- Essentials -->
@@ -74,7 +74,7 @@
                     <li><i class="fas fa-check-circle"></i> Email support</li>
                     <li><i class="fas fa-times-circle"></i> Unlimited items</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
+                <a href="{% url 'accounts:register' %}?plan=essentials" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
             </div>
 
             <!-- Legacy -->
@@ -98,7 +98,7 @@
                     <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
                     <li><i class="fas fa-check-circle"></i> Priority email support</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
+                <a href="{% url 'accounts:register' %}?plan=legacy" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
             </div>
 
         </div>
@@ -241,7 +241,7 @@
                     </tr>
                     <tr>
                         <td class="feature-name">Built-in relevance review reminders</td>
-                        <td data-tier="free"><i class="fas fa-check-circle pc-yes"></i></td>
+                        <td data-tier="free"><i class="fas fa-times-circle pc-no"></i></td>
                         <td data-tier="essentials"><i class="fas fa-check-circle pc-yes"></i></td>
                         <td data-tier="legacy"><i class="fas fa-check-circle pc-yes"></i></td>
                     </tr>

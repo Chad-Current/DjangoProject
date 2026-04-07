@@ -24,6 +24,13 @@
         <div class="loginform-wrapper">
             <h1 class="form-section-title">Create Account</h1>
 
+            {% if plan_intent %}
+            <div class="alert alert-info" style="margin-bottom:1.25rem;">
+                <i class="fas fa-check-circle"></i>
+                You selected the {{ plan_intent|capfirst }} plan — complete registration to continue to checkout.
+            </div>
+            {% endif %}
+
             {% if messages %}
                 {% for message in messages %}
                     <div class="error">{{ message }}</div>

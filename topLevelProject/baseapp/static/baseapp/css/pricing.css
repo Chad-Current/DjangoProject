@@ -532,7 +532,8 @@
 
 @media (max-width: 767px) {
     .pc-cards {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column-reverse;
     }
 
     .pc-mobile-tabs {

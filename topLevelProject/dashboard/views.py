@@ -311,12 +311,12 @@ class ProfileDetailView(ViewAccessMixin, DetailView):
         return profile
 
 
-class ProfileUpdateView(FullAccessMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model         = Profile
     form_class    = ProfileForm
     template_name = 'dashboard/profiles/profile_form.html'
     success_url   = reverse_lazy('dashboard:dashboard_home')
-    owner_field   = 'user'
+    login_url     = '/accounts/login/'
 
     def get_object(self, queryset=None):
         profile, _ = Profile.objects.get_or_create(user=self.request.user)
@@ -608,12 +608,13 @@ class EstateDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
 # FAMILY AWARENESS VIEWS
 # ============================================================================
 
-class FamilyAwarenessListView(ViewAccessMixin, ListView):
+class FamilyAwarenessListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     model               = FamilyNeedsToKnowSection
     template_name       = 'dashboard/familyaware/familyawareness_list.html'
     context_object_name = 'familyawareness_objects'
     owner_field         = 'relation__profile__user'
     paginate_by         = 20
+    free_tier_item      = 'family_awareness'
 
     def get_queryset(self):
         try:
@@ -964,8 +965,8 @@ class FuneralPlanMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.can_view_data():
-            messages.warning(request, "Please complete payment to access your funeral plan.")
+        if user.subscription_tier != 'legacy' or not user.can_view_data():
+            messages.warning(request, "Funeral Planning is included with the Legacy plan.")
             return redirect(reverse("accounts:payment"))
         try:
             _ = user.profile
@@ -1971,6 +1972,12 @@ class OnboardingFamilyView(OnboardingMixin, TemplateView):
 
 class OnboardingCompleteView(OnboardingMixin, TemplateView):
     template_name = 'dashboard/onboarding/complete.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        plan_intent = request.session.get('plan_intent', '')
+        if plan_intent and not request.user.is_subscription_active():
+            return redirect(reverse('accounts:payment'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -64,7 +64,14 @@ class RegisterView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_class()})
+        plan = request.GET.get('plan', '').lower()
+        if plan in ('free','essentials', 'legacy'): #CHANGE MADE FOR FREE TIER
+            request.session['plan_intent'] = plan
+        context = {
+            'form': self.form_class(),
+            'plan_intent': request.session.get('plan_intent', ''),
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -76,7 +83,10 @@ class RegisterView(View):
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             logger.info(f'New user registered: {user.email}')
             return redirect('dashboard:profile_create')
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {
+            'form': form,
+            'plan_intent': request.session.get('plan_intent', ''),
+        })
 
 
 class LoginView(View):
@@ -165,15 +175,17 @@ class PaymentView(LoginRequiredMixin, View):
 
     def get(self, request):
         if request.user.is_subscription_active():
-            messages.info(request, 'You already have an active subscription.')
+            # messages.info(request, 'You already have an active subscription.')
             return redirect('dashboard:dashboard_home')
 
+        plan_intent = request.session.get('plan_intent', '')
         context = {
             'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY,
             'essentials_annual_price': PRICES['essentials']['annual'],
             'essentials_monthly_price': PRICES['essentials']['monthly'],
             'legacy_annual_price': PRICES['legacy']['annual'],
             'legacy_monthly_price': PRICES['legacy']['monthly'],
+            'plan_intent': plan_intent,
         }
         return render(request, self.template_name, context)
 

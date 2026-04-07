@@ -122,28 +122,41 @@
      ═══════════════════════════════════════════════════════ -->
 <section class="value-proposition">
     <div class="container">
-        <span class="section-tag">A plan they can follow</span>
         <div class="section-header">
-            <h2>Your family doesn't just need passwords.<br>They need a plan.</h2>
-            <p class="section-subtitle">Every corner of your digital life — organized, delegated, and ready.</p>
+            <span class="idx-section-label">What you organize</span>
+            <h2>Six categories. Every corner of your digital life.</h2>
+            <p class="section-subtitle">Each category is built to answer a specific question your family will have — not just where to log in, but what to do next.</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-address-book" style="color: var(--thirty-percent);"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-address-book"></i></div>
                 <h3>Trusted Contacts</h3>
                 <p>Designate who handles what — executor, caregiver, attorney. Roles assigned, authority clear.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-user-shield" style="color: var(--thirty-percent);"></i></div>
+                <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
                 <h3>Digital Accounts</h3>
                 <p>Banking, social, streaming, utilities — each with decommission instructions so nothing lingers.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-file-contract" style="color: var(--thirty-percent);"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-laptop"></i></div>
+                <h3>Devices</h3>
+                <p>Physical location, PINs, and 2FA access for every phone, computer, and tablet you own.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-contract"></i></div>
                 <h3>Estate Documents</h3>
                 <p>Will, power of attorney, healthcare directive — tagged for exactly when they apply.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-scroll"></i></div>
+                <h3>Important Documents</h3>
+                <p>Insurance, property records, financial accounts — stored where your family can find them.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--accent"><i class="fas fa-user-tie"></i></div>
+                <h3>Funeral Planning <span class="legacy-badge">Legacy</span></h3>
+                <p>Final wishes, arrangements, and instructions — nothing left to guesswork or family disagreement.</p>
             </div>
         </div>
         <div class="section-cta">
@@ -151,7 +164,6 @@
         </div>
     </div>
 </section>
-
 
 
 <!-- ═══════════════════════════════════════════════════════
@@ -257,7 +269,7 @@
                     <li><i class="fas fa-times-circle"></i> Unlimited items</li>
                     <li><i class="fas fa-times-circle"></i> Funeral planning</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
+                <a href="{% url 'accounts:register' %}?plan=free" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
             </div>
 
             <!-- Essentials -->
@@ -279,7 +291,7 @@
                     <li><i class="fas fa-check-circle"></i> Up to 2 Family Notes</li>
                     <li><i class="fas fa-check-circle"></i> Email support</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
+                <a href="{% url 'accounts:register' %}?plan=essentials" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
             </div>
 
             <!-- Legacy -->
@@ -303,7 +315,7 @@
                     <li><i class="fas fa-check-circle"></i> Encrypted password vault — included</li>
                     <li><i class="fas fa-check-circle"></i> Priority email support</li>
                 </ul>
-                <a href="{% url 'accounts:register' %}" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
+                <a href="{% url 'accounts:register' %}?plan=legacy" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
             </div>
 
         </div>

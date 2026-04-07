@@ -13,7 +13,7 @@ class ChecklistEmailForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'First name (optional)',
+            'placeholder': 'First name',
             'autocomplete': 'given-name',
         }),
     )

@@ -703,9 +703,11 @@ span {
    ══════════════════════════════════════════════ */
 
 .alert {
-  display: flex;
+  /* display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; 
+  CHANGED FOR REGISTER PAGE ALERT TAG
+  */
   gap: 0.4rem;
   font-family: var(--main-font);
   font-size: var(--font-nm);
