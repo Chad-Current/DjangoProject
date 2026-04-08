@@ -225,9 +225,9 @@ class ProfileAccessGrant(models.Model):
     """
     profile = models.ForeignKey(
         Profile,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='access_grants',
-        help_text="The estate profile being shared.",
+        help_text="The estate profile being shared. Protected: revoke all grants before deleting the profile.",
     )
     granted_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -259,6 +259,11 @@ class ProfileAccessGrant(models.Model):
     is_active = models.BooleanField(
         default=True,
         help_text="Uncheck to revoke access without deleting the record.",
+    )
+    expiry_notified = models.BooleanField(
+        default=False,
+        help_text="True once the grantee has been emailed about upcoming expiry. "
+                  "Reset to False if expires_at is extended so the reminder fires again.",
     )
     notes = models.TextField(
         blank=True,

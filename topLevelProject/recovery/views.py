@@ -452,6 +452,42 @@ def _send_verification_email(recovery_request):
     )
 
 
+def _send_grant_access_email(grant):
+    """Notify a grantee that they have been given read-only access to an estate profile."""
+    grantee = grant.granted_to
+    email   = grantee.email
+    if not email:
+        return
+
+    profile      = grant.profile
+    profile_name = f'{profile.first_name} {profile.last_name}'
+    grantee_name = grantee.get_full_name() or grantee.username
+    granted_date = grant.granted_at.strftime('%B %d, %Y') if grant.granted_at else 'today'
+    expiry_line  = (
+        f'Your access expires on {grant.expires_at.strftime("%B %d, %Y")}.'
+        if grant.expires_at
+        else 'Your access has no expiry date set.'
+    )
+    access_url = f'{settings.SITE_URL}/dashboard/granted/'
+
+    send_mail(
+        subject=f"You've been granted access to {profile_name}'s estate plan",
+        message=(
+            f'Dear {grantee_name},\n\n'
+            f'You have been granted read-only access to the estate plan for {profile_name}.\n\n'
+            f'Access granted: {granted_date}\n'
+            f'{expiry_line}\n\n'
+            f'To view the estate, log in to your account and visit:\n'
+            f'{access_url}\n\n'
+            f'If you have questions about this access, please contact the estate administrator.\n\n'
+            f'Best regards,\nDigital Estate Plan'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=True,
+    )
+
+
 def _send_status_update_email(recovery_request, old_status, new_status):
     """Notify the requester when their recovery request status changes."""
     requester_email = recovery_request.get_requester_email()

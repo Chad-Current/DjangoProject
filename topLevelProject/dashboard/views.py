@@ -2002,24 +2002,17 @@ class GrantedEstateListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         from recovery.models import ProfileAccessGrant
+        now = timezone.now()
         return (
             ProfileAccessGrant.objects
-            .filter(granted_to=self.request.user, is_active=True)
+            .filter(
+                granted_to=self.request.user,
+                is_active=True,
+            )
+            .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=now))
             .select_related('profile', 'recovery_request')
             .order_by('-granted_at')
         )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Annotate each grant with its validity so the template can flag expired ones
-        from recovery.models import ProfileAccessGrant
-        context['expired_grants'] = (
-            ProfileAccessGrant.objects
-            .filter(granted_to=self.request.user, is_active=True)
-            .exclude(expires_at__isnull=True)
-        )
-        return context
-
 
 class GrantedEstateDetailView(LoginRequiredMixin, TemplateView):
     """
@@ -2045,28 +2038,57 @@ class GrantedEstateDetailView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        profile = self.grant.profile
+        profile  = self.grant.profile
+        grantee  = self.grant.granted_to
 
-        try:
-            from infrapps.models import VaultEntry
-            vault_entries = VaultEntry.objects.filter(profile=profile).select_related(
-                'linked_account', 'linked_device'
-            )
-        except Exception:
-            vault_entries = []
+        # Find the Contact record on this profile whose email matches the grantee's
+        # site-account email.  This is how delegation is tied to a real user.
+        grantee_contact = Contact.objects.filter(
+            profile=profile,
+            email__iexact=grantee.email,
+        ).first()
+
+        if grantee_contact:
+            # Scope every item queryset to only items delegated to this contact.
+            accounts        = Account.objects.filter(profile=profile, delegated_account_to=grantee_contact).select_related('delegated_account_to')
+            devices         = Device.objects.filter(profile=profile, delegated_device_to=grantee_contact).select_related('delegated_device_to')
+            estate_docs     = DigitalEstateDocument.objects.filter(profile=profile, delegated_estate_to=grantee_contact).select_related('delegated_estate_to')
+            important_docs  = ImportantDocument.objects.filter(profile=profile, delegated_important_document_to=grantee_contact).select_related('delegated_important_document_to')
+            family_sections = FamilyNeedsToKnowSection.objects.filter(relation=grantee_contact).select_related('relation')
+
+            # Vault entries: only those linked to accounts or devices delegated to this contact.
+            # Resolve PKs first to avoid subquery issues with select_related querysets.
+            try:
+                from infrapps.models import VaultEntry
+                account_ids = list(accounts.values_list('pk', flat=True))
+                device_ids  = list(devices.values_list('pk', flat=True))
+                vault_entries = VaultEntry.objects.filter(
+                    Q(linked_account_id__in=account_ids) | Q(linked_device_id__in=device_ids)
+                ).select_related('linked_account', 'linked_device')
+            except Exception:
+                vault_entries = []
+        else:
+            # No Contact record matched the grantee's email — show nothing.
+            accounts        = Account.objects.none()
+            devices         = Device.objects.none()
+            estate_docs     = DigitalEstateDocument.objects.none()
+            important_docs  = ImportantDocument.objects.none()
+            family_sections = FamilyNeedsToKnowSection.objects.none()
+            vault_entries   = []
 
         funeral_plan = FuneralPlan.objects.filter(profile=profile).first()
 
         context.update({
-            'grant':           self.grant,
-            'profile':         profile,
-            'contacts':        Contact.objects.filter(profile=profile).order_by('last_name'),
-            'accounts':        Account.objects.filter(profile=profile).select_related('delegated_account_to'),
-            'devices':         Device.objects.filter(profile=profile).select_related('delegated_device_to'),
-            'estate_docs':     DigitalEstateDocument.objects.filter(profile=profile).select_related('delegated_estate_to'),
-            'important_docs':  ImportantDocument.objects.filter(profile=profile).select_related('delegated_important_document_to'),
-            'funeral_plan':    funeral_plan,
-            'vault_entries':   vault_entries,
-            'family_sections': FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).select_related('relation'),
+            'grant':            self.grant,
+            'profile':          profile,
+            'grantee_contact':  grantee_contact,
+            'contacts':         Contact.objects.filter(profile=profile).order_by('last_name'),
+            'accounts':         accounts,
+            'devices':          devices,
+            'estate_docs':      estate_docs,
+            'important_docs':   important_docs,
+            'funeral_plan':     funeral_plan,
+            'vault_entries':    vault_entries,
+            'family_sections':  family_sections,
         })
         return context

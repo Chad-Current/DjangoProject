@@ -38,6 +38,7 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
     ]
     
     readonly_fields = [
+        'profile',
         'created_at',
         'updated_at',
         'verified_at',

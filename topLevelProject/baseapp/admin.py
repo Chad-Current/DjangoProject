@@ -25,7 +25,7 @@ class ChecklistEmailLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'sent_at'
 
     # Points at our custom template so checklist_stats is actually rendered.
-    change_list_template = 'admin/baseapp/checklistemaillog/change_list.html'
+    change_list_template = 'baseapp/checklistemaillog/change_list.html'
 
     fieldsets = (
         ('Requester', {
