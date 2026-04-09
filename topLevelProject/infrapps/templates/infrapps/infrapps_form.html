@@ -110,27 +110,6 @@
 
     </fieldset>
 
-    <!-- ══════════════════════════════════════════
-         NOTES
-    ══════════════════════════════════════════ -->
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Additional Notes</legend>
-
-      <div class="form-field{% if form.notes.errors %} has-error{% endif %}">
-        <label for="{{ form.notes.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Recovery codes, security questions, or any other context your family may need to access this credential.">
-          Notes
-          <span class="ob-tip" role="tooltip">Recovery codes, security questions, or any relevant context for your family.</span>
-        </label>
-        {{ form.notes }}
-        {% if form.notes.errors %}
-          <div class="error" role="alert">{{ form.notes.errors }}</div>
-        {% endif %}
-      </div>
-
-    </fieldset>
-
     <!-- Security notice -->
     <div class="alert alert-warning">
       <strong>Security notice:</strong> Your password is encrypted with AES-256 (Fernet) before being saved.

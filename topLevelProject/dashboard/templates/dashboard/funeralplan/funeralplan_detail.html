@@ -154,7 +154,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">🪪</div>
         <p>No personal information recorded yet.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step1' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>
@@ -184,7 +183,6 @@
       </div>
     {% else %}
       <div class="ob-empty">
-        <div class="ob-empty-icon">⛪</div>
         <p>No service preferences recorded.</p>
         {% if can_modify %}<a href="{% url 'dashboard:funeralplan_step2' %}" class="ob-btn ob-btn-ghost ob-btn--addnow">Add now</a>{% endif %}
       </div>

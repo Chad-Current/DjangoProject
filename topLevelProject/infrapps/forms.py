@@ -21,10 +21,7 @@ class VaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['linked_account', 'linked_device', 'username_or_email', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
-        }
+        fields = ['linked_account', 'linked_device', 'username_or_email']
 
     def __init__(self, *args, profile=None, is_update=False, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,10 +59,6 @@ class VaultEntryForm(forms.ModelForm):
                 'Credentials',
                 Field('raw_password'),
             ),
-            Fieldset(
-                'Notes',
-                Field('notes'),
-            ),
         )
 
     def clean(self):
@@ -93,10 +86,7 @@ class AccountVaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['linked_account', 'username_or_email', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
-        }
+        fields = ['linked_account', 'username_or_email']
 
     def __init__(self, *args, profile=None, is_update=False, **kwargs):
         super().__init__(*args, **kwargs)
@@ -132,10 +122,7 @@ class DeviceVaultEntryForm(forms.ModelForm):
 
     class Meta:
         model  = VaultEntry
-        fields = ['linked_device', 'username_or_email', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
-        }
+        fields = ['linked_device', 'username_or_email']
 
     def __init__(self, *args, profile=None, is_update=False, **kwargs):
         super().__init__(*args, **kwargs)

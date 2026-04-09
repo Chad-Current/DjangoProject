@@ -14,7 +14,7 @@
             </a>
 
             <a href="{% url 'dashboard:account_list' %}" class="subnav-item" title="Manage your digital accounts">
-                <i class="fas fa-user-shield"></i>
+                <i class="fas fa-user-circle"></i>
                 <span>Important</span>
                 <span>Accounts</span>
             </a>
@@ -64,6 +64,14 @@
                 <i class="fas fa-calendar-check"></i>
                 <span>Review</span>
                 <span>List</span>
+            </a>
+            {% endif %}
+
+            {% if request.user.has_active_grants %}
+            <a href="{% url 'dashboard:granted_list' %}" class="subnav-item" title="View estates you have been granted access to">
+                <i class="fas fa-key"></i>
+                <span>Granted</span>
+                <span>Access</span>
             </a>
             {% endif %}
         </div>

@@ -232,7 +232,6 @@ class RecoveryRequestAdmin(admin.ModelAdmin):
                 defaults={
                     'recovery_request': rr,
                     'granted_by': request.user,
-                    'notes': f'Auto-created from recovery request #{rr.pk}.',
                 },
             )
 
@@ -299,7 +298,7 @@ class ProfileAccessGrantAdmin(admin.ModelAdmin):
             'fields': ('profile', 'granted_to', 'is_active', 'expires_at'),
         }),
         ('Audit', {
-            'fields': ('granted_by', 'granted_at', 'recovery_request', 'notes', 'validity_display'),
+            'fields': ('granted_by', 'granted_at', 'recovery_request', 'validity_display'),
         }),
     )
 

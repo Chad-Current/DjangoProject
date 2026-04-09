@@ -30,14 +30,8 @@
 
   <!-- Page Header -->
   <div class="payment-header">
-    {% if plan_intent %}
-    <h1>Complete Your {{ plan_intent|capfirst }} Subscription</h1>
-    <p>You're one step away — choose monthly or annual billing to get started.</p>
-    {% else %}
     <h1>Choose Your Plan</h1>
     <p>Flexible subscriptions — pay monthly or save with an annual plan.</p>
-    {% endif %}
-    <button class="dash-btn"><a href="{% url 'dashboard:dashboard_home' %}">Continue to dashboard</a></button>
   </div>
 
   <div class="payment-wrapper">
@@ -164,6 +158,9 @@
     </div>
   </div>
 
+      <div class="dash-container">
+        <button class="dash-btn"><a href="{% url 'dashboard:dashboard_home' %}">Continue with Free Tier</a></button>
+    </div>
 
   {% include "baseapp/footer.html" %}
 
@@ -187,6 +184,7 @@
       document.getElementById('pc-toggle-monthly').classList.toggle('active', interval === 'monthly');
       document.getElementById('pc-save-badge').style.display = interval === 'annual' ? 'inline-block' : 'none';
 
+      // Update displayed prices
       document.getElementById('pc-ess-price').textContent =
         interval === 'annual' ? PLAN_PRICES.essentials.annual : PLAN_PRICES.essentials.monthly;
       document.getElementById('pc-leg-price').textContent =
@@ -196,10 +194,9 @@
       document.getElementById('pc-ess-period').textContent = periodText;
       document.getElementById('pc-leg-period').textContent = periodText;
 
-      document.getElementById('pc-ess-sub').textContent =
-        interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
-      document.getElementById('pc-leg-sub').textContent =
-        interval === 'annual' ? 'billed annually \u2014 2 months free' : 'billed monthly';
+      const subText = interval === 'annual' ? 'billed annually — 2 months free' : 'billed monthly';
+      document.getElementById('pc-ess-sub').textContent = subText;
+      document.getElementById('pc-leg-sub').textContent = subText;
     }
 
     function openPaymentModal(tier, annualPrice, monthlyPrice) {
@@ -222,18 +219,6 @@
     document.getElementById('paymentModal').addEventListener('click', function(e) {
       if (e.target === this) closePaymentModal();
     });
-
-    // Highlight pre-selected plan from registration intent
-    const planIntent = '{{ plan_intent }}';
-    if (planIntent === 'essentials' || planIntent === 'legacy') {
-      const cardClass = planIntent === 'essentials' ? '.pc-card--essentials' : '.pc-card--legacy';
-      const card = document.querySelector(cardClass);
-      if (card) {
-        card.style.outline = '3px solid var(--pc-blue, #2d6a9c)';
-        card.style.outlineOffset = '4px';
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
   </script>
 
 </body>

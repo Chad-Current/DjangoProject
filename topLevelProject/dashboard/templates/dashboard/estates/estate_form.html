@@ -76,7 +76,7 @@
       </div>
 
       <div class="form-field{% if form.estate_file.errors %} has-error{% endif %}">
-        <p class="helptext">Optionally upload a scanned or digital copy for quick reference. PDF, JPG, PNG accepted (max 10 MB). The original signed copy should still be stored securely in its physical location.</p>
+        <p class="helptext">Upload a scanned or digital copy for quick reference. PDF, JPG, PNG accepted (max 10 MB). The original signed copy should still be stored securely in its physical location.</p>
         <label class="rr-file-zone" id="zone-estate-file" for="{{ form.estate_file.id_for_label }}">
           {{ form.estate_file }}
           <div class="rr-file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
@@ -222,16 +222,57 @@
 
 {% block extra_js %}
 <script>
-document.querySelectorAll('.rr-file-zone input[type="file"]').forEach(function (input) {
-  input.addEventListener('change', function () {
-    var zone = this.closest('.rr-file-zone');
-    if (this.files.length > 0) {
-      zone.querySelector('.rr-file-icon i').className = 'fas fa-file-check';
-      zone.querySelector('p').textContent = this.files[0].name;
-      zone.querySelector('small').textContent = 'Click to change file';
-      zone.classList.add('rr-file-selected');
-    }
-  });
+document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
+  var existingLink = zone.querySelector('a');
+  var clearCheckbox = zone.querySelector('input[type="checkbox"]');
+  var input = zone.querySelector('input[type="file"]');
+  var icon = zone.querySelector('.rr-file-icon i');
+  var prompt = zone.querySelector('p');
+  var hint = zone.querySelector('small');
+
+  if (existingLink && clearCheckbox) {
+    // Build a clean current-file card above the zone
+    var card = document.createElement('div');
+    card.className = 'rr-current-file';
+    card.innerHTML =
+      '<span class="rr-current-file-icon"><i class="fas fa-file-alt"></i></span>' +
+      '<span class="rr-current-file-name">' + existingLink.textContent.trim() + '</span>';
+
+    // Move the original checkbox (preserving its name/id for form submission)
+    var clearWrap = document.createElement('label');
+    clearWrap.className = 'rr-current-file-clear';
+    clearWrap.appendChild(clearCheckbox);
+    clearWrap.appendChild(document.createTextNode(' Remove'));
+    card.appendChild(clearWrap);
+
+    zone.parentNode.insertBefore(card, zone);
+
+    // Strip Django's rendered clutter from inside the zone
+    Array.from(zone.childNodes).forEach(function (node) {
+      if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'BR' ||
+          node.nodeName === 'A' || node.nodeName === 'LABEL') {
+        node.parentNode.removeChild(node);
+      }
+    });
+
+    // Tone down the zone to a secondary "replace" prompt
+    zone.classList.add('rr-file-replace');
+    if (icon) icon.className = 'fa fa-refresh';
+    if (prompt) prompt.textContent = 'Click to replace file';
+    if (hint) hint.textContent = '';
+  }
+
+  if (input) {
+    input.addEventListener('change', function () {
+      if (this.files.length > 0) {
+        zone.classList.remove('rr-file-replace');
+        zone.classList.add('rr-file-selected');
+        if (icon) icon.className = 'fas fa-file-check';
+        if (prompt) prompt.textContent = this.files[0].name;
+        if (hint) hint.textContent = 'Click to change file';
+      }
+    });
+  }
 });
 </script>
 {% endblock %}

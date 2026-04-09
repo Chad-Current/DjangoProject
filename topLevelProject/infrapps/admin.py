@@ -135,7 +135,6 @@ class VaultEntryAdmin(admin.ModelAdmin):
         ('Entry Details', {
             'fields': (
                 'username_or_email',
-                'notes',
             ),
         }),
         ('Linked Source', {

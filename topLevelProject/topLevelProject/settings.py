@@ -2,6 +2,7 @@ import os
 import json
 from datetime import timedelta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# from decouple import config 
 
 # Security Settings
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here-change-in-production')

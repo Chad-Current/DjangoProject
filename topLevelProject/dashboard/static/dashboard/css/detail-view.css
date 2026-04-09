@@ -653,12 +653,12 @@
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #1a4a1a, #143414);
+  background: linear-gradient(135deg, #1e7259, #124438);
   color: var(--text-color);
 }
 
 .btn-edit:hover {
-  background: linear-gradient(135deg, #234f23, #1c3e1c);
+  background: linear-gradient(135deg, #24896a, #1a5548);
   color: var(--text-color);
 }
 
@@ -688,9 +688,16 @@
 }
 
 .marker {
-  background-color: var(--green-tag);
+  background: linear-gradient(135deg, #20856b, #145445);
   margin-top: 2em;
-  color: var(--text-color-dark);
+  color: var(--text-color);
+  box-shadow: 0 4px 16px rgba(255, 166, 43, 0.22), 0 2px 8px rgba(30, 114, 89, 0.28);
+  border-top: 1px solid rgba(255, 166, 43, 0.3);
+}
+
+.marker:hover {
+  background: linear-gradient(135deg, #279f81, #1a6657);
+  box-shadow: 0 6px 22px rgba(255, 166, 43, 0.32), 0 3px 12px rgba(30, 114, 89, 0.35);
 }
 
 /* ══════════════════════════════════════════════

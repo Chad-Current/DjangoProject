@@ -1,13 +1,15 @@
+{% extends "dashboard/dashboard.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Funeral Plan &mdash; {{ user_full_name }}</title>
+
+
+{% block title %}Funeral Plan Summary{% endblock %}
+
+{% block extra_css %}
   <link rel="stylesheet" href="{% static 'dashboard/css/funeralplan_print.css' %}">
-</head>
-<body>
+{% endblock %}
+
+
+{% block content %}
 <div class="print-wrapper">
 
   <!-- Screen toolbar (hidden on print) -->
@@ -404,5 +406,4 @@
   </div>
 
 </div><!-- /.print-wrapper -->
-</body>
-</html>
+{% endblock %}

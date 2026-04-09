@@ -265,11 +265,6 @@ class ProfileAccessGrant(models.Model):
         help_text="True once the grantee has been emailed about upcoming expiry. "
                   "Reset to False if expires_at is extended so the reminder fires again.",
     )
-    notes = models.TextField(
-        blank=True,
-        help_text="Internal notes about why this grant was created.",
-    )
-
     class Meta:
         db_table = 'profile_access_grants'
         ordering = ['-granted_at']

@@ -111,11 +111,6 @@ class VaultEntry(models.Model):
         blank=True,
         help_text="The login identifier (username or email). Not encrypted.",
     )
-    notes = models.TextField(
-        blank=True,
-        help_text="Additional context — recovery codes, security questions, etc.",
-    )
-
     # ── Encrypted payload ────────────────────────────────────────────────────
     encrypted_password = models.TextField(
         help_text="Fernet-encrypted password token. Never store plaintext here.",

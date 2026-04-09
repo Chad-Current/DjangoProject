@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 
@@ -157,7 +158,7 @@ class CustomUser(AbstractUser):
             Active subscription → can modify
             Canceled / lapsed   → cannot modify (view-only)
 
-        Legacy one-time users (no stripe_subscription_id):
+        from one-time users (no stripe_subscription_id):
             Essentials: within 1 year of payment
             Legacy:     forever
         """
@@ -183,6 +184,18 @@ class CustomUser(AbstractUser):
     def is_subscription_active(self):
         """True when the Stripe subscription is currently active."""
         return self.stripe_subscription_id != '' and self.subscription_status == 'active'
+
+    @property
+    def has_active_grants(self):
+        """True when this user has at least one active, non-expired ProfileAccessGrant."""
+        from recovery.models import ProfileAccessGrant
+        now = timezone.now()
+        return ProfileAccessGrant.objects.filter(
+            granted_to=self,
+            is_active=True,
+        ).filter(
+            Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+        ).exists()
 
     def days_until_renewal(self):
         """Days until the next billing date (0 if not on a subscription)."""

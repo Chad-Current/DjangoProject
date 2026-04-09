@@ -19,14 +19,14 @@
     </p>
   </div>
 
-  {% if messages %}
+  <!-- {% if messages %}
     {% for message in messages %}
       <div class="alert-box" role="alert">
         <i class="fas fa-info-circle"></i>
         <p>{{ message }}</p>
       </div>
     {% endfor %}
-  {% endif %}
+  {% endif %} -->
 
   <div class="row">
 
@@ -127,16 +127,6 @@
         <div class="info-row">
           <div class="info-label"><i class="fas fa-desktop"></i> Device Type</div>
           <div class="info-value">{{ entry.linked_device.device_type }}</div>
-        </div>
-      </div>
-      {% endif %}
-
-      <!-- Notes -->
-      {% if entry.notes %}
-      <div class="info-card">
-        <h3><i class="fas fa-sticky-note"></i> Notes</h3>
-        <div class="description-box dv-mt-2">
-          <p>{{ entry.notes|linebreaks }}</p>
         </div>
       </div>
       {% endif %}

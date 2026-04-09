@@ -63,12 +63,20 @@ button.pc-cta-btn {
   font-weight: 700;
 }
 
+.dash-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 5em 0 3em;
+}
+
 .dash-btn {
   display: inline-block;
   padding: 0.6rem 1.6rem;
   margin-top: 1.2rem;
   background: transparent;
-  border: 2px solid rgba(237, 231, 227, 0.7);
+  border: 2px solid rgba(45, 106, 156, .3);
   border-radius: 50px;
   cursor: pointer;
   font-family: var(--main-font);
@@ -79,13 +87,13 @@ button.pc-cta-btn {
 }
 
 .dash-btn:hover {
-  background: rgba(237, 231, 227, 0.12);
-  border-color: rgba(237, 231, 227, 1);
+  background: rgba(98, 183, 240, 0.075);
+  border-color: rgba(98, 183, 240, 0.26);
   transform: translateY(-1px);
 }
 
 .dash-btn a {
-  color: rgba(237, 231, 227, 0.9);
+  color: var(--ten-percent);
   text-decoration: none;
 }
 
@@ -328,5 +336,3 @@ button.pc-cta-btn {
 .modal-secure-note i {
   color: var(--thirty-percent);
 }
-
-

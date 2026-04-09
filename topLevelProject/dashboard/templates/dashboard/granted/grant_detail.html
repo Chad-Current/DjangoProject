@@ -402,7 +402,6 @@
             <th>Name</th>
             <th>Type</th>
             <th>Username / Email</th>
-            <th>Notes</th>
             <th>Password</th>
           </tr>
         </thead>
@@ -416,22 +415,20 @@
               {% endif %}
             </td>
             <td>{{ v.username_or_email|default:"—" }}</td>
-            <td>{{ v.notes|default:"—"|truncatechars:60 }}</td>
             <td style="white-space:nowrap;">
               <div class="d-flex align-items-center gap-2">
                 <input type="password"
                        id="granted-pw-{{ v.slug }}"
                        value="••••••••"
                        readonly
-                       class="form-control form-control-sm"
-                       style="width:130px;"
+                       class="vault-detail-pw-input"
                        aria-label="Password for {{ v.source_name }}">
                 <button type="button"
-                        class="btn btn-sm btn-secondary granted-reveal-btn"
+                        class="vault-detail-reveal-btn"
                         data-slug="{{ v.slug }}"
                         data-field="granted-pw-{{ v.slug }}"
                         data-csrf="{{ csrf_token }}">
-                  Reveal
+                  <i class="fas fa-eye"></i> Reveal Password
                 </button>
               </div>
             </td>
@@ -456,7 +453,7 @@
 
 {% block extra_js %}
 <script>
-document.querySelectorAll('.granted-reveal-btn').forEach(function (btn) {
+document.querySelectorAll('.vault-detail-reveal-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var slug  = btn.dataset.slug;
     var field = document.getElementById(btn.dataset.field);
@@ -464,14 +461,14 @@ document.querySelectorAll('.granted-reveal-btn').forEach(function (btn) {
     if (!slug || !field) return;
 
     if (field.type === 'text') {
-      field.type      = 'password';
-      field.value     = '••••••••';
-      btn.textContent = 'Reveal';
+      field.type     = 'password';
+      field.value    = '••••••••';
+      btn.innerHTML  = '<i class="fas fa-eye"></i> Reveal Password';
       return;
     }
 
-    btn.disabled    = true;
-    btn.textContent = 'Loading…';
+    btn.disabled  = true;
+    btn.innerHTML = 'Loading…';
 
     fetch('/vault/granted/' + slug + '/reveal/', {
       method:  'POST',
@@ -484,23 +481,23 @@ document.querySelectorAll('.granted-reveal-btn').forEach(function (btn) {
     .then(function (data) {
       btn.disabled = false;
       if (data.success) {
-        field.type      = 'text';
-        field.value     = data.password;
-        btn.textContent = 'Hide';
+        field.type    = 'text';
+        field.value   = data.password;
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Password';
         setTimeout(function () {
-          field.type      = 'password';
-          field.value     = '••••••••';
-          btn.textContent = 'Reveal';
+          field.type    = 'password';
+          field.value   = '••••••••';
+          btn.innerHTML = '<i class="fas fa-eye"></i> Reveal Password';
         }, 15000);
       } else {
-        btn.textContent = 'Error';
+        btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error — try again';
         alert(data.error || 'Could not reveal password.');
       }
     })
     .catch(function (err) {
       console.error(err);
-      btn.disabled    = false;
-      btn.textContent = 'Error';
+      btn.disabled  = false;
+      btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error — try again';
     });
   });
 });
