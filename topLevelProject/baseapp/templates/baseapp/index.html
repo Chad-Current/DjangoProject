@@ -24,10 +24,6 @@
 
             <div class="hero-left">
                 <span class="hero-eyebrow">Digital Estate Planning</span>
-                <div class="hero-buttons">
-                    <a href="{% url 'accounts:register' %}" class="btn btn-primary">Start Organizing Today</a>
-                    <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
-                </div>
                 <h1>Don't leave your loved ones locked out of your digital world</h1>
                 <p class="hero-subtitle">
                     When a loved one dies or becomes incapacitated, your family shouldn't have to
@@ -38,24 +34,28 @@
                     <strong>A little time now means your family has everything they need
                         when it matters most.</strong>
                 </p>
+                <div class="hero-buttons">
+                    <a href="{% url 'accounts:register' %}?plan=free" class="btn btn-primary">Start Organizing Today</a>
+                    <a href="{% url 'baseapp:checklist_email' %}" class="btn btn-secondary">Download Free Guide</a>
+                </div>
+                <div class="hero-trust-row">
+                    <span class="hero-trust-item"><i class="fas fa-lock"></i> Encrypted storage</span>
+                    <span class="hero-trust-item"><i class="fas fa-users"></i> Family access system</span>
+                    <span class="hero-trust-item"><i class="fas fa-star"></i> Free to start</span>
+                </div>
             </div>
 
             <div class="hero-right">
-                <div class="hero-photo-wrap">
-                    <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
-                    <div class="hero-stats-float">
-                        <div class="hero-stat">
-                            <span class="hero-stat-num">100+</span>
-                            <span class="hero-stat-label">hours families spend recovering accounts</span>
-                        </div>
-                        <div class="hero-stat">
-                            <span class="hero-stat-num">$1,000s</span>
-                            <span class="hero-stat-label">lost to forgotten subscriptions</span>
-                        </div>
-                    </div>
+                <img src="/static/baseapp/images/coverphoto.svg" alt="Digital Estate Planning" class="hero-image">
+                <div class="hero-float-card">
+                    <strong>Already lost a loved one?</strong>
+                    <p>Need Access to their account</p>
+                    <a href="{% url 'recovery:external_recovery_request' %}">
+                        <button class="btn btn-secondary">Request Estate Access</button>
+                    </a>
                 </div>
-
-            </div> <!-- End hero-right -->
+            </div>
+            <!-- End hero-right -->
 
         </div>
     </div>
@@ -125,7 +125,8 @@
         <div class="section-header">
             <span class="idx-section-label">What you organize</span>
             <h2>Six categories. Every corner of your digital life.</h2>
-            <p class="section-subtitle">Each category is built to answer a specific question your family will have — not just where to log in, but what to do next.</p>
+            <p class="section-subtitle">Each category is built to answer a specific question your family will have — not
+                just where to log in, but what to do next.</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
@@ -232,94 +233,96 @@
      RESULT ② — PRICING
      The natural close after demonstrating value.
      ═══════════════════════════════════════════════════════ -->
-    <section class="pc-hero">
-        <span class="pc-eyebrow">Simple, transparent pricing</span>
-        <h1 class="pc-hero-title">Plans built for <em>your</em> peace of mind</h1>
-        <p class="pc-hero-sub">Start free, upgrade when you're ready. Every plan protects your digital legacy — no surprises, no hidden fees.</p>
+<section class="pc-hero">
+    <span class="pc-eyebrow">Simple, transparent pricing</span>
+    <h1 class="pc-hero-title">Plans built for <em>your</em> peace of mind</h1>
+    <p class="pc-hero-sub">Start free, upgrade when you're ready. Every plan protects your digital legacy — no
+        surprises, no hidden fees.</p>
 
-        <!-- Billing toggle -->
-        <div class="pc-toggle-wrap">
-            <div class="pc-toggle">
-                <button class="pc-toggle-btn active" id="pc-toggle-annual" onclick="pcSetBilling('annual')">Annual</button>
-                <button class="pc-toggle-btn" id="pc-toggle-monthly" onclick="pcSetBilling('monthly')">Monthly</button>
+    <!-- Billing toggle -->
+    <div class="pc-toggle-wrap">
+        <div class="pc-toggle">
+            <button class="pc-toggle-btn active" id="pc-toggle-annual" onclick="pcSetBilling('annual')">Annual</button>
+            <button class="pc-toggle-btn" id="pc-toggle-monthly" onclick="pcSetBilling('monthly')">Monthly</button>
+        </div>
+        <span class="pc-save-badge" id="pc-save-badge">2 months free with annual</span>
+    </div>
+
+    <!-- Pricing cards -->
+    <div class="pc-cards">
+
+        <!-- Free -->
+        <div class="pc-card pc-card--free">
+            <div class="pc-card-tier pc-card-tier--free">Free</div>
+            <div class="pc-card-price-wrap">
+                <span class="pc-currency">$</span>
+                <span class="pc-price">0</span>
             </div>
-            <span class="pc-save-badge" id="pc-save-badge">2 months free with annual</span>
+            <div class="pc-period">forever</div>
+            <div class="pc-period-sub">No credit card required</div>
+            <hr class="pc-card-divider">
+            <ul class="pc-features">
+                <li><i class="fas fa-check-circle"></i> View-only access to all data</li>
+                <li><i class="fas fa-check-circle"></i> Up to 2 trusted contacts</li>
+                <li><i class="fas fa-check-circle"></i> 1 digital account &amp; 1 device</li>
+                <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
+                <li><i class="fas fa-check-circle"></i> Family recovery request system</li>
+                <li><i class="fas fa-times-circle"></i> Full edit access</li>
+                <li><i class="fas fa-times-circle"></i> Unlimited items</li>
+                <li><i class="fas fa-times-circle"></i> Funeral planning</li>
+            </ul>
+            <a href="{% url 'accounts:register' %}?plan=free" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
         </div>
 
-        <!-- Pricing cards -->
-        <div class="pc-cards">
-
-            <!-- Free -->
-            <div class="pc-card pc-card--free">
-                <div class="pc-card-tier pc-card-tier--free">Free</div>
-                <div class="pc-card-price-wrap">
-                    <span class="pc-currency">$</span>
-                    <span class="pc-price">0</span>
-                </div>
-                <div class="pc-period">forever</div>
-                <div class="pc-period-sub">No credit card required</div>
-                <hr class="pc-card-divider">
-                <ul class="pc-features">
-                    <li><i class="fas fa-check-circle"></i> View-only access to all data</li>
-                    <li><i class="fas fa-check-circle"></i> Up to 2 trusted contacts</li>
-                    <li><i class="fas fa-check-circle"></i> 1 digital account &amp; 1 device</li>
-                    <li><i class="fas fa-check-circle"></i> Family needs-to-know section</li>
-                    <li><i class="fas fa-check-circle"></i> Family recovery request system</li>
-                    <li><i class="fas fa-times-circle"></i> Full edit access</li>
-                    <li><i class="fas fa-times-circle"></i> Unlimited items</li>
-                    <li><i class="fas fa-times-circle"></i> Funeral planning</li>
-                </ul>
-                <a href="{% url 'accounts:register' %}?plan=free" class="pc-cta-btn pc-cta-btn--free">Start Free</a>
+        <!-- Essentials -->
+        <div class="pc-card pc-card--essentials">
+            <span class="pc-badge pc-badge--essentials">Popular</span>
+            <div class="pc-card-tier pc-card-tier--essentials">Essentials</div>
+            <div class="pc-card-price-wrap">
+                <span class="pc-currency">$</span>
+                <span class="pc-price" id="pc-ess-price">59.99</span>
             </div>
-
-            <!-- Essentials -->
-            <div class="pc-card pc-card--essentials">
-                <span class="pc-badge pc-badge--essentials">Popular</span>
-                <div class="pc-card-tier pc-card-tier--essentials">Essentials</div>
-                <div class="pc-card-price-wrap">
-                    <span class="pc-currency">$</span>
-                    <span class="pc-price" id="pc-ess-price">59.99</span>
-                </div>
-                <div class="pc-period" id="pc-ess-period">per year</div>
-                <div class="pc-period-sub" id="pc-ess-sub">billed annually — 2 months free</div>
-                <hr class="pc-card-divider">
-                <ul class="pc-features">
-                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
-                    <li><i class="fas fa-check-circle"></i> Up to 3 trusted contacts</li>
-                    <li><i class="fas fa-check-circle"></i> Up to 3 accounts &amp; 3 devices</li>
-                    <li><i class="fas fa-check-circle"></i> Up to 5 important documents</li>
-                    <li><i class="fas fa-check-circle"></i> Up to 2 Family Notes</li>
-                    <li><i class="fas fa-check-circle"></i> Email support</li>
-                </ul>
-                <a href="{% url 'accounts:register' %}?plan=essentials" class="pc-cta-btn pc-cta-btn--essentials">Get Essentials</a>
-            </div>
-
-            <!-- Legacy -->
-            <div class="pc-card pc-card--legacy">
-                <span class="pc-badge pc-badge--legacy">Best Value</span>
-                <div class="pc-card-tier pc-card-tier--legacy">Legacy</div>
-                <div class="pc-card-price-wrap">
-                    <span class="pc-currency">$</span>
-                    <span class="pc-price" id="pc-leg-price">99.99</span>
-                </div>
-                <div class="pc-period" id="pc-leg-period">per year</div>
-                <div class="pc-period-sub" id="pc-leg-sub">billed annually — 2 months free</div>
-                <hr class="pc-card-divider">
-                <ul class="pc-features">
-                    <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
-                    <li><i class="fas fa-check-circle"></i> Unlimited trusted contacts</li>
-                    <li><i class="fas fa-check-circle"></i> Unlimited accounts &amp; devices</li>
-                    <li><i class="fas fa-check-circle"></i> Unlimited documents</li>
-                    <li><i class="fas fa-check-circle"></i> Unlimited Family Notes</li>
-                    <li><i class="fas fa-check-circle"></i> Detailed funeral &amp; final arrangement planning</li>
-                    <li><i class="fas fa-check-circle"></i> Encrypted password vault — included</li>
-                    <li><i class="fas fa-check-circle"></i> Priority email support</li>
-                </ul>
-                <a href="{% url 'accounts:register' %}?plan=legacy" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
-            </div>
-
+            <div class="pc-period" id="pc-ess-period">per year</div>
+            <div class="pc-period-sub" id="pc-ess-sub">billed annually — 2 months free</div>
+            <hr class="pc-card-divider">
+            <ul class="pc-features">
+                <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                <li><i class="fas fa-check-circle"></i> Up to 3 trusted contacts</li>
+                <li><i class="fas fa-check-circle"></i> Up to 3 accounts &amp; 3 devices</li>
+                <li><i class="fas fa-check-circle"></i> Up to 5 important documents</li>
+                <li><i class="fas fa-check-circle"></i> Up to 2 Family Notes</li>
+                <li><i class="fas fa-check-circle"></i> Email support</li>
+            </ul>
+            <a href="{% url 'accounts:register' %}?plan=essentials" class="pc-cta-btn pc-cta-btn--essentials">Get
+                Essentials</a>
         </div>
-    </section>
+
+        <!-- Legacy -->
+        <div class="pc-card pc-card--legacy">
+            <span class="pc-badge pc-badge--legacy">Best Value</span>
+            <div class="pc-card-tier pc-card-tier--legacy">Legacy</div>
+            <div class="pc-card-price-wrap">
+                <span class="pc-currency">$</span>
+                <span class="pc-price" id="pc-leg-price">99.99</span>
+            </div>
+            <div class="pc-period" id="pc-leg-period">per year</div>
+            <div class="pc-period-sub" id="pc-leg-sub">billed annually — 2 months free</div>
+            <hr class="pc-card-divider">
+            <ul class="pc-features">
+                <li><i class="fas fa-check-circle"></i> Full edit access while subscribed</li>
+                <li><i class="fas fa-check-circle"></i> Unlimited trusted contacts</li>
+                <li><i class="fas fa-check-circle"></i> Unlimited accounts &amp; devices</li>
+                <li><i class="fas fa-check-circle"></i> Unlimited documents</li>
+                <li><i class="fas fa-check-circle"></i> Unlimited Family Notes</li>
+                <li><i class="fas fa-check-circle"></i> Detailed funeral &amp; final arrangement planning</li>
+                <li><i class="fas fa-check-circle"></i> Encrypted password vault — included</li>
+                <li><i class="fas fa-check-circle"></i> Priority email support</li>
+            </ul>
+            <a href="{% url 'accounts:register' %}?plan=legacy" class="pc-cta-btn pc-cta-btn--legacy">Get Legacy</a>
+        </div>
+
+    </div>
+</section>
 
 
 
@@ -360,7 +363,7 @@
 <script>
     const PC_PRICES = {
         essentials: { annual: '59.99', monthly: '5.99' },
-        legacy:     { annual: '99.99', monthly: '9.99' },
+        legacy: { annual: '99.99', monthly: '9.99' },
     };
 
     function pcSetBilling(interval) {

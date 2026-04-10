@@ -494,7 +494,7 @@
 .security-log {
   background: var(--background-color);
   border-radius: 20px;
-  padding: 2rem;
+  /* padding: 2rem; */
   margin-top: 2rem;
   box-shadow: 0 4px 20px rgba(22, 40, 59, 0.1);
 }
