@@ -12,14 +12,18 @@
             <h1 class="page-title">Family Awareness</h1>
             <p class="page-subtitle">Manage Family's information</p>
         </div>
-        {% if can_modify %}
         <div class="header-action">
+            <a href="{% url 'dashboard:familyawareness_print' %}" class="btn-add-contact" style="margin-right:.5rem;">
+                <i class="fas fa-print"></i>
+                <span>Print Summary</span>
+            </a>
+            {% if can_modify %}
             <a href="{% url 'dashboard:familyawareness_create' %}" class="btn-add-contact">
                 <i class="fas fa-plus-circle"></i>
                 <span>Add Connection</span>
             </a>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
     <div class="contacts-content">

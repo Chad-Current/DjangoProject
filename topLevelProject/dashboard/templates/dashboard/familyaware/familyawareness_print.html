@@ -1,0 +1,91 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}Family Awareness Summary{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'dashboard/css/familyawareness_print.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="print-wrapper">
+
+  <!-- Screen toolbar (hidden on print) -->
+  <div class="screen-toolbar">
+    <button class="toolbar-btn toolbar-btn--primary" onclick="window.print()">
+      &#x1F5A8; Print / Save as PDF
+    </button>
+    <a href="{% url 'dashboard:familyawareness_list' %}" class="toolbar-btn toolbar-btn--ghost">
+      &larr; Back to Family Awareness
+    </a>
+    <span class="toolbar-spacer"></span>
+    <span class="toolbar-meta">Use your browser&rsquo;s Print or &ldquo;Save as PDF&rdquo; option</span>
+  </div>
+
+  <!-- Document header -->
+  <div class="doc-header">
+    <div class="doc-header__eyebrow">Digital Legacy Planning</div>
+    <div class="doc-header__title">Family Awareness Summary</div>
+    <div class="doc-header__name">{{ user_full_name }}</div>
+    <div class="doc-header__meta">Prepared {{ print_date }}</div>
+    <div class="doc-header__status">{{ item_count }} Note{{ item_count|pluralize }} on Record</div>
+  </div>
+
+  {% if familyawareness_objects %}
+    {% for item in familyawareness_objects %}
+    <div class="section">
+      <div class="section__heading">
+        <span class="section__heading-num">{{ forloop.counter }}</span>
+        {{ item.relation }}
+      </div>
+
+      <div class="field-grid">
+
+        <!-- Topics -->
+        <div class="field field--full">
+          <div class="field__label">Topics</div>
+          <div class="field__value">
+            {% if item.is_location_of_legal_will %}<span class="field__badge field__badge--other">Legal Will Location</span>&nbsp;{% endif %}
+            {% if item.is_password_manager %}<span class="field__badge field__badge--other">Password Manager</span>&nbsp;{% endif %}
+            {% if item.is_social_media %}<span class="field__badge field__badge--other">Social Media</span>&nbsp;{% endif %}
+            {% if item.is_photos_or_files %}<span class="field__badge field__badge--other">Photos / Files</span>&nbsp;{% endif %}
+            {% if item.is_data_retention_preferences %}<span class="field__badge field__badge--other">Data Retention</span>&nbsp;{% endif %}
+            {% if item.is_other %}<span class="field__badge field__badge--other">Other</span>{% endif %}
+            {% if not item.is_location_of_legal_will and not item.is_password_manager and not item.is_social_media and not item.is_photos_or_files and not item.is_data_retention_preferences and not item.is_other %}&mdash;{% endif %}
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="field field--full">
+          <div class="field__label">Note</div>
+          <div class="field__value field__value--pre">{{ item.content }}</div>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="field field--full">
+          <div class="field__label">Last Updated</div>
+          <div class="field__value">{{ item.updated_at|date:"F j, Y" }}</div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <div class="section">
+      <div class="section__empty">No family awareness notes have been recorded yet.</div>
+    </div>
+  {% endif %}
+
+  <!-- Document footer -->
+  <div class="doc-footer">
+    <span>
+      <span class="doc-footer__brand">Digital Legacy Planner</span>
+      &nbsp;&mdash;&nbsp;Family Awareness Summary
+    </span>
+    <span>Printed {{ print_date }} &nbsp;&bull;&nbsp; {{ user_full_name }}</span>
+  </div>
+
+</div><!-- /.print-wrapper -->
+{% endblock %}

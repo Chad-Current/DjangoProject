@@ -1,0 +1,144 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}Important Documents Summary{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'dashboard/css/importantdocument_print.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="print-wrapper">
+
+  <!-- Screen toolbar (hidden on print) -->
+  <div class="screen-toolbar">
+    <button class="toolbar-btn toolbar-btn--primary" onclick="window.print()">
+      &#x1F5A8; Print / Save as PDF
+    </button>
+    <a href="{% url 'dashboard:importantdocument_list' %}" class="toolbar-btn toolbar-btn--ghost">
+      &larr; Back to Important Documents
+    </a>
+    <span class="toolbar-spacer"></span>
+    <span class="toolbar-meta">Use your browser&rsquo;s Print or &ldquo;Save as PDF&rdquo; option</span>
+  </div>
+
+  <!-- Document header -->
+  <div class="doc-header">
+    <div class="doc-header__eyebrow">Digital Legacy Planning</div>
+    <div class="doc-header__title">Important Documents Summary</div>
+    <div class="doc-header__name">{{ user_full_name }}</div>
+    <div class="doc-header__meta">Prepared {{ print_date }}</div>
+    <div class="doc-header__status">{{ document_count }} Document{{ document_count|pluralize }} on Record</div>
+  </div>
+
+  {% if documents %}
+    {% for doc in documents %}
+    <div class="section">
+      <div class="section__heading">
+        <span class="section__heading-num">{{ forloop.counter }}</span>
+        {{ doc.name_or_title }}
+      </div>
+
+      <div class="field-grid">
+
+        <!-- Category -->
+        <div class="field">
+          <div class="field__label">Category</div>
+          <div class="field__value">{{ doc.document_category }}</div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="field">
+          <div class="field__label">Assigned To</div>
+          <div class="field__value">{{ doc.delegated_important_document_to }}</div>
+        </div>
+
+        <!-- When It Applies -->
+        <div class="field field--full">
+          <div class="field__label">Applies When</div>
+          <div class="field__value">
+            {% if doc.applies_on_death %}On Death{% endif %}
+            {% if doc.applies_on_incapacity %}{% if doc.applies_on_death %} &bull; {% endif %}On Incapacity{% endif %}
+            {% if doc.applies_immediately %}{% if doc.applies_on_death or doc.applies_on_incapacity %} &bull; {% endif %}Immediately{% endif %}
+            {% if not doc.applies_on_death and not doc.applies_on_incapacity and not doc.applies_immediately %}&mdash;{% endif %}
+          </div>
+        </div>
+
+        <!-- Requires Legal Review -->
+        <div class="field">
+          <div class="field__label">Requires Legal Review</div>
+          {% if doc.requires_legal_review %}
+            <span class="field__badge field__badge--memo">Yes</span>
+          {% else %}
+            <span class="field__badge field__badge--other">No</span>
+          {% endif %}
+        </div>
+
+        <!-- Digital Copy on File -->
+        <div class="field">
+          <div class="field__label">Digital Copy on File</div>
+          {% if doc.important_file %}
+            <span class="field__badge field__badge--keep">Yes</span>
+          {% else %}
+            <span class="field__badge field__badge--other">No</span>
+          {% endif %}
+        </div>
+
+        <!-- Physical Location (conditional) -->
+        {% if doc.physical_location %}
+        <div class="field field--full">
+          <div class="field__label">Physical Location</div>
+          <div class="field__value">{{ doc.physical_location }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Digital Location (conditional) -->
+        {% if doc.digital_location %}
+        <div class="field field--full">
+          <div class="field__label">Digital Location</div>
+          <div class="field__value">{{ doc.digital_location }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Description (conditional) -->
+        {% if doc.description %}
+        <div class="field field--full">
+          <div class="field__label">Description</div>
+          <div class="field__value field__value--pre">{{ doc.description }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Review Frequency -->
+        <div class="field">
+          <div class="field__label">Review Every</div>
+          <div class="field__value">{{ doc.review_time }} days</div>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="field">
+          <div class="field__label">Last Updated</div>
+          <div class="field__value">{{ doc.updated_at|date:"F j, Y" }}</div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <div class="section">
+      <div class="section__empty">No important documents have been recorded yet.</div>
+    </div>
+  {% endif %}
+
+  <!-- Document footer -->
+  <div class="doc-footer">
+    <span>
+      <span class="doc-footer__brand">Digital Legacy Planner</span>
+      &nbsp;&mdash;&nbsp;Important Documents Summary
+    </span>
+    <span>Printed {{ print_date }} &nbsp;&bull;&nbsp; {{ user_full_name }}</span>
+  </div>
+
+</div><!-- /.print-wrapper -->
+{% endblock %}

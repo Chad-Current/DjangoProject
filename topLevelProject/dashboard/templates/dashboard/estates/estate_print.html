@@ -1,0 +1,134 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}Estate Documents Summary{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'dashboard/css/estate_print.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="print-wrapper">
+
+  <!-- Screen toolbar (hidden on print) -->
+  <div class="screen-toolbar">
+    <button class="toolbar-btn toolbar-btn--primary" onclick="window.print()">
+      &#x1F5A8; Print / Save as PDF
+    </button>
+    <a href="{% url 'dashboard:estate_list' %}" class="toolbar-btn toolbar-btn--ghost">
+      &larr; Back to Estate Documents
+    </a>
+    <span class="toolbar-spacer"></span>
+    <span class="toolbar-meta">Use your browser&rsquo;s Print or &ldquo;Save as PDF&rdquo; option</span>
+  </div>
+
+  <!-- Document header -->
+  <div class="doc-header">
+    <div class="doc-header__eyebrow">Digital Legacy Planning</div>
+    <div class="doc-header__title">Estate Documents Summary</div>
+    <div class="doc-header__name">{{ user_full_name }}</div>
+    <div class="doc-header__meta">Prepared {{ print_date }}</div>
+    <div class="doc-header__status">{{ estate_count }} Document{{ estate_count|pluralize }} on Record</div>
+  </div>
+
+  {% if estates %}
+    {% for estate in estates %}
+    <div class="section">
+      <div class="section__heading">
+        <span class="section__heading-num">{{ forloop.counter }}</span>
+        {{ estate.name_or_title }}
+      </div>
+
+      <div class="field-grid">
+
+        <!-- Category -->
+        <div class="field">
+          <div class="field__label">Category</div>
+          <div class="field__value">{{ estate.estate_category }}</div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="field">
+          <div class="field__label">Assigned To</div>
+          <div class="field__value">{{ estate.delegated_estate_to }}</div>
+        </div>
+
+        <!-- When It Applies -->
+        <div class="field field--full">
+          <div class="field__label">Applies When</div>
+          <div class="field__value">
+            {% if estate.applies_on_death %}On Death{% endif %}
+            {% if estate.applies_on_incapacity %}{% if estate.applies_on_death %} &bull; {% endif %}On Incapacity{% endif %}
+            {% if estate.applies_immediately %}{% if estate.applies_on_death or estate.applies_on_incapacity %} &bull; {% endif %}Immediately{% endif %}
+            {% if not estate.applies_on_death and not estate.applies_on_incapacity and not estate.applies_immediately %}&mdash;{% endif %}
+          </div>
+        </div>
+
+        <!-- Physical Location (conditional) -->
+        {% if estate.estate_physical_location %}
+        <div class="field">
+          <div class="field__label">Physical Location</div>
+          <div class="field__value">{{ estate.estate_physical_location }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Digital Location (conditional) -->
+        {% if estate.estate_digital_location %}
+        <div class="field">
+          <div class="field__label">Digital Location</div>
+          <div class="field__value">{{ estate.estate_digital_location }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Digital Copy on File -->
+        <div class="field">
+          <div class="field__label">Digital Copy on File</div>
+          {% if estate.estate_file %}
+            <span class="field__badge field__badge--keep">Yes</span>
+          {% else %}
+            <span class="field__badge field__badge--other">No</span>
+          {% endif %}
+        </div>
+
+        <!-- Review Frequency -->
+        <div class="field">
+          <div class="field__label">Review Every</div>
+          <div class="field__value">{{ estate.review_time }} days</div>
+        </div>
+
+        <!-- Overall Instructions (conditional) -->
+        {% if estate.estate_overall_instructions %}
+        <div class="field field--full">
+          <div class="field__label">Instructions for Family</div>
+          <div class="field__value field__value--pre">{{ estate.estate_overall_instructions }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Last Updated -->
+        <div class="field field--full">
+          <div class="field__label">Last Updated</div>
+          <div class="field__value">{{ estate.updated_at|date:"F j, Y" }}</div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <div class="section">
+      <div class="section__empty">No estate documents have been recorded yet.</div>
+    </div>
+  {% endif %}
+
+  <!-- Document footer -->
+  <div class="doc-footer">
+    <span>
+      <span class="doc-footer__brand">Digital Legacy Planner</span>
+      &nbsp;&mdash;&nbsp;Estate Documents Summary
+    </span>
+    <span>Printed {{ print_date }} &nbsp;&bull;&nbsp; {{ user_full_name }}</span>
+  </div>
+
+</div><!-- /.print-wrapper -->
+{% endblock %}

@@ -366,6 +366,26 @@ class AccountListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
         return context
 
 
+class AccountPrintView(ViewAccessMixin, TemplateView):
+    template_name = 'dashboard/accounts/account_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            profile  = Profile.objects.get(user=user)
+            accounts = Account.objects.filter(profile=profile).order_by('account_category', 'account_name_or_provider')
+        except Profile.DoesNotExist:
+            accounts = Account.objects.none()
+
+        context['accounts']       = accounts
+        context['account_count']  = accounts.count()
+        context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.username
+        today = timezone.localdate()
+        context['print_date']     = f"{today.strftime('%B')} {today.day}, {today.year}"
+        return context
+
+
 class AccountDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     model               = Account
     template_name       = 'dashboard/accounts/account_detail.html'
@@ -452,6 +472,26 @@ class DeviceListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
+        return context
+
+
+class DevicePrintView(ViewAccessMixin, TemplateView):
+    template_name = 'dashboard/devices/device_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            profile = Profile.objects.get(user=user)
+            devices = Device.objects.filter(profile=profile).order_by('device_type', 'device_name')
+        except Profile.DoesNotExist:
+            devices = Device.objects.none()
+
+        context['devices']        = devices
+        context['device_count']   = devices.count()
+        context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.username
+        today = timezone.localdate()
+        context['print_date']     = f"{today.strftime('%B')} {today.day}, {today.year}"
         return context
 
 
@@ -544,6 +584,26 @@ class EstateListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
         return context
 
 
+class EstatePrintView(ViewAccessMixin, TemplateView):
+    template_name = 'dashboard/estates/estate_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            profile = Profile.objects.get(user=user)
+            estates = DigitalEstateDocument.objects.filter(profile=profile).order_by('estate_category', 'name_or_title')
+        except Profile.DoesNotExist:
+            estates = DigitalEstateDocument.objects.none()
+
+        context['estates']        = estates
+        context['estate_count']   = estates.count()
+        context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.username
+        today = timezone.localdate()
+        context['print_date']     = f"{today.strftime('%B')} {today.day}, {today.year}"
+        return context
+
+
 class EstateDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     model               = DigitalEstateDocument
     template_name       = 'dashboard/estates/estate_detail.html'
@@ -631,6 +691,26 @@ class FamilyAwarenessListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
         return context
 
 
+class FamilyAwarenessPrintView(ViewAccessMixin, TemplateView):
+    template_name = 'dashboard/familyaware/familyawareness_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            profile = Profile.objects.get(user=user)
+            items   = FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).order_by('relation', 'created_at')
+        except Profile.DoesNotExist:
+            items = FamilyNeedsToKnowSection.objects.none()
+
+        context['familyawareness_objects'] = items
+        context['item_count']              = items.count()
+        context['user_full_name']          = f"{user.first_name} {user.last_name}".strip() or user.username
+        today = timezone.localdate()
+        context['print_date']              = f"{today.strftime('%B')} {today.day}, {today.year}"
+        return context
+
+
 class FamilyAwarenessDetailView(SlugLookupMixin, ViewAccessMixin, DetailView):
     model               = FamilyNeedsToKnowSection
     template_name       = 'dashboard/familyaware/familyawareness_detail.html'
@@ -712,6 +792,26 @@ class ImportantDocumentListView(LapsedViewLimitMixin, ViewAccessMixin, ListView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
+        return context
+
+
+class ImportantDocumentPrintView(ViewAccessMixin, TemplateView):
+    template_name = 'dashboard/importantdocuments/importantdocument_print.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            profile   = Profile.objects.get(user=user)
+            documents = ImportantDocument.objects.filter(profile=profile).order_by('document_category', 'name_or_title')
+        except Profile.DoesNotExist:
+            documents = ImportantDocument.objects.none()
+
+        context['documents']      = documents
+        context['document_count'] = documents.count()
+        context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.username
+        today = timezone.localdate()
+        context['print_date']     = f"{today.strftime('%B')} {today.day}, {today.year}"
         return context
 
 

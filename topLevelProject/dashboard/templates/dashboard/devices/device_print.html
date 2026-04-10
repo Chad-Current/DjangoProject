@@ -1,0 +1,123 @@
+{% extends "dashboard/dashboard.html" %}
+{% load static %}
+
+{% block title %}Devices Summary{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'dashboard/css/device_print.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="print-wrapper">
+
+  <!-- Screen toolbar (hidden on print) -->
+  <div class="screen-toolbar">
+    <button class="toolbar-btn toolbar-btn--primary" onclick="window.print()">
+      &#x1F5A8; Print / Save as PDF
+    </button>
+    <a href="{% url 'dashboard:device_list' %}" class="toolbar-btn toolbar-btn--ghost">
+      &larr; Back to Devices
+    </a>
+    <span class="toolbar-spacer"></span>
+    <span class="toolbar-meta">Use your browser&rsquo;s Print or &ldquo;Save as PDF&rdquo; option</span>
+  </div>
+
+  <!-- Document header -->
+  <div class="doc-header">
+    <div class="doc-header__eyebrow">Digital Legacy Planning</div>
+    <div class="doc-header__title">Devices Summary</div>
+    <div class="doc-header__name">{{ user_full_name }}</div>
+    <div class="doc-header__meta">Prepared {{ print_date }}</div>
+    <div class="doc-header__status">{{ device_count }} Device{{ device_count|pluralize }} on Record</div>
+  </div>
+
+  {% if devices %}
+    {% for device in devices %}
+    <div class="section">
+      <div class="section__heading">
+        <span class="section__heading-num">{{ forloop.counter }}</span>
+        {{ device.device_name }}{% if device.owner_label %} &mdash; {{ device.owner_label }}{% endif %}
+      </div>
+
+      <div class="field-grid">
+
+        <!-- Device Type -->
+        <div class="field">
+          <div class="field__label">Type</div>
+          <div class="field__value">{{ device.device_type }}</div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="field">
+          <div class="field__label">Assigned To</div>
+          <div class="field__value">{{ device.delegated_device_to }}</div>
+        </div>
+
+        <!-- Used for 2FA -->
+        <div class="field">
+          <div class="field__label">Used for Two-Factor Auth</div>
+          {% if device.used_for_2fa %}
+            <span class="field__badge field__badge--keep">Yes</span>
+          {% else %}
+            <span class="field__badge field__badge--other">No</span>
+          {% endif %}
+        </div>
+
+        <!-- Review Frequency -->
+        <div class="field">
+          <div class="field__label">Review Every</div>
+          <div class="field__value">{{ device.review_time }} days</div>
+        </div>
+
+        <!-- Location (conditional) -->
+        {% if device.location_description %}
+        <div class="field field--full">
+          <div class="field__label">Location</div>
+          <div class="field__value">{{ device.location_description }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Unlock Method (conditional) -->
+        {% if device.unlock_method_description %}
+        <div class="field field--full">
+          <div class="field__label">Unlock Method</div>
+          <div class="field__value">{{ device.unlock_method_description }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Decommission Instructions (conditional) -->
+        {% if device.decommission_instruction %}
+        <div class="field field--full">
+          <div class="field__label">Decommission Instructions</div>
+          <div class="field__value field__value--pre">{{ device.decommission_instruction }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Last Updated -->
+        <div class="field field--full">
+          <div class="field__label">Last Updated</div>
+          <div class="field__value">{{ device.updated_at|date:"F j, Y" }}</div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <div class="section">
+      <div class="section__empty">No devices have been recorded yet.</div>
+    </div>
+  {% endif %}
+
+  <!-- Document footer -->
+  <div class="doc-footer">
+    <span>
+      <span class="doc-footer__brand">Digital Legacy Planner</span>
+      &nbsp;&mdash;&nbsp;Devices Summary
+    </span>
+    <span>Printed {{ print_date }} &nbsp;&bull;&nbsp; {{ user_full_name }}</span>
+  </div>
+
+</div><!-- /.print-wrapper -->
+{% endblock %}

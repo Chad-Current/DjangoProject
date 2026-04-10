@@ -16,6 +16,7 @@ urlpatterns = [
     # ── Accounts (Digital) ────────────────────────────────────────────────────
     path('accounts/',                        views.AccountListView.as_view(),   name='account_list'),
     path('accounts/create/',                 views.AccountCreateView.as_view(), name='account_create'),
+    path('accounts/print/',                  views.AccountPrintView.as_view(),  name='account_print'),
     path('accounts/<slug:slug>/',            views.AccountDetailView.as_view(), name='account_detail'),
     path('accounts/<slug:slug>/edit/',       views.AccountUpdateView.as_view(), name='account_update'),
     path('accounts/<slug:slug>/delete/',     views.AccountDeleteView.as_view(), name='account_delete'),
@@ -38,6 +39,7 @@ urlpatterns = [
     # ── Digital Estate ────────────────────────────────────────────────────────
     path('estate/',                    views.EstateListView.as_view(),   name='estate_list'),
     path('estate/create/',             views.EstateCreateView.as_view(), name='estate_create'),
+    path('estate/print/',              views.EstatePrintView.as_view(),  name='estate_print'),
     path('estate/<slug:slug>/',        views.EstateDetailView.as_view(), name='estate_detail'),
     path('estate/<slug:slug>/edit/',   views.EstateUpdateView.as_view(), name='estate_update'),
     path('estate/<slug:slug>/delete/', views.EstateDeleteView.as_view(), name='estate_delete'),
@@ -45,6 +47,7 @@ urlpatterns = [
     # ── Devices ───────────────────────────────────────────────────────────────
     path('devices/',                    views.DeviceListView.as_view(),   name='device_list'),
     path('devices/create/',             views.DeviceCreateView.as_view(), name='device_create'),
+    path('devices/print/',              views.DevicePrintView.as_view(),  name='device_print'),
     path('devices/<slug:slug>/',        views.DeviceDetailView.as_view(), name='device_detail'),
     path('devices/<slug:slug>/edit/',   views.DeviceUpdateView.as_view(), name='device_update'),
     path('devices/<slug:slug>/delete/', views.DeviceDeleteView.as_view(), name='device_delete'),
@@ -52,6 +55,7 @@ urlpatterns = [
     # ── Family Awareness ──────────────────────────────────────────────────────
     path('familyawareness/',                    views.FamilyAwarenessListView.as_view(),   name='familyawareness_list'),
     path('familyawareness/create/',             views.FamilyAwarenessCreateView.as_view(), name='familyawareness_create'),
+    path('familyawareness/print/',              views.FamilyAwarenessPrintView.as_view(),  name='familyawareness_print'),
     path('familyawareness/<slug:slug>/',        views.FamilyAwarenessDetailView.as_view(), name='familyawareness_detail'),
     path('familyawareness/<slug:slug>/edit/',   views.FamilyAwarenessUpdateView.as_view(), name='familyawareness_update'),
     path('familyawareness/<slug:slug>/delete/', views.FamilyAwarenessDeleteView.as_view(), name='familyawareness_delete'),
@@ -73,9 +77,10 @@ urlpatterns = [
     path('funeralplan/step/8/',   views.FuneralPlanStep8View.as_view(),  name='funeralplan_step8'),
 
     # ── Important Documents ───────────────────────────────────────────────────
-    path('documents/',                    views.ImportantDocumentListView.as_view(),   name='importantdocument_list'),
-    path('documents/create/',             views.ImportantDocumentCreateView.as_view(), name='importantdocument_create'),
-    path('documents/<slug:slug>/',        views.ImportantDocumentDetailView.as_view(), name='importantdocument_detail'),
+    path('documents/',                    views.ImportantDocumentListView.as_view(),        name='importantdocument_list'),
+    path('documents/create/',             views.ImportantDocumentCreateView.as_view(),     name='importantdocument_create'),
+    path('documents/print/',              views.ImportantDocumentPrintView.as_view(),      name='importantdocument_print'),
+    path('documents/<slug:slug>/',        views.ImportantDocumentDetailView.as_view(),     name='importantdocument_detail'),
     path('documents/<slug:slug>/edit/',   views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<slug:slug>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),
 
