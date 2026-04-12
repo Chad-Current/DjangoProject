@@ -3,7 +3,7 @@
    Includes: CSS tokens, typography, utilities, layout components
    Load before forms.css
    ═══════════════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Ultra&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Ultra&display=swap");
 
 /* ══════════════════════════════════════════════
    BOX MODEL RESET
@@ -14,7 +14,6 @@
 *::after {
   box-sizing: border-box;
 }
-
 
 /* ══════════════════════════════════════════════
    CSS DESIGN TOKENS
@@ -65,11 +64,9 @@
   --ten-percent: #26567e;
   --zero-percent: #223e58;
   --accent-color: #ffa62b;
-  --green-tag: #66FA90;
+  --green-tag: #66fa90;
   --hover-color: #c9ddee;
-
 }
-
 
 /* ══════════════════════════════════════════════
    BASE / BODY
@@ -92,7 +89,6 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
   background: var(--text-color-dark);
 }
-
 
 /* ══════════════════════════════════════════════
    TYPOGRAPHY
@@ -391,7 +387,6 @@ span {
   color: #27ae60;
 }
 
-
 /* ══════════════════════════════════════════════
    HEADER SECTION
    Gradient banner used at the top of dashboard pages
@@ -404,7 +399,12 @@ span {
   align-items: center;
   justify-content: center;
   margin: auto;
-  background: linear-gradient(135deg, var(--thirty-percent) 0%, var(--ten-percent) 50%, var(--ten-percent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--thirty-percent) 0%,
+    var(--ten-percent) 50%,
+    var(--ten-percent) 100%
+  );
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
@@ -423,7 +423,6 @@ span {
   font-weight: 400;
   color: var(--text-color);
 }
-
 
 /* ══════════════════════════════════════════════
    CARD / VIEW CONTAINERS
@@ -482,7 +481,9 @@ span {
   padding: 2em;
   border-radius: 20px;
   border: solid 2px var(--ten-percent);
-  box-shadow: 6px 6px 12px #02020214, 0 -1px 12px var(--purewhite-color);
+  box-shadow:
+    6px 6px 12px #02020214,
+    0 -1px 12px var(--purewhite-color);
   strong {
     font-family: var(--title-font);
     font-size: var(--font-nm);
@@ -559,7 +560,6 @@ span {
   justify-content: flex-end;
 }
 
-
 /* ══════════════════════════════════════════════
    FORM LAYOUT HELPERS
    ══════════════════════════════════════════════ */
@@ -598,7 +598,6 @@ span {
   color: var(--ten-percent);
 }
 
-
 /* ══════════════════════════════════════════════
    LOGIN FORM CARD
    Standalone auth page card
@@ -626,7 +625,6 @@ span {
   color: var(--sixty-percent);
 }
 
-
 /* ══════════════════════════════════════════════
    CANCEL BUTTON
    Used on delete/edit views outside of forms.css scope
@@ -640,7 +638,9 @@ span {
   cursor: pointer;
   border: 1px solid var(--background-color);
   transition: all 0.3s;
-  box-shadow: 6px 6px 12px #02020214, 0 -1px 12px var(--purewhite-color);
+  box-shadow:
+    6px 6px 12px #02020214,
+    0 -1px 12px var(--purewhite-color);
   font-size: var(--font-nm);
   font-family: var(--main-font);
   font-weight: 600;
@@ -661,7 +661,6 @@ span {
   font-weight: 600;
   margin: 1.25rem auto;
   text-wrap: wrap;
-
 }
 
 .ob-alert-success {
@@ -695,7 +694,6 @@ span {
   border: 2px solid rgba(11, 90, 0, 0.28);
   padding: 0.45rem;
 }
-
 
 /* ══════════════════════════════════════════════
    ALERT — Bootstrap-compatible .alert-* system
@@ -744,7 +742,6 @@ span {
   border: 2px solid rgba(192, 57, 43, 0.28);
 }
 
-
 /* ══════════════════════════════════════════════
    PRICING SECTION
    Landing page (index.html) and payment page.
@@ -775,10 +772,14 @@ span {
   border-radius: 20px;
   padding: 2.5rem 2rem;
   display: flex;
-  box-shadow: 4px 6px 18px rgba(2, 2, 2, 0.07), 0 -1px 10px var(--purewhite-color);
+  box-shadow:
+    4px 6px 18px rgba(2, 2, 2, 0.07),
+    0 -1px 10px var(--purewhite-color);
   border: 1.5px solid rgba(45, 106, 156, 0.15);
   position: relative;
-  transition: transform 0.25s, box-shadow 0.25s;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
   width: 40%;
 }
 
@@ -792,14 +793,17 @@ span {
   border-width: 2px;
 }
 
-
 /* -- Add-on badge -- */
 /* ── Add-on callout ── */
 .add-on {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  background: linear-gradient(135deg, rgba(98, 162, 206, 0.08), rgba(45, 106, 156, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(98, 162, 206, 0.08),
+    rgba(45, 106, 156, 0.12)
+  );
   border: 1.5px dashed rgba(45, 106, 156, 0.3);
   border-radius: 12px;
   padding: 0.75rem 1rem;
@@ -861,7 +865,11 @@ span {
 
 /* On recommended card, accent the border */
 .pricing-card.recommended .add-on {
-  background: linear-gradient(135deg, rgba(255, 166, 43, 0.07), rgba(255, 166, 43, 0.13));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 166, 43, 0.07),
+    rgba(255, 166, 43, 0.13)
+  );
   border-color: rgba(255, 166, 43, 0.4);
 }
 
@@ -991,7 +999,10 @@ span {
   text-decoration: none;
   cursor: pointer;
   letter-spacing: 0.03em;
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
   box-shadow: 3px 4px 12px rgba(2, 2, 2, 0.1);
 }
 
@@ -1008,7 +1019,11 @@ span {
 }
 
 .legacy-btn {
-  background: linear-gradient(135deg, var(--thirty-percent), var(--ten-percent));
+  background: linear-gradient(
+    135deg,
+    var(--thirty-percent),
+    var(--ten-percent)
+  );
   color: var(--text-color);
 }
 
@@ -1055,14 +1070,17 @@ span {
     border-radius: 20px;
     padding: 2.5rem 2rem;
     display: flex;
-    box-shadow: 4px 6px 18px rgba(2, 2, 2, 0.07), 0 -1px 10px var(--purewhite-color);
+    box-shadow:
+      4px 6px 18px rgba(2, 2, 2, 0.07),
+      0 -1px 10px var(--purewhite-color);
     border: 1.5px solid rgba(45, 106, 156, 0.15);
     position: relative;
-    transition: transform 0.25s, box-shadow 0.25s;
+    transition:
+      transform 0.25s,
+      box-shadow 0.25s;
     width: 80%;
   }
 }
-
 
 /* ══════════════════════════════════════════════
    RESPONSIVE IMAGES
@@ -1070,25 +1088,46 @@ span {
    ══════════════════════════════════════════════ */
 
 @media (width <= 480px) {
-  .center-img { width: 20em; }
+  .main {
+    margin: 5em auto;
+  }
+  .center-img {
+    width: 20em;
+  }
 }
 
 @media (481px <= width <= 768px) {
-  .center-img { width: 20em; }
+  .main {
+    margin: 4em auto;
+  }
+  .center-img {
+    width: 20em;
+  }
 }
 
 @media (769px <= width <= 1024px) {
-  .center-img { width: 25em; }
+  .main {
+    margin: 3em auto;
+  }
+  .center-img {
+    width: 25em;
+  }
 }
 
 @media (1025px <= width <= 1500px) {
-  .center-img { width: 30em; }
+  .main {
+    margin: 2em auto;
+  }
+  .center-img {
+    width: 30em;
+  }
 }
 
 @media (width >= 1501px) {
-  .center-img { width: 35em; }
+  .center-img {
+    width: 35em;
+  }
 }
-
 
 /* ══════════════════════════════════════════════
    FAMILY ACCESS REQUEST SECTION
@@ -1118,4 +1157,3 @@ span {
   margin-left: auto;
   margin-right: auto;
 }
-

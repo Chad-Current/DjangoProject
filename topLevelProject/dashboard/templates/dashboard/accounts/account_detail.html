@@ -15,12 +15,12 @@
         <h1><i class="fas fa-user-circle"></i> {{ account.account_name_or_provider }}</h1>
         <div class="subtitle">
             Digital Account
-            {% if has_vault_entry %}
-            <span class="badge-role badge-executor" title="A password for this account is stored in your vault">
-                <i class="fas fa-shield-alt"></i> Password in Vault
-            </span>
-            {% endif %}
         </div>
+        {% if has_vault_entry %}
+        <span class="badge-role badge-executor" title="A password for this account is stored in your vault">
+            <i class="fas fa-shield-alt"></i> Password in Vault
+        </span>
+        {% endif %}
     </div>
 
     <div class="row">

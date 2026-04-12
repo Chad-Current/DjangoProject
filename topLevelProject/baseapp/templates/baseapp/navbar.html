@@ -4,6 +4,15 @@
   href="https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
   rel="stylesheet">
 
+
+
+<section class="company">
+  <div class="company-area">
+    <img src="/static/baseapp/images/novatern.png" class="company-logo">
+    <!-- <h1>Novatern</h1> -->
+    </div>
+</section>
+
 <button id="open-sidebar-button" onclick="openSidebar()" aria-label="Open navigation" aria-expanded="false"
   aria-controls="navbar">
   <img src="/static/baseapp/images/MenuButton.svg" class="nav-icons" alt="" />
@@ -79,8 +88,6 @@
         <i class="fas fa-user-tie nav-icon" aria-hidden="true"></i>Funeral Planning
       </a>
     </li>
-    {% endif %}
-    {% if request.user.can_access_addon %}
     <li class="mobile-only">
       <a href="{% url 'vault:vault_list' %}">
         <i class="fas fa-user-shield nav-icon" aria-hidden="true"></i>Vault

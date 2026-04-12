@@ -58,7 +58,7 @@ nav#navbar {
   display: flex;
   align-items: center;
   background-color: #fff;
-  border-bottom: 1px solid var(--hover-color, #ebebeb);
+  /* border-bottom: 1px solid var(--hover-color, #ebebeb); */
   padding: 0 2em;
   /* position: sticky; */
   top: 0;
@@ -88,7 +88,7 @@ nav#navbar>ul>li {
 .nav-item>a {
   display: flex;
   align-items: center;
-  padding: 1.1em 0.9em;
+  padding: 0.5em;
   font-size: var(--font-md, 0.9rem);
   font-family: var(--main-font);
   font-weight: 700;
@@ -648,4 +648,39 @@ nav#navbar>ul>li {
 .underline {
   width: 60%;
   border-bottom: solid 2px var(--thirty-percent);
+}
+
+.company {
+  display: inline-block;
+  position: absolute;
+  top:10px;
+  left:10px;
+  z-index:99;
+}
+
+.company-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.company-area h1 {
+  font-family: var(--main-font);
+  font-size: clamp(1em, 3em, 3em);
+  /* font-size: var(--font-xxl); */
+  /* font-weight: 300; */
+  color: var(--zero-percent);
+}
+
+.company-logo {
+  width: clamp(60px, 8vw, 150px);
+  height: auto;
+  display: block;
+}
+
+@media screen and (max-width: 780px) {
+  .company-logo {
+    width: clamp(40px, 14vw, 60px);
+  }
 }
