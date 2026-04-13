@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reviews Due — Digital Estate Plan</title>
+  <title>Reviews Due — Novatern</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f0f4f8; font-family:Arial, Helvetica, sans-serif;">
 
@@ -18,7 +18,7 @@
           <!-- Header bar -->
           <tr>
             <td style="background-color:#16283b; padding:32px 40px 28px; text-align:center;">
-              <p style="margin:0 0 6px; font-size:12px; font-weight:600; letter-spacing:2px; color:#7fb3d6; text-transform:uppercase;">Digital Estate Plan</p>
+              <p style="margin:0 0 6px; font-size:12px; font-weight:600; letter-spacing:2px; color:#7fb3d6; text-transform:uppercase;">Novatern</p>
               {% if overdue and not due_today %}
               <h1 style="margin:0; font-size:22px; font-weight:700; color:#ffffff; line-height:1.3;">
                 {{ overdue|length }} Review{{ overdue|length|pluralize }} Overdue
@@ -43,7 +43,7 @@
               </p>
               <p style="margin:0 0 28px; font-size:15px; color:#555555; line-height:1.6;">
                 This is a reminder that
-                {% if reviews|length == 1 %}one item in your Digital Estate Plan is{% else %}{{ reviews|length }} items in your Digital Estate Plan are{% endif %}
+                {% if reviews|length == 1 %}one item in your Novatern is{% else %}{{ reviews|length }} items in your Novatern are{% endif %}
                 due for review. Keeping your plan current ensures the people you trust have accurate information when it matters most.
               </p>
             </td>
@@ -141,10 +141,10 @@
             <td style="padding:20px 40px 32px;">
               <p style="margin:0 0 4px; font-size:12px; color:#999999; line-height:1.5;">
                 Warm regards,<br>
-                <strong style="color:#555555;">The Digital Estate Plan Team</strong>
+                <strong style="color:#555555;">The Novatern Team</strong>
               </p>
               <p style="margin:16px 0 0; font-size:11px; color:#bbbbbb; line-height:1.6;">
-                Digital Estate Plan &middot; {{ site_url }}<br>
+                Novatern &middot; {{ site_url }}<br>
                 You're receiving this because you have an active subscription and one or more reviews are due.<br>
                 To adjust your notification preferences, visit your account settings.
               </p>

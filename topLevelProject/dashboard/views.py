@@ -122,7 +122,11 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['family_knows_count']= FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
             context['funeral_planned']   = FuneralPlan.objects.filter(profile=profile).count()
 
+            tier_targets = self._get_tier_targets(user)
+            context['tier_targets'] = tier_targets
+
             context['progress'] = self._calculate_progress(
+                targets      = tier_targets,
                 accounts     = context['accounts_count'],
                 devices      = context['devices_count'],
                 contacts     = context['contacts_count'],
@@ -202,14 +206,46 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
         ])
         return completed < 3
 
-    def _calculate_progress(self, **kwargs):
+    def _get_tier_targets(self, user):
+        """Return per-category display targets based on the user's subscription tier."""
+        if user.subscription_tier == 'legacy':
+            return {
+                'contacts':     5,
+                'accounts':    10,
+                'devices':      5,
+                'estates':      3,
+                'documents':    8,
+                'family_knows': 5,
+            }
+        elif user.subscription_tier == 'essentials':
+            lim = user.ESSENTIAL_TIER_LIMITS
+            return {
+                'contacts':     lim['contacts'],
+                'accounts':     lim['accounts'],
+                'devices':      lim['devices'],
+                'estates':      lim['estate_documents'],
+                'documents':    lim['important_documents'],
+                'family_knows': lim['family_awareness'],
+            }
+        else:  # free / none
+            lim = user.FREE_TIER_LIMITS
+            return {
+                'contacts':     lim['contacts'],
+                'accounts':     lim['accounts'],
+                'devices':      lim['devices'],
+                'estates':      lim['estate_documents'],
+                'documents':    lim['important_documents'],
+                'family_knows': lim['family_awareness'],
+            }
+
+    def _calculate_progress(self, targets, **kwargs):
         criteria = {
-            'accounts':    {'weight': 0.25, 'target': 10},
-            'devices':     {'weight': 0.15, 'target': 5},
-            'contacts':    {'weight': 0.10, 'target': 5},
-            'estates':     {'weight': 0.25, 'target': 3},
-            'documents':   {'weight': 0.15, 'target': 5},
-            'family_knows':{'weight': 0.10, 'target': 5},
+            'accounts':     {'weight': 0.25, 'target': targets['accounts']},
+            'devices':      {'weight': 0.15, 'target': targets['devices']},
+            'contacts':     {'weight': 0.10, 'target': targets['contacts']},
+            'estates':      {'weight': 0.25, 'target': targets['estates']},
+            'documents':    {'weight': 0.15, 'target': targets['documents']},
+            'family_knows': {'weight': 0.10, 'target': targets['family_knows']},
         }
         total = 0
         for key, cfg in criteria.items():
@@ -336,7 +372,7 @@ class AccountListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     template_name       = 'dashboard/accounts/account_list.html'
     context_object_name = 'accounts'
     owner_field         = 'profile__user'
-    paginate_by         = 20
+    paginate_by         = 5
     free_tier_item      = 'accounts'
 
     def get_queryset(self):
@@ -354,15 +390,7 @@ class AccountListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_modify'] = user.can_modify_data() or user.is_free_tier()
-        # Skip re-fetch when lapsed — super() already set the limited list
-        if not context.get('is_lapsed'):
-            try:
-                profile = Profile.objects.get(user=user)
-                context['accounts'] = Account.objects.filter(profile=profile)
-            except Profile.DoesNotExist:
-                context['accounts'] = Account.objects.none()
+        context['can_modify'] = self.request.user.can_modify_data() or self.request.user.is_free_tier()
         return context
 
 
@@ -459,7 +487,7 @@ class DeviceListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     template_name       = 'dashboard/devices/device_list.html'
     context_object_name = 'devices'
     owner_field         = 'profile__user'
-    paginate_by         = 20
+    paginate_by         = 10
     free_tier_item      = 'devices'
 
     def get_queryset(self):
@@ -568,7 +596,7 @@ class EstateListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     template_name       = 'dashboard/estates/estate_list.html'
     context_object_name = 'estates'
     owner_field         = 'profile__user'
-    paginate_by         = 20
+    paginate_by         = 10
     free_tier_item      = 'estate_documents'
 
     def get_queryset(self):
@@ -673,7 +701,7 @@ class FamilyAwarenessListView(LapsedViewLimitMixin, ViewAccessMixin, ListView):
     template_name       = 'dashboard/familyaware/familyawareness_list.html'
     context_object_name = 'familyawareness_objects'
     owner_field         = 'relation__profile__user'
-    paginate_by         = 20
+    paginate_by         = 10
     free_tier_item      = 'family_awareness'
 
     def get_queryset(self):
@@ -779,7 +807,7 @@ class ImportantDocumentListView(LapsedViewLimitMixin, ViewAccessMixin, ListView)
     template_name       = 'dashboard/importantdocuments/importantdocument_list.html'
     context_object_name = 'documents'
     owner_field         = 'profile__user'
-    paginate_by         = 20
+    paginate_by         = 10
     free_tier_item      = 'important_documents'
 
     def get_queryset(self):

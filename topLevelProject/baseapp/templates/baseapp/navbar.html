@@ -184,17 +184,17 @@
     </li>
     <li class="mobile-only">
       <a href="{% if user.has_paid %}{% url 'accounts:subscription_manage' %}{% else %}{% url 'accounts:payment' %}{% endif %}">
-        <i class="fa-regular fa-credit-card nav-icon" aria-hidden="true"></i>Account &amp; Billing
+        <i class="fa fa-wallet nav-icon" aria-hidden="true"></i>Account &amp; Billing
       </a>
     </li>
     <li class="mobile-only">
       <a href="/support/">
-        <i class="fa-regular fa-headset nav-icon" aria-hidden="true"></i>Customer Support
+        <i class="fa fa-headset nav-icon" aria-hidden="true"></i>Customer Support
       </a>
     </li>
     <li class="mobile-only mobile-logout">
       <a href="{% url 'accounts:logout' %}">
-        <i class="fa-solid fa-arrow-right-from-bracket nav-icon" aria-hidden="true"></i>Logout
+        <i class="fas fa-sign-out-alt nav-icon" aria-hidden="true"></i>Logout
       </a>
     </li>
 

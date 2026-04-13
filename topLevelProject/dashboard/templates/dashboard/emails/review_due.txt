@@ -1,6 +1,6 @@
 Hi {{ user.first_name|default:"there" }},
 
-This is a reminder that you have {{ reviews|length }} review{{ reviews|length|pluralize }} due on your Digital Estate Plan.
+This is a reminder that you have {{ reviews|length }} review{{ reviews|length|pluralize }} due on your Novatern.
 
 {% if overdue %}——————————————————————————
 OVERDUE — {{ overdue|length }} item{{ overdue|length|pluralize }}
@@ -21,9 +21,9 @@ Log in to review and update your records:
 Keeping your plan current ensures the people you trust have accurate information when it matters most.
 
 Warm regards,
-The Digital Estate Plan Team
+The Novatern Team
 
 ---
-Digital Estate Plan · {{ site_url }}
+Novatern · {{ site_url }}
 You're receiving this because you have an active subscription and one or more reviews are due.
 To adjust your notification preferences, visit your account settings.

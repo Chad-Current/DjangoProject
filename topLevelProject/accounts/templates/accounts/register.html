@@ -92,6 +92,24 @@
                     {% endif %}
                 </div>
 
+                <!-- Terms agreement -->
+                <div class="form-field{% if form.terms_agreed.errors %} has-error{% endif %}">
+                    <div style="display:flex; align-items:flex-start; margin-top: 1.5em; gap:0.5rem;">
+                        {{ form.terms_agreed }}
+                        <label for="{{ form.terms_agreed.id_for_label }}" style="margin:0; line-height:1.5;">
+                            I have read and agree to the following policies.
+                        </label>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:0.5em; margin-top:1.5em; padding-left:1.6rem;">
+                        <a href="{% url 'baseapp:terms_and_conditions' %}" target="_blank" rel="noopener">Terms and Conditions</a>
+                        <a href="{% url 'baseapp:privacy_policy' %}" target="_blank" rel="noopener">Privacy Policy</a>
+                        <a href="{% url 'baseapp:cookie_policy' %}" target="_blank" rel="noopener">Cookie Policy</a>
+                    </div>
+                    {% if form.terms_agreed.errors %}
+                        <div class="error" role="alert">{{ form.terms_agreed.errors }}</div>
+                    {% endif %}
+                </div>
+
                 <div class="button-group">
                     <button class="btn btn-primary" type="submit">Register</button>
                 </div>

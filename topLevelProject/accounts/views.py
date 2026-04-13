@@ -77,9 +77,15 @@ class RegisterView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             user = form.save()
+            update_fields = []
             if hasattr(user, 'last_login_ip'):
                 user.last_login_ip = get_client_ip(request)
-                user.save(update_fields=['last_login_ip'])
+                update_fields.append('last_login_ip')
+            if form.cleaned_data.get('terms_agreed'):
+                user.terms_accepted_at = timezone.now()
+                update_fields.append('terms_accepted_at')
+            if update_fields:
+                user.save(update_fields=update_fields)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             logger.info(f'New user registered: {user.email}')
             return redirect('dashboard:profile_create')

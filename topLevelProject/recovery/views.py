@@ -444,7 +444,7 @@ def _send_verification_email(recovery_request):
             f'{verification_url}\n\n'
             f'This link will expire in 48 hours.\n\n'
             f'If you did not make this request, please ignore this email.\n\n'
-            f'Best regards,\nDigital Estate Plan Team'
+            f'Best regards,\nNovatern Team'
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[recovery_request.requester_email],
@@ -480,7 +480,7 @@ def _send_grant_access_email(grant):
             f'To view the estate, log in to your account and visit:\n'
             f'{access_url}\n\n'
             f'If you have questions about this access, please contact the estate administrator.\n\n'
-            f'Best regards,\nDigital Estate Plan'
+            f'Best regards,\nNovatern'
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[email],
@@ -512,7 +512,7 @@ def _send_status_update_email(recovery_request, old_status, new_status):
     if recovery_request.outcome_notes:
         body += f'\nNotes:\n{recovery_request.outcome_notes}\n'
 
-    body += '\nIf you have questions, please contact our support team.\n\nBest regards,\nDigital Estate Plan Team'
+    body += '\nIf you have questions, please contact our support team.\n\nBest regards,\nNovatern Team'
 
     send_mail(
         subject=f'Recovery Request Update — {new_status}',

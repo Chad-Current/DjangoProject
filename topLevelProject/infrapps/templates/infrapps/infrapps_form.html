@@ -70,6 +70,12 @@
     <!-- ══════════════════════════════════════════
          CREDENTIALS
     ══════════════════════════════════════════ -->
+    <!-- Security notice — shown before the password field so users read it first -->
+    <div class="alert alert-warning">
+      <strong>Security notice:</strong> Your password is encrypted with AES-256 (Fernet) before being saved.
+      It is never stored in plain text and is only decrypted on explicit request within your authenticated session.
+    </div>
+
     <fieldset class="form-fieldset">
       <legend class="form-fieldset-legend">Credentials</legend>
 
@@ -110,10 +116,17 @@
 
     </fieldset>
 
-    <!-- Security notice -->
-    <div class="alert alert-warning">
-      <strong>Security notice:</strong> Your password is encrypted with AES-256 (Fernet) before being saved.
-      It is never stored in plain text and is only decrypted on explicit request within your authenticated session.
+    <!-- Risk acknowledgment — required before saving -->
+    <div class="form-field{% if form.risk_acknowledged.errors %} has-error{% endif %}">
+      <div class="form-check">
+        {{ form.risk_acknowledged }}
+        <label class="form-check-label" for="{{ form.risk_acknowledged.id_for_label }}">
+          {{ form.risk_acknowledged.label }}
+        </label>
+      </div>
+      {% if form.risk_acknowledged.errors %}
+        <div class="error" role="alert">{{ form.risk_acknowledged.errors }}</div>
+      {% endif %}
     </div>
 
     <!-- Actions -->

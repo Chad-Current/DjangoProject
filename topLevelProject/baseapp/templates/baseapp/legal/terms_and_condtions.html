@@ -7,7 +7,7 @@
     <!-- Header Banner -->
     <div class="form-wrapper-header">
       <h2>Terms and Conditions</h2>
-      <p>Last Updated: February 27, 2026</p>
+      <p>Last Updated: April 13, 2026</p>
     </div>
 
     <div class="form-wrapper-body">
@@ -16,7 +16,7 @@
       <fieldset>
         <legend>1. Introduction</legend>
         <p>
-          Welcome to Digital Estate Plan ("we," "our," or "us"). These Terms and Conditions ("Terms") govern
+          Welcome to Novatern ("we," "our," or "us"). These Terms and Conditions ("Terms") govern
           your access to and use of our website, services, and related tools for digital estate organization.
         </p>
         <p>
@@ -29,8 +29,9 @@
       <fieldset>
         <legend>2. Services</legend>
         <p>
-          Digital Estate Plan provides tools, guides, and consultation services to help users organize their
-          digital files, passwords, and estate-related information.
+          Novatern provides a self-service platform for organizing digital accounts, devices,
+          contacts, estate documents, and related personal information to assist families and designated
+          contacts in the event of death or incapacitation.
         </p>
         <div class="ob-alert ob-alert-info" role="note">
           <span>
@@ -41,16 +42,66 @@
         </div>
       </fieldset>
 
-      <!-- 3. User Responsibilities -->
+      <!-- 3. Subscription Tiers -->
       <fieldset>
-        <legend>3. User Responsibilities</legend>
+        <legend>3. Subscription Tiers and Access</legend>
+        <p>Access to features is determined by your subscription tier:</p>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Free (No Subscription)</strong>
+              <small class="helptext">Full edit access up to per-category item limits: 2 contacts, 1 digital account, 1 device, 1 estate document, 1 important document, and 2 family notes. View access to all saved data is always included. No credit card required.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Essentials</strong>
+              <small class="helptext">Full edit access while your subscription is active, with higher per-category limits: 3 contacts, 3 accounts, 3 devices, 3 estate documents, 5 important documents, and 5 family notes. Does not include the encrypted Password Vault or funeral planning features. Available monthly or annually.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Legacy</strong>
+              <small class="helptext">Full edit access with no item limits while your subscription is active, including the encrypted Password Vault, funeral planning, and unlimited items across all categories. Available monthly or annually.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Lapsed Subscription</strong>
+              <small class="helptext">If your Essentials or Legacy subscription lapses or is canceled, your account reverts to view-only access at the Free Tier Level. All previously entered data remains accessible but cannot be edited until an active subscription is restored.</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="ob-alert ob-alert-info" role="note" style="margin-top: 1rem;">
+          <span>
+            Subscription status and tier limits are enforced at the server level on all data modification
+            operations. Payments are processed by Stripe. We do not store your payment card details on our servers.
+          </span>
+        </div>
+      </fieldset>
+
+      <!-- 4. User Responsibilities -->
+      <fieldset>
+        <legend>4. User Responsibilities</legend>
         <p>By using our services, you agree to:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
           <li>Provide accurate and current information.</li>
           <li>Use our website and services only for lawful purposes.</li>
-          <li>Maintain the confidentiality of your account credentials.</li>
+          <li>Maintain the confidentiality of your account credentials, including your login password.</li>
           <li>Not upload or share unlawful, harmful, or infringing content.</li>
           <li>Respect our intellectual property and not reproduce, redistribute, or resell our materials without written consent.</li>
+          <li>Accept responsibility for all credentials and information you choose to store in the platform.</li>
         </ul>
         <div class="ob-alert ob-alert-info" role="note">
           <span>
@@ -60,9 +111,9 @@
         </div>
       </fieldset>
 
-      <!-- 4. Security and Data Protection -->
+      <!-- 5. Security and Data Protection -->
       <fieldset>
-        <legend>4. Security and Data Protection</legend>
+        <legend>5. Security and Data Protection</legend>
         <p>We take security seriously and use encrypted technologies to safeguard your information.</p>
 
         <div class="form-group">
@@ -70,8 +121,8 @@
             <span class="form-check-label">
               <strong>File Storage</strong>
               <small class="helptext">
-                All uploaded documents are encrypted both in transit and at rest using secure cloud
-                infrastructure. Access is restricted to authorized team members.
+                All uploaded documents are stored on our servers with access restricted to your authenticated
+                account and any recovery access you have authorized.
               </small>
             </span>
           </div>
@@ -80,10 +131,40 @@
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
-              <strong>Password Management</strong>
+              <strong>Password Vault Encryption</strong>
               <small class="helptext">
-                We integrate with the Bitwarden Password Manager API for secure password storage and handling
-                under Bitwarden's zero-knowledge encryption model. We never access or store plaintext passwords.
+                Passwords stored in the Password Vault are encrypted using AES-256 (Fernet symmetric
+                encryption) before being written to the database. Plaintext passwords are never persisted.
+                Encryption keys are maintained in server environment variables. Passwords are decrypted only
+                when you explicitly request a reveal within an authenticated session and are automatically
+                hidden after 15 seconds. Every reveal is logged with the user, timestamp, and IP address.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Financial Account Restriction</strong>
+              <small class="helptext">
+                The system does not permit storage of passwords for financial institution accounts, including
+                Online Banking, Neobank/Digital Bank, Brokerage/Investment, Cryptocurrency Exchange, Payment
+                Processor, and Payment Wallet account types. This restriction is enforced at both the
+                interface and server level and cannot be bypassed.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Session and Account Security</strong>
+              <small class="helptext">
+                Authenticated sessions expire after 1 hour of inactivity. Repeated failed login attempts
+                will result in a temporary account lockout. Users may log in with either their username or
+                email address.
               </small>
             </span>
           </div>
@@ -94,8 +175,9 @@
             <span class="form-check-label">
               <strong>User Responsibility</strong>
               <small class="helptext">
-                You are responsible for securing your own access credentials and ensuring shared information
-                is transmitted through secure, private channels.
+                You are responsible for securing your own account credentials and for all information you
+                choose to store in the platform. Before saving any vault entry, you are required to
+                affirmatively acknowledge the inherent risk of storing credentials online.
               </small>
             </span>
           </div>
@@ -109,14 +191,14 @@
         </div>
       </fieldset>
 
-      <!-- 5. Account Access and Termination -->
+      <!-- 6. Account Access and Termination -->
       <fieldset>
-        <legend>5. Account Access and Termination</legend>
+        <legend>6. Account Access and Termination</legend>
         <p>
           You may request account deletion or data removal at any time by contacting&nbsp;
-          <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
-            privacy@digitalestateplan.com
-          </a>.
+          <a href="mailto:privacy@novatern.com">
+            privacy@novatern.com
+          </a>
         </p>
         <p>
           We reserve the right to suspend or terminate accounts that violate these Terms or misuse our
@@ -124,12 +206,27 @@
         </p>
       </fieldset>
 
-      <!-- 6. Intellectual Property -->
+      <!-- 7. Family Recovery Access -->
       <fieldset>
-        <legend>6. Intellectual Property</legend>
+        <legend>7. Family Recovery Access</legend>
+        <p>
+          The platform includes a family recovery system that allows a designated contact to request access
+          to your estate records in the event of your death or incapacitation. Recovery requests undergo
+          administrative review before access is granted. Access is provided through a time-limited
+          verification token.
+        </p>
+        <p style="margin: 0;">
+          You accept that authorized recovery access by a designated contact is a feature of the service and
+          does not constitute a breach of your privacy under these Terms.
+        </p>
+      </fieldset>
+
+      <!-- 8. Intellectual Property -->
+      <fieldset>
+        <legend>8. Intellectual Property</legend>
         <p>
           All website content, including text, graphics, designs, software, and documentation, is the
-          intellectual property of Digital Estate Plan unless otherwise stated.
+          intellectual property of Novatern unless otherwise stated.
         </p>
         <p>
           You may use these materials for personal, non-commercial purposes only. Any reproduction,
@@ -137,41 +234,43 @@
         </p>
       </fieldset>
 
-      <!-- 7. Limitation of Liability -->
+      <!-- 9. Limitation of Liability -->
       <fieldset>
-        <legend>7. Limitation of Liability</legend>
+        <legend>9. Limitation of Liability</legend>
         <p>To the fullest extent permitted by law:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
-          <li>Digital Estate Plan is not liable for any direct, indirect, incidental, or consequential damages arising from your use or inability to use our services.</li>
-          <li>We are not responsible for errors in third-party platforms or integrations, including Bitwarden or cloud storage providers.</li>
+          <li>Novatern is not liable for any direct, indirect, incidental, or consequential damages arising from your use or inability to use our services.</li>
+          <li>We are not a financial institution and are not liable for any financial loss, fraud, or unauthorized access resulting from credentials or account information you choose to store in the platform.</li>
+          <li>We are not responsible for errors in third-party platforms or integrations, including payment processors or hosting services.</li>
           <li>Our materials and recommendations are provided "as is," without guarantees or warranties of completeness or legality.</li>
           <li>Users accept full responsibility for how they apply our information and tools in their own estate planning process.</li>
+          <li>Users who store credentials in the Password Vault do so at their own risk after affirmatively acknowledging that risk at the time of storage.</li>
         </ul>
       </fieldset>
 
-      <!-- 8. Indemnification -->
+      <!-- 10. Indemnification -->
       <fieldset>
-        <legend>8. Indemnification</legend>
+        <legend>10. Indemnification</legend>
         <p>
-          You agree to indemnify and hold harmless Digital Estate Plan, its affiliates, employees, and agents
-          from any claims, losses, or expenses arising out of your misuse of our services or violation of
-          these Terms.
+          You agree to indemnify and hold harmless Novatern, its affiliates, employees, and agents
+          from any claims, losses, or expenses arising out of your misuse of our services, violation of these
+          Terms, or the information you choose to store in the platform.
         </p>
       </fieldset>
 
-      <!-- 9. Third-Party Links and Integrations -->
+      <!-- 11. Third-Party Links -->
       <fieldset>
-        <legend>9. Third-Party Links and Integrations</legend>
+        <legend>11. Third-Party Links</legend>
         <p>
-          Our website or services may include links to third-party tools, such as Bitwarden, encrypted storage
-          providers, or professional resources. These links are provided for convenience only. We are not
-          responsible for third-party services or their content, policies, or security practices.
+          Our website or services may include links to third-party resources. These links are provided for
+          convenience only. We are not responsible for third-party services or their content, policies, or
+          security practices.
         </p>
       </fieldset>
 
-      <!-- 10. Modifications to Services or Terms -->
+      <!-- 12. Modifications to Services or Terms -->
       <fieldset>
-        <legend>10. Modifications to Services or Terms</legend>
+        <legend>12. Modifications to Services or Terms</legend>
         <p>
           We may update or modify our services, website, or these Terms at any time. Updated versions will be
           posted on our website with a new "Last Updated" date. Continued use of our services constitutes
@@ -179,9 +278,9 @@
         </p>
       </fieldset>
 
-      <!-- 11. Governing Law -->
+      <!-- 13. Governing Law -->
       <fieldset>
-        <legend>11. Governing Law</legend>
+        <legend>13. Governing Law</legend>
         <p>
           These Terms are governed by and construed in accordance with the laws of the State of Iowa, without
           regard to conflict-of-law principles.
@@ -191,19 +290,17 @@
         </p>
       </fieldset>
 
-      <!-- 12. Contact Information -->
+      <!-- 14. Contact Information -->
       <fieldset>
-        <legend>12. Contact Information</legend>
+        <legend>14. Contact Information</legend>
         <p>For questions or concerns about these Terms, please contact:</p>
         <div class="detail-view" style="gap: 0.35rem; padding: 1.25rem 1.5rem;">
-          <p style="margin: 0;"><strong>Digital Estate Plan</strong></p>
-          <p >
+          <p style="margin: 0;"><strong>Novatern</strong></p>
+          <p>
             Email:&nbsp;
-            <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
-              privacy@digitalestateplan.com
+            <a href="mailto:privacy@novatern.com" >
+              privacy@novatern.com
             </a>
-          </p>
-
           </p>
           <p style="margin: 0;">Location: Des Moines, Iowa, USA</p>
         </div>

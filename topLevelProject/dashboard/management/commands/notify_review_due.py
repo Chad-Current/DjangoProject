@@ -141,14 +141,14 @@ class Command(BaseCommand):
         if overdue_count == total:
             return (
                 f'Action needed: {total} review{"s" if total != 1 else ""} overdue'
-                ' — Digital Estate Plan'
+                ' — Novatern'
             )
         if overdue_count > 0:
             return (
                 f'{total} review{"s" if total != 1 else ""} need your attention'
-                ' — Digital Estate Plan'
+                ' — Novatern'
             )
         return (
             f'{total} review{"s" if total != 1 else ""} due today'
-            ' — Digital Estate Plan'
+            ' — Novatern'
         )

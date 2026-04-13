@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 f'{profile_name} will expire on {expiry_date}.\n\n'
                 f'After this date you will no longer be able to view the estate information. '
                 f'If you need continued access, please contact the estate administrator.\n\n'
-                f'Best regards,\nDigital Estate Plan'
+                f'Best regards,\nNovatern'
             )
 
             if dry_run:

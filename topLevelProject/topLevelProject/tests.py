@@ -1,5 +1,5 @@
 """
-tests.py  –  Full test suite for the Digital Estate Planning application.
+tests.py  –  Full test suite for the Novatern application.
 
 Coverage:
   accounts  – CustomUser model, UserRegistrationForm, UserLoginForm,
@@ -204,10 +204,11 @@ class CustomUserSubscriptionTierTests(TestCase):
         self.assertTrue(user.can_view_data())
         self.assertTrue(user.can_modify_data())
 
-    def test_unpaid_cannot_view_or_modify(self):
+    def test_free_tier_can_view_and_modify(self):
+        # Free-tier users (active, never paid) can view and modify up to FREE_TIER_LIMITS
         user = UserFactory.create_unpaid()
-        self.assertFalse(user.can_view_data())
-        self.assertFalse(user.can_modify_data())
+        self.assertTrue(user.can_view_data())
+        self.assertTrue(user.can_modify_data())
 
     def test_inactive_legacy_user_cannot_view_or_modify(self):
         user = UserFactory.create_legacy(username="inactive_legacy", email="il@x.com")
@@ -1762,9 +1763,10 @@ class MixinPermissionLogicTests(TestCase):
         user = UserFactory.create_lapsed(username="mx_exp", email="mx_exp@x.com")
         self.assertFalse(user.can_modify_data())
 
-    def test_unpaid_cannot_modify(self):
+    def test_free_tier_can_modify(self):
+        # Free-tier users can modify up to FREE_TIER_LIMITS per category
         user = UserFactory.create_unpaid(username="mx_unp", email="mx_unp@x.com")
-        self.assertFalse(user.can_modify_data())
+        self.assertTrue(user.can_modify_data())
 
     def test_legacy_can_view(self):
         user = UserFactory.create_legacy(username="mx_vleg", email="mx_vleg@x.com")
@@ -1778,9 +1780,10 @@ class MixinPermissionLogicTests(TestCase):
         user = UserFactory.create_lapsed(username="mx_vexp", email="mx_vexp@x.com")
         self.assertTrue(user.can_view_data())
 
-    def test_unpaid_cannot_view(self):
+    def test_free_tier_can_view(self):
+        # Free-tier users (active, never paid) can view their data
         user = UserFactory.create_unpaid(username="mx_vunp", email="mx_vunp@x.com")
-        self.assertFalse(user.can_view_data())
+        self.assertTrue(user.can_view_data())
 
 
 # ============================================================================

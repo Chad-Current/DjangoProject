@@ -61,6 +61,11 @@ class CustomUser(AbstractUser):
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
     failed_login_attempts = models.IntegerField(default=0)
     account_locked_until = models.DateTimeField(null=True, blank=True)
+    terms_accepted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp of when the user accepted the Terms and Conditions, Privacy Policy, and Cookie Policy.",
+    )
 
     # ── Subscription tier ─────────────────────────────────────────────────────
     subscription_tier = models.CharField(
@@ -154,16 +159,19 @@ class CustomUser(AbstractUser):
         """
         Returns True if the user may ADD / CHANGE / DELETE data.
 
-        New subscription users:
+        Free-tier users (no subscription, never paid):
+            Can modify up to per-category limits defined in FREE_TIER_LIMITS.
+
+        Stripe subscription users:
             Active subscription → can modify
             Canceled / lapsed   → cannot modify (view-only)
-
-        from one-time users (no stripe_subscription_id):
-            Essentials: within 1 year of payment
-            Legacy:     forever
         """
         if not self.is_active:
             return False
+
+        # ── Free-tier users — limited saves allowed up to FREE_TIER_LIMITS ───
+        if self.is_free_tier():
+            return True
 
         # ── Stripe subscription users ─────────────────────────────────────────
         if self.stripe_subscription_id:

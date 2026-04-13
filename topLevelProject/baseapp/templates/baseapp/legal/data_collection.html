@@ -7,7 +7,7 @@
     <!-- Header Banner -->
     <div class="form-wrapper-header">
       <h2>Data Collection Policy</h2>
-      <p>Last Updated: February 27, 2026</p>
+      <p>Last Updated: April 13, 2026</p>
     </div>
 
     <div class="form-wrapper-body">
@@ -16,13 +16,13 @@
       <fieldset>
         <legend>1. Introduction</legend>
         <p>
-          At Digital Estate Plan ("we," "our," or "us"), your privacy and data security are our highest
+          At Novatern ("we," "our," or "us"), your privacy and data security are our highest
           priorities. This Data Collection Policy explains what information we collect, how we collect it,
           and how it is used and protected in the course of delivering our digital estate organization services.
         </p>
         <p>
-          This policy applies to all information collected through our website, communications, and any
-          secure client storage platforms we operate or integrate with.
+          This policy applies to all information collected through our website, authenticated user sessions,
+          and any secure storage systems we operate.
         </p>
       </fieldset>
 
@@ -35,7 +35,7 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Personal Identification Data</strong>
-              <small class="helptext">Name, email address, phone number, and general contact information voluntarily provided by you.</small>
+              <small class="helptext">Name, email address, username, phone number, and general contact information voluntarily provided by you during registration or profile setup.</small>
             </span>
           </div>
         </div>
@@ -43,8 +43,8 @@
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
-              <strong>Account and Service Information</strong>
-              <small class="helptext">Information you share or upload when using our digital estate organization tools, consultations, or secure file services.</small>
+              <strong>Estate Planning Records</strong>
+              <small class="helptext">Digital account records, device information, contacts, estate documents, funeral preferences, and other information you enter while using the dashboard.</small>
             </span>
           </div>
         </div>
@@ -52,8 +52,36 @@
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
-              <strong>Authentication Data</strong>
-              <small class="helptext">Credentials stored and managed securely through the Bitwarden Password Manager API, never accessible in plain text.</small>
+              <strong>Encrypted Vault Credentials</strong>
+              <small class="helptext">
+                Passwords or PINs stored in the Password Vault are encrypted with AES-256 (Fernet) before
+                being written to the database and are never persisted in plaintext. Login identifiers
+                (username or email) linked to vault entries are stored in unencrypted form alongside the
+                encrypted password token. Financial institution account passwords cannot be stored and are
+                blocked at both the interface and server level.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Vault Access Logs</strong>
+              <small class="helptext">
+                An immutable audit log is created each time a vault password is revealed. The log records
+                the user account, date and time, and IP address of the request. These logs are retained
+                for security and accountability purposes and cannot be deleted by users.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Uploaded Files</strong>
+              <small class="helptext">Files uploaded as part of your estate records (e.g., document scans) are stored on our servers. Access is restricted to your authenticated account and any recovery access you have authorized.</small>
             </span>
           </div>
         </div>
@@ -71,13 +99,16 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Communication Data</strong>
-              <small class="helptext">Correspondence or support requests sent to us by email, form, or chat.</small>
+              <small class="helptext">Correspondence or support requests sent to us by email or contact form.</small>
             </span>
           </div>
         </div>
 
         <div class="ob-alert ob-alert-info" role="note" style="margin-top: 1rem;">
-          <span>We do not sell or rent any collected data to third parties.</span>
+          <span>
+            We do not collect or store full Social Security numbers, full financial account numbers, routing
+            numbers, or CVV codes. We do not sell or rent any collected data to third parties.
+          </span>
         </div>
       </fieldset>
 
@@ -86,9 +117,9 @@
         <legend>3. How Information Is Collected</legend>
         <p>We collect data in several ways:</p>
         <ul style="padding-left: 0; margin: 0;">
-          <li>Directly from you when you contact us, create an account, request a consultation, or upload files.</li>
-          <li>Automatically through essential cookies, analytics tools, and server logs that monitor website performance.</li>
-          <li>Through integrations with trusted third-party services such as Bitwarden or encrypted cloud storage providers, strictly for secure functionality.</li>
+          <li>Directly from you when you register, update your profile, enter estate planning data, or upload files.</li>
+          <li>Automatically through session management, essential cookies, analytics tools, and server logs that monitor website performance.</li>
+          <li>Through Stripe for payment processing — we receive confirmation of payment events but do not store card details on our servers.</li>
         </ul>
       </fieldset>
 
@@ -97,9 +128,11 @@
         <legend>4. How We Use Collected Data</legend>
         <p>Your information may be used to:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
-          <li>Provide requested services, including file management and digital organization.</li>
+          <li>Provide the digital estate organization platform, including all dashboard features, across all tiers (Free, Essentials, and Legacy).</li>
+          <li>Manage subscription tiers and enforce per-category item limits and access controls appropriate to your tier.</li>
+          <li>Facilitate family recovery access requests upon administrative review and verification.</li>
+          <li>Maintain vault access audit logs for security and accountability.</li>
           <li>Facilitate communication and support.</li>
-          <li>Ensure secure authentication and password management using Bitwarden integration.</li>
           <li>Improve our website, services, and security infrastructure.</li>
           <li>Comply with applicable laws and regulations.</li>
         </ul>
@@ -118,17 +151,12 @@
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
-              <strong>Encryption</strong>
-              <small class="helptext">All data is encrypted at rest and in transit using modern encryption standards such as AES-256 and TLS 1.3.</small>
-            </span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-check form-check--static">
-            <span class="form-check-label">
-              <strong>Password Protection</strong>
-              <small class="helptext">Passwords and credentials are managed entirely through the Bitwarden API under its end-to-end zero-knowledge security model.</small>
+              <strong>Vault Encryption</strong>
+              <small class="helptext">
+                Vault passwords are encrypted using AES-256 (Fernet symmetric encryption). Encryption keys
+                are stored in server environment variables, not in the database. Decryption occurs only
+                on explicit user request within an authenticated session and is logged automatically.
+              </small>
             </span>
           </div>
         </div>
@@ -137,7 +165,11 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Access Control</strong>
-              <small class="helptext">Only authorized personnel with legitimate service needs may access limited client data.</small>
+              <small class="helptext">
+                Features are gated by subscription tier and enforced at the server level. Sessions expire
+                after 1 hour of inactivity. Repeated failed login attempts trigger a temporary account
+                lockout.
+              </small>
             </span>
           </div>
         </div>
@@ -145,8 +177,25 @@
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
-              <strong>Secure Storage</strong>
-              <small class="helptext">Uploaded files are hosted on trusted encrypted cloud services with redundant backups and activity monitoring.</small>
+              <strong>Financial Account Restriction</strong>
+              <small class="helptext">
+                Passwords for financial institution accounts (Online Banking, Neobank/Digital Bank,
+                Brokerage/Investment, Cryptocurrency Exchange, Payment Processor, Payment Wallet) cannot
+                be stored in the vault. This restriction is enforced server-side and cannot be bypassed.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>User Risk Acknowledgment</strong>
+              <small class="helptext">
+                Before storing any credential in the Password Vault, users must affirmatively acknowledge
+                the inherent risk of storing credentials online. This acknowledgment is required at the
+                time of each vault entry creation.
+              </small>
             </span>
           </div>
         </div>
@@ -157,11 +206,13 @@
         <legend>6. Data Retention</legend>
         <p>
           We retain information only as long as necessary to fulfill service obligations or meet legal and
-          regulatory requirements. You may request permanent deletion of your personal information or uploaded
-          data at any time by contacting&nbsp;
-          <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
-            privacy@digitalestateplan.com
+          regulatory requirements. Vault access logs are retained for the duration of the account and for a
+          period thereafter for security accountability. You may request permanent deletion of your personal
+          information or uploaded data at any time by contacting&nbsp;
+          <a href="mailto:privacy@novatern.com" >
+            privacy@novatern.com
           </a>.
+          See our Data Retention Policy for specific periods.
         </p>
       </fieldset>
 
@@ -170,12 +221,12 @@
         <legend>7. Sharing and Disclosure</legend>
         <p>We may share limited data only:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
-          <li>With your explicit consent.</li>
-          <li>With service providers who support our operations (e.g., Bitwarden, encrypted storage vendors) under strict confidentiality agreements.</li>
+          <li>With your explicit consent, including when a family recovery request is approved.</li>
+          <li>With infrastructure service providers (e.g., hosting and payment processors) under strict confidentiality agreements.</li>
           <li>When required by law, court order, or regulatory authority.</li>
         </ul>
         <div class="ob-alert ob-alert-info" role="note">
-          <span>We will never sell, lease, or trade confidential information with outside organizations.</span>
+          <span>We will never sell, lease, or trade your information with outside organizations for any purpose.</span>
         </div>
       </fieldset>
 
@@ -191,8 +242,8 @@
         </ul>
         <p style="margin: 0;">
           Contact&nbsp;
-          <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
-            privacy@digitalestateplan.com
+          <a href="mailto:privacy@novatern.com" >
+            privacy@novatern.com
           </a>
           &nbsp;to exercise any of these rights.
         </p>
@@ -212,14 +263,13 @@
         <legend>10. Contact Us</legend>
         <p>For questions about this Data Collection Policy or data protection practices, please contact:</p>
         <div class="detail-view" style="gap: 0.35rem; padding: 1.25rem 1.5rem;">
-          <p style="margin: 0;"><strong>Digital Estate Plan</strong></p>
+          <p style="margin: 0;"><strong>Novatern</strong></p>
           <p style="margin: 0;">
             Email:&nbsp;
-            <a href="mailto:privacy@digitalestateplan.com" style="font-size: var(--font-nm); font-weight: 500;">
-              privacy@digitalestateplan.com
+            <a href="mailto:privacy@novatern.com">
+              privacy@novatern.com
             </a>
           </p>
-
           <p style="margin: 0;">Location: Des Moines, Iowa, USA</p>
         </div>
       </fieldset>

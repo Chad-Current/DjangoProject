@@ -14,7 +14,11 @@ class UserRegistrationForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'})
     )
-    
+    terms_agreed = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'You must accept the Terms and Conditions, Privacy Policy, and Cookie Policy to register.'},
+    )
+
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')

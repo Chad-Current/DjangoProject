@@ -142,7 +142,7 @@ This link will expire in 48 hours.
 If you did not make this request, please ignore this email.
 
 Best regards,
-Digital Estate Planning Team
+Novatern Team
         """
         
         send_mail(

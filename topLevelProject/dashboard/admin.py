@@ -957,6 +957,6 @@ class RelevanceReviewAdmin(admin.ModelAdmin):
 
 # ── Site customisation ────────────────────────────────────────────────────────
 
-admin.site.site_header = "Digital Estate Planning Administration"
+admin.site.site_header = "Novatern Administration"
 admin.site.site_title = "Digital Estate Admin"
-admin.site.index_title = "Welcome to Digital Estate Planning Administration"
+admin.site.index_title = "Welcome to Novatern Administration"
