@@ -42,8 +42,7 @@
 
                 <div class="form-field{% if form.username.errors %} has-error{% endif %}">
                     <label for="{{ form.username.id_for_label }}"
-                        class="ob-label-tooltip"
-                        title="Choose a unique username you'll use to log in. It can contain letters, numbers, and the characters @ . + - _">
+                        class="ob-label-tooltip">
                         Username
                         <span class="ob-tip" role="tooltip">Choose a unique username you'll use to log in. It can contain letters, numbers, and @ . + - _ characters.</span>
                     </label>
@@ -55,8 +54,7 @@
 
                 <div class="form-field{% if form.email.errors %} has-error{% endif %}">
                     <label for="{{ form.email.id_for_label }}"
-                        class="ob-label-tooltip"
-                        title="Your email address — used for account recovery and important notifications. We don't share it with third parties.">
+                        class="ob-label-tooltip">
                         Email
                         <span class="ob-tip" role="tooltip">Your email address — used for account recovery and important notifications. We don't share it with third parties.</span>
                     </label>
@@ -68,8 +66,7 @@
 
                 <div class="form-field{% if form.password1.errors %} has-error{% endif %}">
                     <label for="{{ form.password1.id_for_label }}"
-                        class="ob-label-tooltip"
-                        title="Choose a strong password — at least 8 characters, not entirely numeric, and not too similar to your username or email.">
+                        class="ob-label-tooltip">
                         Password
                         <span class="ob-tip" role="tooltip">Choose a strong password — at least 8 characters, not entirely numeric, and not too similar to your username or email.</span>
                     </label>
@@ -81,8 +78,7 @@
 
                 <div class="form-field{% if form.password2.errors %} has-error{% endif %}">
                     <label for="{{ form.password2.id_for_label }}"
-                        class="ob-label-tooltip"
-                        title="Re-enter your password exactly as above to confirm there are no typos.">
+                        class="ob-label-tooltip">
                         Confirm Password
                         <span class="ob-tip" role="tooltip">Re-enter your password exactly as above to confirm there are no typos.</span>
                     </label>
@@ -107,6 +103,21 @@
                     </div>
                     {% if form.terms_agreed.errors %}
                         <div class="error" role="alert">{{ form.terms_agreed.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Vault risk acknowledgment -->
+                <div class="form-field{% if form.risk_acknowledged.errors %} has-error{% endif %}">
+                    <div style="display:flex; align-items:flex-start; margin-top: 1.5em; gap:0.5rem;">
+                        {{ form.risk_acknowledged }}
+                        <label for="{{ form.risk_acknowledged.id_for_label }}" style="margin:0; line-height:1.5;">
+                            I understand that storing credentials carries inherent risk. I accept this risk
+                            and acknowledge that this service is not liable for unauthorized access to
+                            information I choose to store here.
+                        </label>
+                    </div>
+                    {% if form.risk_acknowledged.errors %}
+                        <div class="error" role="alert">{{ form.risk_acknowledged.errors }}</div>
                     {% endif %}
                 </div>
 

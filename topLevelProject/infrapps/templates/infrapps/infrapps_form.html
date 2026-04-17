@@ -40,8 +40,7 @@
       {% if entry_form_type == 'account' %}
       <div class="form-field{% if form.linked_account.errors %} has-error{% endif %}">
         <label for="{{ form.linked_account.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Select the digital account this password belongs to.">
+          class="ob-label-tooltip">
           Account <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Select the digital account this password belongs to.</span>
         </label>
@@ -53,8 +52,7 @@
       {% else %}
       <div class="form-field{% if form.linked_device.errors %} has-error{% endif %}">
         <label for="{{ form.linked_device.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Select the device this PIN or password belongs to.">
+          class="ob-label-tooltip">
           Device <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Select the device this PIN or password belongs to.</span>
         </label>
@@ -81,8 +79,7 @@
 
       <div class="form-field{% if form.username_or_email.errors %} has-error{% endif %}">
         <label for="{{ form.username_or_email.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The username or email used to log in — not the password itself.">
+          class="ob-label-tooltip">
           Username or Email
           <span class="ob-tip" role="tooltip">The username or email used to log in — not the password itself.</span>
         </label>
@@ -94,8 +91,7 @@
 
       <div class="form-field{% if form.raw_password.errors %} has-error{% endif %}">
         <label for="{{ form.raw_password.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The password or PIN to encrypt and store. Leave blank when editing to keep the existing password.">
+          class="ob-label-tooltip">
           Password / PIN
           <span class="ob-tip" role="tooltip">
             Encrypted immediately on save and never stored in plain text.
@@ -115,19 +111,6 @@
       </div>
 
     </fieldset>
-
-    <!-- Risk acknowledgment — required before saving -->
-    <div class="form-field{% if form.risk_acknowledged.errors %} has-error{% endif %}">
-      <div class="form-check">
-        {{ form.risk_acknowledged }}
-        <label class="form-check-label" for="{{ form.risk_acknowledged.id_for_label }}">
-          {{ form.risk_acknowledged.label }}
-        </label>
-      </div>
-      {% if form.risk_acknowledged.errors %}
-        <div class="error" role="alert">{{ form.risk_acknowledged.errors }}</div>
-      {% endif %}
-    </div>
 
     <!-- Actions -->
     <div class="button-group">

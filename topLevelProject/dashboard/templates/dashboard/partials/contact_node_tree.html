@@ -184,7 +184,7 @@
             </div>
             <div class="nt-modal-body" id="nt-modal-body"></div>
             <div class="nt-modal-footer">
-                <a id="nt-modal-view-btn" href="#" class="nt-modal-view-btn">
+                <a id="nt-modal-view-btn" href="#" class="nt-modal-view-btn" target="_blank">
                     <i class="fas fa-external-link-alt"></i> View Full Details
                 </a>
                 <button class="nt-modal-cancel-btn">Close</button>
@@ -261,7 +261,7 @@
         } else if (d.modalType === 'note') {
             html += row('Content', d.modalContent);
             var topics = [];
-            if (d.modalIsLegalWill       === 'true') topics.push('Location of Legal Will');
+            if (d.modalIsLegalWill       === 'true') topics.push('Location of Paperwork');
             if (d.modalIsPasswordManager === 'true') topics.push('Password Manager');
             if (d.modalIsSocialMedia     === 'true') topics.push('Social Media');
             if (d.modalIsPhotos          === 'true') topics.push('Photos or Files');

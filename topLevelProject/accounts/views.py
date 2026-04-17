@@ -84,6 +84,9 @@ class RegisterView(View):
             if form.cleaned_data.get('terms_agreed'):
                 user.terms_accepted_at = timezone.now()
                 update_fields.append('terms_accepted_at')
+            if form.cleaned_data.get('risk_acknowledged'):
+                user.vault_risk_acknowledged_at = timezone.now()
+                update_fields.append('vault_risk_acknowledged_at')
             if update_fields:
                 user.save(update_fields=update_fields)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')

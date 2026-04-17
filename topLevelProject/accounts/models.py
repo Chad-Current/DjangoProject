@@ -66,6 +66,11 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text="Timestamp of when the user accepted the Terms and Conditions, Privacy Policy, and Cookie Policy.",
     )
+    vault_risk_acknowledged_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp of when the user acknowledged the credential storage risk at registration.",
+    )
 
     # ── Subscription tier ─────────────────────────────────────────────────────
     subscription_tier = models.CharField(

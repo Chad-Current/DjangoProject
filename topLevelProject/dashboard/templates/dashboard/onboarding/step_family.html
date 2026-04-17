@@ -87,7 +87,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem;">
           <label class="ob-check-row">
             {{ form.is_location_of_legal_will }}
-            <span class="ob-check-label"><i class="fas fa-scroll" style="color: var(--ten-percent); margin-right: 5px;"></i>Location of Legal Will</span>
+            <span class="ob-check-label"><i class="fas fa-scroll" style="color: var(--ten-percent); margin-right: 5px;"></i>Location of Paperwork</span>
           </label>
           <label class="ob-check-row">
             {{ form.is_password_manager }}
@@ -151,7 +151,7 @@
             <div class="ob-item-sub">{{ note.content|truncatechars:40 }}</div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end;">
-            {% if note.is_location_of_legal_will %}<span class="ob-badge badge-navy">Will</span>{% endif %}
+            {% if note.is_location_of_legal_will %}<span class="ob-badge badge-navy">Paperwork</span>{% endif %}
             {% if note.is_password_manager %}<span class="ob-badge badge-amber">Passwords</span>{% endif %}
           </div>
         </div>

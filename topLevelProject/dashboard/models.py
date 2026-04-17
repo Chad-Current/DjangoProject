@@ -302,21 +302,37 @@ class DigitalEstateDocument(models.Model):
     """
     PERSONAL_ESTATE_DOCUMENTS = [
         ("Healthcare Documents", [
-            ("Advance Directive / Living Will",                "Advance Directive / Living Will — States your wishes for end-of-life or critical medical care."),
-            ("Durable Power of Attorney for Healthcare",       "Durable Power of Attorney for Healthcare — Authorizes someone to make medical decisions if you cannot."),
-            ("HIPAA Authorizations",                           "HIPAA Authorizations — Allows named individuals to access your medical information."),
-            ("Organ Donation Preferences",                     "Organ Donation Preferences — Documents or forms stating your organ donation wishes."),
+            ("Advance Directive / Living Will",                 "Advance Directive / Living Will — States your wishes for end-of-life or critical medical care."),
+            ("Durable Power of Attorney for Healthcare",        "Durable Power of Attorney for Healthcare — Authorizes someone to make medical decisions if you cannot."),
+            ("HIPAA Authorizations",                            "HIPAA Authorizations — Allows named individuals to access your medical information."),
+            ("Organ Donation Preferences",                      "Organ Donation Preferences — Documents or forms stating your organ donation wishes."),
         ]),
         ("Financial and Legal Documents", [
-            ("Durable Power of Attorney for Financial Matters","Durable Power of Attorney for Financial Matters — Authorizes someone to manage finances if you are incapacitated."),
-            ("Beneficiary Designations",                       "Beneficiary Designations — Forms for life insurance, retirement accounts, etc., naming who receives benefits."),
-            ("Guardianship Designations",                      "Guardianship Designations — Documents naming guardians for minor children or dependents."),
-            ("Trust Documents",                                "Trust Documents — Revocable or irrevocable trust agreements holding and distributing property."),
+            ("Durable Power of Attorney for Financial Matters", "Durable Power of Attorney for Financial Matters — Authorizes someone to manage finances if you are incapacitated."),
+            ("Beneficiary Designations",                        "Beneficiary Designations — Forms for life insurance, retirement accounts, etc., naming who receives benefits."),
+            ("Guardianship Designations",                       "Guardianship Designations — Documents naming guardians for minor children or dependents."),
+            ("Trust Documents",                                 "Trust Documents — Revocable or irrevocable trust agreements holding and distributing property."),
+            ("Pour-Over Will",                                  "Pour-Over Will — Directs remaining assets into a trust at death."),
+            ("Trust Funding Documents",                         "Trust Funding Documents — Assignments, retitling records, and schedules used to place assets into trust."),
         ]),
         ("Estate Administration and Final Instructions", [
-            ("Executor / Personal Representative Info",        "Executor / Personal Representative Info — Information about the person(s) designated to administer your estate."),
-            ("Letter of Instruction",                          "Letter of Instruction — Provides guidance for heirs, location of assets, and personal wishes."),
-            ("Will and Codicils",                              "Will and Codicils — Last Will and Testament and any amendments (codicils)."),
+            ("Executor / Personal Representative Info",         "Executor / Personal Representative Info — Information about the person(s) designated to administer your estate."),
+            ("Letter of Instruction",                           "Letter of Instruction — Provides guidance for heirs, location of assets, and personal wishes."),
+            ("Will and Codicils",                               "Will and Codicils — Last Will and Testament and any amendments (codicils)."),
+            ("Funeral Instructions",                            "Funeral Instructions — Preferences for burial, cremation, memorial service, and related arrangements."),
+            ("Disposition of Remains Authorization",            "Disposition of Remains Authorization — Written instructions for handling remains after death."),
+        ]),
+        ("Asset and Probate Records", [
+            ("List of Assets and Liabilities",                  "List of Assets and Liabilities — Inventory of property, accounts, and debts."),
+            ("Property Deeds and Titles",                       "Property Deeds and Titles — Deeds for real estate and titles for vehicles or other titled assets."),
+            ("Bank and Financial Statements",                   "Bank and Financial Statements — Records used to identify and transfer estate assets."),
+            ("Tax Returns and Tax Records",                     "Tax Returns and Tax Records — Prior tax filings and supporting records needed for administration."),
+            ("Death Certificate Copies",                        "Death Certificate Copies — Certified copies used to settle accounts and start probate."),
+            ("Probate Inventory and Accounting Records",        "Probate Inventory and Accounting Records — Court and estate administration records for assets, debts, and distributions."),
+            ("Creditor and Debt Records",                       "Creditor and Debt Records — Bills, loan documents, and creditor notices needed to settle obligations."),
+        ]),
+        ("Personal Instructions", [
+            ("Pet Care Instructions",                           "Pet Care Instructions — Directions for the care of pets after death or incapacity."),
         ]),
     ]
 
@@ -335,7 +351,7 @@ class DigitalEstateDocument(models.Model):
 
     slug                        = models.SlugField(max_length=80, unique=True, null=True, blank=True, db_index=True)
     estate_category             = models.CharField(max_length=200, choices=PERSONAL_ESTATE_DOCUMENTS, default='Advance Directive / Living Will')
-    name_or_title               = models.CharField(max_length=100, help_text="Specific name of Document")
+    name_or_title               = models.CharField(max_length=100, blank=True, help_text="Specific name of Document — leave blank to use the category name")
     estate_file                 = models.FileField(upload_to='documents/%Y/%m/', blank=True, null=True, help_text="Upload digital copy")
     estate_overall_instructions = models.CharField(max_length=500, blank=True, help_text="General instructions for family")
     estate_physical_location    = models.CharField(max_length=200, blank=True, help_text="Where physical document is stored")
@@ -353,6 +369,8 @@ class DigitalEstateDocument(models.Model):
         indexes  = [models.Index(fields=['profile', 'delegated_estate_to'])]
 
     def save(self, *args, **kwargs):
+        if not self.name_or_title:
+            self.name_or_title = self.estate_category
         if not self.slug:
             self.slug = _unique_slug(DigitalEstateDocument, self.name_or_title)
         super().save(*args, **kwargs)
@@ -376,7 +394,6 @@ class ImportantDocument(models.Model):
         ("Charitable Giving and Memberships","Charitable plans, affiliations, and organizations."),
         ("Cloud and Email Accounts",        "Cloud storage, email accounts, and access credentials."),
         ("Dependents and Pet Care",         "Dependent care needs and pet care instructions."),
-        ("Funeral and Memorial Wishes",     "Funeral, burial, or memorial preferences."),
         ("Health Insurance and Benefits",   "Insurance policy details, Medicare/Medicaid info."),
         ("Important Personal Documents",    "Birth certificate, marriage certificate, and similar records."),
         ("Income and Budgets",              "Income sources, monthly bills, and recurring expenses."),
@@ -390,11 +407,8 @@ class ImportantDocument(models.Model):
         ("Personal Identification",         "Driver's license, passport, and other official IDs."),
         ("Personal Property and Valuables", "Inventory of personal valuables."),
         ('Pet License/Records',             "Pet License/Records"),
-        ("Property Deeds and Titles",       "Ownership records for homes, vehicles, or land."),
         ("Safe Deposit Box Information",    "Location, access instructions, and contents list."),
         ("Social Media Accounts",           "Profiles and legacy social media preferences."),
-        ("Social Security Information",     "Social Security number and benefit details."),
-        ("Tax and Financial Records",       "Tax returns, property records, and valuation documents."),
         ('Not Listed',                      'Not Listed'),
     ]
 
@@ -412,7 +426,7 @@ class ImportantDocument(models.Model):
     )
 
     slug                  = models.SlugField(max_length=80, unique=True, null=True, blank=True, db_index=True)
-    name_or_title         = models.CharField(max_length=100, help_text="Specific name of Document")
+    name_or_title         = models.CharField(max_length=100, blank=True, help_text="Specific name of Document — leave blank to use the category name")
     description           = models.CharField(max_length=200, blank=True)
     document_category     = models.CharField(max_length=50, choices=DOCUMENT_CATEGORY_CHOICES)
     physical_location     = models.CharField(max_length=200, blank=True, help_text="Where physical document is stored")
@@ -432,6 +446,8 @@ class ImportantDocument(models.Model):
         indexes  = [models.Index(fields=['profile', 'delegated_important_document_to'])]
 
     def save(self, *args, **kwargs):
+        if not self.name_or_title:
+            self.name_or_title = self.document_category
         if not self.slug:
             self.slug = _unique_slug(ImportantDocument, self.name_or_title)
         super().save(*args, **kwargs)

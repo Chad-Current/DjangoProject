@@ -18,6 +18,10 @@ class UserRegistrationForm(UserCreationForm):
         required=True,
         error_messages={'required': 'You must accept the Terms and Conditions, Privacy Policy, and Cookie Policy to register.'},
     )
+    risk_acknowledged = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'You must acknowledge the credential storage risk to register.'},
+    )
 
     class Meta:
         model = User

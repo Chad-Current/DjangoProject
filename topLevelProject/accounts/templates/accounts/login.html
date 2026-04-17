@@ -21,7 +21,7 @@
 <body>
     {% include "baseapp/navbar.html" %}
 
-    
+
     <div class="form-container">
         <div class="loginform-wrapper">
             {% if messages %}
@@ -36,8 +36,7 @@
 
                         <div class="form-field{% if form.username_or_email.errors %} has-error{% endif %}">
                             <label for="{{ form.username_or_email.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Enter your username or the email address you registered with.">
+                                class="ob-label-tooltip">
                                 Username or Email
                                 <span class="ob-tip" role="tooltip">Enter your username or the email address you registered with.</span>
                             </label>
@@ -49,8 +48,7 @@
 
                         <div class="form-field{% if form.password.errors %} has-error{% endif %}">
                             <label for="{{ form.password.id_for_label }}"
-                                class="ob-label-tooltip"
-                                title="Enter your account password. If you've forgotten it, use the Forgot Password link below.">
+                                class="ob-label-tooltip">
                                 Password
                                 <span class="ob-tip" role="tooltip">Enter your account password. If you've forgotten it, use the Forgot Password link below.</span>
                             </label>

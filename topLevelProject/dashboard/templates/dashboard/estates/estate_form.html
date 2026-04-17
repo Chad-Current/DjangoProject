@@ -30,8 +30,7 @@
 
       <div class="form-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_estate_to.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.">
+          class="ob-label-tooltip">
           Assign Document to <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.</span>
         </label>
@@ -49,29 +48,27 @@
     <fieldset class="form-fieldset">
       <legend class="form-fieldset-legend">Estate Document Details</legend>
 
-      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
-        <label for="{{ form.name_or_title.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.">
-          Name or Title <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">The official name of the legal document. Use its full, formal title so your family and attorneys can identify it unambiguously.</span>
-        </label>
-        {{ form.name_or_title }}
-        {% if form.name_or_title.errors %}
-          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
-        {% endif %}
-      </div>
-
       <div class="form-field{% if form.estate_category.errors %} has-error{% endif %}">
         <label for="{{ form.estate_category.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The legal category — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents at the right time.">
+          class="ob-label-tooltip">
           Category <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">The legal category — e.g. Will, Trust, Power of Attorney, Healthcare Directive. Helps your family prioritise the right documents at the right time.</span>
         </label>
         {{ form.estate_category }}
         {% if form.estate_category.errors %}
           <div class="error" role="alert">{{ form.estate_category.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
+        <label for="{{ form.name_or_title.id_for_label }}"
+          class="ob-label-tooltip">
+          Name or Title (optional)
+          <span class="ob-tip" role="tooltip">The official name of the legal document. Leave blank to use the category name.</span>
+        </label>
+        {{ form.name_or_title }}
+        {% if form.name_or_title.errors %}
+          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
         {% endif %}
       </div>
 
@@ -90,8 +87,7 @@
 
       <div class="form-field{% if form.estate_overall_instructions.errors %} has-error{% endif %}">
         <label for="{{ form.estate_overall_instructions.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Context your family needs — e.g. who to contact first, whether probate is required, or specific wishes contained in this document.">
+          class="ob-label-tooltip">
           Instructions
           <span class="ob-tip" role="tooltip">Context your family needs — e.g. who to contact first, whether probate is required, or specific wishes contained in this document.</span>
         </label>
@@ -111,8 +107,7 @@
 
       <div class="form-field{% if form.estate_physical_location.errors %} has-error{% endif %}">
         <label for="{{ form.estate_physical_location.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Where the original signed copy is stored. Legal originals often matter — be specific so your family can find them quickly.">
+          class="ob-label-tooltip">
           Physical Location
           <span class="ob-tip" role="tooltip">Where the original signed copy is stored. Legal originals often matter — be specific so your family can find them quickly.</span>
         </label>
@@ -124,8 +119,7 @@
 
       <div class="form-field{% if form.estate_digital_location.errors %} has-error{% endif %}">
         <label for="{{ form.estate_digital_location.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Where a digital scan is stored for quick reference — e.g. 'Google Drive / Legal folder' or '1Password secure note'.">
+          class="ob-label-tooltip">
           Digital Location
           <span class="ob-tip" role="tooltip">Where a digital scan is stored for quick reference — e.g. "Google Drive / Legal folder" or "1Password secure note".</span>
         </label>
@@ -145,8 +139,7 @@
 
       <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
         <label for="{{ form.review_time.id_for_label }}"
-          class="ob-label-tooltip"
-          title="How often you want a reminder to confirm this document still reflects your wishes and current life circumstances.">
+          class="ob-label-tooltip">
           Review needed in
           <span class="ob-tip" role="tooltip">How often you want a reminder to confirm this document still reflects your wishes and current life circumstances.</span>
         </label>
@@ -171,8 +164,7 @@
       <div class="checkbox-group">
 
         <div class="form-field{% if form.applies_on_death.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document becomes active and relevant when you pass away — e.g. a Will or Trust.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_on_death }}
             <span class="ob-check-label">Applies Upon Death</span>
             <span class="ob-tip" role="tooltip">This document becomes active and relevant when you pass away — e.g. a Will or Trust.</span>
@@ -183,8 +175,7 @@
         </div>
 
         <div class="form-field{% if form.applies_on_incapacity.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document becomes active if you become incapacitated and are unable to make decisions — e.g. a Durable Power of Attorney or Healthcare Directive.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_on_incapacity }}
             <span class="ob-check-label">Applies On Incapacitation</span>
             <span class="ob-tip" role="tooltip">This document becomes active if you become incapacitated — e.g. a Durable Power of Attorney or Healthcare Directive.</span>
@@ -195,8 +186,7 @@
         </div>
 
         <div class="form-field{% if form.applies_immediately.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document is currently active and in effect right now — e.g. an existing Trust or active Power of Attorney.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_immediately }}
             <span class="ob-check-label">Applies Immediately</span>
             <span class="ob-tip" role="tooltip">This document is currently active and in effect right now — e.g. an existing Trust or active Power of Attorney.</span>
@@ -231,14 +221,12 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
   var hint = zone.querySelector('small');
 
   if (existingLink && clearCheckbox) {
-    // Build a clean current-file card above the zone
     var card = document.createElement('div');
     card.className = 'rr-current-file';
     card.innerHTML =
       '<span class="rr-current-file-icon"><i class="fas fa-file-alt"></i></span>' +
       '<span class="rr-current-file-name">' + existingLink.textContent.trim() + '</span>';
 
-    // Move the original checkbox (preserving its name/id for form submission)
     var clearWrap = document.createElement('label');
     clearWrap.className = 'rr-current-file-clear';
     clearWrap.appendChild(clearCheckbox);
@@ -247,7 +235,6 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
 
     zone.parentNode.insertBefore(card, zone);
 
-    // Strip Django's rendered clutter from inside the zone
     Array.from(zone.childNodes).forEach(function (node) {
       if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'BR' ||
           node.nodeName === 'A' || node.nodeName === 'LABEL') {
@@ -255,7 +242,6 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
       }
     });
 
-    // Tone down the zone to a secondary "replace" prompt
     zone.classList.add('rr-file-replace');
     if (icon) icon.className = 'fa fa-refresh';
     if (prompt) prompt.textContent = 'Click to replace file';

@@ -30,8 +30,7 @@
 
       <div class="form-field{% if form.delegated_device_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_device_to.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The trusted contact who should take responsibility for this device — wiping, transferring data, or following your decommission instructions.">
+          class="ob-label-tooltip">
           Assign Device To <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">The trusted contact who should take responsibility for this device — wiping, transferring data, or following your decommission instructions.</span>
         </label>
@@ -51,8 +50,7 @@
 
       <div class="form-field{% if form.device_type.errors %} has-error{% endif %}">
         <label for="{{ form.device_type.id_for_label }}"
-          class="ob-label-tooltip"
-          title="General category — Phone, Laptop, Desktop, Tablet, Smart Watch, or Other. Used to group devices for your family.">
+          class="ob-label-tooltip">
           Type of Device <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">General category — Phone, Laptop, Desktop, Tablet, Smart Watch, or Other. Used to group devices for your family.</span>
         </label>
@@ -64,8 +62,7 @@
 
       <div class="form-field{% if form.device_name.errors %} has-error{% endif %}">
         <label for="{{ form.device_name.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Brand, model, and year — specific enough for your family to identify it. e.g. iPhone 15 Pro, MacBook Pro 2022.">
+          class="ob-label-tooltip">
           Name <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">Brand, model, and year — specific enough for your family to identify it. e.g. iPhone 15 Pro, MacBook Pro 2022.</span>
         </label>
@@ -77,8 +74,7 @@
 
       <div class="form-field{% if form.owner_label.errors %} has-error{% endif %}">
         <label for="{{ form.owner_label.id_for_label }}"
-          class="ob-label-tooltip"
-          title="A short nickname your family will recognise — e.g. 'Mom's iPhone' or 'Work Laptop'. Shown as a badge on the device list.">
+          class="ob-label-tooltip">
           Labeled as
           <span class="ob-tip" role="tooltip">A short nickname your family will recognise — e.g. "Mom's iPhone" or "Work Laptop". Shown as a badge on the device list.</span>
         </label>
@@ -90,8 +86,7 @@
 
       <div class="form-field{% if form.location_description.errors %} has-error{% endif %}">
         <label for="{{ form.location_description.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Where this device is physically stored. Be specific — e.g. 'Bedroom nightstand drawer' or 'Home office desk'.">
+          class="ob-label-tooltip">
           Typical Location of Device
           <span class="ob-tip" role="tooltip">Where this device is physically stored. Be specific — e.g. "Bedroom nightstand drawer" or "Home office desk".</span>
         </label>
@@ -111,8 +106,7 @@
 
       <div class="form-field{% if form.unlock_method_description.errors %} has-error{% endif %}">
         <label for="{{ form.unlock_method_description.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Describe access without recording the actual PIN or password. Point your family to where credentials are stored — e.g. '6-digit PIN stored in 1Password'.">
+          class="ob-label-tooltip">
           Unlock Method
           <span class="ob-tip" role="tooltip">Describe access without recording the actual PIN or password. Point your family to where credentials are stored — e.g. "6-digit PIN stored in 1Password".</span>
         </label>
@@ -124,8 +118,7 @@
 
       <div class="form-field{% if form.decommission_instruction.errors %} has-error{% endif %}">
         <label for="{{ form.decommission_instruction.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Tell your family exactly what to do — wipe and give away, donate, recycle, keep, or sell. Be specific so there's no guesswork.">
+          class="ob-label-tooltip">
           Decommission Instructions
           <span class="ob-tip" role="tooltip">Tell your family exactly what to do — wipe and give away, donate, recycle, keep, or sell. Be specific so there's no guesswork.</span>
         </label>
@@ -136,8 +129,7 @@
       </div>
 
       <div class="form-field{% if form.used_for_2fa.errors %} has-error{% endif %}">
-        <label class="ob-check-row ob-label-tooltip"
-          title="Check this if the device receives login verification codes (SMS or authenticator app). Critical for your family to know before wiping the device.">
+        <label class="ob-check-row ob-label-tooltip">
           {{ form.used_for_2fa }}
           <span class="ob-check-label">Used For Two Factor Authentication</span>
           <span class="ob-tip" role="tooltip">Check this if the device receives login verification codes (SMS or authenticator app). Critical for your family to know before wiping the device.</span>
@@ -157,8 +149,7 @@
 
       <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
         <label for="{{ form.review_time.id_for_label }}"
-          class="ob-label-tooltip"
-          title="How often you want a reminder to verify this device's details — location, unlock method, and instructions — are still accurate.">
+          class="ob-label-tooltip">
           Review needed in
           <span class="ob-tip" role="tooltip">How often you want a reminder to verify this device's details — location, unlock method, and instructions — are still accurate.</span>
         </label>

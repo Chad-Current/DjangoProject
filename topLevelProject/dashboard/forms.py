@@ -475,7 +475,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         labels = {
             "delegated_estate_to": "Assign Document to",
             "estate_category": "Category",
-            "name_or_title": "Name or Title",
+            "name_or_title": "Name or Title (optional)",
             "estate_overall_instructions": "Instructions",
             "estate_physical_location": "Physical Location",
             "estate_digital_location": "Digital Location",
@@ -496,6 +496,7 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['delegated_estate_to'].required = True
+        self.fields['name_or_title'].required = False
 
         if self.user:
             try:
@@ -524,8 +525,8 @@ class DigitalEstateDocumentForm(forms.ModelForm):
             ),
             Fieldset(
                 'Estate Document Details',
-                Field('name_or_title', css_class='textinput'),
                 Field('estate_category', css_class='select'),
+                Field('name_or_title', css_class='textinput'),
                 Field('estate_file', css_class='fileinput'),
                 Field('estate_overall_instructions', css_class='textarea'),
             ),
@@ -595,7 +596,7 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
         labels = {
             "relation": "Who Needs To Be Informed",
             "content": "What Do You Want To Tell Them",
-            "is_location_of_legal_will": "For Location Of Will?",
+            "is_location_of_legal_will": "For Location of Paperwork?",
             "is_password_manager": "Password Manager Information",
             "is_social_media": "How To Handle Social Media Accounts",
             "is_photos_or_files": "What To Do With Photos Or Files",
@@ -689,7 +690,7 @@ class ImportantDocumentForm(forms.ModelForm):
         ]
         labels = {
             "delegated_important_document_to": "Assign Document To",
-            "name_or_title": "Name or Title",
+            "name_or_title": "Name or Title (optional)",
             "document_category": "Category",
             "description": "Description",
             "physical_location": "Physical Location",
@@ -711,6 +712,7 @@ class ImportantDocumentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['delegated_important_document_to'].required = True
+        self.fields['name_or_title'].required = False
 
         if self.user:
             try:
@@ -739,8 +741,8 @@ class ImportantDocumentForm(forms.ModelForm):
             ),
             Fieldset(
                 'Important Document',
-                Field('name_or_title', css_class='textinput'),
                 Field('document_category', css_class='select'),
+                Field('name_or_title', css_class='textinput'),
                 Field('description', css_class='textarea'),
                 Field('requires_legal_review', css_class='checkboxinput form-check-input'),
             ),

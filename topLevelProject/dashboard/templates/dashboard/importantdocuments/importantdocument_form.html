@@ -30,8 +30,7 @@
 
       <div class="form-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_important_document_to.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.">
+          class="ob-label-tooltip">
           Assign Document To <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
         </label>
@@ -49,23 +48,9 @@
     <fieldset class="form-fieldset">
       <legend class="form-fieldset-legend">Important Document</legend>
 
-      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
-        <label for="{{ form.name_or_title.id_for_label }}"
-          class="ob-label-tooltip"
-          title="A clear, descriptive name so your family can immediately understand what it is — e.g. 'Term Life Insurance Policy' or 'Vehicle Title — 2021 Honda CRV'.">
-          Name or Title <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">A clear, descriptive name so your family can immediately understand what it is — e.g. "Term Life Insurance Policy" or "Vehicle Title — 2021 Honda CRV".</span>
-        </label>
-        {{ form.name_or_title }}
-        {% if form.name_or_title.errors %}
-          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
-        {% endif %}
-      </div>
-
       <div class="form-field{% if form.document_category.errors %} has-error{% endif %}">
         <label for="{{ form.document_category.id_for_label }}"
-          class="ob-label-tooltip"
-          title="The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.">
+          class="ob-label-tooltip">
           Category <span class="req" aria-hidden="true">*</span>
           <span class="ob-tip" role="tooltip">The document type — Insurance, Financial, Medical, Property, Identification, etc. Helps your family filter and find the right records quickly.</span>
         </label>
@@ -75,10 +60,21 @@
         {% endif %}
       </div>
 
+      <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
+        <label for="{{ form.name_or_title.id_for_label }}"
+          class="ob-label-tooltip">
+          Name or Title (optional)
+          <span class="ob-tip" role="tooltip">A clear, descriptive name so your family can immediately understand what it is. Leave blank to use the category name.</span>
+        </label>
+        {{ form.name_or_title }}
+        {% if form.name_or_title.errors %}
+          <div class="error" role="alert">{{ form.name_or_title.errors }}</div>
+        {% endif %}
+      </div>
+
       <div class="form-field{% if form.description.errors %} has-error{% endif %}">
         <label for="{{ form.description.id_for_label }}"
-          class="ob-label-tooltip"
-          title="A brief summary of what this document covers — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.">
+          class="ob-label-tooltip">
           Description
           <span class="ob-tip" role="tooltip">A brief summary — policy numbers, coverage amounts, account details, or other key facts your family needs to know immediately.</span>
         </label>
@@ -89,8 +85,7 @@
       </div>
 
       <div class="form-field{% if form.requires_legal_review.errors %} has-error{% endif %}">
-        <label class="ob-check-row ob-label-tooltip"
-          title="Check this if this document should be reviewed by an attorney or other legal professional before your family acts on it.">
+        <label class="ob-check-row ob-label-tooltip">
           {{ form.requires_legal_review }}
           <span class="ob-check-label">Requires Professional Legal Review</span>
           <span class="ob-tip" role="tooltip">Check this if this document should be reviewed by an attorney before your family acts on it.</span>
@@ -110,8 +105,7 @@
 
       <div class="form-field{% if form.review_time.errors %} has-error{% endif %}">
         <label for="{{ form.review_time.id_for_label }}"
-          class="ob-label-tooltip"
-          title="How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.">
+          class="ob-label-tooltip">
           Review needed in
           <span class="ob-tip" role="tooltip">How often you want a reminder to check this document is still current — especially important for insurance policies and records with expiry dates.</span>
         </label>
@@ -136,8 +130,7 @@
       <div class="checkbox-group">
 
         <div class="form-field{% if form.applies_on_death.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document becomes relevant when you pass away — e.g. a life insurance policy or property deed that needs to be transferred.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_on_death }}
             <span class="ob-check-label">Applies On Death</span>
             <span class="ob-tip" role="tooltip">This document becomes relevant when you pass away — e.g. a life insurance policy or property deed that needs to be transferred.</span>
@@ -148,8 +141,7 @@
         </div>
 
         <div class="form-field{% if form.applies_on_incapacity.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document becomes relevant if you are incapacitated — e.g. medical records or insurance cards needed for care decisions.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_on_incapacity }}
             <span class="ob-check-label">Applies On Incapacitation</span>
             <span class="ob-tip" role="tooltip">This document becomes relevant if you are incapacitated — e.g. medical records or insurance cards needed for care decisions.</span>
@@ -160,8 +152,7 @@
         </div>
 
         <div class="form-field{% if form.applies_immediately.errors %} has-error{% endif %}">
-          <label class="ob-check-row ob-label-tooltip"
-            title="This document is currently relevant and may need to be acted on at any time — e.g. active insurance policies, vehicle registrations, or passports.">
+          <label class="ob-check-row ob-label-tooltip">
             {{ form.applies_immediately }}
             <span class="ob-check-label">Applies Immediately</span>
             <span class="ob-tip" role="tooltip">This document is currently relevant and may need to be acted on at any time — e.g. active insurance policies, vehicle registrations, or passports.</span>
@@ -195,8 +186,7 @@
 
       <div class="form-field{% if form.physical_location.errors %} has-error{% endif %}">
         <label for="{{ form.physical_location.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Where the original copy is stored. Be specific enough that your family can find it without you — e.g. 'Fireproof safe in master bedroom closet'.">
+          class="ob-label-tooltip">
           Physical Location
           <span class="ob-tip" role="tooltip">Where the original copy is stored. Be specific — e.g. "Fireproof safe in master bedroom closet".</span>
         </label>
@@ -208,8 +198,7 @@
 
       <div class="form-field{% if form.digital_location.errors %} has-error{% endif %}">
         <label for="{{ form.digital_location.id_for_label }}"
-          class="ob-label-tooltip"
-          title="Where a digital copy or scan is stored for quick access — e.g. 'Dropbox / Important Docs folder' or 'Google Drive / Insurance'.">
+          class="ob-label-tooltip">
           Other Digital Locations
           <span class="ob-tip" role="tooltip">Where a digital copy is stored for quick access — e.g. "Dropbox / Important Docs folder" or "Google Drive / Insurance".</span>
         </label>
@@ -243,14 +232,12 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
   var hint = zone.querySelector('small');
 
   if (existingLink && clearCheckbox) {
-    // Build a clean current-file card above the zone
     var card = document.createElement('div');
     card.className = 'rr-current-file';
     card.innerHTML =
       '<span class="rr-current-file-icon"><i class="fas fa-file-alt"></i></span>' +
       '<span class="rr-current-file-name">' + existingLink.textContent.trim() + '</span>';
 
-    // Move the original checkbox (preserving its name/id for form submission)
     var clearWrap = document.createElement('label');
     clearWrap.className = 'rr-current-file-clear';
     clearWrap.appendChild(clearCheckbox);
@@ -259,7 +246,6 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
 
     zone.parentNode.insertBefore(card, zone);
 
-    // Strip Django's rendered clutter from inside the zone
     Array.from(zone.childNodes).forEach(function (node) {
       if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'BR' ||
           node.nodeName === 'A' || node.nodeName === 'LABEL') {
@@ -267,7 +253,6 @@ document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
       }
     });
 
-    // Tone down the zone to a secondary "replace" prompt
     zone.classList.add('rr-file-replace');
     if (icon) icon.className = 'fas fa-arrow-up-from-bracket';
     if (prompt) prompt.textContent = 'Click to replace file';

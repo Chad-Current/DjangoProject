@@ -36,24 +36,12 @@ class FinancialAccountSelect(forms.Select):
         return option
 
 
-RISK_ACKNOWLEDGED_FIELD = forms.BooleanField(
-    required=True,
-    label=(
-        'I understand that storing credentials carries inherent risk. '
-        'I accept this risk and acknowledge that this service is not liable '
-        'for unauthorized access to information I choose to store here.'
-    ),
-    error_messages={'required': 'You must acknowledge the risk to save this entry.'},
-)
-
-
 class VaultEntryForm(forms.ModelForm):
     """
     Legacy combined form — kept for reference but superseded by the typed
     forms below.  VaultUpdateView now uses AccountVaultEntryForm or
     DeviceVaultEntryForm based on the entry's existing FK.
     """
-    risk_acknowledged = RISK_ACKNOWLEDGED_FIELD
     raw_password = forms.CharField(
         widget=forms.PasswordInput(render_value=True),
         required=False,
@@ -141,7 +129,6 @@ class AccountVaultEntryForm(forms.ModelForm):
     Create / update form for vault entries linked to a digital Account.
     Only exposes linked_account — linked_device is never shown.
     """
-    risk_acknowledged = RISK_ACKNOWLEDGED_FIELD
     raw_password = forms.CharField(
         widget=forms.PasswordInput(render_value=True),
         required=False,
@@ -200,7 +187,6 @@ class DeviceVaultEntryForm(forms.ModelForm):
     Create / update form for vault entries linked to a Device.
     Only exposes linked_device — linked_account is never shown.
     """
-    risk_acknowledged = RISK_ACKNOWLEDGED_FIELD
     raw_password = forms.CharField(
         widget=forms.PasswordInput(render_value=True),
         required=False,
