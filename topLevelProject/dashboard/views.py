@@ -121,6 +121,8 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context['documents_count']   = ImportantDocument.objects.filter(profile=profile).count()
             context['family_knows_count']= FamilyNeedsToKnowSection.objects.filter(relation__profile=profile).count()
             context['funeral_planned']   = FuneralPlan.objects.filter(profile=profile).count()
+            context['account_vault_count'] = VaultEntry.objects.filter(linked_account__profile=profile).count()
+            context['device_vault_count']  = VaultEntry.objects.filter(linked_device__profile=profile).count()
 
             tier_targets = self._get_tier_targets(user)
             context['tier_targets'] = tier_targets

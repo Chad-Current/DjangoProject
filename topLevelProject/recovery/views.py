@@ -468,7 +468,7 @@ def _send_grant_access_email(grant):
         if grant.expires_at
         else 'Your access has no expiry date set.'
     )
-    access_url = f'{settings.SITE_URL}/dashboard/granted/'
+    access_url = f'{settings.SITE_URL}/granted/'
 
     send_mail(
         subject=f"You've been granted access to {profile_name}'s estate plan",

@@ -132,7 +132,13 @@
                         <div class="log-icon success"><i class="fas fa-check"></i></div>
                         <div class="log-content">
                             <div class="log-message">{{ accounts_count }} digital {% if accounts_count == 1 %}account{% else %}accounts{% endif %} secured</div>
-                            <div class="log-time">Active protection</div>
+                            <div class="log-time">
+                                {% if account_vault_count > 0 %}
+                                    <i class="fa fa-shield-alt"></i>&nbsp {{ account_vault_count }} vault {% if account_vault_count == 1 %}credential{% else %}credentials{% endif %}
+                                {% else %}
+                                    Active protection
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endif %}
@@ -143,7 +149,13 @@
                         <div class="log-icon success"><i class="fas fa-check"></i></div>
                         <div class="log-content">
                             <div class="log-message">{{ devices_count }} {% if devices_count == 1 %}device{% else %}devices{% endif %} registered</div>
-                            <div class="log-time">Active protection</div>
+                            <div class="log-time">
+                                {% if device_vault_count > 0 %}
+                                    <i class="fa fa-shield-alt"></i>&nbsp{{ device_vault_count }} vault {% if device_vault_count == 1 %}credential{% else %}credentials{% endif %}
+                                {% else %}
+                                    Active protection
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endif %}
