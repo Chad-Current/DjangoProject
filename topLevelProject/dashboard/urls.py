@@ -80,6 +80,7 @@ urlpatterns = [
     path('documents/',                    views.ImportantDocumentListView.as_view(),        name='importantdocument_list'),
     path('documents/create/',             views.ImportantDocumentCreateView.as_view(),     name='importantdocument_create'),
     path('documents/print/',              views.ImportantDocumentPrintView.as_view(),      name='importantdocument_print'),
+    path('documents/contacts-for-category/', views.ContactsForCategoryView.as_view(),     name='contacts_for_category'),
     path('documents/<slug:slug>/',        views.ImportantDocumentDetailView.as_view(),     name='importantdocument_detail'),
     path('documents/<slug:slug>/edit/',   views.ImportantDocumentUpdateView.as_view(), name='importantdocument_update'),
     path('documents/<slug:slug>/delete/', views.ImportantDocumentDeleteView.as_view(), name='importantdocument_delete'),

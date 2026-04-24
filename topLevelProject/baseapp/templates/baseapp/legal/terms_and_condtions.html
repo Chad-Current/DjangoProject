@@ -7,7 +7,7 @@
     <!-- Header Banner -->
     <div class="form-wrapper-header">
       <h2>Terms and Conditions</h2>
-      <p>Last Updated: April 13, 2026</p>
+      <p>Last Updated: April 22, 2026</p>
     </div>
 
     <div class="form-wrapper-body">
@@ -17,41 +17,63 @@
         <legend>1. Introduction</legend>
         <p>
           Welcome to Novatern ("we," "our," or "us"). These Terms and Conditions ("Terms") govern
-          your access to and use of our website, services, and related tools for digital estate organization.
+          your access to and use of our website, services, and related tools for digital estate organization
+          (collectively, the "Services").
         </p>
         <p>
-          By using our site or our services, you agree to be bound by these Terms and our Privacy Policy.
-          If you do not agree, please do not use our services.
+          By creating an account, accessing, or using the Services, you agree to be bound by these Terms and
+          our <a href="{% url 'baseapp:privacy_policy' %}">Privacy Policy</a>, which is incorporated by reference.
+          If you do not agree, please do not use the Services.
         </p>
       </fieldset>
 
-      <!-- 2. Services -->
+      <!-- 2. Eligibility -->
       <fieldset>
-        <legend>2. Services</legend>
+        <legend>2. Eligibility</legend>
         <p>
-          Novatern provides a self-service platform for organizing digital accounts, devices,
-          contacts, estate documents, and related personal information to assist families and designated
-          contacts in the event of death or incapacitation.
+          You must be at least 18 years of age and legally capable of entering into a binding contract under
+          the laws of your jurisdiction to use the Services. By using the Services, you represent and warrant
+          that you meet these requirements. The Services are not directed to children under 13, and we do not
+          knowingly collect personal information from children under 13.
         </p>
+      </fieldset>
+
+      <!-- 3. Services and Important Disclaimers -->
+      <fieldset>
+        <legend>3. Services and Important Disclaimers</legend>
+        <p>
+          Novatern provides a self-service platform for organizing digital accounts, devices, contacts,
+          estate documents, and related personal information to assist families and designated contacts in
+          the event of death or incapacitation.
+        </p>
+
         <div class="ob-alert ob-alert-info" role="note">
           <span>
-            We do not provide legal, financial, or tax advice. All information and tools shared through our
-            services are for organizational and educational purposes only. You should consult a licensed
-            attorney, financial planner, or estate professional for legally binding advice or documentation.
+            <strong>Not Legal, Financial, or Tax Advice.</strong> Novatern is not a law firm, is not a
+            substitute for an attorney, and no attorney-client relationship is created by your use of the
+            Services. The Services are organizational and educational tools only. Nothing you store in or
+            generate through the Services constitutes a will, trust, power of attorney, advance directive,
+            or other legal instrument, and storing information in the Services does not satisfy any legal
+            requirement for execution, witnessing, notarization, or probate. You are solely responsible for
+            ensuring your estate planning documents are properly drafted and executed under the laws of
+            your jurisdiction. You should consult a licensed attorney, financial planner, or tax
+            professional for advice specific to your situation.
           </span>
         </div>
       </fieldset>
 
-      <!-- 3. Subscription Tiers -->
+      <!-- 4. Subscription Tiers and Access -->
       <fieldset>
-        <legend>3. Subscription Tiers and Access</legend>
+        <legend>4. Subscription Tiers and Access</legend>
         <p>Access to features is determined by your subscription tier:</p>
 
         <div class="form-group">
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Free (No Subscription)</strong>
-              <small class="helptext">Full edit access up to per-category item limits: 2 contacts, 1 digital account, 1 device, 1 estate document, 1 important document, and 2 family notes. View access to all saved data is always included. No credit card required.</small>
+              <small class="helptext">Full edit access up to per-category item limits: 2 contacts, 1 digital account, 1
+                device, 1 estate document, 1 important document, and 2 family notes. View access to all saved data is
+                always included. No credit card required.</small>
             </span>
           </div>
         </div>
@@ -60,7 +82,10 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Essentials</strong>
-              <small class="helptext">Full edit access while your subscription is active, with higher per-category limits: 3 contacts, 3 accounts, 3 devices, 3 estate documents, 5 important documents, and 5 family notes. Does not include the encrypted Password Vault or funeral planning features. Available monthly or annually.</small>
+              <small class="helptext">Full edit access while your subscription is active, with higher per-category
+                limits: 3 contacts, 3 accounts, 3 devices, 3 estate documents, 5 important documents, and 5 family
+                notes. Does not include the encrypted Password Vault or funeral planning features. Available monthly or
+                annually.</small>
             </span>
           </div>
         </div>
@@ -69,7 +94,9 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Legacy</strong>
-              <small class="helptext">Full edit access with no item limits while your subscription is active, including the encrypted Password Vault, funeral planning, and unlimited items across all categories. Available monthly or annually.</small>
+              <small class="helptext">Full edit access with no item limits while your subscription is active, including
+                the encrypted Password Vault, funeral planning, and unlimited items across all categories. Available
+                monthly or annually.</small>
             </span>
           </div>
         </div>
@@ -78,7 +105,9 @@
           <div class="form-check form-check--static">
             <span class="form-check-label">
               <strong>Lapsed Subscription</strong>
-              <small class="helptext">If your Essentials or Legacy subscription lapses or is canceled, your account reverts to view-only access at the Free Tier Level. All previously entered data remains accessible but cannot be edited until an active subscription is restored.</small>
+              <small class="helptext">If your Essentials or Legacy subscription lapses or is canceled, your account
+                reverts to view-only access at the Free Tier Level. All previously entered data remains accessible but
+                cannot be edited until an active subscription is restored.</small>
             </span>
           </div>
         </div>
@@ -91,29 +120,109 @@
         </div>
       </fieldset>
 
-      <!-- 4. User Responsibilities -->
+      <!-- 5. Auto-Renewal, Cancellation, and Refunds -->
       <fieldset>
-        <legend>4. User Responsibilities</legend>
-        <p>By using our services, you agree to:</p>
+        <legend>5. Auto-Renewal, Cancellation, and Refunds</legend>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Automatic Renewal</strong>
+              <small class="helptext">
+                Paid subscriptions automatically renew at the end of each billing period (monthly or annual,
+                as selected at purchase) at the then-current price. By purchasing a subscription, you
+                authorize us to charge your payment method on a recurring basis until you cancel.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>How to Cancel</strong>
+              <small class="helptext">
+                You may cancel your subscription at any time through your account settings or by emailing
+                <a href="mailto:privacy@novatern.com">privacy@novatern.com</a>. Cancellation takes effect at
+                the end of the then-current billing period, and your account will revert to view-only access
+                at the Free Tier Level at that time.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Refund Policy</strong>
+              <small class="helptext">
+                Except where required by law, all fees are non-refundable and we do not provide refunds or
+                credits for partial billing periods, unused features, or downgrades. If you believe you have
+                been charged in error, contact us at
+                <a href="mailto:privacy@novatern.com">privacy@novatern.com</a> within 30 days of the charge
+                and we will review your request in good faith.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Price Changes</strong>
+              <small class="helptext">
+                We may change subscription prices from time to time. If we increase the price of your
+                subscription, we will notify you by email at least 30 days before the change takes effect,
+                and you may cancel before the new price applies.
+              </small>
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 6. User Responsibilities -->
+      <fieldset>
+        <legend>6. User Responsibilities</legend>
+        <p>By using the Services, you agree to the following. You will:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
-          <li>Provide accurate and current information.</li>
-          <li>Use our website and services only for lawful purposes.</li>
-          <li>Maintain the confidentiality of your account credentials, including your login password.</li>
-          <li>Not upload or share unlawful, harmful, or infringing content.</li>
-          <li>Respect our intellectual property and not reproduce, redistribute, or resell our materials without written consent.</li>
-          <li>Accept responsibility for all credentials and information you choose to store in the platform.</li>
+          <li>Provide accurate and current information, and keep your account information up to date.</li>
+          <li>Use the Services only for lawful purposes and only in ways consistent with these Terms.</li>
+          <li>Maintain the confidentiality of your account credentials, including your login password, and notify us
+            promptly of any unauthorized use of your account.</li>
+          <li>Accept full responsibility for all credentials and information you choose to store in the platform.</li>
+          <li>Only store credentials, documents, or personal information that belongs to you or that you are expressly
+            authorized to store on another person's behalf.</li>
+          <li>Respect our intellectual property and not reproduce, redistribute, or resell our materials without our
+            prior written consent.</li>
         </ul>
+
+        <p>You will <em>not</em>, and will not attempt to:</p>
+        <ul style="padding-left: 0; margin: 0 0 1rem;">
+          <li>Upload, store, or share unlawful, harmful, defamatory, harassing, or infringing content.</li>
+          <li>Upload malware, viruses, or any code intended to disrupt, damage, or gain unauthorized access to any
+            system.</li>
+          <li>Reverse-engineer, decompile, scrape, or attempt to extract the source code or underlying data of the
+            Services, except as permitted by applicable law.</li>
+          <li>Use the Services to build a competing product, or to train or benchmark any machine learning model.</li>
+          <li>Share your account credentials with any other person or allow another person to use your account.</li>
+          <li>Circumvent, disable, or interfere with any security, authentication, rate-limiting, or access-control
+            feature of the Services.</li>
+        </ul>
+
         <div class="ob-alert ob-alert-info" role="note">
           <span>
-            You retain full ownership of your data and uploaded materials, but grant us limited permission to
-            store and process them solely for service delivery.
+            You retain full ownership of your data and uploaded materials. You grant us a limited,
+            non-exclusive, worldwide license to host, store, process, transmit, and display your content
+            solely as necessary to provide the Services to you. This license ends when you delete the
+            content or close your account, except for backup copies retained for a reasonable period and
+            for information we are required to retain by law.
           </span>
         </div>
       </fieldset>
 
-      <!-- 5. Security and Data Protection -->
+      <!-- 7. Security and Data Protection -->
       <fieldset>
-        <legend>5. Security and Data Protection</legend>
+        <legend>7. Security and Data Protection</legend>
         <p>We take security seriously and use encrypted technologies to safeguard your information.</p>
 
         <div class="form-group">
@@ -122,7 +231,7 @@
               <strong>File Storage</strong>
               <small class="helptext">
                 All uploaded documents are stored on our servers with access restricted to your authenticated
-                account and any recovery access you have authorized.
+                account and any Family Recovery Access you have authorized pursuant to Section 8.
               </small>
             </span>
           </div>
@@ -185,122 +294,467 @@
 
         <div class="ob-alert ob-alert-info" role="note" style="margin-top: 1rem;">
           <span>
-            While we apply strict security protocols, no system is completely immune to breach. By using our
-            services, you acknowledge this inherent risk and agree we cannot guarantee absolute security.
+            While we apply strict security protocols, no system is completely immune to breach. By using
+            the Services, you acknowledge this inherent risk and agree we cannot guarantee absolute security.
           </span>
         </div>
       </fieldset>
 
-      <!-- 6. Account Access and Termination -->
+      <!-- 8. Family Recovery Access -->
       <fieldset>
-        <legend>6. Account Access and Termination</legend>
+        <legend>8. Family Recovery Access</legend>
+        <p>
+          The Services include an optional Family Recovery Access feature ("Recovery Access") that allows a
+          contact you designate to request access to your stored information in the event of your death or
+          incapacitation. By designating a recovery contact and enabling Recovery Access, you are providing
+          your express, advance authorization for the designated contact to receive access to the categories
+          of information you have specified, subject to the verification and review process described below.
+        </p>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Your Authorization</strong>
+              <small class="helptext">
+                You acknowledge and agree that designating a recovery contact constitutes your affirmative,
+                written consent — to the extent required by the Revised Uniform Fiduciary Access to Digital
+                Assets Act (RUFADAA), the Stored Communications Act, the Computer Fraud and Abuse Act, and
+                any other applicable federal or state law — for Novatern to disclose, and for your
+                designated contact to access, the categories of information you have specified within the
+                Services. This authorization supersedes any contrary provision in any online terms of
+                service, but does not override a contrary instruction in a later-executed will, trust,
+                power of attorney, or other governing legal instrument, to the extent such instrument
+                controls under applicable law.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Verification Requirements</strong>
+              <small class="helptext">
+                Before any Recovery Access is granted, the requesting contact must submit documentation
+                sufficient to verify (a) the identity of the requester, and (b) the death or legal
+                incapacitation of the account holder. Acceptable documentation includes a certified death
+                certificate, court order appointing the requester as executor, administrator, guardian, or
+                conservator, or other documentation we determine, in our sole discretion, to be sufficient.
+                We may require notarized affidavits and may refuse any request we believe to be fraudulent,
+                incomplete, or inconsistent with the account holder's prior instructions.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Administrative Review</strong>
+              <small class="helptext">
+                All Recovery Access requests are subject to administrative review by Novatern before any
+                access is granted. We do not guarantee any particular response time, and we reserve the
+                right, in our sole discretion, to approve, deny, delay, or require additional documentation
+                for any request. Approved requests are granted through a time-limited verification token
+                that provides read-only access to the categories of information you have specified.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Scope of Access</strong>
+              <small class="helptext">
+                Recovery Access is read-only and does not grant the designated contact the ability to
+                modify, delete, or control your account. Recovery Access does not transfer ownership of
+                any account, asset, digital property, or credential referenced within the Services, and
+                does not authorize the designated contact to log in to or access any third-party service,
+                financial institution, or platform on your behalf. Use of credentials or other information
+                obtained through Recovery Access is the sole responsibility of the designated contact and
+                is subject to the terms of service and applicable law governing the underlying third-party
+                account or asset.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Modification and Revocation</strong>
+              <small class="helptext">
+                You may add, change, or remove your designated recovery contact at any time through your
+                account settings while your account is active. The most recent designation on file at the
+                time of a verified request will control. You are responsible for keeping your recovery
+                contact designation current and for informing your designated contact of their role.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>No Fiduciary Relationship</strong>
+              <small class="helptext">
+                Novatern is not a fiduciary, executor, trustee, agent, or personal representative of any
+                account holder or designated contact. We do not provide, and Recovery Access is not, legal,
+                probate, or estate administration services. Recovery Access is a convenience feature that
+                operates alongside — and does not replace — a properly executed will, trust, power of
+                attorney, or other legal instrument.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Release and Indemnification</strong>
+              <small class="helptext">
+                You, on behalf of yourself and your heirs, estate, successors, and assigns, release Novatern
+                from any claim arising out of our good-faith approval, denial, delay, or handling of any
+                Recovery Access request, or out of the designated contact's use of information obtained
+                through Recovery Access. You agree that the indemnification obligation in these Terms
+                extends to any claim brought by a designated contact, heir, beneficiary, or third party
+                relating to Recovery Access.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="ob-alert ob-alert-info" role="note" style="margin-top: 1rem;">
+          <span>
+            Authorized Recovery Access by a designated contact in accordance with this Section is a feature
+            of the Services that you have affirmatively enabled, and does not constitute a breach of your
+            privacy, a violation of these Terms, or unauthorized access under any applicable law.
+          </span>
+        </div>
+      </fieldset>
+
+      <!-- 9. Account Access and Termination -->
+      <fieldset>
+        <legend>9. Account Access and Termination</legend>
         <p>
           You may request account deletion or data removal at any time by contacting&nbsp;
-          <a href="mailto:privacy@novatern.com">
-            privacy@novatern.com
-          </a>
+          <a href="mailto:privacy@novatern.com">privacy@novatern.com</a>. We will complete verified deletion
+          requests within 45 days, subject to any legal retention obligations.
         </p>
         <p>
-          We reserve the right to suspend or terminate accounts that violate these Terms or misuse our
-          services, without prior notice.
+          We reserve the right to suspend or terminate accounts that violate these Terms or misuse the
+          Services. For material violations we may suspend or terminate without prior notice; otherwise we
+          will generally attempt to provide notice and an opportunity to cure. On termination by either
+          party, you may, for a period of 30 days, request an export of your data in a machine-readable
+          format, after which your data may be permanently deleted.
         </p>
       </fieldset>
 
-      <!-- 7. Family Recovery Access -->
+      <!-- 10. Intellectual Property -->
       <fieldset>
-        <legend>7. Family Recovery Access</legend>
+        <legend>10. Intellectual Property</legend>
         <p>
-          The platform includes a family recovery system that allows a designated contact to request access
-          to your estate records in the event of your death or incapacitation. Recovery requests undergo
-          administrative review before access is granted. Access is provided through a time-limited
-          verification token.
+          All website content, software, designs, graphics, logos, and documentation provided by Novatern
+          are the intellectual property of Novatern or its licensors. These Terms do not transfer any
+          ownership of that intellectual property to you.
+        </p>
+        <p>
+          You may use our marketing content and documentation for personal, non-commercial reference
+          purposes only. Nothing in this section restricts your ability to use the Services or your own
+          data for the personal estate-planning purposes for which the Services are intended.
         </p>
         <p style="margin: 0;">
-          You accept that authorized recovery access by a designated contact is a feature of the service and
-          does not constitute a breach of your privacy under these Terms.
+          Any reproduction, distribution, modification, or public display of our intellectual property
+          without our prior written permission is strictly prohibited.
         </p>
       </fieldset>
 
-      <!-- 8. Intellectual Property -->
+      <!-- 11. Disclaimer of Warranties -->
       <fieldset>
-        <legend>8. Intellectual Property</legend>
+        <legend>11. Disclaimer of Warranties</legend>
         <p>
-          All website content, including text, graphics, designs, software, and documentation, is the
-          intellectual property of Novatern unless otherwise stated.
+          THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, EITHER
+          EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, NOVATERN DISCLAIMS ALL
+          WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+          PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT, AND ANY WARRANTIES ARISING FROM COURSE OF DEALING
+          OR USAGE OF TRADE.
         </p>
         <p>
-          You may use these materials for personal, non-commercial purposes only. Any reproduction,
-          distribution, or modification without written permission is strictly prohibited.
+          WE DO NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR FREE OF VIRUSES
+          OR OTHER HARMFUL COMPONENTS, OR THAT ANY CONTENT STORED IN THE SERVICES WILL REMAIN AVAILABLE OR
+          WILL NOT BE LOST OR CORRUPTED. YOU ARE RESPONSIBLE FOR MAINTAINING YOUR OWN BACKUP COPIES OF
+          IMPORTANT INFORMATION.
+        </p>
+        <p style="margin: 0;">
+          SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES, SO SOME OF THE ABOVE
+          EXCLUSIONS MAY NOT APPLY TO YOU.
         </p>
       </fieldset>
 
-      <!-- 9. Limitation of Liability -->
+      <!-- 12. Limitation of Liability -->
       <fieldset>
-        <legend>9. Limitation of Liability</legend>
-        <p>To the fullest extent permitted by law:</p>
+        <legend>12. Limitation of Liability</legend>
+        <p>
+          TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL NOVATERN, ITS AFFILIATES,
+          OFFICERS, EMPLOYEES, AGENTS, OR LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+          CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL,
+          OR BUSINESS OPPORTUNITY, ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICES, WHETHER BASED
+          ON CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR ANY OTHER LEGAL THEORY, EVEN IF WE
+          HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+        </p>
+        <p>
+          OUR TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICES SHALL NOT
+          EXCEED THE GREATER OF (A) THE AMOUNTS PAID BY YOU TO NOVATERN IN THE TWELVE (12) MONTHS PRECEDING
+          THE EVENT GIVING RISE TO THE CLAIM, OR (B) ONE HUNDRED U.S. DOLLARS ($100.00).
+        </p>
+        <p>In addition, and without limiting the foregoing:</p>
         <ul style="padding-left: 0; margin: 0 0 1rem;">
-          <li>Novatern is not liable for any direct, indirect, incidental, or consequential damages arising from your use or inability to use our services.</li>
-          <li>We are not a financial institution and are not liable for any financial loss, fraud, or unauthorized access resulting from credentials or account information you choose to store in the platform.</li>
-          <li>We are not responsible for errors in third-party platforms or integrations, including payment processors or hosting services.</li>
-          <li>Our materials and recommendations are provided "as is," without guarantees or warranties of completeness or legality.</li>
-          <li>Users accept full responsibility for how they apply our information and tools in their own estate planning process.</li>
-          <li>Users who store credentials in the Password Vault do so at their own risk after affirmatively acknowledging that risk at the time of storage.</li>
+          <li>We are not a financial institution and are not liable for any financial loss, fraud, or unauthorized
+            access resulting from credentials or account information you choose to store in the platform.</li>
+          <li>We are not responsible for errors, outages, or failures in third-party platforms or integrations,
+            including payment processors, hosting providers, or email delivery services.</li>
+          <li>Users accept full responsibility for how they apply our information and tools in their own estate planning
+            process.</li>
+          <li>Users who store credentials in the Password Vault do so at their own risk after affirmatively
+            acknowledging that risk at the time of storage.</li>
         </ul>
-      </fieldset>
-
-      <!-- 10. Indemnification -->
-      <fieldset>
-        <legend>10. Indemnification</legend>
-        <p>
-          You agree to indemnify and hold harmless Novatern, its affiliates, employees, and agents
-          from any claims, losses, or expenses arising out of your misuse of our services, violation of these
-          Terms, or the information you choose to store in the platform.
+        <p style="margin: 0;">
+          SOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR CERTAIN TYPES OF
+          DAMAGES, SO SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU. THE LIMITATIONS IN THIS SECTION
+          ARE A FUNDAMENTAL BASIS OF THE BARGAIN BETWEEN YOU AND NOVATERN.
         </p>
       </fieldset>
 
-      <!-- 11. Third-Party Links -->
+      <!-- 13. Indemnification -->
       <fieldset>
-        <legend>11. Third-Party Links</legend>
+        <legend>13. Indemnification</legend>
         <p>
-          Our website or services may include links to third-party resources. These links are provided for
-          convenience only. We are not responsible for third-party services or their content, policies, or
-          security practices.
+          You agree to indemnify, defend, and hold harmless Novatern, its affiliates, employees, and agents
+          from and against any claims, losses, liabilities, damages, costs, and expenses (including
+          reasonable attorneys' fees) arising out of or related to: (a) your use or misuse of the Services;
+          (b) your violation of these Terms; (c) your violation of any law or the rights of any third
+          party; or (d) the information or materials you choose to store in the platform.
         </p>
       </fieldset>
 
-      <!-- 12. Modifications to Services or Terms -->
+      <!-- 14. Third-Party Links and Services -->
       <fieldset>
-        <legend>12. Modifications to Services or Terms</legend>
+        <legend>14. Third-Party Links and Services</legend>
         <p>
-          We may update or modify our services, website, or these Terms at any time. Updated versions will be
-          posted on our website with a new "Last Updated" date. Continued use of our services constitutes
-          acceptance of any updated Terms.
+          The Services may include links to, or integrations with, third-party websites or services. These
+          links and integrations are provided for convenience only. We do not endorse and are not
+          responsible for third-party services or their content, policies, availability, or security
+          practices. Your use of third-party services is governed by the terms and privacy policies of
+          those third parties.
         </p>
       </fieldset>
 
-      <!-- 13. Governing Law -->
+      <!-- 15. Dispute Resolution and Arbitration -->
       <fieldset>
-        <legend>13. Governing Law</legend>
+        <legend>15. Dispute Resolution and Arbitration</legend>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Informal Resolution First</strong>
+              <small class="helptext">
+                Before filing any formal claim, you agree to first contact us at
+                <a href="mailto:privacy@novatern.com">privacy@novatern.com</a> with a written description of
+                the dispute. We will attempt to resolve the dispute informally within 60 days.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Binding Arbitration</strong>
+              <small class="helptext">
+                If informal resolution fails, any dispute arising out of or related to these Terms or the
+                Services shall be resolved by final and binding arbitration administered by the American
+                Arbitration Association ("AAA") under its Consumer Arbitration Rules. The arbitration will
+                be conducted in Polk County, Iowa, or remotely by telephone or video at your election.
+                Judgment on the award may be entered in any court of competent jurisdiction.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Class Action Waiver</strong>
+              <small class="helptext">
+                YOU AND NOVATERN AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS
+                INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR
+                REPRESENTATIVE PROCEEDING. The arbitrator may not consolidate more than one person's claims
+                and may not preside over any form of representative or class proceeding.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Exceptions and Opt-Out</strong>
+              <small class="helptext">
+                Either party may bring an individual action in small-claims court for disputes within that
+                court's jurisdiction, and either party may seek injunctive relief in court to protect
+                intellectual property rights. You may opt out of this arbitration provision by sending
+                written notice to <a href="mailto:privacy@novatern.com">privacy@novatern.com</a> within 30
+                days of first accepting these Terms, stating your name, account email, and intent to opt out.
+              </small>
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 16. Modifications to Services or Terms -->
+      <fieldset>
+        <legend>16. Modifications to Services or Terms</legend>
         <p>
-          These Terms are governed by and construed in accordance with the laws of the State of Iowa, without
-          regard to conflict-of-law principles.
-        </p>
-        <p>
-          Any disputes arising under these Terms shall be resolved in the courts located in Polk County, Iowa.
+          We may update or modify the Services or these Terms at any time. Updated Terms will be posted on
+          our website with a new "Last Updated" date. For material changes, we will provide at least 30 days'
+          advance notice by email to the address associated with your account. Continued use of the
+          Services after the effective date of updated Terms constitutes acceptance of those Terms. If you
+          do not agree to the updated Terms, you must stop using the Services before they take effect.
         </p>
       </fieldset>
 
-      <!-- 14. Contact Information -->
+      <!-- 17. Governing Law -->
       <fieldset>
-        <legend>14. Contact Information</legend>
+        <legend>17. Governing Law</legend>
+        <p>
+          These Terms are governed by and construed in accordance with the laws of the State of Iowa,
+          without regard to conflict-of-law principles. Subject to Section 15 (Dispute Resolution and
+          Arbitration), any disputes not subject to arbitration shall be resolved exclusively in the state
+          or federal courts located in Polk County, Iowa, and you consent to the personal jurisdiction of
+          those courts.
+        </p>
+      </fieldset>
+
+      <!-- 18. General Provisions -->
+      <fieldset>
+        <legend>18. General Provisions</legend>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Entire Agreement</strong>
+              <small class="helptext">
+                These Terms and our Privacy Policy constitute the entire agreement between you and Novatern
+                regarding the Services and supersede all prior agreements, communications, and
+                understandings, whether written or oral.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Severability</strong>
+              <small class="helptext">
+                If any provision of these Terms is held to be unenforceable or invalid, that provision will
+                be limited or eliminated to the minimum extent necessary, and the remaining provisions will
+                remain in full force and effect.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>No Waiver</strong>
+              <small class="helptext">
+                Our failure to enforce any right or provision of these Terms will not be considered a waiver
+                of that right or provision. Any waiver must be in writing and signed by an authorized
+                representative of Novatern.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Assignment</strong>
+              <small class="helptext">
+                You may not assign or transfer these Terms or any rights under them without our prior
+                written consent. We may assign these Terms, in whole or in part, to any successor in
+                interest, including in connection with a merger, acquisition, reorganization, or sale of
+                assets.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Force Majeure</strong>
+              <small class="helptext">
+                We will not be liable for any failure or delay in performance caused by events outside our
+                reasonable control, including acts of God, natural disasters, war, terrorism, riots, labor
+                disputes, government action, pandemic, internet or telecommunications failures, or
+                third-party service outages.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Electronic Communications</strong>
+              <small class="helptext">
+                You consent to receive communications from us electronically, including by email and by
+                notices posted within the Services. Electronic communications satisfy any legal requirement
+                that such communications be in writing.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Survival</strong>
+              <small class="helptext">
+                Sections that by their nature should survive termination will survive, including without
+                limitation intellectual property, disclaimers of warranties, limitation of liability,
+                indemnification, dispute resolution, and general provisions.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check form-check--static">
+            <span class="form-check-label">
+              <strong>Headings</strong>
+              <small class="helptext">
+                Section headings are for convenience only and do not affect the interpretation of these
+                Terms.
+              </small>
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 19. Contact Information -->
+      <fieldset>
+        <legend>19. Contact Information</legend>
         <p>For questions or concerns about these Terms, please contact:</p>
         <div class="detail-view" style="gap: 0.35rem; padding: 1.25rem 1.5rem;">
           <p style="margin: 0;"><strong>Novatern</strong></p>
           <p>
             Email:&nbsp;
-            <a href="mailto:privacy@novatern.com" >
-              privacy@novatern.com
-            </a>
+            <a href="mailto:privacy@novatern.com">privacy@novatern.com</a>
           </p>
           <p style="margin: 0;">Location: Des Moines, Iowa, USA</p>
         </div>

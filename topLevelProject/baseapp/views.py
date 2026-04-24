@@ -273,6 +273,12 @@ class AccessibilityView(View):
     def get(self, request):
         return render(request, self.template_name)
     
+class RolesView(View):
+    """ Roles to associated Important Docuemnts"""
+    template_name = 'baseapp/roles_matrix.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
     
 # ── Error handlers ────────────────────────────────────────────────────────────
 

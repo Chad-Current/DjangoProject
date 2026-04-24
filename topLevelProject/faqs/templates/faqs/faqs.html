@@ -153,7 +153,38 @@
     </summary>
     <div class="faq-answer">
       <p>You designate trusted contacts and assign each of them to specific accounts, devices, or documents. When the time comes, they know exactly what they're responsible for — and what you wanted done with it.</p>
+      <p>Each contact can be given one or more <strong>roles</strong> — such as Legal Executor, Financial Agent, Healthcare Proxy, or Digital Executor — that tell them (and the platform) exactly what their responsibilities are. The platform uses these roles to guide you: when you save a financial document, for example, it will only show contacts with the Financial Agent role, keeping your plan organized and intentional.</p>
       <p>You can also add a personal note to each contact with any special instructions or context that would help them. Think of it as a private letter attached to each item.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary>
+      <span class="faq-question-text">
+        <i class="fas fa-id-badge"></i>
+        What are contact roles and why do they matter?
+      </span>
+      <span class="faq-toggle-label">
+        <span class="toggle-show">Show answer</span>
+        <span class="toggle-hide">Hide answer</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </span>
+    </summary>
+    <div class="faq-answer">
+      <p>Contact roles are labels you assign to each trusted contact that describe their specific responsibility in your estate plan. When you assign a role, the platform uses it to match that contact to the right documents and items automatically. Available roles include:</p>
+      <ul>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Legal Executor</strong> — administers your estate and will</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Financial Agent</strong> — handles finances and bills under a power of attorney</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Healthcare Proxy</strong> — makes medical decisions if you're incapacitated</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Digital Executor</strong> — manages online accounts, passwords, and digital assets</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Trustee</strong> — manages trusts and trust assets</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Guardian for Dependents</strong> — named guardian for minor children or dependent adults</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Caregiver / Pet Caregiver</strong> — coordinates care needs or pet care</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Memorial Contact</strong> — handles funeral and memorial arrangements</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Professional Advisor</strong> — an attorney, accountant, or advisor to consult</span></li>
+        <li><i class="fas fa-check-circle"></i> <span><strong>Legacy Contact / Notification Only / Knowledge Contact</strong> — for platform legacy access, informational notice, or specific knowledge delegation</span></li>
+      </ul>
+      <p>One contact can hold multiple roles. Roles also help your family immediately understand who to call first and for what — no guesswork when it matters most.</p>
     </div>
   </details>
 
@@ -267,7 +298,7 @@
     <div class="faq-answer">
       <p>Your data stays in place. If you cancel a paid subscription, your account moves to limited view-only access. You won't be able to add or edit items until you resubscribe.</p>
       <p>We don't delete your information when you cancel. The whole point of this platform is that your plan should outlast any billing cycle.</p>
-      <p>Your designated digital executors (contacts) can <a href="{% url 'recovery:external_recovery_request' %}"><span>request access</span></a> to  your data in the occurance of an unfortunate life event.</p>
+      <p>Your family members or trusted contacts can <a href="{% url 'recovery:external_recovery_request' %}"><span>submit a verified recovery request</span></a> to access your data in the event of death or incapacitation. Requests are reviewed and approved only after proper documentation is provided.</p>
     </div>
   </details>
 

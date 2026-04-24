@@ -1,0 +1,294 @@
+{% extends 'baseapp/base.html' %}
+{% load static %}
+
+{% block title %}Contact Roles Matrix — Novatern{% endblock %}
+
+{% block content %}
+<div class="main">
+
+    <h1>Contact Roles Matrix</h1>
+    <p>Which contact roles are responsible for each document type</p>
+
+  <div id="dmw">
+    <table id="dm"><colgroup id="cols"></colgroup></table>
+  </div>
+
+  <div class="dm-legend">
+    <span class="dm-legend-item"><span class="dm-legend-dot" style="background:#7F77DD"></span>Financial</span>
+    <span class="dm-legend-item"><span class="dm-legend-dot" style="background:#1D9E75"></span>Care</span>
+    <span class="dm-legend-item"><span class="dm-legend-dot" style="background:#D85A30"></span>Digital</span>
+    <span class="dm-legend-item"><span class="dm-legend-dot" style="background:#BA7517"></span>Legal / Personal</span>
+    <span class="dm-legend-hint">Click a role column to highlight</span>
+  </div>
+
+</div>
+
+<style>
+#dmw {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(45, 106, 156, 0.12);
+  box-shadow: 0 4px 20px rgba(45, 106, 156, 0.07);
+  margin-bottom: 1.25rem;
+}
+
+#dm {
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 630px;
+  width: 100%;
+  background: #ffffff;
+  font-family: var(--main-font);
+}
+
+.dm-grp {
+  font-family: var(--main-font);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  text-align: center;
+  padding: 0.55rem 0.25rem 0.4rem;
+  border-bottom: 1px solid rgba(45, 106, 156, 0.15);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--purewhite-color);
+}
+
+.dm-role {
+  font-family: var(--main-font);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  text-align: center;
+  padding: 0.45rem 0.15rem 0.6rem;
+  border-bottom: 1px solid rgba(45, 106, 156, 1);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.dm-role:hover {
+  background: var(--hover-color);
+}
+
+.dm-cat {
+  font-family: var(--main-font);
+  font-size: var(--font-nm);
+  font-weight: 500;
+  padding: 0.4rem 0.75rem 0.4rem 1rem;
+  color: var(--ten-percent);
+  border-bottom: 1px solid rgba(45, 106, 156, 0.5);
+  text-align: left;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 185px;
+}
+
+.dm-cell {
+  text-align: center;
+  border-bottom: 1px solid rgba(45, 106, 156, 1);
+  height: 32px;
+  padding: 0;
+  transition: background 0.12s, opacity 0.12s;
+  vertical-align: middle;
+}
+
+.dm-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+#dm tbody tr:nth-child(even) .dm-cat,
+#dm tbody tr:nth-child(even) .dm-cell {
+  background: rgba(45, 106, 156, 0.025);
+}
+
+.dm-legend {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.75rem;
+  margin-bottom: 2.5rem;
+  font-family: var(--main-font);
+  font-size: var(--font-sm);
+}
+
+.dm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-color-dark-muted);
+  font-weight: 500;
+}
+
+.dm-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dm-legend-hint {
+  margin-left: auto;
+  color: var(--text-color-dark-muted);
+  font-size: var(--font-xs);
+  font-weight: 400;
+  font-style: italic;
+}
+</style>
+
+<script>
+const roles=[
+  ['FA','Financial Agent','fin'],
+  ['LE','Legal Executor','fin'],
+  ['TR','Trustee','fin'],
+  ['PA','Prof. Advisor','fin'],
+  ['HP','Healthcare Proxy','care'],
+  ['CG','Caregiver','care'],
+  ['EC','Emerg. Contact','care'],
+  ['DE','Digital Executor','dig'],
+  ['LC','Legacy Contact','dig'],
+  ['MC','Memorial Contact','dig'],
+  ['GD','Guardian','other'],
+  ['PC','Pet Caregiver','other'],
+  ['KC','Knowledge Contact','other'],
+  ['NO','Notif. Only','other'],
+];
+
+const cats=[
+  ['Bank & Cash Accounts',{FA:1,LE:1,TR:1,PA:1}],
+  ['Business Ownership Docs',{LE:1,TR:1,FA:1,PA:1}],
+  ['Care Preferences & Providers',{CG:1,HP:1,EC:1}],
+  ['Charitable Giving & Memberships',{LE:1,TR:1,FA:1}],
+  ['Cloud & Email Accounts',{DE:1,LC:1}],
+  ['Dependents & Pet Care',{GD:1,PC:1,CG:1}],
+  ['Health Insurance & Benefits',{HP:1,CG:1,FA:1}],
+  ['Important Personal Documents',{LE:1,FA:1,PA:1}],
+  ['Income & Budgets',{FA:1,LE:1,PA:1}],
+  ['Insurance Policies',{LE:1,FA:1,HP:1,PA:1}],
+  ['Investments & Retirement',{FA:1,TR:1,LE:1,PA:1}],
+  ['Loans & Liabilities',{FA:1,LE:1,PA:1}],
+  ['Medical Summary',{HP:1,CG:1,EC:1}],
+  ['Notes & Special Instructions',{LE:1,KC:1,NO:1}],
+  ['Online Accounts & Passwords',{DE:1,LC:1}],
+  ['Password Management',{DE:1}],
+  ['Personal Identification',{LE:1,FA:1,PA:1}],
+  ['Personal Property & Valuables',{LE:1,TR:1,FA:1}],
+  ['Pet License/Records',{PC:1}],
+  ['Safe Deposit Box',{LE:1,FA:1,TR:1}],
+  ['Social Media Accounts',{DE:1,LC:1,MC:1}],
+  ['Not Listed',{KC:1,NO:1}],
+];
+
+const grpDot={fin:'#7F77DD',care:'#1D9E75',dig:'#D85A30',other:'#BA7517'};
+const grpText={fin:'#7F77DD',care:'#1D9E75',dig:'#D85A30',other:'#BA7517'};
+const grpLabels={fin:'Financial',care:'Care',dig:'Digital',other:'Legal / Personal'};
+const grpOrder=['fin','care','dig','other'];
+const grpSpans={fin:4,care:3,dig:3,other:4};
+
+const colWidth=36;
+const catWidth=185;
+
+const table=document.getElementById('dm');
+const cg=document.getElementById('cols');
+const catCol=document.createElement('col');
+catCol.style.width=catWidth+'px';
+cg.appendChild(catCol);
+roles.forEach(()=>{
+  const c=document.createElement('col');
+  c.style.width=colWidth+'px';
+  cg.appendChild(c);
+});
+
+const tbody=document.createElement('tbody');
+
+// Group row
+const grpRow=document.createElement('tr');
+const blank=document.createElement('th');
+grpRow.appendChild(blank);
+grpOrder.forEach(g=>{
+  const th=document.createElement('th');
+  th.colSpan=grpSpans[g];
+  th.className='dm-grp';
+  th.style.color=grpText[g];
+  th.textContent=grpLabels[g];
+  grpRow.appendChild(th);
+});
+tbody.appendChild(grpRow);
+
+// Role header row
+const roleRow=document.createElement('tr');
+const emTh=document.createElement('th');
+roleRow.appendChild(emTh);
+roles.forEach(([code,full,grp],i)=>{
+  const th=document.createElement('th');
+  th.className='dm-role';
+  th.style.color=grpDot[grp];
+  th.title=full;
+  th.textContent=code;
+  th.dataset.col=i;
+  th.onclick=()=>toggleCol(i,th);
+  roleRow.appendChild(th);
+});
+tbody.appendChild(roleRow);
+
+// Data rows
+cats.forEach(([cat,mapping])=>{
+  const tr=document.createElement('tr');
+  const catTd=document.createElement('td');
+  catTd.className='dm-cat';
+  catTd.title=cat;
+  catTd.textContent=cat;
+  tr.appendChild(catTd);
+  roles.forEach(([code,,grp],i)=>{
+    const td=document.createElement('td');
+    td.className='dm-cell';
+    td.dataset.col=i;
+    if(mapping[code]){
+      const dot=document.createElement('span');
+      dot.className='dm-dot';
+      dot.style.background=grpDot[grp];
+      td.appendChild(dot);
+    }
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+
+table.appendChild(tbody);
+
+let selCol=-1;
+function toggleCol(i,clickedTh){
+  const allHeaders=document.querySelectorAll('.dm-role');
+  const allCells=document.querySelectorAll('.dm-cell');
+  if(selCol===i){
+    selCol=-1;
+    allHeaders.forEach(h=>{h.style.opacity='';h.style.fontWeight='';});
+    allCells.forEach(c=>{c.style.opacity='';c.style.background='';});
+  } else {
+    selCol=i;
+    allHeaders.forEach((h,j)=>{
+      h.style.opacity= j===i ? '1' : '0.25';
+      h.style.fontWeight= j===i ? '800' : '400';
+    });
+    allCells.forEach(c=>{
+      const col=parseInt(c.dataset.col);
+      if(col===i){
+        c.style.opacity='1';
+        c.style.background='var(--hover-color)';
+      } else {
+        c.style.opacity='0.15';
+        c.style.background='';
+      }
+    });
+  }
+}
+</script>
+{% endblock %}

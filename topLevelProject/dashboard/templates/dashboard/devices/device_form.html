@@ -19,30 +19,6 @@
     {% csrf_token %}
 
     <!-- ══════════════════════════════════════════
-         DEVICE ASSIGNMENT
-    ══════════════════════════════════════════ -->
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Device Assignment</legend>
-
-      <div class="alert alert-warning">
-        <strong>Required:</strong> You must assign this device to a contact.
-      </div>
-
-      <div class="form-field{% if form.delegated_device_to.errors %} has-error{% endif %}">
-        <label for="{{ form.delegated_device_to.id_for_label }}"
-          class="ob-label-tooltip">
-          Assign Device To <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">The trusted contact who should take responsibility for this device — wiping, transferring data, or following your decommission instructions.</span>
-        </label>
-        {{ form.delegated_device_to }}
-        {% if form.delegated_device_to.errors %}
-          <div class="error" role="alert">{{ form.delegated_device_to.errors }}</div>
-        {% endif %}
-      </div>
-
-    </fieldset>
-
-    <!-- ══════════════════════════════════════════
          DEVICE INFORMATION
     ══════════════════════════════════════════ -->
     <fieldset class="form-fieldset">
@@ -156,6 +132,30 @@
         {{ form.review_time }}
         {% if form.review_time.errors %}
           <div class="error" role="alert">{{ form.review_time.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         DEVICE ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Device Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this device to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_device_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_device_to.id_for_label }}"
+          class="ob-label-tooltip">
+          Assign Device To <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The trusted contact who should take responsibility for this device — wiping, transferring data, or following your decommission instructions.</span>
+        </label>
+        {{ form.delegated_device_to }}
+        {% if form.delegated_device_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_device_to.errors }}</div>
         {% endif %}
       </div>
 

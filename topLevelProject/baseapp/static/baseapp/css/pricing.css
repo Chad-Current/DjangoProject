@@ -235,6 +235,7 @@
 .pc-card-price-wrap {
     display: flex;
     align-items: flex-end;
+    justify-content: center;
     gap: 0.25rem;
     margin-bottom: 0.4rem;
 }
@@ -244,29 +245,31 @@
     font-weight: 700;
     line-height: 1;
     padding-bottom: 0.45rem;
-    color: var(--pc-text);
+    color: var(--text-color-dark);
 }
 
 .pc-price {
-    font-family: var(--title-font);
+    font-family: var(--main-font);
     font-size: clamp(2.4rem, 4vw, 3rem);
     font-weight: 700;
+    /* font-style: italic; */
     line-height: 1;
     color: var(--pc-text);
+    /* filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.1)); */
 }
 
 .pc-card--essentials .pc-price { color: var(--pc-blue); }
 .pc-card--legacy     .pc-price { color: var(--pc-amber-dark); }
 
 .pc-period {
-    font-size: 0.82rem;
-    color: var(--pc-text-muted);
+    font-size: var(--font-nm);
+    color: var(--text-color-dark);
     margin-bottom: 0.3rem;
 }
 
 .pc-period-sub {
-    font-size: 0.72rem;
-    color: var(--pc-text-faint);
+    font-size: var(--font-sm);
+    color: var(--text-color-dark-muted);
     margin-bottom: 1.5rem;
     min-height: 1em;
 }

@@ -169,7 +169,7 @@ nav#navbar>ul>li {
   align-items: center;
   gap: 0.45em;
   background: none;
-  border: 1px solid transparent;
+  border: 1.5px solid #1722f361;
   border-radius: 5em;
   cursor: pointer;
   padding: 0.35em 0.8em 0.35em 0.4em;

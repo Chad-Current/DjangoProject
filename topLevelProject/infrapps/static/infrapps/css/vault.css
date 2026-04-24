@@ -31,7 +31,7 @@
 .vault-pw-row .textinput {
   flex: 1;
   min-width: 140px;
-  font-family: monospace;
+  font-family: var(--mono-font), monospace;
 }
 
 .vault-pw-row .btn {
@@ -133,7 +133,7 @@
   border: 1px solid var(--ten-percent);
   border-radius: 4px;
   background: var(--bg-color);
-  font-family: monospace;
+  font-family: var(--mono-font), monospace;
 }
 
 .vault-list-reveal-btn {
@@ -195,7 +195,7 @@
   border: 1px solid var(--ten-percent);
   border-radius: 5px;
   background: var(--bg-color);
-  font-family: monospace;
+  font-family: var(--mono-font), monospace;
 }
 
 /* Reveal Password button — blue-tinted pill */

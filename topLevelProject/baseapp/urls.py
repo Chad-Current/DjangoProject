@@ -20,4 +20,6 @@ urlpatterns = [
     path('legal/data-collection/', DataCollectionView.as_view(), name='data_collection'),
     path('legal/data-retention/', DataRetentionView.as_view(), name='data_retention'),
     path('legal/accessibilty/', AccessibilityView.as_view(), name='accessibility'),
+    path('roles/', RolesView.as_view(), name="roles"),
+
 ]

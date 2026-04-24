@@ -19,30 +19,6 @@
     {% csrf_token %}
 
     <!-- ══════════════════════════════════════════
-         DOCUMENT ASSIGNMENT
-    ══════════════════════════════════════════ -->
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Important Document Assignment</legend>
-
-      <div class="alert alert-warning">
-        <strong>Required:</strong> You must assign this document to a contact.
-      </div>
-
-      <div class="form-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
-        <label for="{{ form.delegated_important_document_to.id_for_label }}"
-          class="ob-label-tooltip">
-          Assign Document To <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
-        </label>
-        {{ form.delegated_important_document_to }}
-        {% if form.delegated_important_document_to.errors %}
-          <div class="error" role="alert">{{ form.delegated_important_document_to.errors }}</div>
-        {% endif %}
-      </div>
-
-    </fieldset>
-
-    <!-- ══════════════════════════════════════════
          DOCUMENT DETAILS
     ══════════════════════════════════════════ -->
     <fieldset class="form-fieldset">
@@ -210,6 +186,30 @@
 
     </fieldset>
 
+    <!-- ══════════════════════════════════════════
+         DOCUMENT ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Important Document Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this document to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_important_document_to.id_for_label }}"
+          class="ob-label-tooltip">
+          Assign Document To <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">The first person who should access or act on this document — e.g. your executor for financial records, or healthcare proxy for medical ones.</span>
+        </label>
+        {{ form.delegated_important_document_to }}
+        {% if form.delegated_important_document_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_important_document_to.errors }}</div>
+        {% endif %}
+      </div>
+
+    </fieldset>
+
     <!-- ── ACTIONS ─────────────────────────────── -->
     <div class="button-group">
       <button type="submit" class="btn btn-primary">Save Document</button>
@@ -222,6 +222,54 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+(function () {
+  var categoryEl = document.getElementById('id_document_category');
+  var contactEl  = document.getElementById('id_delegated_important_document_to');
+  if (!categoryEl || !contactEl) return;
+
+  var initialContactId = contactEl.value;
+
+  function rebuildSelect(contacts, roleLabels) {
+    contactEl.innerHTML = '';
+    if (contacts.length === 0) {
+      var msg = roleLabels.length
+        ? 'No contacts have the ' + roleLabels.join(' or ') + ' role \u2014 assign it first'
+        : '\u2014 Select a category first \u2014';
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = msg;
+      contactEl.appendChild(opt);
+    } else {
+      var blank = document.createElement('option');
+      blank.value = '';
+      blank.textContent = '\u2014 Select a contact \u2014';
+      contactEl.appendChild(blank);
+      contacts.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (String(c.id) === initialContactId) opt.selected = true;
+        contactEl.appendChild(opt);
+      });
+    }
+  }
+
+  function fetchContacts(category) {
+    var url = '{% url "dashboard:contacts_for_category" %}?category=' + encodeURIComponent(category);
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { rebuildSelect(data.contacts, data.role_labels); });
+  }
+
+  categoryEl.addEventListener('change', function () {
+    initialContactId = '';
+    fetchContacts(this.value);
+  });
+
+  if (categoryEl.value) fetchContacts(categoryEl.value);
+})();
+</script>
 <script>
 document.querySelectorAll('.rr-file-zone').forEach(function (zone) {
   var existingLink = zone.querySelector('a');

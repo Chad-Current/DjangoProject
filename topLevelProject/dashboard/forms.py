@@ -501,7 +501,15 @@ class DigitalEstateDocumentForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['delegated_estate_to'].queryset = Contact.objects.filter(profile=profile)
+                legal_executors = Contact.objects.filter(profile=profile, is_legal_executor=True)
+                if legal_executors.exists():
+                    self.fields['delegated_estate_to'].queryset = legal_executors
+                    self.fields['delegated_estate_to'].empty_label = "— Select a Legal Executor —"
+                else:
+                    self.fields['delegated_estate_to'].queryset = Contact.objects.none()
+                    self.fields['delegated_estate_to'].empty_label = (
+                        "No contacts have the Legal Executor role — assign it to a contact first"
+                    )
             except Profile.DoesNotExist:
                 self.fields['delegated_estate_to'].queryset = Contact.objects.none()
 
@@ -671,6 +679,47 @@ class FamilyNeedsToKnowSectionForm(forms.ModelForm):
 # ImportantDocumentForm
 # ---------------------------------------------------------------------------
 
+CATEGORY_ROLE_MAP = {
+    "Bank and Cash Accounts":            ["is_financial_agent"],
+    "Business Ownership Documents":      ["is_legal_executor", "is_professional_advisor"],
+    "Care Preferences and Providers":    ["is_caregiver", "is_healthcare_proxy"],
+    "Charitable Giving and Memberships": ["is_legacy_contact"],
+    "Cloud and Email Accounts":          ["is_digital_executor"],
+    "Dependents and Pet Care":           ["is_guardian_for_dependents", "is_pet_caregiver"],
+    "Health Insurance and Benefits":     ["is_healthcare_proxy"],
+    "Important Personal Documents":      ["is_legal_executor"],
+    "Income and Budgets":                ["is_financial_agent"],
+    "Insurance Policies":                ["is_financial_agent", "is_legal_executor"],
+    "Investments and Retirement":        ["is_financial_agent", "is_trustee"],
+    "Loans and Liabilities":             ["is_financial_agent", "is_legal_executor"],
+    "Medical Summary":                   ["is_healthcare_proxy", "is_caregiver"],
+    "Notes and Special Instructions":    ["is_knowledge_contact"],
+    "Online Accounts and Passwords":     ["is_digital_executor"],
+    "Password Management":               ["is_digital_executor"],
+    "Personal Identification":           ["is_legal_executor"],
+    "Personal Property and Valuables":   ["is_trustee", "is_legal_executor"],
+    "Pet License/Records":               ["is_pet_caregiver"],
+    "Safe Deposit Box Information":      ["is_legal_executor", "is_trustee"],
+    "Social Media Accounts":             ["is_digital_executor", "is_memorial_contact"],
+    "Not Listed":                        ["is_knowledge_contact"],
+}
+
+ROLE_DISPLAY = {
+    "is_financial_agent":         "Financial Agent",
+    "is_legal_executor":          "Legal Executor",
+    "is_professional_advisor":    "Professional Advisor",
+    "is_caregiver":               "Caregiver",
+    "is_healthcare_proxy":        "Healthcare Proxy",
+    "is_legacy_contact":          "Legacy Contact",
+    "is_digital_executor":        "Digital Executor",
+    "is_guardian_for_dependents": "Guardian for Dependents",
+    "is_pet_caregiver":           "Pet Caregiver",
+    "is_knowledge_contact":       "Knowledge Contact",
+    "is_trustee":                 "Trustee",
+    "is_memorial_contact":        "Memorial Contact",
+}
+
+
 class ImportantDocumentForm(forms.ModelForm):
     class Meta:
         model = ImportantDocument
@@ -717,7 +766,31 @@ class ImportantDocumentForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['delegated_important_document_to'].queryset = Contact.objects.filter(profile=profile)
+                initial_category = (
+                    self.instance.document_category
+                    if self.instance and self.instance.pk
+                    else self.data.get('document_category') or ''
+                )
+                roles = CATEGORY_ROLE_MAP.get(initial_category, [])
+                if roles:
+                    from django.db.models import Q as _Q
+                    q = _Q()
+                    for role in roles:
+                        q |= _Q(**{role: True})
+                    contacts = Contact.objects.filter(profile=profile).filter(q)
+                else:
+                    contacts = Contact.objects.none()
+
+                if contacts.exists():
+                    self.fields['delegated_important_document_to'].queryset = contacts
+                    self.fields['delegated_important_document_to'].empty_label = "— Select a contact —"
+                else:
+                    self.fields['delegated_important_document_to'].queryset = Contact.objects.none()
+                    self.fields['delegated_important_document_to'].empty_label = (
+                        "No contacts have the required role — assign it first"
+                        if initial_category
+                        else "— Select a category first —"
+                    )
             except Profile.DoesNotExist:
                 self.fields['delegated_important_document_to'].queryset = Contact.objects.none()
 
@@ -780,6 +853,18 @@ class ImportantDocumentForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Please select at least one declaration"
             )
+
+        category = cleaned_data.get('document_category')
+        contact = cleaned_data.get('delegated_important_document_to')
+        if category and contact:
+            roles = CATEGORY_ROLE_MAP.get(category, [])
+            if roles and not any(getattr(contact, r, False) for r in roles):
+                labels = [ROLE_DISPLAY.get(r, r) for r in roles]
+                raise forms.ValidationError(
+                    f"The selected contact does not have the required role for '{category}'. "
+                    f"Required: {', '.join(labels)}."
+                )
+
         return cleaned_data
 
 

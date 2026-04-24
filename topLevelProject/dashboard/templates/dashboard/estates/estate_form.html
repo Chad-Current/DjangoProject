@@ -19,30 +19,6 @@
     {% csrf_token %}
 
     <!-- ══════════════════════════════════════════
-         ESTATE DOCUMENT ASSIGNMENT
-    ══════════════════════════════════════════ -->
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Estate Document Assignment</legend>
-
-      <div class="alert alert-warning">
-        <strong>Required:</strong> You must assign this document to a contact.
-      </div>
-
-      <div class="form-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
-        <label for="{{ form.delegated_estate_to.id_for_label }}"
-          class="ob-label-tooltip">
-          Assign Document to <span class="req" aria-hidden="true">*</span>
-          <span class="ob-tip" role="tooltip">Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.</span>
-        </label>
-        {{ form.delegated_estate_to }}
-        {% if form.delegated_estate_to.errors %}
-          <div class="error" role="alert">{{ form.delegated_estate_to.errors }}</div>
-        {% endif %}
-      </div>
-
-    </fieldset>
-
-    <!-- ══════════════════════════════════════════
          ESTATE DOCUMENT DETAILS
     ══════════════════════════════════════════ -->
     <fieldset class="form-fieldset">
@@ -197,6 +173,30 @@
         </div>
 
       </div>
+    </fieldset>
+
+    <!-- ══════════════════════════════════════════
+         ESTATE DOCUMENT ASSIGNMENT
+    ══════════════════════════════════════════ -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset-legend">Estate Document Assignment</legend>
+
+      <div class="alert alert-warning">
+        <strong>Required:</strong> You must assign this document to a contact.
+      </div>
+
+      <div class="form-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
+        <label for="{{ form.delegated_estate_to.id_for_label }}"
+          class="ob-label-tooltip">
+          Assign Document to <span class="req" aria-hidden="true">*</span>
+          <span class="ob-tip" role="tooltip">Who holds or is responsible for this document — typically your attorney, executor, or healthcare proxy.</span>
+        </label>
+        {{ form.delegated_estate_to }}
+        {% if form.delegated_estate_to.errors %}
+          <div class="error" role="alert">{{ form.delegated_estate_to.errors }}</div>
+        {% endif %}
+      </div>
+
     </fieldset>
 
     <!-- ── ACTIONS ─────────────────────────────── -->

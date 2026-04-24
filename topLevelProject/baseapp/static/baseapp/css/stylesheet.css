@@ -3,7 +3,7 @@
    Includes: CSS tokens, typography, utilities, layout components
    Load before forms.css
    ═══════════════════════════════════════════════════════════════════ */
-@import url("https://fonts.googleapis.com/css2?family=Courgette&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Ultra&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 /* ══════════════════════════════════════════════
    BOX MODEL RESET
@@ -39,13 +39,13 @@
   /* ~45–60px */
 
   /* Font families */
-  --title-font: "Crimson";
-  --main-font: "Nunito";
-  --anchor-font: "Caprasimo";
-  /* --accent-font:    "Comfortaa"; */
-  --paragraph-font: "Inter";
-  --accent-font: "Lobster Two";
-  --accent-fat-font: "Ultra";
+  --title-font: "Cormorant Garamond";
+  --main-font: "Plus Jakarta Sans";
+  --anchor-font: "Plus Jakarta Sans";
+  --paragraph-font: "Plus Jakarta Sans";
+  --accent-font: "Cormorant Garamond";
+  --accent-fat-font: "Cormorant Garamond";
+  --mono-font: "JetBrains Mono";
 
   /* Color palette */
   --purewhite-color: #e7eff7;
@@ -106,7 +106,6 @@ a {
 h1 {
   font-family: var(--title-font);
   font-size: var(--font-title-size);
-  font-weight: 900;
   color: var(--ten-percent);
   margin: 1em 0 0.68em;
 }
@@ -176,6 +175,60 @@ span {
   font-size: var(--font-md);
   font-weight: 700;
   /* color: var(--seventy-percent); */
+}
+
+/* ══════════════════════════════════════════════
+   VARIABLE FONT AXIS TUNING
+   ══════════════════════════════════════════════ */
+
+/* Cormorant Garamond — weight axis tuning per heading level */
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+/* Lighter weight for smaller serif contexts */
+.hero-stat-num,
+.module-number {
+  font-weight: 300;
+}
+
+/* Pull quotes and testimonials — light italic for elegance */
+.testimonial-quote,
+.testimonial-card p,
+.idx-blockquote,
+.hero-credential,
+.closing-headline,
+.hero-quote-mini {
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* Plus Jakarta Sans — weight extremes */
+
+/* Ultra-light for decorative eyebrow labels */
+.hero-eyebrow {
+  font-weight: 200;
+  letter-spacing: 0.18em;
+}
+
+/* Section label overline text — refined thin weight */
+.idx-section-label,
+.mobile-section-label {
+  font-weight: 200;
+}
+
+/* Strong emphasis elements — max weight for impact */
+.btn {
+  font-weight: 800;
+}
+
+.compare-tier-name,
+.pricing-card .plan-name {
+  font-weight: 800;
 }
 
 /* ══════════════════════════════════════════════

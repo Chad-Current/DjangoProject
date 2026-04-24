@@ -42,6 +42,8 @@ from .forms import (
     DeviceForm,
     DigitalEstateDocumentForm,
     ImportantDocumentForm,
+    CATEGORY_ROLE_MAP,
+    ROLE_DISPLAY,
     FamilyNeedsToKnowSectionForm,
     RelevanceReviewForm,
     FuneralPlanPersonalInfoForm,
@@ -892,6 +894,34 @@ class ImportantDocumentUpdateView(SlugLookupMixin, FullAccessMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Document updated successfully.')
         return super().form_valid(form)
+
+
+class ContactsForCategoryView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        category = request.GET.get('category', '')
+        roles = CATEGORY_ROLE_MAP.get(category, [])
+        try:
+            profile = Profile.objects.get(user=request.user)
+            if roles:
+                q = Q()
+                for role in roles:
+                    q |= Q(**{role: True})
+                qs = (
+                    Contact.objects.filter(profile=profile)
+                    .filter(q)
+                    .values('id', 'first_name', 'last_name')
+                )
+            else:
+                qs = []
+        except Profile.DoesNotExist:
+            qs = []
+
+        role_labels = [ROLE_DISPLAY.get(r, r) for r in roles]
+        data = [
+            {'id': c['id'], 'name': f"{c['first_name']} {c['last_name']}".strip()}
+            for c in qs
+        ]
+        return JsonResponse({'contacts': data, 'role_labels': role_labels})
 
 
 class ImportantDocumentDeleteView(SlugLookupMixin, DeleteAccessMixin, DeleteView):
