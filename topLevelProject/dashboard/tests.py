@@ -1816,3 +1816,111 @@ class EdgeCaseTest(TestCase):
         acct.save()
         self.client.post(reverse('dashboard:contact_delete', args=[self.contact.pk]))
         self.assertTrue(Contact.objects.filter(pk=self.contact.pk).exists())
+
+
+# ═══════════════════════════════════════════════════════════════
+#  ContactsForCategoryView TESTS
+# ═══════════════════════════════════════════════════════════════
+
+class ContactsForCategoryViewTest(TestCase):
+
+    def setUp(self):
+        self.user = make_stripe_user(username='cfcv', email='cfcv@x.com')
+        self.profile = make_profile(self.user)
+        self.client.force_login(self.user)
+        self.url = reverse('dashboard:contacts_for_category')
+
+    def test_returns_200_json(self):
+        response = self.client.get(self.url, {'category': 'Cloud and Email Accounts'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('contacts', data)
+
+    def test_returns_role_labels_in_response(self):
+        response = self.client.get(self.url, {'category': 'Cloud and Email Accounts'})
+        data = response.json()
+        self.assertIn('role_labels', data)
+
+    def test_returns_contact_with_matching_role(self):
+        contact = make_contact(self.profile, relation='Executor',
+                               first_name='Digital', last_name='Executor',
+                               is_digital_executor=True)
+        response = self.client.get(self.url, {'category': 'Cloud and Email Accounts'})
+        data = response.json()
+        names = [c['name'] for c in data['contacts']]
+        self.assertTrue(any('Digital' in n for n in names))
+
+    def test_returns_empty_for_unknown_category(self):
+        response = self.client.get(self.url, {'category': 'NoSuchCategory123'})
+        data = response.json()
+        self.assertEqual(data['contacts'], [])
+
+    def test_unauthenticated_redirects_to_login(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('login', response['Location'])
+
+    def test_contact_without_matching_role_not_returned(self):
+        make_contact(self.profile, relation='Spouse',
+                     first_name='Plain', last_name='Spouse',
+                     is_digital_executor=False)
+        response = self.client.get(self.url, {'category': 'Cloud and Email Accounts'})
+        data = response.json()
+        names = [c['name'] for c in data['contacts']]
+        self.assertFalse(any('Plain' in n for n in names))
+
+
+# ═══════════════════════════════════════════════════════════════
+#  LapsedViewLimitMixin TESTS
+# ═══════════════════════════════════════════════════════════════
+
+def make_lapsed_user_dash(username='lapsed_dash', email='lapseddash@x.com'):
+    u = make_user(username=username, email=email)
+    u.subscription_tier = 'essentials'
+    u.stripe_subscription_id = 'sub_lapsed_dash'
+    u.subscription_status = 'canceled'
+    u.has_paid = True
+    u.payment_date = timezone.now()
+    u.save()
+    return u
+
+
+class LapsedViewLimitMixinTest(TestCase):
+
+    def setUp(self):
+        self.lapsed = make_lapsed_user_dash()
+        self.profile = make_profile(self.lapsed)
+        # Lapsed users have view-only access via ViewAccessMixin
+        self.client.force_login(self.lapsed)
+        # A contact is needed for linked accounts
+        self.contact = make_contact(self.profile)
+
+    def test_lapsed_user_context_has_is_lapsed_true(self):
+        response = self.client.get(reverse('dashboard:account_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context.get('is_lapsed'))
+
+    def test_lapsed_user_context_has_lapsed_total(self):
+        # Create 2 accounts so lapsed_total is meaningful
+        make_account(self.profile, self.contact)
+        make_account(self.profile, self.contact,
+                     account_name_or_provider='Yahoo', account_category='Email Account')
+        response = self.client.get(reverse('dashboard:account_list'))
+        self.assertIn('lapsed_total', response.context)
+        self.assertGreaterEqual(response.context['lapsed_total'], 2)
+
+    def test_lapsed_user_context_has_lapsed_limit(self):
+        response = self.client.get(reverse('dashboard:account_list'))
+        self.assertIn('lapsed_limit', response.context)
+        self.assertIsNotNone(response.context['lapsed_limit'])
+
+    def test_active_subscriber_not_affected_by_mixin(self):
+        active = make_stripe_user(username='active_mixin', email='activemixin@x.com')
+        profile = make_profile(active)
+        contact = make_contact(profile)
+        make_account(profile, contact)
+        self.client.force_login(active)
+        response = self.client.get(reverse('dashboard:account_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context.get('is_lapsed', False))

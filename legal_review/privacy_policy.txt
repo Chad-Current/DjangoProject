@@ -1,0 +1,192 @@
+PRIVACY POLICY
+Novatern
+Last Updated: April 13, 2026
+================================================================================
+
+
+1. INTRODUCTION
+--------------------------------------------------------------------------------
+At Novatern ("we," "our," or "us"), we respect your privacy and are committed
+to protecting the personal information you share with us. This Privacy Policy
+explains how we collect, store, and protect your information when you visit our
+website or use our digital estate organization services.
+
+By using our website or submitting any personal information, you agree to this
+Privacy Policy.
+
+
+2. INFORMATION WE COLLECT
+--------------------------------------------------------------------------------
+We collect only the information necessary to deliver and improve our services.
+The types of information we may collect include:
+
+Personal Information
+  Name, email address, username, and phone number (if voluntarily provided).
+
+Estate Planning Data
+  Digital account records, device information, contacts, documents, and other
+  estate-related details you enter while using the service.
+
+Encrypted Vault Credentials
+  Passwords or PINs you choose to store in the Password Vault are encrypted
+  with AES-256 (Fernet) before being saved. Login identifiers (username or
+  email) associated with vault entries are stored in unencrypted form alongside
+  the encrypted password token.
+
+Uploaded Files
+  Any files you upload as part of your estate records are stored on our
+  servers. Access is restricted to your authenticated account.
+
+Vault Access Logs
+  Each time a vault password is revealed, an audit record is created containing
+  the accessing user, timestamp, and IP address. These logs are retained for
+  security and accountability purposes.
+
+Communication Data
+  Messages, emails, or other correspondence you send us.
+
+Technical Data
+  Browser details, IP address, and site analytics to improve functionality.
+
+NOTE: We do not request or store full Social Security numbers, full financial
+account numbers, routing numbers, or government-issued identification numbers.
+Passwords for financial institution accounts (banking, brokerage,
+cryptocurrency, and payment services) cannot be stored in the Password Vault
+and are explicitly blocked by the system.
+
+
+3. HOW WE USE YOUR INFORMATION
+--------------------------------------------------------------------------------
+We use your information to:
+
+  - Provide and improve our digital estate record organization services.
+  - Manage your account, subscription tier, and access permissions.
+  - Communicate regarding service requests, updates, or inquiries.
+  - Maintain session security, audit trails, and account lockout protections.
+  - Improve website performance and user experience.
+  - Fulfill legal, regulatory, or compliance obligations.
+
+NOTE: We do not sell, rent, or trade your personal data.
+
+
+4. PASSWORD VAULT AND CREDENTIAL STORAGE
+--------------------------------------------------------------------------------
+The Password Vault (available to Legacy subscription holders) allows you to
+store passwords and PINs for your digital accounts and devices. The following
+practices govern how vault data is handled:
+
+Encryption
+  All passwords are encrypted using AES-256 (Fernet symmetric encryption)
+  before being written to the database. Plaintext passwords are never
+  persisted. Encryption keys are stored in server environment variables, not
+  in the database.
+
+On-Demand Decryption Only
+  Passwords are decrypted only when you explicitly request a reveal within
+  your authenticated session. Revealed passwords are automatically hidden
+  after 15 seconds.
+
+Financial Account Restriction
+  The system blocks storage of passwords for financial institution accounts,
+  including Online Banking, Neobank/Digital Bank, Brokerage/Investment,
+  Cryptocurrency Exchange, Payment Processor, and Payment Wallet accounts.
+  This restriction is enforced at both the interface and server level.
+
+Audit Logging
+  Every password reveal is logged with the user account, date and time, and
+  IP address of the request. These logs cannot be deleted by users and are
+  retained for security purposes.
+
+User Responsibility and Risk
+  Users are required to acknowledge inherent security risks before saving any
+  vault entry. While we apply strong encryption, no online system is completely
+  immune to breach. You accept responsibility for the credentials you choose
+  to store.
+
+
+5. COOKIES AND ANALYTICS
+--------------------------------------------------------------------------------
+Our website uses limited analytics tools to understand visitor traffic and
+improve content. These tools collect only aggregated and anonymized data. You
+can manage or disable cookies in your browser settings. See our Cookie Policy
+for full details.
+
+
+6. INFORMATION SHARING
+--------------------------------------------------------------------------------
+We share data only under these limited conditions:
+
+  - With trusted infrastructure providers (such as payment processors and
+    hosting services) under strict data protection agreements. We use Stripe
+    for payment processing -- we do not store your payment card details on our
+    servers.
+  - When required by law, regulation, or legal process.
+
+NOTE: We never share, publicize, or sell client data for marketing purposes.
+
+
+7. SUBSCRIPTION TIERS AND ACCESS
+--------------------------------------------------------------------------------
+Access to features is governed by your subscription tier:
+
+  - Free (no subscription): Full edit access up to per-category item limits
+    (2 contacts, 1 account, 1 device, 1 estate document, 1 important document,
+    2 family notes). View access to all saved data.
+  - Essentials: Full edit access while your subscription is active, up to
+    higher per-category limits (3 contacts, 3 accounts, 3 devices, 3 estate
+    documents, 5 important documents, 5 family notes).
+  - Legacy: Full edit access with no item limits while your subscription is
+    active, including the encrypted Password Vault and funeral planning
+    features.
+  - Lapsed subscription: View-only access at the Free Tier Level to all
+    previously entered data. Edit access requires an active subscription.
+
+Subscription status and tier limits are enforced at the server level on all
+data modification operations.
+
+
+9. YOUR RIGHTS
+--------------------------------------------------------------------------------
+You have the right to:
+
+  - Request access to your personal data.
+  - Request correction or deletion of your information.
+  - Withdraw consent to data storage or processing at any time.
+
+All requests may be made by contacting privacy@novatern.com.
+
+
+10. DATA RETENTION
+--------------------------------------------------------------------------------
+We retain personal and project data only as long as necessary to deliver
+services or meet compliance requirements. Vault access logs are retained for
+security and accountability purposes. You may request full data deletion,
+including uploaded files, at any time. See our Data Retention Policy for
+specifics.
+
+
+11. EXTERNAL LINKS
+--------------------------------------------------------------------------------
+Our site may contain links to third-party tools, platforms, or resources. We
+are not responsible for the privacy practices or content of those external
+sites.
+
+
+12. UPDATES TO THIS POLICY
+--------------------------------------------------------------------------------
+We may update this Privacy Policy periodically to reflect operational,
+technical, or legal changes. The "Last Updated" date above will always indicate
+the latest version. Your continued use of our website or services signifies
+acceptance of any updates.
+
+
+13. CONTACT US
+--------------------------------------------------------------------------------
+For privacy concerns or data-related requests, please contact:
+
+  Novatern
+  Email: privacy@novatern.com
+  Location: Des Moines, Iowa, USA
+
+================================================================================
+END OF DOCUMENT

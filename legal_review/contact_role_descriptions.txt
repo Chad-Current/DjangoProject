@@ -1,0 +1,88 @@
+CONTACT ROLE ASSIGNMENTS — FIELD DESCRIPTIONS
+Novatern
+================================================================================
+The following are the help text descriptions for each assignable role on a
+Contact record. Each role is a boolean flag that can be independently assigned
+to any contact.
+================================================================================
+
+
+Emergency Contact
+--------------------------------------------------------------------------------
+Contact to notify and provide access during medical emergencies or sudden
+incapacity.
+
+
+Digital Executor
+--------------------------------------------------------------------------------
+Responsible for managing digital assets (accounts, passwords, online services)
+after death.
+
+
+Caregiver
+--------------------------------------------------------------------------------
+Primary person providing or coordinating long-term care needs and health
+decisions.
+
+
+Legal Executor
+--------------------------------------------------------------------------------
+Named executor/personal representative to administer overall estate and will.
+
+
+Trustee
+--------------------------------------------------------------------------------
+Manages trusts, distributions, and trust assets according to trust terms.
+
+
+Financial Agent
+--------------------------------------------------------------------------------
+Authorized under financial power of attorney to handle money/bills if
+incapacitated.
+
+
+Healthcare Proxy
+--------------------------------------------------------------------------------
+Makes medical decisions if you're unable to communicate (healthcare power of
+attorney).
+
+
+Guardian for Dependents
+--------------------------------------------------------------------------------
+Named legal guardian for minor children or dependent adults.
+
+
+Pet Caregiver
+--------------------------------------------------------------------------------
+Responsible for pet care, veterinary decisions, and related expenses.
+
+
+Memorial Contact
+--------------------------------------------------------------------------------
+Handles funeral, memorial service, and burial/cremation preferences.
+
+
+Legacy Contact
+--------------------------------------------------------------------------------
+Designated for platform-specific legacy access (e.g., Apple, Google,
+Facebook).
+
+
+Professional Advisor
+--------------------------------------------------------------------------------
+Attorney, accountant, or advisor to consult for legal/financial guidance.
+
+
+Notification Only
+--------------------------------------------------------------------------------
+Receives notifications and basic info but has no decision-making authority or
+tasks.
+
+
+Knowledge Contact
+--------------------------------------------------------------------------------
+Delegated specific knowledge/info (e.g., account locations) but no action
+required.
+
+================================================================================
+END OF DOCUMENT

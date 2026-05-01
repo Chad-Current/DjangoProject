@@ -1,0 +1,393 @@
+TERMS AND CONDITIONS
+Novatern
+Last Updated: April 22, 2026
+================================================================================
+
+
+1. INTRODUCTION
+--------------------------------------------------------------------------------
+Welcome to Novatern ("we," "our," or "us"). These Terms and Conditions ("Terms")
+govern your access to and use of our website, services, and related tools for
+digital estate organization (collectively, the "Services").
+
+By creating an account, accessing, or using the Services, you agree to be bound
+by these Terms and our Privacy Policy, which is incorporated by reference. If you
+do not agree, please do not use the Services.
+
+
+2. ELIGIBILITY
+--------------------------------------------------------------------------------
+You must be at least 18 years of age and legally capable of entering into a
+binding contract under the laws of your jurisdiction to use the Services. By
+using the Services, you represent and warrant that you meet these requirements.
+The Services are not directed to children under 13, and we do not knowingly
+collect personal information from children under 13.
+
+
+3. SERVICES AND IMPORTANT DISCLAIMERS
+--------------------------------------------------------------------------------
+Novatern provides a self-service platform for organizing digital accounts,
+devices, contacts, estate documents, and related personal information to assist
+families and designated contacts in the event of death or incapacitation.
+
+IMPORTANT NOTICE: Not Legal, Financial, or Tax Advice. Novatern is not a law
+firm, is not a substitute for an attorney, and no attorney-client relationship is
+created by your use of the Services. The Services are organizational and
+educational tools only. Nothing you store in or generate through the Services
+constitutes a will, trust, power of attorney, advance directive, or other legal
+instrument, and storing information in the Services does not satisfy any legal
+requirement for execution, witnessing, notarization, or probate. You are solely
+responsible for ensuring your estate planning documents are properly drafted and
+executed under the laws of your jurisdiction. You should consult a licensed
+attorney, financial planner, or tax professional for advice specific to your
+situation.
+
+
+4. SUBSCRIPTION TIERS AND ACCESS
+--------------------------------------------------------------------------------
+Access to features is determined by your subscription tier:
+
+Free (No Subscription)
+  Full edit access up to per-category item limits: 2 contacts, 1 digital
+  account, 1 device, 1 estate document, 1 important document, and 2 family
+  notes. View access to all saved data is always included. No credit card
+  required.
+
+Essentials
+  Full edit access while your subscription is active, with higher per-category
+  limits: 3 contacts, 3 accounts, 3 devices, 3 estate documents, 5 important
+  documents, and 5 family notes. Does not include the encrypted Password Vault
+  or funeral planning features. Available monthly or annually.
+
+Legacy
+  Full edit access with no item limits while your subscription is active,
+  including the encrypted Password Vault, funeral planning, and unlimited items
+  across all categories. Available monthly or annually.
+
+Lapsed Subscription
+  If your Essentials or Legacy subscription lapses or is canceled, your account
+  reverts to view-only access at the Free Tier Level. All previously entered
+  data remains accessible but cannot be edited until an active subscription is
+  restored.
+
+NOTE: Subscription status and tier limits are enforced at the server level on
+all data modification operations. Payments are processed by Stripe. We do not
+store your payment card details on our servers.
+
+
+5. AUTO-RENEWAL, CANCELLATION, AND REFUNDS
+--------------------------------------------------------------------------------
+Automatic Renewal
+  Paid subscriptions automatically renew at the end of each billing period
+  (monthly or annual, as selected at purchase) at the then-current price. By
+  purchasing a subscription, you authorize us to charge your payment method on
+  a recurring basis until you cancel.
+
+How to Cancel
+  You may cancel your subscription at any time through your account settings or
+  by emailing privacy@novatern.com. Cancellation takes effect at the end of the
+  then-current billing period, and your account will revert to view-only access
+  at the Free Tier Level at that time.
+
+Refund Policy
+  Except where required by law, all fees are non-refundable and we do not
+  provide refunds or credits for partial billing periods, unused features, or
+  downgrades. If you believe you have been charged in error, contact us at
+  privacy@novatern.com within 30 days of the charge and we will review your
+  request in good faith.
+
+Price Changes
+  We may change subscription prices from time to time. If we increase the price
+  of your subscription, we will notify you by email at least 30 days before the
+  change takes effect, and you may cancel before the new price applies.
+
+
+6. USER RESPONSIBILITIES
+--------------------------------------------------------------------------------
+By using the Services, you agree to the following. You will:
+
+  - Provide accurate and current information, and keep your account information
+    up to date.
+  - Use the Services only for lawful purposes and only in ways consistent with
+    these Terms.
+  - Maintain the confidentiality of your account credentials, including your
+    login password, and notify us promptly of any unauthorized use of your
+    account.
+  - Accept full responsibility for all credentials and information you choose to
+    store in the platform.
+  - Only store credentials, documents, or personal information that belongs to
+    you or that you are expressly authorized to store on another person's behalf.
+  - Respect our intellectual property and not reproduce, redistribute, or resell
+    our materials without our prior written consent.
+
+You will not, and will not attempt to:
+
+  - Upload, store, or share unlawful, harmful, defamatory, harassing, or
+    infringing content.
+  - Upload malware, viruses, or any code intended to disrupt, damage, or gain
+    unauthorized access to any system.
+  - Reverse-engineer, decompile, scrape, or attempt to extract the source code
+    or underlying data of the Services, except as permitted by applicable law.
+  - Use the Services to build a competing product, or to train or benchmark any
+    machine learning model.
+  - Share your account credentials with any other person or allow another person
+    to use your account.
+  - Circumvent, disable, or interfere with any security, authentication,
+    rate-limiting, or access-control feature of the Services.
+
+NOTE: You retain full ownership of your data and uploaded materials. You grant
+us a limited, non-exclusive, worldwide license to host, store, process,
+transmit, and display your content solely as necessary to provide the Services
+to you. This license ends when you delete the content or close your account,
+except for backup copies retained for a reasonable period and for information we
+are required to retain by law.
+
+
+7. SECURITY AND DATA PROTECTION
+--------------------------------------------------------------------------------
+We take security seriously and use encrypted technologies to safeguard your
+information.
+
+File Storage
+  All uploaded documents are stored on our servers with access restricted to
+  your authenticated account.
+
+Password Vault Encryption
+  Passwords stored in the Password Vault are encrypted using AES-256 (Fernet
+  symmetric encryption) before being written to the database. Plaintext
+  passwords are never persisted. Encryption keys are maintained in server
+  environment variables. Passwords are decrypted only when you explicitly
+  request a reveal within an authenticated session and are automatically hidden
+  after 15 seconds. Every reveal is logged with the user, timestamp, and IP
+  address.
+
+Financial Account Restriction
+  The system does not permit storage of passwords for financial institution
+  accounts, including Online Banking, Neobank/Digital Bank,
+  Brokerage/Investment, Cryptocurrency Exchange, Payment Processor, and Payment
+  Wallet account types. This restriction is enforced at both the interface and
+  server level and cannot be bypassed.
+
+Session and Account Security
+  Authenticated sessions expire after 1 hour of inactivity. Repeated failed
+  login attempts will result in a temporary account lockout. Users may log in
+  with either their username or email address.
+
+User Responsibility
+  You are responsible for securing your own account credentials and for all
+  information you choose to store in the platform. Before saving any vault
+  entry, you are required to affirmatively acknowledge the inherent risk of
+  storing credentials online.
+
+NOTE: While we apply strict security protocols, no system is completely immune
+to breach. By using the Services, you acknowledge this inherent risk and agree
+we cannot guarantee absolute security.
+
+
+9. ACCOUNT ACCESS AND TERMINATION
+--------------------------------------------------------------------------------
+You may request account deletion or data removal at any time by contacting
+privacy@novatern.com. We will complete verified deletion requests within 45
+days, subject to any legal retention obligations.
+
+We reserve the right to suspend or terminate accounts that violate these Terms
+or misuse the Services. For material violations we may suspend or terminate
+without prior notice; otherwise we will generally attempt to provide notice and
+an opportunity to cure. On termination by either party, you may, for a period of
+30 days, request an export of your data in a machine-readable format, after
+which your data may be permanently deleted.
+
+
+10. INTELLECTUAL PROPERTY
+--------------------------------------------------------------------------------
+All website content, software, designs, graphics, logos, and documentation
+provided by Novatern are the intellectual property of Novatern or its licensors.
+These Terms do not transfer any ownership of that intellectual property to you.
+
+You may use our marketing content and documentation for personal, non-commercial
+reference purposes only. Nothing in this section restricts your ability to use
+the Services or your own data for the personal estate-planning purposes for which
+the Services are intended.
+
+Any reproduction, distribution, modification, or public display of our
+intellectual property without our prior written permission is strictly
+prohibited.
+
+
+11. DISCLAIMER OF WARRANTIES
+--------------------------------------------------------------------------------
+THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY
+KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE
+LAW, NOVATERN DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT, AND ANY WARRANTIES ARISING FROM COURSE OF DEALING OR USAGE OF
+TRADE.
+
+WE DO NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, SECURE,
+OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT ANY CONTENT STORED IN
+THE SERVICES WILL REMAIN AVAILABLE OR WILL NOT BE LOST OR CORRUPTED. YOU ARE
+RESPONSIBLE FOR MAINTAINING YOUR OWN BACKUP COPIES OF IMPORTANT INFORMATION.
+
+SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES, SO SOME OF
+THE ABOVE EXCLUSIONS MAY NOT APPLY TO YOU.
+
+
+12. LIMITATION OF LIABILITY
+--------------------------------------------------------------------------------
+TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL NOVATERN,
+ITS AFFILIATES, OFFICERS, EMPLOYEES, AGENTS, OR LICENSORS BE LIABLE FOR ANY
+INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES,
+OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL, OR BUSINESS OPPORTUNITY,
+ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICES, WHETHER BASED ON
+CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR ANY OTHER LEGAL
+THEORY, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+OUR TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THESE TERMS OR THE
+SERVICES SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNTS PAID BY YOU TO
+NOVATERN IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE
+CLAIM, OR (B) ONE HUNDRED U.S. DOLLARS ($100.00).
+
+In addition, and without limiting the foregoing:
+
+  - We are not a financial institution and are not liable for any financial
+    loss, fraud, or unauthorized access resulting from credentials or account
+    information you choose to store in the platform.
+  - We are not responsible for errors, outages, or failures in third-party
+    platforms or integrations, including payment processors, hosting providers,
+    or email delivery services.
+  - Users accept full responsibility for how they apply our information and
+    tools in their own estate planning process.
+  - Users who store credentials in the Password Vault do so at their own risk
+    after affirmatively acknowledging that risk at the time of storage.
+
+SOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR
+CERTAIN TYPES OF DAMAGES, SO SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO
+YOU. THE LIMITATIONS IN THIS SECTION ARE A FUNDAMENTAL BASIS OF THE BARGAIN
+BETWEEN YOU AND NOVATERN.
+
+
+13. INDEMNIFICATION
+--------------------------------------------------------------------------------
+You agree to indemnify, defend, and hold harmless Novatern, its affiliates,
+employees, and agents from and against any claims, losses, liabilities, damages,
+costs, and expenses (including reasonable attorneys' fees) arising out of or
+related to: (a) your use or misuse of the Services; (b) your violation of these
+Terms; (c) your violation of any law or the rights of any third party; or (d)
+the information or materials you choose to store in the platform.
+
+
+14. THIRD-PARTY LINKS AND SERVICES
+--------------------------------------------------------------------------------
+The Services may include links to, or integrations with, third-party websites or
+services. These links and integrations are provided for convenience only. We do
+not endorse and are not responsible for third-party services or their content,
+policies, availability, or security practices. Your use of third-party services
+is governed by the terms and privacy policies of those third parties.
+
+
+15. DISPUTE RESOLUTION AND ARBITRATION
+--------------------------------------------------------------------------------
+Informal Resolution First
+  Before filing any formal claim, you agree to first contact us at
+  privacy@novatern.com with a written description of the dispute. We will
+  attempt to resolve the dispute informally within 60 days.
+
+Binding Arbitration
+  If informal resolution fails, any dispute arising out of or related to these
+  Terms or the Services shall be resolved by final and binding arbitration
+  administered by the American Arbitration Association ("AAA") under its
+  Consumer Arbitration Rules. The arbitration will be conducted in Polk County,
+  Iowa, or remotely by telephone or video at your election. Judgment on the
+  award may be entered in any court of competent jurisdiction.
+
+Class Action Waiver
+  YOU AND NOVATERN AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN
+  YOUR OR ITS INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN
+  ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING. The arbitrator may not
+  consolidate more than one person's claims and may not preside over any form
+  of representative or class proceeding.
+
+Exceptions and Opt-Out
+  Either party may bring an individual action in small-claims court for disputes
+  within that court's jurisdiction, and either party may seek injunctive relief
+  in court to protect intellectual property rights. You may opt out of this
+  arbitration provision by sending written notice to privacy@novatern.com within
+  30 days of first accepting these Terms, stating your name, account email, and
+  intent to opt out.
+
+
+16. MODIFICATIONS TO SERVICES OR TERMS
+--------------------------------------------------------------------------------
+We may update or modify the Services or these Terms at any time. Updated Terms
+will be posted on our website with a new "Last Updated" date. For material
+changes, we will provide at least 30 days' advance notice by email to the
+address associated with your account. Continued use of the Services after the
+effective date of updated Terms constitutes acceptance of those Terms. If you do
+not agree to the updated Terms, you must stop using the Services before they
+take effect.
+
+
+17. GOVERNING LAW
+--------------------------------------------------------------------------------
+These Terms are governed by and construed in accordance with the laws of the
+State of Iowa, without regard to conflict-of-law principles. Subject to Section
+15 (Dispute Resolution and Arbitration), any disputes not subject to arbitration
+shall be resolved exclusively in the state or federal courts located in Polk
+County, Iowa, and you consent to the personal jurisdiction of those courts.
+
+
+18. GENERAL PROVISIONS
+--------------------------------------------------------------------------------
+Entire Agreement
+  These Terms and our Privacy Policy constitute the entire agreement between you
+  and Novatern regarding the Services and supersede all prior agreements,
+  communications, and understandings, whether written or oral.
+
+Severability
+  If any provision of these Terms is held to be unenforceable or invalid, that
+  provision will be limited or eliminated to the minimum extent necessary, and
+  the remaining provisions will remain in full force and effect.
+
+No Waiver
+  Our failure to enforce any right or provision of these Terms will not be
+  considered a waiver of that right or provision. Any waiver must be in writing
+  and signed by an authorized representative of Novatern.
+
+Assignment
+  You may not assign or transfer these Terms or any rights under them without
+  our prior written consent. We may assign these Terms, in whole or in part, to
+  any successor in interest, including in connection with a merger, acquisition,
+  reorganization, or sale of assets.
+
+Force Majeure
+  We will not be liable for any failure or delay in performance caused by events
+  outside our reasonable control, including acts of God, natural disasters, war,
+  terrorism, riots, labor disputes, government action, pandemic, internet or
+  telecommunications failures, or third-party service outages.
+
+Electronic Communications
+  You consent to receive communications from us electronically, including by
+  email and by notices posted within the Services. Electronic communications
+  satisfy any legal requirement that such communications be in writing.
+
+Survival
+  Sections that by their nature should survive termination will survive,
+  including without limitation intellectual property, disclaimers of warranties,
+  limitation of liability, indemnification, dispute resolution, and general
+  provisions.
+
+Headings
+  Section headings are for convenience only and do not affect the interpretation
+  of these Terms.
+
+
+19. CONTACT INFORMATION
+--------------------------------------------------------------------------------
+For questions or concerns about these Terms, please contact:
+
+  Novatern
+  Email: privacy@novatern.com
+  Location: Des Moines, Iowa, USA
+
+================================================================================
+END OF DOCUMENT

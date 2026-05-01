@@ -1,0 +1,96 @@
+COOKIE POLICY
+Novatern
+Last Updated: April 13, 2026
+================================================================================
+
+
+1. INTRODUCTION
+--------------------------------------------------------------------------------
+This Cookie Policy explains how Novatern ("we," "our," or "us") uses cookies
+and similar technologies on our website to improve user experience, analyze site
+performance, and maintain security.
+
+By continuing to use our website, you consent to the use of cookies in
+accordance with this policy.
+
+
+2. WHAT ARE COOKIES?
+--------------------------------------------------------------------------------
+Cookies are small text files stored on your device when you visit a website.
+They help websites recognize your browser and remember certain information such
+as preferences, login status, or analytics data.
+
+Cookies may be classified as:
+
+Essential Cookies
+  Necessary for website operation (e.g., security, login, session management).
+
+Performance Cookies
+  Help us understand how visitors use our website through anonymous analytics.
+
+Functional Cookies
+  Enable enhanced features and settings, like remembering user preferences.
+
+Third-Party Cookies
+  Set by other websites or services that appear on our site (for example,
+  analytics or video embeds).
+
+
+3. HOW WE USE COOKIES
+--------------------------------------------------------------------------------
+Novatern uses cookies and similar tracking technologies for the following
+purposes:
+
+  - To ensure the secure functioning of our site.
+  - To understand how visitors interact with our pages and improve usability.
+  - To measure traffic and performance using privacy-focused analytics tools
+    such as Google Analytics or Plausible.
+  - To store consent preferences when you accept or reject cookies.
+
+NOTE: We do not use cookies to track you across other websites, nor do we use
+them for advertising or behavioral profiling.
+
+
+4. THIRD-PARTY TOOLS AND INTEGRATIONS
+--------------------------------------------------------------------------------
+Our website may include integrations or links to third-party platforms (e.g.,
+payment processors or form tools). These services may set their own cookies or
+tracking scripts.
+
+NOTE: We have no control over those cookies and recommend reviewing the privacy
+or cookie policies of any linked third-party service you access through our
+website.
+
+
+5. MANAGING AND DISABLING COOKIES
+--------------------------------------------------------------------------------
+You can control or delete cookies through your web browser settings. Most
+browsers allow you to:
+
+  - View, block, or delete existing cookies.
+  - Set preferences for how cookies are handled.
+  - Receive notifications before cookies are stored.
+
+NOTE: Disabling cookies may affect how some parts of the website function.
+
+For guidance, visit www.allaboutcookies.org or your browser's help section.
+
+
+6. UPDATES TO THIS COOKIE POLICY
+--------------------------------------------------------------------------------
+We may update this Cookie Policy occasionally to reflect changes in technology,
+regulation, or our website's functionality. All updates will be posted on this
+page with a new "Last Updated" date.
+
+
+7. CONTACT US
+--------------------------------------------------------------------------------
+If you have any questions about our Cookie Policy or how we use cookies, please
+contact:
+
+  Novatern
+  Email: privacy@novatern.com
+  Location: Des Moines, Iowa, USA
+
+================================================================================
+END OF DOCUMENT

@@ -13,6 +13,7 @@ structure of the real dashboard.
 """
 
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
@@ -520,3 +521,372 @@ class CombinedMixinTest(TestCase):
         view_idx  = mro_names.index('ViewOnlyMixin')
         owns_idx  = mro_names.index('UserOwnsObjectMixin')
         self.assertLess(view_idx, owns_idx)
+
+
+# ═══════════════════════════════════════════════════════════════
+#  CustomUser MODEL METHOD TESTS
+# ═══════════════════════════════════════════════════════════════
+
+class CustomUserModelTest(TestCase):
+
+    # ── can_view_data ─────────────────────────────────────────────────────────
+
+    def test_free_tier_can_view(self):
+        u = make_user(username='fv1', email='fv1@x.com')
+        self.assertTrue(u.can_view_data())
+
+    def test_active_subscription_can_view(self):
+        u = make_stripe_user(username='av1', email='av1@x.com')
+        self.assertTrue(u.can_view_data())
+
+    def test_lapsed_can_view(self):
+        u = make_lapsed_user(username='lv1', email='lv1@x.com')
+        self.assertTrue(u.can_view_data())
+
+    def test_inactive_user_cannot_view(self):
+        u = make_user(username='iv1', email='iv1@x.com', is_active=False)
+        self.assertFalse(u.can_view_data())
+
+    # ── can_modify_data ───────────────────────────────────────────────────────
+
+    def test_free_tier_can_modify(self):
+        u = make_user(username='fm1', email='fm1@x.com')
+        self.assertTrue(u.can_modify_data())
+
+    def test_active_essentials_can_modify(self):
+        u = make_stripe_user(username='em1', email='em1@x.com')
+        self.assertTrue(u.can_modify_data())
+
+    def test_lapsed_cannot_modify(self):
+        u = make_lapsed_user(username='lm1', email='lm1@x.com')
+        self.assertFalse(u.can_modify_data())
+
+    # ── is_free_tier ─────────────────────────────────────────────────────────
+
+    def test_is_free_tier_true_for_never_paid(self):
+        u = make_user(username='ft1', email='ft1@x.com')
+        self.assertTrue(u.is_free_tier())
+
+    def test_is_free_tier_false_when_has_paid(self):
+        u = make_stripe_user(username='ft2', email='ft2@x.com')
+        self.assertFalse(u.is_free_tier())
+
+    def test_is_free_tier_false_when_inactive(self):
+        u = make_user(username='ft3', email='ft3@x.com', is_active=False)
+        self.assertFalse(u.is_free_tier())
+
+    # ── is_lapsed_subscriber ──────────────────────────────────────────────────
+
+    def test_lapsed_subscriber_true_for_lapsed(self):
+        u = make_lapsed_user(username='ls1', email='ls1@x.com')
+        self.assertTrue(u.is_lapsed_subscriber())
+
+    def test_lapsed_subscriber_false_for_active(self):
+        u = make_stripe_user(username='ls2', email='ls2@x.com')
+        self.assertFalse(u.is_lapsed_subscriber())
+
+    def test_lapsed_subscriber_false_for_free(self):
+        u = make_user(username='ls3', email='ls3@x.com')
+        self.assertFalse(u.is_lapsed_subscriber())
+
+    # ── is_account_locked ─────────────────────────────────────────────────────
+
+    def test_not_locked_when_no_lock_datetime(self):
+        u = make_user(username='al1', email='al1@x.com')
+        self.assertFalse(u.is_account_locked())
+
+    def test_not_locked_when_lock_in_past(self):
+        u = make_user(username='al2', email='al2@x.com')
+        u.account_locked_until = timezone.now() - timedelta(minutes=1)
+        self.assertFalse(u.is_account_locked())
+
+    def test_locked_when_lock_in_future(self):
+        u = make_user(username='al3', email='al3@x.com')
+        u.account_locked_until = timezone.now() + timedelta(minutes=30)
+        self.assertTrue(u.is_account_locked())
+
+    # ── is_subscription_active ────────────────────────────────────────────────
+
+    def test_subscription_active_for_stripe_user(self):
+        u = make_stripe_user(username='sa1', email='sa1@x.com')
+        self.assertTrue(u.is_subscription_active())
+
+    def test_subscription_not_active_for_lapsed(self):
+        u = make_lapsed_user(username='sa2', email='sa2@x.com')
+        self.assertFalse(u.is_subscription_active())
+
+    # ── days_until_renewal ────────────────────────────────────────────────────
+
+    def test_days_until_renewal_zero_when_no_period_end(self):
+        u = make_user(username='dr1', email='dr1@x.com')
+        self.assertEqual(u.days_until_renewal(), 0)
+
+    def test_days_until_renewal_positive(self):
+        u = make_stripe_user(username='dr2', email='dr2@x.com')
+        u.subscription_current_period_end = timezone.now() + timedelta(days=15)
+        self.assertGreater(u.days_until_renewal(), 0)
+
+    def test_days_until_renewal_zero_for_expired(self):
+        u = make_stripe_user(username='dr3', email='dr3@x.com')
+        u.subscription_current_period_end = timezone.now() - timedelta(days=5)
+        self.assertEqual(u.days_until_renewal(), 0)
+
+    # ── get_tier_display_name ─────────────────────────────────────────────────
+
+    def test_display_name_no_subscription(self):
+        u = make_user(username='dn1', email='dn1@x.com')
+        self.assertIn('No Subscription', u.get_tier_display_name())
+
+    def test_display_name_active_essentials_monthly(self):
+        u = make_stripe_user(username='dn2', email='dn2@x.com', tier='essentials')
+        u.subscription_interval = 'monthly'
+        name = u.get_tier_display_name()
+        self.assertIn('Essentials', name)
+        self.assertIn('Monthly', name)
+
+    def test_display_name_cancel_at_period_end(self):
+        u = make_stripe_user(username='dn3', email='dn3@x.com', tier='legacy')
+        u.subscription_interval = 'annual'
+        u.subscription_cancel_at_period_end = True
+        name = u.get_tier_display_name()
+        self.assertIn('period end', name)
+
+    # ── activate_subscription ─────────────────────────────────────────────────
+
+    def test_activate_subscription_sets_all_fields(self):
+        u = make_user(username='act1', email='act1@x.com')
+        future = timezone.now() + timedelta(days=30)
+        u.activate_subscription(
+            tier='essentials',
+            stripe_customer_id='cus_test',
+            stripe_subscription_id='sub_test',
+            interval='monthly',
+            current_period_end=future,
+        )
+        u.refresh_from_db()
+        self.assertTrue(u.has_paid)
+        self.assertEqual(u.subscription_tier, 'essentials')
+        self.assertEqual(u.subscription_status, 'active')
+        self.assertEqual(u.stripe_customer_id, 'cus_test')
+
+    # ── update_subscription_status ────────────────────────────────────────────
+
+    def test_update_subscription_status_changes_status(self):
+        u = make_stripe_user(username='us1', email='us1@x.com')
+        u.update_subscription_status('past_due')
+        u.refresh_from_db()
+        self.assertEqual(u.subscription_status, 'past_due')
+
+    # ── deactivate_subscription ───────────────────────────────────────────────
+
+    def test_deactivate_subscription_sets_canceled(self):
+        u = make_stripe_user(username='ds1', email='ds1@x.com')
+        u.deactivate_subscription()
+        u.refresh_from_db()
+        self.assertEqual(u.subscription_status, 'canceled')
+
+    # ── has_active_grants ─────────────────────────────────────────────────────
+
+    def test_has_active_grants_false_when_no_grants(self):
+        u = make_user(username='hag1', email='hag1@x.com')
+        self.assertFalse(u.has_active_grants)
+
+    def test_has_active_grants_true_when_active_grant_exists(self):
+        from recovery.models import ProfileAccessGrant
+        from dashboard.models import Profile
+        owner = make_legacy(username='hag_own', email='hagown@x.com')
+        Profile.objects.get_or_create(
+            user=owner,
+            defaults={'first_name': 'A', 'last_name': 'B',
+                      'address_1': '1 St', 'city': 'X', 'state': 'IA', 'zipcode': 50001},
+        )
+        grantee = make_user(username='hag2', email='hag2@x.com')
+        admin = make_user(username='hag_adm', email='hagadm@x.com', is_staff=True)
+        ProfileAccessGrant.objects.create(
+            profile=owner.profile,
+            granted_to=grantee,
+            granted_by=admin,
+        )
+        self.assertTrue(grantee.has_active_grants)
+
+
+# ═══════════════════════════════════════════════════════════════
+#  LoginView TESTS
+# ═══════════════════════════════════════════════════════════════
+
+class LoginViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse('accounts:login')
+        self.user = make_user(username='logintest', email='logintest@x.com')
+
+    def _post(self, username='logintest', password='StrongPass1!'):
+        return self.client.post(self.url, {
+            'username_or_email': username,
+            'password': password,
+        })
+
+    def test_get_returns_200(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_successful_login_clears_failed_attempts(self):
+        self.user.failed_login_attempts = 3
+        self.user.save()
+        self._post()
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.failed_login_attempts, 0)
+
+    def test_successful_login_redirects_paid_to_dashboard(self):
+        self.user.has_paid = True
+        self.user.save()
+        response = self._post()
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('dashboard', response['Location'])
+
+    def test_successful_login_redirects_unpaid_to_payment(self):
+        response = self._post()
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('payment', response['Location'])
+
+    def test_failed_login_increments_counter(self):
+        self._post(password='WrongPassword!')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.failed_login_attempts, 1)
+
+    def test_five_failed_logins_lock_account(self):
+        self.user.failed_login_attempts = 4
+        self.user.save()
+        self._post(password='WrongPassword!')
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.account_locked_until)
+        self.assertTrue(self.user.account_locked_until > timezone.now())
+
+    def test_locked_account_shows_error_message(self):
+        self.user.account_locked_until = timezone.now() + timedelta(minutes=30)
+        self.user.save()
+        response = self._post()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'locked')
+
+    def test_login_with_email_address_works(self):
+        self.user.has_paid = True
+        self.user.save()
+        response = self._post(username='logintest@x.com')
+        self.assertEqual(response.status_code, 302)
+
+    def test_remaining_attempts_message_shown(self):
+        self.user.failed_login_attempts = 2
+        self.user.save()
+        response = self._post(password='WrongPassword!')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'attempts remaining')
+
+
+# ═══════════════════════════════════════════════════════════════
+#  RegisterView TESTS
+# ═══════════════════════════════════════════════════════════════
+
+class RegisterViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse('accounts:register')
+        self.valid_data = {
+            'username': 'newuser',
+            'email': 'newuser@x.com',
+            'password1': 'StrongPass1!',
+            'password2': 'StrongPass1!',
+            'terms_agreed': True,
+            'risk_acknowledged': True,
+        }
+
+    def test_get_returns_200(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_successful_registration_sets_terms_accepted_at(self):
+        self.client.post(self.url, self.valid_data)
+        user = User.objects.get(username='newuser')
+        self.assertIsNotNone(user.terms_accepted_at)
+
+    def test_successful_registration_sets_risk_acknowledged_at(self):
+        self.client.post(self.url, self.valid_data)
+        user = User.objects.get(username='newuser')
+        self.assertIsNotNone(user.vault_risk_acknowledged_at)
+
+    def test_duplicate_email_returns_form_error(self):
+        make_user(username='existing', email='newuser@x.com')
+        response = self.client.post(self.url, self.valid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+
+    def test_missing_terms_agreed_returns_error(self):
+        data = {**self.valid_data}
+        data.pop('terms_agreed')
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('terms_agreed', response.context['form'].errors)
+
+    def test_authenticated_user_redirected(self):
+        self.client.force_login(make_user(username='already_in', email='ai@x.com'))
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
+# ═══════════════════════════════════════════════════════════════
+#  StripeWebhookView TESTS
+# ═══════════════════════════════════════════════════════════════
+
+class StripeWebhookViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse('accounts:stripe_webhook')
+        self.user = make_stripe_user(username='webhook', email='webhook@x.com')
+
+    def _post_event(self, event_type, data_object):
+        import json
+        payload = json.dumps({'type': event_type, 'data': {'object': data_object}}).encode()
+        fake_event = {'type': event_type, 'data': {'object': data_object}}
+        with patch('accounts.views.stripe.Webhook.construct_event', return_value=fake_event):
+            return self.client.post(
+                self.url,
+                data=payload,
+                content_type='application/json',
+                HTTP_STRIPE_SIGNATURE='t=fake,v1=fake',
+            )
+
+    def test_invalid_payload_returns_400(self):
+        import stripe
+        with patch('accounts.views.stripe.Webhook.construct_event',
+                   side_effect=stripe.error.SignatureVerificationError('bad sig', 'sig')):
+            response = self.client.post(
+                self.url,
+                data=b'{}',
+                content_type='application/json',
+                HTTP_STRIPE_SIGNATURE='t=bad,v1=bad',
+            )
+        self.assertEqual(response.status_code, 400)
+
+    def test_subscription_updated_event_updates_user(self):
+        data_object = {
+            'id': 'sub_test',
+            'status': 'active',
+            'cancel_at_period_end': False,
+            'current_period_end': None,
+        }
+        response = self._post_event('customer.subscription.updated', data_object)
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.subscription_status, 'active')
+
+    def test_invoice_payment_failed_sets_past_due(self):
+        data_object = {'subscription': 'sub_test'}
+        response = self._post_event('invoice.payment_failed', data_object)
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.subscription_status, 'past_due')
+
+    def test_unknown_event_type_returns_200(self):
+        data_object = {'id': 'whatever'}
+        response = self._post_event('charge.succeeded', data_object)
+        self.assertEqual(response.status_code, 200)

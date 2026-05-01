@@ -1,0 +1,161 @@
+DATA RETENTION POLICY
+Novatern
+Last Updated: April 13, 2026
+================================================================================
+
+
+1. PURPOSE AND SCOPE
+--------------------------------------------------------------------------------
+This Data Retention Policy explains how Novatern ("we," "our," or "us")
+retains, archives, and deletes personal and client information collected through
+our website, services, and secure storage systems.
+
+It applies to all digital records, uploaded files, support communications, and
+limited technical data we handle in the course of providing digital estate
+organization services.
+
+
+2. PRINCIPLES OF RETENTION
+--------------------------------------------------------------------------------
+We follow these core principles when retaining data:
+
+  - Keep data only as long as necessary for the purpose it was collected or as
+    required by law.
+  - Minimize the amount of personal information stored and avoid indefinite
+    retention.
+  - Apply appropriate security controls to all retained data.
+  - Delete or anonymize data once it is no longer needed.
+
+
+3. DATA CATEGORIES AND RETENTION PERIODS
+--------------------------------------------------------------------------------
+Unless a different period is required by law or agreed with you in writing, we
+generally apply the following retention periods:
+
+Account and Contact Information
+  Name, email, phone, and basic profile details. Retained for up to 3 YEARS
+  after the last meaningful interaction (login, service use, or direct
+  contact), then deleted or anonymized.
+
+Client Project and Service Records
+  Notes related to your digital organization project, configuration details,
+  and non-legal documentation. Retained for up to 5 YEARS after the completion
+  of services, unless you request earlier deletion.
+
+Uploaded Files and Documents
+  Files stored with us for organizational purposes. Retained for the duration
+  of the active service and up to 1 YEAR after service completion, unless you
+  request immediate deletion or extended retention.
+
+Support and Communication Records
+  Email, messages, and service notes. Retained for up to 3 YEARS from the date
+  of the last communication, primarily for service history and dispute
+  resolution.
+
+Technical and Analytics Data
+  IP address, device type, usage logs, and analytics. Retained in identifiable
+  form for up to 12 MONTHS, after which it may be aggregated or anonymized for
+  long-term trend analysis.
+
+Password Vault Entries
+  Encrypted vault entries are retained for the duration of your active account.
+  Upon account deletion, all vault entries and their encrypted content are
+  permanently destroyed and cannot be recovered.
+
+Vault Access Logs
+  Audit logs recording each password reveal (user, timestamp, IP address) are
+  retained for up to 3 YEARS from the date of the access event. These logs
+  cannot be deleted by users and are retained for security accountability and
+  potential legal purposes.
+
+NOTE: If applicable law requires a longer retention period (for example, tax
+or business records), we will retain the relevant records for the legally
+required period.
+
+
+4. ARCHIVING
+--------------------------------------------------------------------------------
+When data is no longer actively used but must be retained for legal, security,
+or limited business reasons, we may move it into a secure archive.
+
+  - Archived data is stored in encrypted environments with strict access
+    controls.
+  - Access to archived data is restricted to authorized personnel only and used
+    solely for compliance, security, or documented business needs.
+
+
+5. DELETION AND DISPOSAL
+--------------------------------------------------------------------------------
+Once a retention period expires and no legal or operational reason remains to
+keep the data, we will securely delete or anonymize it.
+
+Electronic Records
+  Permanently deleted from active systems and, where technically feasible,
+  from backups according to our backup rotation schedule.
+
+Anonymization
+  In some cases, data may be anonymized so it can no longer be linked to an
+  identifiable person, and may be retained for statistical or planning
+  purposes.
+
+
+6. LEGAL HOLDS AND EXCEPTIONS
+--------------------------------------------------------------------------------
+If we become aware of a legal claim, investigation, audit, or other legal
+requirement relating to specific data, we may place a "legal hold" on that
+data.
+
+  - During a legal hold, affected data will not be deleted -- even if its
+    normal retention period has expired -- until the hold is lifted.
+  - Once the legal hold ends, normal retention and deletion rules will resume.
+
+
+7. YOUR RIGHTS AND REQUESTS FOR DELETION
+--------------------------------------------------------------------------------
+You may request access to, correction of, or deletion of your personal data at
+any time, subject to legal and contractual limitations.
+
+We will honor verified requests to delete personal and uploaded data unless we
+are required to keep some records for legal, regulatory, or security reasons.
+
+To submit a request, contact us at privacy@novatern.com with sufficient
+information to verify your identity and identify the records in question.
+
+
+8. RESPONSIBILITIES
+--------------------------------------------------------------------------------
+We maintain internal roles and responsibilities to support proper retention and
+disposal:
+
+Management / Owners
+  Define retention rules and ensure this policy aligns with legal requirements
+  and business needs.
+
+Technical / IT Support
+  Implement secure storage, archiving, and deletion procedures in line with
+  this policy.
+
+All Staff and Contractors
+  Handle data according to this policy and avoid creating or retaining
+  unnecessary copies of personal information.
+
+
+9. UPDATES TO THIS POLICY
+--------------------------------------------------------------------------------
+We may update this Data Retention Policy periodically to reflect changes in
+laws, technology, or our services. Any updates will be posted on our website
+with an updated "Last Updated" date, and continued use of our services
+signifies acceptance of the revised policy.
+
+
+10. CONTACT INFORMATION
+--------------------------------------------------------------------------------
+If you have questions about this Data Retention Policy or how long your data is
+stored, please contact:
+
+  Novatern
+  Email: privacy@novatern.com
+  Location: Des Moines, Iowa, USA
+
+================================================================================
+END OF DOCUMENT

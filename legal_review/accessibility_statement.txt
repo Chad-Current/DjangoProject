@@ -1,0 +1,107 @@
+ACCESSIBILITY STATEMENT
+Novatern
+Last Updated: February 27, 2026
+================================================================================
+
+
+1. OUR COMMITMENT
+--------------------------------------------------------------------------------
+Novatern is committed to providing a website and services that are accessible
+to the widest possible audience, including people with disabilities. We aim to
+follow recognized accessibility standards so that families, seniors, and helpers
+can use our resources with confidence.
+
+
+2. STANDARDS AND GUIDELINES
+--------------------------------------------------------------------------------
+We strive to design and develop our website in accordance with:
+
+  - The Web Content Accessibility Guidelines (WCAG) 2.1, aiming for Level AA
+    where reasonably possible.
+  - Best practices for readable typography, clear structure, and
+    keyboard-friendly navigation.
+
+NOTE: Accessibility is an ongoing effort, and we continuously review our site
+as we add or update content and features.
+
+
+3. ACCESSIBILITY FEATURES
+--------------------------------------------------------------------------------
+We work to support:
+
+Keyboard Navigation
+  Full keyboard access for menus, links, and forms.
+
+Color Contrast
+  Sufficient contrast between text and background colors to aid readability.
+
+Clear Structure
+  Logical headings, descriptive labels, and clear instructions on all forms.
+
+Responsive Layouts
+  Optimized for desktop, tablet, and mobile devices.
+
+Meaningful Link Text
+  Descriptive link text instead of generic wording like "click here."
+
+NOTE: Where we use PDFs or downloadable documents, we aim to make them
+screen-reader friendly whenever possible.
+
+
+4. SUPPORTED TECHNOLOGIES
+--------------------------------------------------------------------------------
+Our website is intended to work with:
+
+  - Current versions of major browsers (such as Chrome, Edge, Firefox, and
+    Safari).
+  - Common assistive technologies, including screen readers and built-in
+    browser zoom.
+
+NOTE: For the best experience, we recommend using the latest version of your
+browser and operating system.
+
+
+5. KNOWN LIMITATIONS
+--------------------------------------------------------------------------------
+Despite our efforts, some content or older documents may not yet be fully
+accessible. Examples may include:
+
+  - Legacy PDFs or downloads that are not fully tagged for screen readers.
+  - Third-party plugins, widgets, or embedded tools we do not control.
+
+NOTE: When we identify accessibility issues, we prioritize fixing them in
+future updates.
+
+
+6. FEEDBACK AND SUPPORT
+--------------------------------------------------------------------------------
+We welcome feedback on the accessibility of Novatern. If you encounter any
+barriers or have difficulty using any part of the site, please let us know so
+we can assist you and improve.
+
+Please contact us with:
+  - A description of the issue.
+  - The page or feature where you experienced the problem.
+  - The browser and assistive technology (if any) you were using.
+
+  Novatern
+  Accessibility: accessibility@novatern.com
+  Alternate email: privacy@novatern.com
+  Location: Des Moines, Iowa, USA
+
+We aim to respond to accessibility inquiries within a reasonable timeframe and,
+where possible, offer an accessible alternative or direct support.
+
+
+7. ONGOING IMPROVEMENTS
+--------------------------------------------------------------------------------
+Accessibility is not a one-time project but an ongoing process. We
+periodically:
+
+  - Review new pages and features for accessibility.
+  - Adjust design and code based on feedback and updated standards.
+  - Consider the needs of seniors, caregivers, and people with varying levels
+    of digital experience when designing our content.
+
+================================================================================
+END OF DOCUMENT
