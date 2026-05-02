@@ -273,6 +273,33 @@ class ContactForm(forms.ModelForm):
 # AccountForm
 # ---------------------------------------------------------------------------
 
+ACCOUNT_CATEGORY_ROLE_MAP = {
+    'Brokerage/Investment Account':     ['is_digital_executor','is_financial_agent'],
+    'Cryptocurrency Exchange Account':  ['is_digital_executor','is_financial_agent'],
+    'Neobank/Digital Bank Account':     ['is_digital_executor','is_financial_agent'],
+    'Online Banking Account':           ['is_digital_executor','is_financial_agent'],
+    'Payment Processor Account':        ['is_digital_executor','is_financial_agent'],
+    'Payment Wallet Account':           ['is_digital_executor','is_financial_agent'],
+    'App Store Account':                ['is_digital_executor'],
+    'Cloud Storage Account':            ['is_digital_executor'],
+    'Ecommerce Marketplace Account':    ['is_digital_executor'],
+    'Education/Elearning Account':      ['is_digital_executor'],
+    'Email Account':                    ['is_digital_executor'],
+    'Forum/Community Account':          ['is_digital_executor'],
+    'Gaming Platform Account':          ['is_digital_executor'],
+    'Password Manager Account':         ['is_digital_executor'],
+    'Smart Home/IoT Account':           ['is_digital_executor'],
+    'Streaming Media Account':          ['is_digital_executor'],
+    'Subscription Account':             ['is_digital_executor'],
+    'Travel Booking Account':           ['is_digital_executor'],
+    'Social Media Account':             ['is_digital_executor', 'is_memorial_contact'],
+    'Health Portal Account':            ['is_healthcare_proxy', 'is_caregiver'],
+    'Government Portal Account':        ['is_legal_executor'],
+    'Utilities/Telecom Portal Account': ['is_financial_agent', 'is_digital_executor'],
+    'Not Listed':                       ['is_knowledge_contact'],
+}
+
+
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
@@ -306,7 +333,31 @@ class AccountForm(forms.ModelForm):
         if self.user:
             try:
                 profile = Profile.objects.get(user=self.user)
-                self.fields['delegated_account_to'].queryset = Contact.objects.filter(profile=profile)
+                initial_category = (
+                    self.instance.account_category
+                    if self.instance and self.instance.pk
+                    else self.data.get('account_category') or ''
+                )
+                roles = ACCOUNT_CATEGORY_ROLE_MAP.get(initial_category, [])
+                if roles:
+                    from django.db.models import Q as _Q
+                    q = _Q()
+                    for role in roles:
+                        q |= _Q(**{role: True})
+                    contacts = Contact.objects.filter(profile=profile).filter(q)
+                else:
+                    contacts = Contact.objects.none()
+
+                if contacts.exists():
+                    self.fields['delegated_account_to'].queryset = contacts
+                    self.fields['delegated_account_to'].empty_label = "— Select a contact —"
+                else:
+                    self.fields['delegated_account_to'].queryset = Contact.objects.none()
+                    self.fields['delegated_account_to'].empty_label = (
+                        "No contacts have the required role — assign it first"
+                        if initial_category
+                        else "— Select a category first —"
+                    )
             except Profile.DoesNotExist:
                 self.fields['delegated_account_to'].queryset = Contact.objects.none()
 
@@ -354,8 +405,6 @@ class AccountForm(forms.ModelForm):
     def clean_website_url(self):
         url = self.cleaned_data.get('website_url', '').strip()
         if url:
-            # Django's URLField validator runs automatically, but we add a
-            # friendlier message here by catching any resulting error.
             from django.core.validators import URLValidator
             validator = URLValidator()
             try:
@@ -365,6 +414,20 @@ class AccountForm(forms.ModelForm):
                     "Enter a valid URL including the scheme, e.g. https://example.com"
                 )
         return url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        category = cleaned_data.get('account_category')
+        contact  = cleaned_data.get('delegated_account_to')
+        if category and contact:
+            roles = ACCOUNT_CATEGORY_ROLE_MAP.get(category, [])
+            if roles and not any(getattr(contact, r, False) for r in roles):
+                labels = [ROLE_DISPLAY.get(r, r) for r in roles]
+                raise forms.ValidationError(
+                    f"The selected contact does not have the required role for '{category}'. "
+                    f"Required: {', '.join(labels)}."
+                )
+        return cleaned_data
 
 
 # ---------------------------------------------------------------------------

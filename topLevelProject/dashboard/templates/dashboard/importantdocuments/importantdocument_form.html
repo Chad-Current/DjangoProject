@@ -36,6 +36,8 @@
         {% endif %}
       </div>
 
+      <div id="role-hint" class="alert alert-info small py-2 mt-1 mb-3" style="display:none;" role="status" aria-live="polite"></div>
+
       <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
         <label for="{{ form.name_or_title.id_for_label }}"
           class="ob-label-tooltip">
@@ -196,6 +198,8 @@
         <strong>Required:</strong> You must assign this document to a contact.
       </div>
 
+      <p class="text-muted small mb-2">Only contacts with the role required for the selected document category will appear here.</p>
+
       <div class="form-field{% if form.delegated_important_document_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_important_document_to.id_for_label }}"
           class="ob-label-tooltip">
@@ -224,11 +228,32 @@
 {% block extra_js %}
 <script>
 (function () {
-  var categoryEl = document.getElementById('id_document_category');
-  var contactEl  = document.getElementById('id_delegated_important_document_to');
+  var categoryEl      = document.getElementById('id_document_category');
+  var contactEl       = document.getElementById('id_delegated_important_document_to');
+  var hintEl          = document.getElementById('role-hint');
   if (!categoryEl || !contactEl) return;
 
   var initialContactId = contactEl.value;
+  var categoryRoleMap  = {{ category_role_map_json|safe }};
+  var roleDisplay      = {{ role_display_json|safe }};
+  var contactsUrl      = '{% url "dashboard:contacts_for_category" %}';
+  var contactsPageUrl  = '{% url "dashboard:contact_list" %}';
+
+  function updateRoleHint(category) {
+    if (!hintEl) return;
+    var roles = categoryRoleMap[category] || [];
+    if (!category || roles.length === 0) {
+      hintEl.style.display = 'none';
+      hintEl.innerHTML = '';
+      return;
+    }
+    var labels = roles.map(function (r) {
+      return '<strong>' + (roleDisplay[r] || r) + '</strong>';
+    });
+    hintEl.innerHTML = '<i class="fas fa-info-circle me-1"></i>This category requires a contact with the '
+      + labels.join(' or ') + ' role. Contacts without this role won\u2019t appear below.';
+    hintEl.style.display = '';
+  }
 
   function rebuildSelect(contacts, roleLabels) {
     contactEl.innerHTML = '';
@@ -240,6 +265,9 @@
       opt.value = '';
       opt.textContent = msg;
       contactEl.appendChild(opt);
+      if (roleLabels.length && hintEl && hintEl.style.display !== 'none') {
+        hintEl.innerHTML += ' <a href="' + contactsPageUrl + '" class="alert-link">Go to Contacts \u2192</a>';
+      }
     } else {
       var blank = document.createElement('option');
       blank.value = '';
@@ -248,7 +276,9 @@
       contacts.forEach(function (c) {
         var opt = document.createElement('option');
         opt.value = c.id;
-        opt.textContent = c.name;
+        opt.textContent = c.role_labels && c.role_labels.length
+          ? c.name + ' \u2014 ' + c.role_labels.join(', ')
+          : c.name;
         if (String(c.id) === initialContactId) opt.selected = true;
         contactEl.appendChild(opt);
       });
@@ -256,7 +286,8 @@
   }
 
   function fetchContacts(category) {
-    var url = '{% url "dashboard:contacts_for_category" %}?category=' + encodeURIComponent(category);
+    updateRoleHint(category);
+    var url = contactsUrl + '?category=' + encodeURIComponent(category);
     fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(function (r) { return r.json(); })
       .then(function (data) { rebuildSelect(data.contacts, data.role_labels); });

@@ -43,6 +43,7 @@ from .forms import (
     DigitalEstateDocumentForm,
     ImportantDocumentForm,
     CATEGORY_ROLE_MAP,
+    ACCOUNT_CATEGORY_ROLE_MAP,
     ROLE_DISPLAY,
     FamilyNeedsToKnowSectionForm,
     RelevanceReviewForm,
@@ -447,6 +448,12 @@ class AccountCreateView(FreeTierLimitMixin, FullAccessMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_role_map_json'] = json.dumps(ACCOUNT_CATEGORY_ROLE_MAP)
+        context['role_display_json']      = json.dumps(ROLE_DISPLAY)
+        return context
+
     def form_valid(self, form):
         profile, _ = Profile.objects.get_or_create(user=self.request.user)
         form.instance.profile = profile
@@ -465,6 +472,12 @@ class AccountUpdateView(SlugLookupMixin, FullAccessMixin, UpdateView):
         kwargs         = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_role_map_json'] = json.dumps(ACCOUNT_CATEGORY_ROLE_MAP)
+        context['role_display_json']      = json.dumps(ROLE_DISPLAY)
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, 'Digital account updated successfully.')
@@ -872,6 +885,12 @@ class ImportantDocumentCreateView(FreeTierLimitMixin, FullAccessMixin, CreateVie
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_role_map_json'] = json.dumps(CATEGORY_ROLE_MAP)
+        context['role_display_json']      = json.dumps(ROLE_DISPLAY)
+        return context
+
     def form_valid(self, form):
         profile, _ = Profile.objects.get_or_create(user=self.request.user)
         form.instance.profile = profile
@@ -891,6 +910,12 @@ class ImportantDocumentUpdateView(SlugLookupMixin, FullAccessMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_role_map_json'] = json.dumps(CATEGORY_ROLE_MAP)
+        context['role_display_json']      = json.dumps(ROLE_DISPLAY)
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, 'Document updated successfully.')
         return super().form_valid(form)
@@ -909,7 +934,7 @@ class ContactsForCategoryView(LoginRequiredMixin, View):
                 qs = (
                     Contact.objects.filter(profile=profile)
                     .filter(q)
-                    .values('id', 'first_name', 'last_name')
+                    .values('id', 'first_name', 'last_name', *roles)
                 )
             else:
                 qs = []
@@ -917,10 +942,46 @@ class ContactsForCategoryView(LoginRequiredMixin, View):
             qs = []
 
         role_labels = [ROLE_DISPLAY.get(r, r) for r in roles]
-        data = [
-            {'id': c['id'], 'name': f"{c['first_name']} {c['last_name']}".strip()}
-            for c in qs
-        ]
+        data = []
+        for c in qs:
+            contact_roles = [ROLE_DISPLAY.get(r, r) for r in roles if c.get(r)]
+            data.append({
+                'id': c['id'],
+                'name': f"{c['first_name']} {c['last_name']}".strip(),
+                'role_labels': contact_roles,
+            })
+        return JsonResponse({'contacts': data, 'role_labels': role_labels})
+
+
+class ContactsForAccountCategoryView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        category = request.GET.get('category', '')
+        roles = ACCOUNT_CATEGORY_ROLE_MAP.get(category, [])
+        try:
+            profile = Profile.objects.get(user=request.user)
+            if roles:
+                q = Q()
+                for role in roles:
+                    q |= Q(**{role: True})
+                qs = (
+                    Contact.objects.filter(profile=profile)
+                    .filter(q)
+                    .values('id', 'first_name', 'last_name', *roles)
+                )
+            else:
+                qs = []
+        except Profile.DoesNotExist:
+            qs = []
+
+        role_labels = [ROLE_DISPLAY.get(r, r) for r in roles]
+        data = []
+        for c in qs:
+            contact_roles = [ROLE_DISPLAY.get(r, r) for r in roles if c.get(r)]
+            data.append({
+                'id': c['id'],
+                'name': f"{c['first_name']} {c['last_name']}".strip(),
+                'role_labels': contact_roles,
+            })
         return JsonResponse({'contacts': data, 'role_labels': role_labels})
 
 

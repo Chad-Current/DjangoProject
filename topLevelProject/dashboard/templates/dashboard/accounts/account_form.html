@@ -37,6 +37,8 @@
         {% endif %}
       </div>
 
+      <div id="role-hint" class="alert alert-info small py-2 mt-1 mb-3" style="display:none;" role="status" aria-live="polite"></div>
+
       <div class="form-field{% if form.account_name_or_provider.errors %} has-error{% endif %}">
         <label for="{{ form.account_name_or_provider.id_for_label }}"
           class="ob-label-tooltip">
@@ -149,6 +151,8 @@
         <strong>Required:</strong> You must assign this account to a contact.
       </div>
 
+      <p class="text-muted small mb-2">Only contacts with the role required for the selected account type will appear here.</p>
+
       <div class="form-field{% if form.delegated_account_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_account_to.id_for_label }}"
           class="ob-label-tooltip">
@@ -172,4 +176,82 @@
   </form>
 </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var categoryEl      = document.getElementById('id_account_category');
+  var contactEl       = document.getElementById('id_delegated_account_to');
+  var hintEl          = document.getElementById('role-hint');
+  if (!categoryEl || !contactEl) return;
+
+  var initialContactId = contactEl.value;
+  var categoryRoleMap  = {{ category_role_map_json|safe }};
+  var roleDisplay      = {{ role_display_json|safe }};
+  var contactsUrl      = '{% url "dashboard:contacts_for_account_category" %}';
+  var contactsPageUrl  = '{% url "dashboard:contact_list" %}';
+
+  function updateRoleHint(category) {
+    if (!hintEl) return;
+    var roles = categoryRoleMap[category] || [];
+    if (!category || roles.length === 0) {
+      hintEl.style.display = 'none';
+      hintEl.innerHTML = '';
+      return;
+    }
+    var labels = roles.map(function (r) {
+      return '<strong>' + (roleDisplay[r] || r) + '</strong>';
+    });
+    hintEl.innerHTML = '<i class="fas fa-info-circle me-1"></i>This account type requires a contact with the '
+      + labels.join(' or ') + ' role. Contacts without this role won’t appear below.';
+    hintEl.style.display = '';
+  }
+
+  function rebuildSelect(contacts, roleLabels) {
+    contactEl.innerHTML = '';
+    if (contacts.length === 0) {
+      var msg = roleLabels.length
+        ? 'No contacts have the ' + roleLabels.join(' or ') + ' role — assign it first'
+        : '— Select an account type first —';
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = msg;
+      contactEl.appendChild(opt);
+      if (roleLabels.length && hintEl && hintEl.style.display !== 'none') {
+        hintEl.innerHTML += ' <a href="' + contactsPageUrl + '" class="alert-link">Go to Contacts →</a>';
+      }
+    } else {
+      var blank = document.createElement('option');
+      blank.value = '';
+      blank.textContent = '— Select a contact —';
+      contactEl.appendChild(blank);
+      contacts.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.role_labels && c.role_labels.length
+          ? c.name + ' — ' + c.role_labels.join(', ')
+          : c.name;
+        if (String(c.id) === initialContactId) opt.selected = true;
+        contactEl.appendChild(opt);
+      });
+    }
+  }
+
+  function fetchContacts(category) {
+    updateRoleHint(category);
+    var url = contactsUrl + '?category=' + encodeURIComponent(category);
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { rebuildSelect(data.contacts, data.role_labels); });
+  }
+
+  categoryEl.addEventListener('change', function () {
+    initialContactId = '';
+    fetchContacts(this.value);
+  });
+
+  if (categoryEl.value) fetchContacts(categoryEl.value);
+})();
+</script>
 {% endblock %}

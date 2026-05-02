@@ -14,12 +14,13 @@ urlpatterns = [
     path('profile/edit/',       views.ProfileUpdateView.as_view(),  name='profile_update'),
 
     # ── Accounts (Digital) ────────────────────────────────────────────────────
-    path('accounts/',                        views.AccountListView.as_view(),   name='account_list'),
-    path('accounts/create/',                 views.AccountCreateView.as_view(), name='account_create'),
-    path('accounts/print/',                  views.AccountPrintView.as_view(),  name='account_print'),
-    path('accounts/<slug:slug>/',            views.AccountDetailView.as_view(), name='account_detail'),
-    path('accounts/<slug:slug>/edit/',       views.AccountUpdateView.as_view(), name='account_update'),
-    path('accounts/<slug:slug>/delete/',     views.AccountDeleteView.as_view(), name='account_delete'),
+    path('accounts/',                             views.AccountListView.as_view(),                    name='account_list'),
+    path('accounts/create/',                      views.AccountCreateView.as_view(),                  name='account_create'),
+    path('accounts/print/',                       views.AccountPrintView.as_view(),                   name='account_print'),
+    path('accounts/contacts-for-category/',       views.ContactsForAccountCategoryView.as_view(),     name='contacts_for_account_category'),
+    path('accounts/<slug:slug>/',                 views.AccountDetailView.as_view(),                  name='account_detail'),
+    path('accounts/<slug:slug>/edit/',            views.AccountUpdateView.as_view(),                  name='account_update'),
+    path('accounts/<slug:slug>/delete/',          views.AccountDeleteView.as_view(),                  name='account_delete'),
 
     # ── Account Relevance Reviews ─────────────────────────────────────────────
     path('reviews/',                                        views.RelevanceReviewListView.as_view(),   name='relevancereview_list'),

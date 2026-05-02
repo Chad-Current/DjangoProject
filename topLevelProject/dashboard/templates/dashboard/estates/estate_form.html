@@ -36,6 +36,10 @@
         {% endif %}
       </div>
 
+      <div class="alert alert-info small py-2 mt-1 mb-3">
+        <i class="fas fa-info-circle me-1"></i>Estate documents are assigned to a contact with the <strong>Legal Executor</strong> role.
+      </div>
+
       <div class="form-field{% if form.name_or_title.errors %} has-error{% endif %}">
         <label for="{{ form.name_or_title.id_for_label }}"
           class="ob-label-tooltip">
@@ -184,6 +188,8 @@
       <div class="alert alert-warning">
         <strong>Required:</strong> You must assign this document to a contact.
       </div>
+
+      <p class="text-muted small mb-2">Only contacts with the Legal Executor role will appear here. If no contacts appear, go to <a href="{% url 'dashboard:contact_list' %}">Contacts</a> and assign the Legal Executor role.</p>
 
       <div class="form-field{% if form.delegated_estate_to.errors %} has-error{% endif %}">
         <label for="{{ form.delegated_estate_to.id_for_label }}"
